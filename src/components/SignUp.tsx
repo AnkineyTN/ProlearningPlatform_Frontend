@@ -2,8 +2,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
 import { signupSchema, type SignupFormData } from '../schemas/auth'
-import { authAPI } from '../services/api'
-import { loginStart, loginSuccess, loginFailure } from '../store/authSlice'
+// import { authAPI } from '../services/api'
+import { loginStart, loginFailure } from '../store/authSlice'
 import { useAppDispatch, useAppSelector } from '../hooks/redux'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -24,7 +24,7 @@ export default function SignUp() {
         resolver: zodResolver(signupSchema)
     })
 
-    const onSubmit = async (data: SignupFormData) => {
+    const onSubmit = async () => {
         dispatch(loginStart())
         try {
             // const response = await authAPI.signup({
