@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { BookOpen, Users, Award, Zap, CheckCircle, Star, ArrowRight } from 'lucide-react';
-import LogoBG from '@/assets/logo_bg';
 import LogoFG from '@/assets/logo_fg';
+import { ModeToggle } from "@/components/mode-toggle.tsx";
 
 export default function ProLearningLanding() {
   const [activeFeature, setActiveFeature] = useState(0);
@@ -69,18 +69,25 @@ export default function ProLearningLanding() {
               </div>
               <span className="text-xl font-bol">ProLearning</span>
             </div>
-            
+
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Our features</a>
-              <a href="#plans" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Plans</a>
-              <a href="#about" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">About us</a>
+              <a href="#features" className="text-muted-foreground hover:text-blue-600 transition-colors font-medium">Our features</a>
+              <a href="#plans" className="text-muted-foreground hover:text-blue-600 transition-colors font-medium">Plans</a>
+              <a href="#about" className="text-muted-foreground hover:text-blue-600 transition-colors font-medium">About us</a>
             </div>
 
-            <button 
-                onClick={() => window.location.href = '/signup'} 
-                className="cursor-pointer bg-black text-white px-6 py-2.5 rounded-full hover:bg-gray-800 transition-all font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
-              Create an account
-            </button>
+            <div className="hidden md:flex items-center space-x-4">
+              <button
+                onClick={() => window.location.href = '/signup'}
+                className="cursor-pointer bg-foreground text-background hover:bg-card-hovered px-6 py-2.5 rounded-full transition-all font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
+                Create an account
+              </button>
+              <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b">
+                <div className="flex w-full justify-between px-4">
+                  <ModeToggle />
+                </div>
+              </header>
+            </div>
           </div>
         </div>
       </nav>
@@ -94,24 +101,24 @@ export default function ProLearningLanding() {
                 🎓 Transform Your Future Today
               </span>
             </div>
-            
-            <h1 className="text-6xl md:text-7xl font-bold text-gray-900 leading-tight">
+
+            <h1 className="text-6xl md:text-7xl font-bold text-popover-foreground leading-tight">
               THE BEST LEARNING<br />
-              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-500 to-indigo-600 bg-clip-text text-transparent">
                 PLATFORM FOR YOU!
               </span>
             </h1>
-            
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Master new skills, advance your career, and achieve your goals with expert-led courses and personalized learning paths.
             </p>
 
             <div className="flex items-center justify-center gap-4 pt-4">
-              <button onClick={() => window.location.href = '/login'} className="cursor-pointer bg-black text-white px-8 py-4 rounded-full hover:bg-gray-800 transition-all font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 flex items-center gap-2">
+              <button onClick={() => window.location.href = '/login'} className="cursor-pointer bg-foreground hover:bg-card-hovered text-background px-8 py-4 rounded-full transition-all font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 flex items-center gap-2">
                 GET STARTED!
                 <ArrowRight className="w-5 h-5" />
               </button>
-              <button onClick={() => window.location.href = '/videodemo'} className="cursor-pointer bg-white text-gray-900 px-8 py-4 rounded-full hover:bg-gray-50 transition-all font-semibold text-lg shadow-lg border-2 border-gray-200">
+              <button onClick={() => window.location.href = '/videodemo'} className="cursor-pointer bg-card hover:bg-card-secondary text-foreground px-8 py-4 rounded-full transition-all font-semibold text-lg shadow-lg border-2 border-mute">
                 Watch Demo
               </button>
             </div>
@@ -120,8 +127,8 @@ export default function ProLearningLanding() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-16">
               {stats.map((stat, index) => (
                 <div key={index} className="space-y-2">
-                  <div className="text-4xl font-bold text-gray-900">{stat.number}</div>
-                  <div className="text-gray-600 font-medium">{stat.label}</div>
+                  <div className="text-4xl font-bold text-foreground">{stat.number}</div>
+                  <div className="text-muted-foreground font-medium">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -130,13 +137,13 @@ export default function ProLearningLanding() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white">
+      <section id="features" className="py-20 bg-card">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground">
               Why Choose ProLearning?
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Experience learning like never before with our cutting-edge platform
             </p>
           </div>
@@ -146,11 +153,10 @@ export default function ProLearningLanding() {
               <div
                 key={index}
                 onMouseEnter={() => setActiveFeature(index)}
-                className={`p-8 rounded-2xl cursor-pointer transition-all duration-300 ${
-                  activeFeature === index
-                    ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-2xl transform scale-105'
+                className={`p-8 rounded-2xl cursor-pointer transition-all duration-300 ${activeFeature === index
+                    ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-2xl transform scale-105'
                     : 'bg-gray-50 text-gray-900 hover:shadow-lg'
-                }`}
+                  }`}
               >
                 <div className={`mb-4 ${activeFeature === index ? 'text-white' : 'text-blue-600'}`}>
                   {feature.icon}
@@ -166,10 +172,10 @@ export default function ProLearningLanding() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-gradient-to-br from-slate-50 to-slate-100">
+      <section className="py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground">
               Loved by Students Worldwide
             </h2>
           </div>
@@ -210,7 +216,7 @@ export default function ProLearningLanding() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 py-12">
+      <footer className="text-muted-foreground py-12">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
@@ -218,40 +224,40 @@ export default function ProLearningLanding() {
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center">
                   <LogoFG />
                 </div>
-                <span className="text-xl font-bold text-white">ProLearning</span>
+                <span className="text-xl font-bold text-foreground">ProLearning</span>
               </div>
-              <p className="text-gray-400">Empowering learners worldwide with quality education.</p>
+              <p className="text-muted-foreground">Empowering learners worldwide with quality education.</p>
             </div>
-            
+
             <div>
-              <h4 className="font-bold text-white mb-4">Product</h4>
+              <h4 className="font-bold text-foreground mb-4">Product</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Courses</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Features</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Pricing</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Courses</a></li>
               </ul>
             </div>
-            
+
             <div>
-              <h4 className="font-bold text-white mb-4">Company</h4>
+              <h4 className="font-bold text-foreground mb-4">Company</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">About</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Careers</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Contact</a></li>
               </ul>
             </div>
-            
+
             <div>
-              <h4 className="font-bold text-white mb-4">Legal</h4>
+              <h4 className="font-bold text-foreground mb-4">Legal</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Terms</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Security</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Privacy</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Terms</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Security</a></li>
               </ul>
             </div>
           </div>
-          
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+
+          <div className="border-t border-muted-foreground mt-8 pt-8 text-center text-muted-foreground">
             <p>© 2025 ProLearning. All rights reserved.</p>
           </div>
         </div>

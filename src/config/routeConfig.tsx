@@ -1,11 +1,10 @@
-import {type RouteObject, Navigate } from 'react-router-dom'
+import {type RouteObject } from 'react-router-dom'
 import SignIn from '../components/SignIn'
 import SignUp from '../components/SignUp'
 import Dashboard from '../pages/Dashboard'
-import Profile from '../pages/Profile'
 import ProtectedLayout from '../components/ProtectedLayout'
-import Pomodoro from "@/pages/Pomodoro.tsx";
 import Landing from '@/pages/Landing.tsx'
+import OnboardingApp from "@/pages/OnboardingApp.tsx";
 
 export const routeConfig: RouteObject[] = [
     // Public routes
@@ -21,6 +20,10 @@ export const routeConfig: RouteObject[] = [
         path: '/signup',
         element: <SignUp />
     },
+    {
+        path: '/onboarding',
+        element: <OnboardingApp />
+    },
     // Protected routes
     {
         path: '/',
@@ -30,14 +33,6 @@ export const routeConfig: RouteObject[] = [
                 path: 'dashboard',
                 element: <Dashboard />
             },
-            {
-                path: 'profile',
-                element: <Profile />
-            },
-            {
-                path: 'pomodoro',
-                element: <Pomodoro />
-            }
         ]
     }
 ]

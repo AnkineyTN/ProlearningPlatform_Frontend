@@ -12,12 +12,17 @@ import {
     SidebarRail,
 } from '@/components/ui/sidebar';
 import {
-    Home,
-    Settings,
+    LayoutDashboard,
+    LayoutList,
+    CheckCheck,
+    Hourglass,
     LogOut,
     User,
     ChevronUp,
-    User2, UsersRound, AlarmClock
+    User2,
+    Book,
+    Heart,
+    Settings
 } from 'lucide-react';
 import {
     DropdownMenu,
@@ -39,24 +44,39 @@ const AppSidebar: React.FC = ({ ...props }: React.ComponentProps<typeof Sidebar>
     }
     const menuItems = [
         {
-            title: 'Home',
-            icon: Home,
+            title: 'Dashboard',
+            icon: LayoutDashboard,
             url: '/dashboard'
         },
         {
-            title: 'Contact',
-            icon: UsersRound,
-            url: '/contact'
+            title: 'Set List',
+            icon: LayoutList,
+            url: '/set-list'
+        },
+        {
+            title: 'To-Do',
+            icon: CheckCheck,
+            url: '/todo'
+        },
+        {
+            title: 'Pomodoro',
+            icon: Hourglass,
+            url: '/pomodoro'
+        },
+        {
+            title: 'Blog',
+            icon: Book,
+            url: '/blog'
+        },
+        {
+            title: 'Socials',
+            icon: Heart,
+            url: '/socials'
         },
         {
             title: 'Settings',
             icon: Settings,
             url: '/settings'
-        },
-        {
-            title: 'Pomodoro',
-            icon: AlarmClock,
-            url: '/pomodoro'
         }
     ];
 

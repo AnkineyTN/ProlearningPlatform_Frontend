@@ -25,12 +25,12 @@ export default function SignIn() {
     const onSubmit = async (data: LoginFormData) => {
         dispatch(loginStart())
         try {
-            const response = await authAPI.login(data)
+            // const response = await authAPI.login(data)
 
-            dispatch(loginSuccess({
-                user: response.data.user,
-                token: response.data.token
-            }))
+            // dispatch(loginSuccess({
+            //     user: response.data.user,
+            //     token: response.data.token
+            // }))
 
             navigate('/dashboard')
         } catch (error: any) {
@@ -42,8 +42,11 @@ export default function SignIn() {
 
     return (
         <div className={"min-w-screen min-h-screen flex items-center justify-center"}>
-            <div className="w-110">
-                <Card className="w-full px-4 py-8">
+            <div className={"w-[50vw] bg-gradient-to-r from-popover-foreground to-muted-foreground h-screen px-14 py-10"}>
+                <div className={"text-background text-8xl font-bold"}>WELCOME BACK!</div>
+            </div>
+            <div className="w-[50vw] flex items-center justify-center">
+                <Card className="w-110 px-4 py-8">
                     <CardHeader className={"text-start"}>
                         <CardTitle className={"font-bold text-2xl"}>Sign in to your account</CardTitle>
                         <CardDescription>

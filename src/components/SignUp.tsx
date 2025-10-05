@@ -27,18 +27,18 @@ export default function SignUp() {
     const onSubmit = async (data: SignupFormData) => {
         dispatch(loginStart())
         try {
-            const response = await authAPI.signup({
-                name: data.name,
-                email: data.email,
-                password: data.password
-            })
+            // const response = await authAPI.signup({
+            //     name: data.name,
+            //     email: data.email,
+            //     password: data.password
+            // })
 
-            dispatch(loginSuccess({
-                user: response.data.user,
-                token: response.data.token
-            }))
+            // dispatch(loginSuccess({
+            //     user: response.data.user,
+            //     token: response.data.token
+            // }))
 
-            navigate('/dashboard')
+            navigate('/onboarding')
         } catch (error: any) {
             dispatch(loginFailure(
                 error.response?.data?.message || 'Sign up fail. Please try again'
@@ -48,8 +48,8 @@ export default function SignUp() {
 
     return (
         <div className={"min-w-screen min-h-screen flex items-center justify-center"}>
-            <div className="w-110">
-                <Card className="w-full px-4 py-8">
+            <div className="w-[50vw] flex items-center justify-center">
+                <Card className="w-110 px-4 py-6">
                     <CardHeader className="text-start">
                         <CardTitle className="font-bold text-2xl">Create your account</CardTitle>
                         <CardDescription>
@@ -57,7 +57,7 @@ export default function SignUp() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-start">
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 text-start">
                             <div>
                                 <Label htmlFor="name" className="font-bold text-base mb-2">Name</Label>
                                 <div className="relative mb-1">
@@ -194,6 +194,9 @@ export default function SignUp() {
                         </p>
                     </CardFooter>
                 </Card>
+            </div>
+            <div className={"w-[50vw] bg-gradient-to-r from-popover-foreground to-muted-foreground h-screen px-14 py-10"}>
+                <div className={"text-background text-8xl font-bold"}>CREATE AN ACCOUNT!</div>
             </div>
         </div>
     )
