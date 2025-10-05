@@ -41,4 +41,3 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
