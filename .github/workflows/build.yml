@@ -40,4 +40,5 @@ jobs:
         with:
           context: .
           push: true
+          no-cache: true
           tags: ${{ secrets.REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
