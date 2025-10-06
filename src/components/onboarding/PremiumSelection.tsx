@@ -77,14 +77,14 @@ export default function PremiumSelection({
                 <div className="flex items-center justify-between">
                     <button
                         onClick={onBack}
-                        className="px-4 py-2 rounded-xl border border-ring bg-card text-foreground hover:bg-card-secondary transition-colors flex items-center gap-2"
+                        className="px-4 py-2 rounded-xl border border-ring bg-card text-foreground hover:bg-card-secondary transition-colors flex items-center gap-2 cursor-pointer"
                     >
                         <ChevronLeft className="w-4 h-4" />
                         <span>Back</span>
                     </button>
                     <button
                         onClick={onSkip}
-                        className="px-4 py-2 rounded-xl bg-foreground text-background hover:bg-card-hovered transition-colors flex items-center gap-2"
+                        className="px-4 py-2 rounded-xl bg-foreground text-background hover:bg-card-hovered transition-colors flex items-center gap-2 cursor-pointer"
                     >
                         <span>Skip for now</span>
                         <ChevronRight className="w-4 h-4" />
