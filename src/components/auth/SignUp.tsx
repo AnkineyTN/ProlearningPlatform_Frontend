@@ -1,16 +1,16 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
-import { signupSchema, type SignupFormData } from '../schemas/auth'
+import { signupSchema, type SignupFormData } from '../../schemas/auth'
 // import { authAPI } from '../services/api'
-import { loginStart, loginFailure } from '../store/authSlice'
-import { useAppDispatch, useAppSelector } from '../hooks/redux'
+import { loginStart, loginFailure } from '../../store/authSlice'
+import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import {AlertCircleIcon, Lock, Mail, User, Eye, EyeOff, RefreshCw, CircleDot} from 'lucide-react'
+import { AlertCircleIcon, Lock, Mail, User, Eye, EyeOff, RefreshCw, CircleDot } from 'lucide-react'
 import { useState } from 'react'
 
 export default function SignUp() {
@@ -120,7 +120,7 @@ export default function SignUp() {
                                     <p className="text-sm text-red-500">{errors.password.message}</p>
                                 ) : (
                                     <div className="text-sm text-gray-500 flex items-center gap-2">
-                                        <CircleDot size={16}/>
+                                        <CircleDot size={16} />
                                         6 or more characters
                                     </div>
                                 )}
@@ -170,9 +170,9 @@ export default function SignUp() {
                                 Create account
                             </Button>
                             <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                              <span className="bg-card text-muted-foreground relative z-10 px-2">
-                                Or continue with
-                              </span>
+                                <span className="bg-card text-muted-foreground relative z-10 px-2">
+                                    Or continue with
+                                </span>
                             </div>
                             <Button variant={"outline"} className="w-full cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

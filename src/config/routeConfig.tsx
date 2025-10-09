@@ -1,16 +1,17 @@
-import {type RouteObject } from 'react-router-dom'
-import SignIn from '../components/SignIn'
-import SignUp from '../components/SignUp'
+import { type RouteObject } from 'react-router-dom'
+import SignIn from '../components/auth/SignIn'
+import SignUp from '../components/auth/SignUp'
 import Dashboard from '../pages/Dashboard'
+import SetListPage from '../pages/SetListPage'
 import ProtectedLayout from '../components/ProtectedLayout'
-import Landing from '@/pages/Landing.tsx'
+import LandingPage from '@/pages/LandingPage'
 import OnboardingApp from "@/pages/OnboardingApp.tsx";
 
 export const routeConfig: RouteObject[] = [
     // Public routes
     {
         path: '/',
-        element: <Landing />
+        element: <LandingPage />
     },
     {
         path: '/login',
@@ -24,15 +25,23 @@ export const routeConfig: RouteObject[] = [
         path: '/onboarding',
         element: <OnboardingApp />
     },
-    // Protected routes
     {
-        path: '/',
-        element: <ProtectedLayout />,
-        children: [
-            {
-                path: 'dashboard',
-                element: <Dashboard />
-            },
-        ]
+        path: '/dashboard',
+        element: <Dashboard />
+    },
+    {
+        path: '/sets',
+        element: <SetListPage />
     }
+    // Protected routes
+    // {
+    //     path: '/',
+    //     element: <ProtectedLayout />,
+    //     children: [
+    //         {
+    //             path: 'dashboard',
+    //             element: <Dashboard />
+    //         },
+    //     ]
+    // }
 ]

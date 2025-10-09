@@ -1,6 +1,6 @@
 import { Moon, Sun } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
-import { useTheme } from "@/components/theme-provider"
+import { useTheme } from "@/components/theme/theme-provider"
 
 export function ModeToggle() {
     const { theme, setTheme } = useTheme()
@@ -14,6 +14,7 @@ export function ModeToggle() {
         <div className="flex items-center gap-2">
             <Sun className="h-[1.2rem] w-[1.2rem]" />
             <Switch
+                className="cursor-pointer"
                 checked={isDark}
                 onCheckedChange={handleToggle}
             />

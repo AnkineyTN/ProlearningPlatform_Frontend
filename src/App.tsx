@@ -3,9 +3,9 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { store } from './store'
 import { routeConfig } from './config/routeConfig.tsx'
-import { ThemeProvider } from "@/components/theme-provider.tsx"
-import {useEffect} from "react";
-import {authAPI} from "@/services/api.ts";
+import { ThemeProvider } from "@/components/theme/theme-provider.tsx"
+import { useEffect } from "react";
+import { authAPI } from "@/services/api.ts";
 
 const queryClient = new QueryClient()
 

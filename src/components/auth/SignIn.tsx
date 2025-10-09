@@ -1,16 +1,16 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
-import { loginSchema, type LoginFormData } from '../schemas/auth'
+import { loginSchema, type LoginFormData } from '../../schemas/auth'
 // import { authAPI } from '../services/api'
-import { loginStart, loginFailure } from '../store/authSlice'
-import { useAppDispatch, useAppSelector } from '../hooks/redux'
+import { loginStart, loginFailure } from '../../store/authSlice'
+import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import {AlertCircleIcon, Eye, EyeOff, LockIcon, Mail, RefreshCw } from "lucide-react";
-import {useState} from "react";
+import { AlertCircleIcon, Eye, EyeOff, LockIcon, Mail, RefreshCw } from "lucide-react";
+import { useState } from "react";
 
 export default function SignIn() {
     const dispatch = useAppDispatch()
@@ -106,8 +106,8 @@ export default function SignIn() {
                                         className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"
                                         onClick={() => setShowPassword(!showPassword)}
                                     >
-                                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                  </span>
+                                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                    </span>
 
                                     {errors.password && (
                                         <p className="text-red-500 text-sm">{errors.password.message}</p>
@@ -117,7 +117,7 @@ export default function SignIn() {
 
                             {error && (
                                 <div className={"text-red-500 flex items-center gap-2"}>
-                                    <AlertCircleIcon className={"w-4 h-4"}/>
+                                    <AlertCircleIcon className={"w-4 h-4"} />
                                     <p>{error}</p>
                                 </div>
                             )}
@@ -136,9 +136,9 @@ export default function SignIn() {
 
                             </Button>
                             <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                              <span className="bg-card text-muted-foreground relative z-10 px-2">
-                                Or continue with
-                              </span>
+                                <span className="bg-card text-muted-foreground relative z-10 px-2">
+                                    Or continue with
+                                </span>
                             </div>
                             <Button variant={"outline"} className="w-full cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -161,6 +161,6 @@ export default function SignIn() {
                     </CardFooter>
                 </Card>
             </div>
-    </div>
+        </div>
     )
 }

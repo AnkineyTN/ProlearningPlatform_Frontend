@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { BookOpen, Users, Award, Zap, CheckCircle, Star, ArrowRight } from 'lucide-react';
 import LogoFG from '@/assets/logo_fg';
-import { ModeToggle } from "@/components/mode-toggle.tsx";
+import { ModeToggle } from "@/components/theme/mode-toggle";
 
-export default function ProLearningLanding() {
+export default function LandingPage() {
   const [activeFeature, setActiveFeature] = useState(0);
 
   const features = [
@@ -154,8 +154,8 @@ export default function ProLearningLanding() {
                 key={index}
                 onMouseEnter={() => setActiveFeature(index)}
                 className={`p-8 rounded-2xl cursor-pointer transition-all duration-300 ${activeFeature === index
-                    ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-2xl transform scale-105'
-                    : 'bg-gray-50 text-gray-900 hover:shadow-lg'
+                  ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-2xl transform scale-105'
+                  : 'bg-gray-50 text-gray-900 hover:shadow-lg'
                   }`}
               >
                 <div className={`mb-4 ${activeFeature === index ? 'text-white' : 'text-blue-600'}`}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {useAppDispatch, useAppSelector} from '../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
     Sidebar,
     SidebarContent,
@@ -30,8 +30,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {logout} from "@/store/authSlice.ts";
-import {useNavigate} from "react-router-dom";
+import { logout } from "@/store/authSlice.ts";
+import { useNavigate } from "react-router-dom";
 
 const AppSidebar: React.FC = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
     const { user } = useAppSelector((state) => state.auth);
@@ -135,10 +135,10 @@ const AppSidebar: React.FC = ({ ...props }: React.ComponentProps<typeof Sidebar>
                                     </div>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
                                         <span className="truncate font-semibold">
-                                          {user?.name || 'Unknown User'}
+                                            {user?.name || 'Unknown User'}
                                         </span>
                                         <span className="truncate text-xs text-sidebar-foreground/70">
-                                          {user?.email || 'no-email@example.com'}
+                                            {user?.email || 'no-email@example.com'}
                                         </span>
                                     </div>
                                     <ChevronUp className="ml-auto size-4" />
