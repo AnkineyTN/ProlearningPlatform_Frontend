@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { Search, Grid3x3, List, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import SetCard from '@/components/cards/SetCard';
 import HeaderSet from '@/components/header/HeaderSet';
 import { Button } from '@/components/ui/button';
 
 export default function SetListPage() {
-    const [view, setView] = useState('grid');
     const [activeTab, setActiveTab] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
 
