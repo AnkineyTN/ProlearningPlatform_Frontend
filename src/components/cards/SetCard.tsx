@@ -14,9 +14,13 @@ export interface Set {
     date: string;
 }
 
-export default function SetCard({ set }: { set: Set }) {
+export default function SetCard({ set, onAccess }: { set: Set, onAccess: (id: string) => void }) {
+    const handleClick = () => {
+        onAccess(set.code); // Giả sử 'code' là ID của set
+    }
+
     return (
-        <div className="bg-card rounded-xl p-5 shadow-sm cursor-pointer">
+        <div className="bg-card rounded-xl p-5 shadow-sm cursor-pointer" onClick={handleClick}>
             <div className="flex justify-between items-start mb-3">
                 <BookOpen className="w-5 h-5" />
                 <button className="hover:bg-card-secondary p-1 rounded cursor-pointer" title="More options">

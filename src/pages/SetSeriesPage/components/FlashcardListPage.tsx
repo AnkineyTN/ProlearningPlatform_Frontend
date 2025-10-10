@@ -1,15 +1,11 @@
 import { useState } from 'react';
-import { Search } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import FlashCard from '@/components/cards/FlashCard';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
-interface HeaderProps {
-    onSearch?: (query: string) => void;
-}
-
-export default function FlashcardListPage({ onSearch }: HeaderProps) {
+export default function FlashcardListPage() {
     const [currentPage, setCurrentPage] = useState(1);
+    const navigate = useNavigate();
 
     const flashcards = [
         {
@@ -64,12 +60,16 @@ export default function FlashcardListPage({ onSearch }: HeaderProps) {
 
     const totalPages = 5;
 
+    const handleAccess = (id: string) => {
+        navigate(`/flashcard/${id}`);
+    }
+
     return (
         <div>
             {/* Flashcards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {flashcards.map((flashcard) => (
-                    <FlashCard key={flashcard.id} flashcard={flashcard} />
+                    <FlashCard key={flashcard.id} flashcard={flashcard} onAccess={handleAccess} />
                 ))}
             </div>
 

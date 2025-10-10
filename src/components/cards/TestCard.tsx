@@ -8,9 +8,12 @@ export interface Test {
     date: string;
 }
 
-export default function TestCard({ test }: { test: Test }) {
+export default function TestCard({ test, onAccess }: { test: Test, onAccess: (id: string) => void }) {
+    const handleClick = () => {
+        onAccess(test.title); // Giả sử 'title' là ID của test
+    }
     return (
-        <div className="bg-card rounded-xl p-5 shadow-sm cursor-pointer">
+        <div className="bg-card rounded-xl p-5 shadow-sm cursor-pointer" onClick={handleClick}>
             <div className="flex justify-between items-start mb-3">
                 <FilePen className="w-5 h-5" />
                 <button className="hover:bg-card-secondary p-1 rounded cursor-pointer" title="More options">

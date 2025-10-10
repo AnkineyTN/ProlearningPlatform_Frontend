@@ -1,12 +1,16 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import SetCard from '@/components/cards/SetCard';
 import HeaderSet from '@/components/header/HeaderSet';
+import CreateNewModal from '@/components/modals/CreateNewModal';
 import { Button } from '@/components/ui/button';
 
 export default function SetListPage() {
     const [activeTab, setActiveTab] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate();
 
     const sets = [
         {
@@ -65,6 +69,17 @@ export default function SetListPage() {
 
     const totalPages = 5;
 
+    const handleCreateSet = (newSet: any) => {
+        console.log('New set created:', newSet);
+        // Xử lý tạo set mới ở đây
+    };
+
+    const handleSetAccess = (setId: string) => {
+        console.log('Access set with ID:', setId);
+        // Xử lý truy cập set ở đây
+        navigate(`/sets/${setId}`);
+    }
+
     return (
         <div className={`min-h-screen p-8`}>
             <div className="max-w-7xl mx-auto">
@@ -107,7 +122,10 @@ export default function SetListPage() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <Button className="ml-2 px-4 py-2 cursor-pointer bg-card text-foreground rounded-lg font-medium flex items-center gap-2 hover:bg-card-secondary transition-colors">
+                        <Button
+                            onClick={() => setIsModalOpen(true)}
+                            className="ml-2 px-4 py-2 cursor-pointer bg-card text-foreground rounded-lg font-medium flex items-center gap-2 hover:bg-card-secondary transition-colors"
+                        >
                             <Plus className="w-5 h-5" />
                             New set
                         </Button>
@@ -117,7 +135,7 @@ export default function SetListPage() {
                 {/* Sets Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                     {sets.map((set, idx) => (
-                        <SetCard key={idx} set={set} />
+                        <SetCard key={idx} set={set} onAccess={handleSetAccess} />
                     ))}
                 </div>
 
@@ -144,6 +162,14 @@ export default function SetListPage() {
                     </Button>
                 </div>
             </div>
+
+            {/* New Set Modal */}
+            <CreateNewModal
+                type="Set"
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSubmit={handleCreateSet}
+            />
         </div>
     );
 }

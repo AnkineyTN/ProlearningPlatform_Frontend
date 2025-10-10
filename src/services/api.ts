@@ -1,5 +1,5 @@
 import axios, {type AxiosResponse } from 'axios'
-import type {User} from '../store/authSlice'
+import type {User} from '@/store/authSlice'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL
 
@@ -11,10 +11,14 @@ const api = axios.create({
 })
 
 interface AuthResponse {
-    user: User
-    token: string
+    status: string
+    message: string
+    data: {
+        userResponseDto: User
+        accessToken: string
+    }
+    metadata: Record<string, any>
 }
-
 interface SignupData {
     firstName: string
     lastName: string
@@ -121,7 +125,7 @@ export const authAPI = {
     login: (userData: LoginData): Promise<AxiosResponse<AuthResponse>> =>
         api.post('/auth/login', userData),
     getMe: (): Promise<AxiosResponse<MeResponse>> =>
-        api.get('/auth/me')
+        api.get('/users/me')
 }
 
 export const dashboardAPI = {

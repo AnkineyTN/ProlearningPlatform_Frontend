@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import {
     Sidebar,
     SidebarContent,
@@ -10,6 +10,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarRail,
+    SidebarTrigger
 } from '@/components/ui/sidebar';
 import {
     LayoutDashboard,
@@ -19,7 +20,6 @@ import {
     LogOut,
     User,
     ChevronUp,
-    User2,
     Book,
     Heart,
     Settings
@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { logout } from "@/store/authSlice.ts";
 import { useNavigate } from "react-router-dom";
+import LogoFG from '@/assets/logo_fg';
 
 const AppSidebar: React.FC = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
     const { user } = useAppSelector((state) => state.auth);
@@ -51,7 +52,7 @@ const AppSidebar: React.FC = ({ ...props }: React.ComponentProps<typeof Sidebar>
         {
             title: 'Set List',
             icon: LayoutList,
-            url: '/set-list'
+            url: '/sets'
         },
         {
             title: 'To-Do',
@@ -88,18 +89,19 @@ const AppSidebar: React.FC = ({ ...props }: React.ComponentProps<typeof Sidebar>
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
                 <SidebarMenu>
-                    <SidebarMenuItem>
+                    <SidebarMenuItem className='flex items-center'>
                         <SidebarMenuButton size="lg" asChild>
                             <a href="/dashboard">
-                                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                                    <User2 className="size-4" />
+                                <div className="flex aspect-square size-6 items-center justify-center rounded-lg text-sidebar-primary-foreground">
+                                    <LogoFG />
                                 </div>
                                 <div className="flex flex-col gap-0.5 leading-none">
-                                    <span className="font-semibold">Dashboard</span>
+                                    <span className="font-semibold">ProLearning</span>
                                     <span className="text-xs">v1.0.0</span>
                                 </div>
                             </a>
                         </SidebarMenuButton>
+                        <SidebarTrigger size="lg" />
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
@@ -135,7 +137,7 @@ const AppSidebar: React.FC = ({ ...props }: React.ComponentProps<typeof Sidebar>
                                     </div>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
                                         <span className="truncate font-semibold">
-                                            {user?.name || 'Unknown User'}
+                                            {user?.firstName || 'Unknown User'} {user?.lastName || ''}
                                         </span>
                                         <span className="truncate text-xs text-sidebar-foreground/70">
                                             {user?.email || 'no-email@example.com'}

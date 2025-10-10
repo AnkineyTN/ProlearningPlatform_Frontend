@@ -8,9 +8,12 @@ export interface Mindmap {
     date: string;
 }
 
-export default function MindmapCard({ mindmap }: { mindmap: Mindmap }) {
+export default function MindmapCard({ mindmap, onAccess }: { mindmap: Mindmap, onAccess: (id: string) => void }) {
+    const handleClick = () => {
+        onAccess(mindmap.title); // Giả sử 'title' là ID của mindmap
+    }
     return (
-        <div className="bg-card rounded-xl p-5 shadow-sm cursor-pointer">
+        <div className="bg-card rounded-xl p-5 shadow-sm cursor-pointer" onClick={handleClick}>
             <div className="flex justify-between items-start mb-3">
                 <Network className="w-5 h-5" />
                 <button className="hover:bg-card-secondary p-1 rounded cursor-pointer" title="More options">

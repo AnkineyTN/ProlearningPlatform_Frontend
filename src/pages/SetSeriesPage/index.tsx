@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Search, FileText, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-// import { useNavigate } from 'react-router-dom';
 import { ModeToggle } from "@/components/theme/mode-toggle";
+import CreateNewModal from '@/components/modals/CreateNewModal';
 import FlashcardListPage from './components/FlashcardListPage';
 import MindmapListPage from './components/MindmapListPage';
 import NoteListPage from './components/NoteListPage';
@@ -15,68 +15,19 @@ interface HeaderProps {
 }
 
 export default function SetSeriesPage({ onSearch }: HeaderProps) {
-    const [currentPage, setCurrentPage] = useState(1);
     const [activeTab, setActiveTab] = useState('Notes');
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const tabs = ['Notes', 'Flashcards', 'Mindmaps', 'Tests', 'Records'];
     // const navigate = useNavigate();
 
     const handleTabClick = (tab: string) => {
         setActiveTab(tab);
-        // navigate(`/${tab.toLowerCase()}`);
     }
 
-    const notes = [
-        {
-            id: 1,
-            title: 'OOP Interview Question',
-            category: '20 Sep 2025',
-            preview: 'Supervised learning is a machine learning method in which an algorithm learns from...',
-            time: '2 hours ago',
-            date: '16 Sep 2025'
-        },
-        {
-            id: 2,
-            title: 'Stack and Queue',
-            category: '15 Sep 2025',
-            preview: 'Stack is a LIFO (Last In First Out) data structure, while Queue is FIFO (First In Fir...',
-            time: '2 hours ago',
-            date: '16 Sep 2025'
-        },
-        {
-            id: 3,
-            title: 'Supervised Learning Algo...',
-            category: '01 Sep 2025',
-            preview: 'Supervised learning is a machine learning method in which an algorithm learns from...',
-            time: '2 hours ago',
-            date: '16 Sep 2025'
-        },
-        {
-            id: 4,
-            title: 'Supervised Learning Algo...',
-            category: '10 Aug 2025',
-            preview: 'Supervised learning is a machine learning method in which an algorithm learns from...',
-            time: '2 hours ago',
-            date: '16 Sep 2025'
-        },
-        {
-            id: 5,
-            title: 'Stack and Queue',
-            category: '22 Jul 2025',
-            preview: 'Stack is a LIFO (Last In First Out) data structure, while Queue is FIFO (First In Fir...',
-            time: '2 hours ago',
-            date: '16 Sep 2025'
-        },
-        {
-            id: 6,
-            title: 'Supervised Learning Algo...',
-            category: '20 Jun 2025',
-            preview: 'Supervised learning is a machine learning method in which an algorithm learns from...',
-            time: '2 hours ago',
-            date: '16 Sep 2025'
-        }
-    ];
-
-    const totalPages = 5;
+    const handleCreate = (newElement: any) => {
+        console.log('New created:', newElement);
+        // Xử lý tạo set mới ở đây
+    };
 
     return (
         <div className="min-h-screen p-6">
@@ -127,7 +78,7 @@ export default function SetSeriesPage({ onSearch }: HeaderProps) {
 
                 {/* Action Bar */}
                 <div className="flex justify-between items-center mb-6">
-                    <Button className="bg-foreground text-background px-5 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-colors">
+                    <Button className="bg-foreground text-background px-5 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-colors" onClick={() => setIsModalOpen(true)}>
                         + Create a new {activeTab.slice(0, -1).toLowerCase()}
                     </Button>
                     <div className="relative">
@@ -143,11 +94,18 @@ export default function SetSeriesPage({ onSearch }: HeaderProps) {
                     </div>
                 </div>
                 {/* Notes Grid */}
-                {activeTab === 'Notes' && <NoteListPage onSearch={onSearch} />}
-                {activeTab === 'Flashcards' && <FlashcardListPage onSearch={onSearch} />}
-                {activeTab === 'Mindmaps' && <MindmapListPage onSearch={onSearch} />}
-                {activeTab === 'Tests' && <TestListPage onSearch={onSearch} />}
-                {activeTab === 'Records' && <RecordListPage onSearch={onSearch} />}
+                {activeTab === 'Notes' && <NoteListPage />}
+                {activeTab === 'Flashcards' && <FlashcardListPage />}
+                {activeTab === 'Mindmaps' && <MindmapListPage />}
+                {activeTab === 'Tests' && <TestListPage />}
+                {activeTab === 'Records' && <RecordListPage />}
+
+                <CreateNewModal
+                    type={activeTab.slice(0, -1)}
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onSubmit={handleCreate}
+                />
             </div>
         </div>
     );

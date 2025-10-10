@@ -27,31 +27,27 @@ export const routeConfig: RouteObject[] = [
         path: '/onboarding',
         element: <OnboardingApp />
     },
-    {
-        path: '/dashboard',
-        element: <Dashboard />
-    },
-    {
-        path: '/sets',
-        element: <SetListPage />
-    },
-    {
-        path: '/sets/details',
-        element: <SetSeriesPage />
-    },
-    {
-        path: '/texteditor',
-        element: <TextEditor />
-    }
     // Protected routes
-    // {
-    //     path: '/',
-    //     element: <ProtectedLayout />,
-    //     children: [
-    //         {
-    //             path: 'dashboard',
-    //             element: <Dashboard />
-    //         },
-    //     ]
-    // }
+    {
+        path: '/',
+        element: <ProtectedLayout />,
+        children: [
+            {
+                path: 'dashboard',
+                element: <Dashboard />
+            },
+            {
+                path: '/sets',
+                element: <SetListPage />
+            },
+            {
+                path: '/sets/:id',
+                element: <SetSeriesPage />
+            },
+            {
+                path: '/note',
+                element: <TextEditor />
+            }
+        ]
+    }
 ]

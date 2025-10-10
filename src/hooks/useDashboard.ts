@@ -1,5 +1,5 @@
 import {keepPreviousData, useQuery} from '@tanstack/react-query'
-import {dashboardAPI, type UsersListParams} from '../services/api'
+import {dashboardAPI, type UsersListParams} from '@/services/api'
 
 export const useUsersStats = () => {
     return useQuery({

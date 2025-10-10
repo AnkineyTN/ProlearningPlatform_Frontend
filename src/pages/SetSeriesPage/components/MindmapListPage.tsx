@@ -1,15 +1,11 @@
 import { useState } from 'react';
-import { Search } from 'lucide-react';
-import MindmapCard from '../../../components/cards/MindmapCard';
+import { useNavigate } from 'react-router-dom';
+import MindmapCard from '@/components/cards/MindmapCard';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
-interface HeaderProps {
-    onSearch?: (query: string) => void;
-}
-
-export default function MindmapListPage({ onSearch }: HeaderProps) {
+export default function MindmapListPage() {
     const [currentPage, setCurrentPage] = useState(1);
+    const navigate = useNavigate();
 
     const mindmaps = [
         {
@@ -64,12 +60,16 @@ export default function MindmapListPage({ onSearch }: HeaderProps) {
 
     const totalPages = 5;
 
+    const handleAccess = (id: string) => {
+        navigate(`/mindmap/${id}`);
+    }
+
     return (
         <div>
             {/* mindmaps Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {mindmaps.map((mindmap) => (
-                    <MindmapCard key={mindmap.id} mindmap={mindmap} />
+                    <MindmapCard key={mindmap.id} mindmap={mindmap} onAccess={handleAccess} />
                 ))}
             </div>
 

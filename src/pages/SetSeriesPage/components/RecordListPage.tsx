@@ -1,15 +1,11 @@
 import { useState } from 'react';
-import { Search } from 'lucide-react';
-import RecordCard from '../../../components/cards/RecordCard';
+import { useNavigate } from 'react-router-dom';
+import RecordCard from '@/components/cards/RecordCard';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
-interface HeaderProps {
-    onSearch?: (query: string) => void;
-}
-
-export default function RecordListPage({ onSearch }: HeaderProps) {
+export default function RecordListPage() {
     const [currentPage, setCurrentPage] = useState(1);
+    const navigate = useNavigate();
 
     const notes = [
         {
@@ -64,12 +60,16 @@ export default function RecordListPage({ onSearch }: HeaderProps) {
 
     const totalPages = 5;
 
+    const handleAccess = (id: string) => {
+        navigate(`/record/${id}`);
+    }
+
     return (
         <div>
             {/* Notes Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {notes.map((note) => (
-                    <RecordCard key={note.id} record={note} />
+                    <RecordCard key={note.id} record={note} onAccess={handleAccess} />
                 ))}
             </div>
 

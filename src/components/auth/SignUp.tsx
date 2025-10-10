@@ -19,6 +19,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { toast } from 'react-toastify'
 
 export default function SignUp() {
     const dispatch = useAppDispatch()
@@ -34,23 +35,36 @@ export default function SignUp() {
         console.log("🚀 ~ onSubmit ~ data:", data)
         dispatch(loginStart())
         try {
-            const response = await authAPI.signup({
+            // Đăng ký
+            await authAPI.signup({
                 firstName: data.firstName,
                 lastName: data.lastName,
                 email: data.email,
                 password: data.password,
                 role: data.role,
             })
-            console.log("🚀 ~ onSubmit ~ response:", response)
+
+            // Hiển thị toast
+            toast.success('🎉 Account created successfully!', {
+                position: "top-right",
+                autoClose: 2000,
+            })
+
+            // Tự động đăng nhập
+            const loginResponse = await authAPI.login({
+                email: data.email,
+                password: data.password
+            })
 
             dispatch(loginSuccess({
-                user: response.data.user,
-                token: response.data.token
+                user: loginResponse.data.data.userResponseDto,
+                token: loginResponse.data.data.accessToken
             }))
 
             navigate('/onboarding')
         }
         catch (error: any) {
+            toast.error(error.response?.data?.message || 'Failed to create account')
             dispatch(loginFailure(
                 error.response?.data?.message || 'Failed to create account'
             ))

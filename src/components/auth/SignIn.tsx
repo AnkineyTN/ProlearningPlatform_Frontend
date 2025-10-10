@@ -26,11 +26,10 @@ export default function SignIn() {
         dispatch(loginStart())
         try {
             const response = await authAPI.login(data)
-            console.log("🚀 ~ onSubmit ~ response:", response)
 
             dispatch(loginSuccess({
-                user: response.data.user,
-                token: response.data.token
+                user: response.data.data.userResponseDto,
+                token: response.data.data.accessToken
             }))
 
             navigate('/dashboard')

@@ -8,9 +8,12 @@ export interface Note {
     date: string;
 }
 
-export default function NoteCard({ note }: { note: Note }) {
+export default function NoteCard({ note, onAccess }: { note: Note, onAccess: (id: string) => void }) {
+    const handleClick = () => {
+        onAccess(note.title); // Giả sử 'title' là ID của note
+    }
     return (
-        <div className="bg-card rounded-xl p-5 shadow-sm cursor-pointer">
+        <div className="bg-card rounded-xl p-5 shadow-sm cursor-pointer" onClick={handleClick}>
             <div className="flex justify-between items-start mb-3">
                 <FileText className="w-5 h-5" />
                 <button className="hover:bg-card-secondary p-1 rounded cursor-pointer" title="More options">

@@ -8,9 +8,12 @@ export interface Flashcard {
     date: string;
 }
 
-export default function FlashCard({ flashcard }: { flashcard: Flashcard }) {
+export default function FlashCard({ flashcard, onAccess }: { flashcard: Flashcard, onAccess: (id: string) => void }) {
+    const handleClick = () => {
+        onAccess(flashcard.title); // Giả sử 'title' là ID của flashcard
+    }
     return (
-        <div className="bg-card rounded-xl p-5 shadow-sm cursor-pointer">
+        <div className="bg-card rounded-xl p-5 shadow-sm cursor-pointer" onClick={handleClick}>
             <div className="flex justify-between items-start mb-3">
                 <SwatchBook className="w-5 h-5" />
                 <button className="hover:bg-card-secondary p-1 rounded cursor-pointer" title="More options">

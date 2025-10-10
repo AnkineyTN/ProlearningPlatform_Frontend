@@ -1,8 +1,8 @@
 import { useEffect, type ReactNode } from 'react'
 import { Navigate } from 'react-router-dom'
-import { authAPI } from '../services/api'
-import { setUser, logout } from '../store/authSlice'
-import { useAppDispatch, useAppSelector } from '../hooks/redux'
+import { authAPI } from '@/services/api'
+import { setUser, logout } from '@/store/authSlice'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 
 interface ProtectedRouteProps {
     children: ReactNode

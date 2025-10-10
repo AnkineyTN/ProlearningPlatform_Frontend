@@ -1,15 +1,11 @@
 import { useState } from 'react';
-import { Search } from 'lucide-react';
-import TestCard from '../../../components/cards/TestCard';
+import { useNavigate } from 'react-router-dom';
+import TestCard from '@/components/cards/TestCard';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
-interface HeaderProps {
-    onSearch?: (query: string) => void;
-}
-
-export default function TestListPage({ onSearch }: HeaderProps) {
+export default function TestListPage() {
     const [currentPage, setCurrentPage] = useState(1);
+    const navigate = useNavigate();
 
     const notes = [
         {
@@ -64,12 +60,16 @@ export default function TestListPage({ onSearch }: HeaderProps) {
 
     const totalPages = 5;
 
+    const handleAccess = (id: string) => {
+        navigate(`/test/${id}`);
+    }
+
     return (
         <div>
             {/* Notes Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {notes.map((note) => (
-                    <TestCard key={note.id} test={note} />
+                    <TestCard key={note.id} test={note} onAccess={handleAccess} />
                 ))}
             </div>
 
