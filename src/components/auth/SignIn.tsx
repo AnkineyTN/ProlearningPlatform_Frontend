@@ -1,10 +1,10 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
-import { loginSchema, type LoginFormData } from '../../schemas/auth'
-// import { authAPI } from '../services/api'
-import { loginStart, loginFailure } from '../../store/authSlice'
-import { useAppDispatch, useAppSelector } from '../../hooks/redux'
+import { loginSchema, type LoginFormData } from '@/schemas/auth'
+import { authAPI } from '@/services/api'
+import { loginStart, loginFailure, loginSuccess } from '@/store/authSlice'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -22,15 +22,16 @@ export default function SignIn() {
         resolver: zodResolver(loginSchema)
     })
 
-    const onSubmit = async () => {
+    const onSubmit = async (data: LoginFormData) => {
         dispatch(loginStart())
         try {
-            // const response = await authAPI.login(data)
+            const response = await authAPI.login(data)
+            console.log("🚀 ~ onSubmit ~ response:", response)
 
-            // dispatch(loginSuccess({
-            //     user: response.data.user,
-            //     token: response.data.token
-            // }))
+            dispatch(loginSuccess({
+                user: response.data.user,
+                token: response.data.token
+            }))
 
             navigate('/dashboard')
         } catch (error: any) {

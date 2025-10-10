@@ -1,10 +1,10 @@
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
-import { signupSchema, type SignupFormData } from '../../schemas/auth'
-// import { authAPI } from '../services/api'
-import { loginStart, loginFailure } from '../../store/authSlice'
-import { useAppDispatch, useAppSelector } from '../../hooks/redux'
+import { signupSchema, type SignupFormData } from '@/schemas/auth'
+import { authAPI } from '@/services/api'
+import { loginStart, loginFailure, loginSuccess } from '@/store/authSlice'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,36 +12,47 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircleIcon, Lock, Mail, User, Eye, EyeOff, RefreshCw, CircleDot } from 'lucide-react'
 import { useState } from 'react'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 
 export default function SignUp() {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const { isLoading, error } = useAppSelector(state => state.auth)
     const [showPassword, setShowPassword] = useState(false)
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-    const { register, handleSubmit, formState: { errors } } = useForm<SignupFormData>({
+    const { register, handleSubmit, control, formState: { errors } } = useForm<SignupFormData>({
         resolver: zodResolver(signupSchema)
     })
 
-    const onSubmit = async () => {
+    const onSubmit = async (data: SignupFormData) => {
+        console.log("🚀 ~ onSubmit ~ data:", data)
         dispatch(loginStart())
         try {
-            // const response = await authAPI.signup({
-            //     name: data.name,
-            //     email: data.email,
-            //     password: data.password
-            // })
+            const response = await authAPI.signup({
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                password: data.password,
+                role: data.role,
+            })
+            console.log("🚀 ~ onSubmit ~ response:", response)
 
-            // dispatch(loginSuccess({
-            //     user: response.data.user,
-            //     token: response.data.token
-            // }))
+            dispatch(loginSuccess({
+                user: response.data.user,
+                token: response.data.token
+            }))
 
             navigate('/onboarding')
-        } catch (error: any) {
+        }
+        catch (error: any) {
             dispatch(loginFailure(
-                error.response?.data?.message || 'Sign up fail. Please try again'
+                error.response?.data?.message || 'Failed to create account'
             ))
         }
     }
@@ -59,21 +70,39 @@ export default function SignUp() {
                     <CardContent>
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 text-start">
                             <div>
-                                <Label htmlFor="name" className="font-bold text-base mb-2">Name</Label>
+                                <Label htmlFor="name" className="font-bold text-base mb-2">First name</Label>
                                 <div className="relative mb-1">
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                         <User size={16} />
                                     </span>
                                     <Input
-                                        id="name"
+                                        id="firstName"
                                         type="text"
-                                        {...register('name')}
+                                        {...register('firstName')}
                                         placeholder={"Your name"}
-                                        className={`ps-9 ${errors.name ? 'border-red-500' : ''}`}
+                                        className={`ps-9 ${errors.firstName ? 'border-red-500' : ''}`}
                                     />
                                 </div>
-                                {errors.name && (
-                                    <p className="text-sm text-red-500">{errors.name.message}</p>
+                                {errors.firstName && (
+                                    <p className="text-sm text-red-500">{errors.firstName.message}</p>
+                                )}
+                            </div>
+                            <div>
+                                <Label htmlFor="name" className="font-bold text-base mb-2">Last name</Label>
+                                <div className="relative mb-1">
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                        <User size={16} />
+                                    </span>
+                                    <Input
+                                        id="lastName"
+                                        type="text"
+                                        {...register('lastName')}
+                                        placeholder={"Your name"}
+                                        className={`ps-9 ${errors.lastName ? 'border-red-500' : ''}`}
+                                    />
+                                </div>
+                                {errors.lastName && (
+                                    <p className="text-sm text-red-500">{errors.lastName.message}</p>
                                 )}
                             </div>
 
@@ -127,27 +156,32 @@ export default function SignUp() {
                             </div>
 
                             <div>
-                                <Label htmlFor="confirmPassword" className="font-bold text-base mb-2">Confirm Password</Label>
+                                <Label htmlFor="role" className="font-bold text-base mb-2">Role</Label>
                                 <div className="relative mb-1">
-                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                                        <Lock size={16} />
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10 pointer-events-none">
+                                        <User size={16} />
                                     </span>
-                                    <Input
-                                        id="confirmPassword"
-                                        type={showConfirmPassword ? 'text' : 'password'}
-                                        {...register('confirmPassword')}
-                                        placeholder={"••••••"}
-                                        className={`ps-9 pe-9 ${errors.confirmPassword ? 'border-red-500' : ''}`}
+                                    <Controller
+                                        name="role"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <SelectTrigger
+                                                    id="role"
+                                                    className={`ps-9 ${errors.role ? 'border-red-500' : ''}`}
+                                                >
+                                                    <SelectValue placeholder="Select your role" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="ROLE_USER">User</SelectItem>
+                                                    <SelectItem value="ROLE_TEACHER">Teacher</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )}
                                     />
-                                    <span
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"
-                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    >
-                                        {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                    </span>
                                 </div>
-                                {errors.confirmPassword && (
-                                    <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
+                                {errors.role && (
+                                    <p className="text-sm text-red-500">{errors.role.message}</p>
                                 )}
                             </div>
 
@@ -195,7 +229,7 @@ export default function SignUp() {
                     </CardFooter>
                 </Card>
             </div>
-            <div className={"w-[50vw] bg-gradient-to-r from-popover-foreground to-muted-foreground h-screen px-14 py-10"}>
+            <div className={"w-[50vw] h-100 bg-gradient-to-r from-popover-foreground to-muted-foreground h-screen px-14 py-10"}>
                 <div className={"text-background text-8xl font-bold"}>CREATE AN ACCOUNT!</div>
             </div>
         </div>

@@ -16,9 +16,11 @@ interface AuthResponse {
 }
 
 interface SignupData {
-    name: string
+    firstName: string
+    lastName: string
     email: string
     password: string
+    role: string
 }
 
 interface LoginData {
@@ -115,7 +117,7 @@ api.interceptors.response.use(
 
 export const authAPI = {
     signup: (userData: SignupData): Promise<AxiosResponse<AuthResponse>> =>
-        api.post('/auth/signup', userData),
+        api.post('/auth/register', userData),
     login: (userData: LoginData): Promise<AxiosResponse<AuthResponse>> =>
         api.post('/auth/login', userData),
     getMe: (): Promise<AxiosResponse<MeResponse>> =>
