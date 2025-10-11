@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Search } from 'lucide-react';
-import NoteCard from '../../../components/cards/NoteCard';
+import RecordCard from '../../../components/cards/RecordCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -69,7 +69,7 @@ export default function RecordListPage({ onSearch }: HeaderProps) {
             {/* Notes Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {notes.map((note) => (
-                    <NoteCard key={note.id} note={note} />
+                    <RecordCard key={note.id} record={note} />
                 ))}
             </div>
 

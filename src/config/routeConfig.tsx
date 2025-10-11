@@ -7,6 +7,7 @@ import ProtectedLayout from '@/components/ProtectedLayout'
 import LandingPage from '@/pages/LandingPage'
 import OnboardingApp from "@/pages/OnboardingApp.tsx";
 import SetSeriesPage from '@/pages/SetSeriesPage'
+import TextEditor from '@/pages/TextEditor.tsx'
 
 export const routeConfig: RouteObject[] = [
     // Public routes
@@ -37,6 +38,10 @@ export const routeConfig: RouteObject[] = [
     {
         path: '/sets/details',
         element: <SetSeriesPage />
+    },
+    {
+        path: '/texteditor',
+        element: <TextEditor />
     }
     // Protected routes
     // {
