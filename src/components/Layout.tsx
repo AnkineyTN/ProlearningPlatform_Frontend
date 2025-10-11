@@ -1,10 +1,7 @@
 import React, { useEffect } from 'react';
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import AppSidebar from './sidebar/app-sidebar.tsx';
-import { Separator } from "@/components/ui/separator"
 import { authAPI } from "@/services/api.ts";
-import { ModeToggle } from "@/components/theme/mode-toggle.tsx";
-import { Bell, User } from 'lucide-react';
 
 interface LayoutProps {
     children: React.ReactNode;

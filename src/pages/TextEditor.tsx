@@ -11,13 +11,11 @@ import { BlockNoteView } from "@blocknote/mantine";
 interface EditorProps {
     initialTitle?: string;
     onSave?: (title: string, content: any) => void;
-    onDownload?: (title: string, content: any) => void;
 }
 
 const NotionEditor: React.FC<EditorProps> = ({
     initialTitle = 'OOP Interview Question',
-    onSave,
-    onDownload
+    onSave
 }) => {
     const navigate = useNavigate();
     const [title, setTitle] = useState<string>(initialTitle);

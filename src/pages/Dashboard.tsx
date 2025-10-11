@@ -100,8 +100,16 @@ const Dashboard = () => {
         navigate("/sets");
     };
 
+    const handleAccessSet = (id: string) => {
+        navigate(`/set/${id}`);
+    }
+
     const handleViewNotes = () => {
         navigate("/notes");
+    };
+
+    const handleAccessNote = (id: string) => {
+        navigate(`/note/${id}`);
     };
 
     const handleChecklistChange = (idx: number, checked: boolean) => {
@@ -134,7 +142,7 @@ const Dashboard = () => {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             {sets.map((set, idx) => (
-                                <SetCard key={idx} set={set} />
+                                <SetCard key={idx} set={set} onAccess={handleAccessSet} />
                             ))}
                         </div>
                         <div className="flex justify-between items-center mb-4">
@@ -145,7 +153,7 @@ const Dashboard = () => {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             {notes.map((note, idx) => (
-                                <NoteCard key={idx} note={note} />
+                                <NoteCard key={idx} note={note} onAccess={handleAccessNote} />
                             ))}
                         </div>
                     </div>
