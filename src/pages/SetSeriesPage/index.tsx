@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Search, FileText, Pencil, Trash2 } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ModeToggle } from "@/components/theme/mode-toggle";
+import HeaderSetDetails from './components/HeaderSetDetails';
 import CreateNewModal from '@/components/modals/CreateNewModal';
 import FlashcardListPage from './components/FlashcardListPage';
 import MindmapListPage from './components/MindmapListPage';
@@ -33,32 +33,7 @@ export default function SetSeriesPage({ onSearch }: HeaderProps) {
         <div className="min-h-screen p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header Card */}
-                <div className='flex items-start justify-between mb-6 gap-10'>
-                    <div className="bg-card w-full rounded-2xl p-6 shadow-sm border border-card-secondary mb-6">
-                        <div className="flex justify-between items-start">
-                            <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 bg-card-secondary rounded-lg flex items-center justify-center">
-                                    <FileText className="w-6 h-6 text-foreground" />
-                                </div>
-                                <div>
-                                    <h1 className="text-xl font-semibold text-foreground mb-1">Software Engineering</h1>
-                                    <p className="text-sm text-muted-foreground">Comprehensive software engineering concepts and practices for modern development</p>
-                                </div>
-                            </div>
-                            <div className="flex gap-2">
-                                <Button className="p-2 bg-card hover:bg-card-secondary rounded-lg transition-colors cursor-pointer">
-                                    <Pencil className="w-5 h-5 text-muted-foreground" />
-                                </Button>
-                                <Button className="p-2 bg-card hover:bg-card-secondary rounded-lg transition-colors cursor-pointer">
-                                    <Trash2 className="w-5 h-5 text-muted-foreground" />
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="mt-4">
-                        <ModeToggle />
-                    </div>
-                </div>
+                <HeaderSetDetails />
 
                 {/* Tabs */}
                 <div className="flex gap-2 mb-6 overflow-x-auto">

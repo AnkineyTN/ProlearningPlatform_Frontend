@@ -101,7 +101,7 @@ const Dashboard = () => {
     };
 
     const handleAccessSet = (id: string) => {
-        navigate(`/set/${id}`);
+        navigate(`/sets/${id}`);
     }
 
     const handleViewNotes = () => {

@@ -50,7 +50,7 @@ export default function CreateNewModal({ type, isOpen, onClose, onSubmit }: Crea
                     <h2 className="text-2xl font-bold">New {type}</h2>
                     <button
                         onClick={handleCancel}
-                        className="p-1 hover:bg-card rounded transition-colors"
+                        className="p-1 hover:bg-card rounded transition-colors cursor-pointer"
                     >
                         <X className="w-6 h-6" />
                     </button>
@@ -110,7 +110,7 @@ export default function CreateNewModal({ type, isOpen, onClose, onSubmit }: Crea
                 <div className="flex justify-end gap-3 mt-6">
                     <Button
                         onClick={handleCancel}
-                        className="px-6 py-2 border border-border rounded-lg bg-background text-foreground hover:bg-card-secondary transition-colors"
+                        className="px-6 py-2 border border-border rounded-lg bg-background text-foreground hover:bg-card-secondary transition-colors cursor-pointer"
                     >
                         Cancel
                     </Button>

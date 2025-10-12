@@ -6,6 +6,7 @@ import "@blocknote/core/fonts/inter.css";
 import "@blocknote/mantine/style.css";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
+import "./style.scss";
 
 // Types
 interface EditorProps {
@@ -92,14 +93,17 @@ const NotionEditor: React.FC<EditorProps> = ({
         URL.revokeObjectURL(url);
     };
 
+    const getTheme = () => {
+        return localStorage.getItem('vite-ui-theme') === 'dark' ? 'dark' : 'light';
+    };
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-card">
             {/* Header */}
-            <header className="border-b border-gray-200 bg-white sticky top-0 z-50">
+            <header className="border-b border-border bg-card sticky top-0 z-50">
                 <div className="flex items-center justify-between px-6 py-3">
                     <div className="flex items-center gap-3">
-                        <FileText onClick={handleBack} className="w-6 h-6 text-gray-700" />
+                        <FileText onClick={handleBack} className="w-6 h-6 text-foreground cursor-pointer" />
                         {isEditingTitle ? (
                             <input
                                 type="text"
@@ -114,7 +118,7 @@ const NotionEditor: React.FC<EditorProps> = ({
                         ) : (
                             <h1
                                 onClick={handleTitleClick}
-                                className="text-lg font-medium cursor-pointer hover:bg-gray-100 px-2 py-1 rounded transition-colors"
+                                className="text-lg font-medium cursor-pointer hover:bg-card-secondary px-2 py-1 rounded transition-colors"
                             >
                                 {title}
                             </h1>
@@ -128,15 +132,15 @@ const NotionEditor: React.FC<EditorProps> = ({
                         <Button
                             variant="outline"
                             size="sm"
-                            className="gap-2"
+                            className="gap-2 cursor-pointer"
                             onClick={handleDownload}
                         >
-                            <Download className="w-4 h-4" />
+                            <Download className="w-4 h-4 " />
                             Download
                         </Button>
                         <Button
                             size="sm"
-                            className="gap-2 bg-black text-white hover:bg-gray-800"
+                            className="gap-2 bg-foreground text-background hover:bg-foreground/80 cursor-pointer"
                             onClick={handleSave}
                         >
                             <Save className="w-4 h-4" />
@@ -150,7 +154,7 @@ const NotionEditor: React.FC<EditorProps> = ({
             <main className="max-w-4xl mx-auto px-8 py-12">
                 <BlockNoteView
                     editor={editor}
-                    theme="light"
+                    theme={getTheme()}
                 />
             </main>
         </div>

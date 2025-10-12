@@ -27,7 +27,7 @@ export default function Checklist({ items, onItemChange, completionRate }: Check
                 ))}
             </div>
             <div className="flex items-center justify-between">
-                <button className="bg-card-secondary px-4 py-2 rounded-lg text-sm flex items-center gap-2">
+                <button className="bg-card-secondary px-4 py-2 rounded-lg text-sm flex items-center gap-2 cursor-pointer">
                     <span>+</span> See more
                 </button>
                 <div className="flex items-center justify-center w-16 h-16 border-4 border-card-secondary rounded-full">
