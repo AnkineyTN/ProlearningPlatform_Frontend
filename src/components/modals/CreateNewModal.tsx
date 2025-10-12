@@ -7,12 +7,13 @@ interface CreateModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (data: { title: string; description: string; privacy: string }) => void;
+    initialData?: { title: string; description: string; privacy: string };
 }
 
-export default function CreateNewModal({ type, isOpen, onClose, onSubmit }: CreateModalProps) {
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [privacy, setPrivacy] = useState('Public');
+export default function CreateNewModal({ type, isOpen, onClose, onSubmit, initialData }: CreateModalProps) {
+    const [title, setTitle] = useState(initialData?.title || '');
+    const [description, setDescription] = useState(initialData?.description || '');
+    const [privacy, setPrivacy] = useState(initialData?.privacy || 'Public');
 
     if (!isOpen) return null;
 
@@ -119,7 +120,7 @@ export default function CreateNewModal({ type, isOpen, onClose, onSubmit }: Crea
                         disabled={!title.trim()}
                         className="px-6 py-2 bg-foreground text-background rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Next
+                        Complete
                     </Button>
                 </div>
             </div>

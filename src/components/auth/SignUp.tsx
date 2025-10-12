@@ -32,7 +32,6 @@ export default function SignUp() {
     })
 
     const onSubmit = async (data: SignupFormData) => {
-        console.log("🚀 ~ onSubmit ~ data:", data)
         dispatch(loginStart())
         try {
             // Đăng ký

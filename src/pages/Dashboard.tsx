@@ -1,13 +1,22 @@
 import { useState } from 'react';
+// import { dashboardAPI } from '@/services/api';
+import { useSetData } from '@/hooks/useDashboard';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import Checklist from '@/components/cards/CheckListCard';
-import SetCard from '@/components/cards/SetCard';
+import SetCard, { type Set } from '@/components/cards/SetCard';
 import NoteCard from '@/components/cards/NoteCard';
 import Header from '@/components/header/HeaderDashboard';
+import { useDeleteSet, useUpdateSet } from '@/hooks/useSetOperations';
+import { type UpdateSetPayload } from '@/services/api';
+import CreateNewModal from '@/components/modals/CreateNewModal';
 
 const Dashboard = () => {
     const navigate = useNavigate();
+    const deleteSetMutation = useDeleteSet();
+    const updateSetMutation = useUpdateSet();
+    const [selectedSet, setSelectedSet] = useState<Set | null>(null);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [checklistItems, setChecklistItems] = useState([
         { label: 'Study for 2000 minutes', checked: false },
         { label: 'Sleep...', checked: false },
@@ -15,60 +24,26 @@ const Dashboard = () => {
         { label: 'Complete 2 reading exercise', checked: false }
     ]);
 
-    const sets = [
-        {
-            title: "Machine Learning Cơ bản",
-            code: "CS101",
-            instructor: "tbc by 1 x 2025",
-            progress: 85,
-            duration: "5 hours",
-            flashcards: 3,
-            tests: 2,
-            audio: "4",
-            video: "8 tài liệu",
-            lastUpdated: "2 hours ago",
-            date: "16 Sep 2025"
-        },
-        {
-            title: "Machine Learning Cơ bản",
-            code: "CS102",
-            instructor: "tbc by 12 x 2025",
-            progress: 85,
-            duration: "5 hours",
-            flashcards: 3,
-            tests: 2,
-            audio: "5",
-            video: "4 tài liệu",
-            lastUpdated: "2 hours ago",
-            date: "16 Sep 2025"
-        },
-        {
-            title: "Machine Learning Cơ bản",
-            code: "CS101",
-            instructor: "tbc by 1 x 2025",
-            progress: 95,
-            duration: "5 hours",
-            flashcards: 3,
-            tests: 2,
-            audio: "6",
-            video: "18 tài liệu",
-            lastUpdated: "2 hours ago",
-            date: "16 Sep 2025"
-        },
-        {
-            title: "Machine Learning Cơ bản",
-            code: "CS102",
-            instructor: "tbc by 12 x 2025",
-            progress: 95,
-            duration: "5 hours",
-            flashcards: 3,
-            tests: 2,
-            audio: "6",
-            video: "18 tài liệu",
-            lastUpdated: "2 hours ago",
-            date: "16 Sep 2025"
-        }
-    ];
+    const page = 0;
+    const size = 4;
+    const sort = [{ property: 'id', direction: 'ASC' }];
+
+    const { data: setData } = useSetData({ page, size, sort });
+    const sets: Set[] = (setData?.data.data || []).map((item: any) => ({
+        id: item.id ?? '',
+        title: item.title,
+        code: item.code,
+        progress: item.progress,
+        duration: item.duration,
+        flashcards: item.flashcards,
+        tests: item.tests,
+        audio: item.audio,
+        video: item.video,
+        lastUpdated: item.lastUpdated,
+        date: item.date,
+        description: item.description ?? '',
+        numNotes: item.numNotes ?? 0,
+    }));
 
     const notes = [
         {
@@ -96,13 +71,46 @@ const Dashboard = () => {
         [29, 30, '', '', '', '', '']
     ];
 
+    const handleDeleteSet = async (id: number) => {
+        try {
+            await deleteSetMutation.mutateAsync(id);
+        } catch (error) {
+            console.error('Error deleting set:', error);
+        }
+    };
+
+    const handleUpdateSet = (set: Set) => {
+        setSelectedSet(set);
+        setIsUpdateModalOpen(true);
+    };
+
+    const handleUpdateSubmit = async (data: any) => {
+        if (!selectedSet) return;
+
+        try {
+            const payload: UpdateSetPayload = {
+                ...data,
+                privacy: data.privacy === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE',
+            };
+
+            await updateSetMutation.mutateAsync({
+                id: selectedSet.id,
+                payload,
+            });
+            setIsUpdateModalOpen(false);
+            setSelectedSet(null);
+        } catch (error) {
+            console.error('Error updating set:', error);
+        }
+    };
+
     const handleViewSets = () => {
         navigate("/sets");
     };
 
-    const handleAccessSet = (id: string) => {
-        navigate(`/sets/${id}`);
-    }
+    const handleSetAccess = (setId: number) => {
+        navigate(`/sets/${setId}`);
+    };
 
     const handleViewNotes = () => {
         navigate("/notes");
@@ -141,8 +149,12 @@ const Dashboard = () => {
                             </button>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
-                            {sets.map((set, idx) => (
-                                <SetCard key={idx} set={set} onAccess={handleAccessSet} />
+                            {sets.map((set: Set) => (
+                                <SetCard
+                                    key={set.id} set={set}
+                                    onAccess={handleSetAccess}
+                                    onDelete={handleDeleteSet}
+                                    onUpdate={handleUpdateSet} />
                             ))}
                         </div>
                         <div className="flex justify-between items-center mb-4">
@@ -214,6 +226,23 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
+            {/* Update Modal */}
+            {selectedSet && (
+                <CreateNewModal
+                    type="Set"
+                    isOpen={isUpdateModalOpen}
+                    onClose={() => {
+                        setIsUpdateModalOpen(false);
+                        setSelectedSet(null);
+                    }}
+                    onSubmit={handleUpdateSubmit}
+                    initialData={{
+                        title: selectedSet.title,
+                        description: selectedSet.description,
+                        privacy: 'PUBLIC', // hoặc lấy từ set nếu có field này
+                    }}
+                />
+            )}
         </div>
     );
 };

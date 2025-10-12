@@ -36,43 +36,55 @@ interface MeResponse {
     user: User
 }
 
-interface UserStatsResponse {
-    totalUsers: number
-    usersToday: number
-    usersThisWeek: number
-    usersThisMonth: number
-    chartData: {
-        daily: Array<{
-            date: string
-            count: number
-        }>
-        monthly: Array<{
-            month: string
-            count: number
-        }>
-    }
-}
-
-interface UsersListResponse {
-    users: Array<{
-        id: number
-        name: string
-        email: string
-        createdAt: string
-        updatedAt: string
+interface SetData {
+    data: Array<{
+        title: string
+        code: string
+        instructor: string
+        progress: number
+        duration: string
+        flashcards: number
+        tests: number
+        audio: string
+        video: string
+        lastUpdated: string
+        date: string
     }>
-    pagination: {
-        total: number
-        page: number
-        limit: number
-        totalPages: number
-    }
+    page: number
+    size: number
+    sort: Array<{
+        property: string
+        direction: string
+    }>
 }
 
-interface UsersListParams {
-    page?: number
-    limit?: number
-    search?: string
+interface SetQueryParams {
+    page: number
+    size: number
+    sort: Array<{
+        property: string
+        direction: string
+    }>
+}
+
+interface CreateSetPayload {
+    title: string
+    description: string
+    privacy: 'PUBLIC' | 'PRIVATE'
+}
+
+interface CreateSetResponse {
+    id: string
+    title: string
+    description: string
+    privacy: string
+    numNotes: number
+}
+
+interface UpdateSetPayload {
+    title: string;
+    description: string;
+    privacy: 'PUBLIC' | 'PRIVATE';
 }
 
 interface ChangePasswordData {
@@ -128,11 +140,15 @@ export const authAPI = {
         api.get('/users/me')
 }
 
-export const dashboardAPI = {
-    getUserStats: (): Promise<AxiosResponse<UserStatsResponse>> =>
-        api.get('/api/dashboard/stats'),
-    getUsers: (params: UsersListParams = {}): Promise<AxiosResponse<UsersListResponse>> =>
-        api.get('/api/dashboard/users', { params })
+export const setAPI = {
+    getSetData: ({ page, size, sort }: SetQueryParams): Promise<AxiosResponse<SetData>> =>
+        api.get(`/sets?page=${page}&size=${size}&sort=${sort[0].property},${sort[0].direction}`),
+    createSet: (payload: CreateSetPayload): Promise<AxiosResponse<CreateSetResponse>> =>
+        api.post('/sets', payload),
+    deleteSet: (id: number): Promise<AxiosResponse<void>> =>
+        api.delete(`/sets/${id}`),
+    updateSet: (id: number, payload: UpdateSetPayload): Promise<AxiosResponse<any>> =>
+        api.patch(`/sets/${id}`, payload),
 }
 
 export const profileAPI = {
@@ -147,9 +163,11 @@ export type {
     LoginData,
     AuthResponse,
     MeResponse,
-    UserStatsResponse,
-    UsersListResponse,
-    UsersListParams,
+    SetData,
+    SetQueryParams,
+    CreateSetPayload,
+    CreateSetResponse,
+    UpdateSetPayload,
     ChangePasswordData,
     UpdateProfileData,
     ChangePasswordResponse,
