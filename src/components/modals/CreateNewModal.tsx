@@ -118,7 +118,7 @@ export default function CreateNewModal({ type, isOpen, onClose, onSubmit, initia
                     <Button
                         onClick={handleSubmit}
                         disabled={!title.trim()}
-                        className="px-6 py-2 bg-foreground text-background rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-6 py-2 bg-foreground text-background rounded-lg cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Complete
                     </Button>
