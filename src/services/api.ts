@@ -87,6 +87,40 @@ interface UpdateSetPayload {
     privacy: 'PUBLIC' | 'PRIVATE';
 }
 
+interface NoteDetail {
+    id: number;
+    title: string;
+    description: string;
+    privacy: string;
+    content: any;
+    noteDocs: any[];
+}
+
+interface NoteListItem {
+    id: number;
+    title: string;
+    description: string;
+    timeAgo: string;
+    privacy: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface NoteListResponse {
+    pageNo: number;
+    pageSize: number;
+    totalPage: number;
+    totalElements: number;
+    items: NoteListItem[];
+}
+
+interface CreateNotePayload {
+    title: string;
+    privacy: string;
+    description: string;
+    setId: number;
+}
+
 interface ChangePasswordData {
     currentPassword: string
     newPassword: string
@@ -104,6 +138,80 @@ interface ChangePasswordResponse {
 interface UpdateProfileResponse {
     message: string
     user: User
+}
+
+interface AutoSaveNoteRequest {
+    title: string;
+    content: string;
+}
+
+interface ExplainTextRequest {
+    noteId: number;
+    queryText: string;
+}
+
+interface ExplainTextResponse {
+    data: {
+        status: number;
+        message: string;
+        data: {
+            queryText: string;
+            answer: string;
+        };
+    };
+}
+
+interface NoteDetailResponse {
+    id: number;
+    title: string;
+    content: any;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface UploadFileResponse {
+    status: number;
+    message: string;
+    data: {
+        id: number;
+        fileName: string;
+        fileUrl: string;
+        extension: string;
+        publicId: string;
+    };
+}
+
+interface SummarizeFileRequest {
+    noteDocsId: number;
+    fileUrl: string;
+    extension: string;
+}
+
+interface SummarizeFileResponse {
+    status: number;
+    message: string;
+    data: {
+        noteDocsId: number;
+        summary: string;
+    };
+}
+
+interface ConvertToVectorDBRequest {
+    noteDocsId: number;
+    fileName: string;
+    fileUrl: string;
+    extension: string;
+    noteId: number;
+}
+
+interface DeleteNoteDocRequest {
+    publicId: string;
+    extension: string;
+}
+
+interface ConvertToVectorDBResponse {
+    status: number;
+    message: string;
 }
 
 api.interceptors.request.use(
@@ -151,6 +259,38 @@ export const setAPI = {
         api.patch(`/sets/${id}`, payload),
 }
 
+export const noteAPI = {
+    getNoteDetail: (noteId: number): Promise<AxiosResponse<{ status: number; message: string; data: NoteDetail }>> =>
+        api.get(`/note/${noteId}`),
+    createNote: (payload: CreateNotePayload): Promise<AxiosResponse<{ status: number; message: string; data: NoteDetail }>> =>
+        api.post('/note/create', payload),
+    updateNote: (noteId: number, payload: Partial<CreateNotePayload>): Promise<AxiosResponse<{ status: number; message: string; data: NoteDetail }>> =>
+        api.patch(`/note/update/${noteId}`, payload),
+    deleteNote: (noteId: number): Promise<AxiosResponse> =>
+        api.delete(`/note/delete/${noteId}`),
+    getAllNotesBySet: (setId: number, pageNo: number = 0, pageSize: number = 10): Promise<AxiosResponse<{ status: number; message: string; data: NoteListResponse }>> =>
+        api.get(`/note/all/${setId}?pageNo=${pageNo}&pageSize=${pageSize}`),
+    autoSaveNote: (noteId: number, data: AutoSaveNoteRequest): Promise<AxiosResponse> =>
+        api.patch(`/note/save/${noteId}`, data),
+    explainText: (data: ExplainTextRequest): Promise<ExplainTextResponse> =>
+        api.post('/note/explain', data),
+    uploadFile: (file: File, noteId: number): Promise<AxiosResponse<UploadFileResponse>> => {
+        const formData = new FormData();
+        formData.append('file', file);
+        return api.post(`/upload-file?subject=note-document&id=${noteId}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+    },
+    summarizeFile: (data: SummarizeFileRequest): Promise<AxiosResponse<SummarizeFileResponse>> =>
+        api.post('/note/summarize', data),
+    convertToVectorDB: (data: ConvertToVectorDBRequest): Promise<AxiosResponse<ConvertToVectorDBResponse>> =>
+        api.post('/note/convert-to-vectordb', data),
+    deleteNoteDoc: (noteDocsId: number, data: DeleteNoteDocRequest): Promise<AxiosResponse> =>
+        api.delete(`/note/delete-doc/${noteDocsId}`, { data }),
+};
+
 export const profileAPI = {
     changePassword: (data: ChangePasswordData): Promise<AxiosResponse<ChangePasswordResponse>> =>
         api.put('/api/users/change-password', data),
@@ -170,7 +310,21 @@ export type {
     UpdateSetPayload,
     ChangePasswordData,
     UpdateProfileData,
+    NoteDetail,
+    NoteListItem,
+    NoteListResponse,
+    CreateNotePayload,
     ChangePasswordResponse,
     UpdateProfileResponse,
+    AutoSaveNoteRequest,
+    ExplainTextRequest,
+    ExplainTextResponse,
+    NoteDetailResponse,
+    UploadFileResponse,
+    SummarizeFileRequest,
+    SummarizeFileResponse,
+    ConvertToVectorDBRequest,
+    ConvertToVectorDBResponse,
+    DeleteNoteDocRequest
 }
 export default api

@@ -1,67 +1,84 @@
 import { useState } from 'react';
-import NoteCard from '@/components/cards/NoteCard';
+import NoteCard, { type Note } from '@/components/cards/NoteCard';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useNotesBySet } from '@/hooks/useNotes';
 
-export default function NoteListPage() {
-    const [currentPage, setCurrentPage] = useState(1);
+interface NoteListPageProps {
+    setId?: number;
+    onUpdate: (note: Note) => void;
+    onDelete: (noteId: number) => void;
+}
+
+export default function NoteListPage({ setId: propSetId, onUpdate, onDelete }: NoteListPageProps) {
+    const [currentPage, setCurrentPage] = useState(0);
     const navigate = useNavigate();
+    const { setId: paramSetId } = useParams<{ setId: string }>();
+    const pageSize = 6;
 
-    const notes = [
-        {
-            id: 1,
-            title: 'OOP Interview Question',
-            category: '20 Sep 2025',
-            preview: 'Supervised learning is a machine learning method in which an algorithm learns from...',
-            time: '2 hours ago',
-            date: '16 Sep 2025'
-        },
-        {
-            id: 2,
-            title: 'Stack and Queue',
-            category: '15 Sep 2025',
-            preview: 'Stack is a LIFO (Last In First Out) data structure, while Queue is FIFO (First In Fir...',
-            time: '2 hours ago',
-            date: '16 Sep 2025'
-        },
-        {
-            id: 3,
-            title: 'Supervised Learning Algo...',
-            category: '01 Sep 2025',
-            preview: 'Supervised learning is a machine learning method in which an algorithm learns from...',
-            time: '2 hours ago',
-            date: '16 Sep 2025'
-        },
-        {
-            id: 4,
-            title: 'Supervised Learning Algo...',
-            category: '10 Aug 2025',
-            preview: 'Supervised learning is a machine learning method in which an algorithm learns from...',
-            time: '2 hours ago',
-            date: '16 Sep 2025'
-        },
-        {
-            id: 5,
-            title: 'Stack and Queue',
-            category: '22 Jul 2025',
-            preview: 'Stack is a LIFO (Last In First Out) data structure, while Queue is FIFO (First In Fir...',
-            time: '2 hours ago',
-            date: '16 Sep 2025'
-        },
-        {
-            id: 6,
-            title: 'Supervised Learning Algo...',
-            category: '20 Jun 2025',
-            preview: 'Supervised learning is a machine learning method in which an algorithm learns from...',
-            time: '2 hours ago',
-            date: '16 Sep 2025'
-        }
-    ];
+    const setId = propSetId || Number(paramSetId);
 
-    const totalPages = 5;
+    const { data: notesData, isLoading, error } = useNotesBySet(
+        setId,
+        currentPage,
+        pageSize
+    );
 
-    const handleAccess = (id: string) => {
+    const notes = notesData?.items || [];
+    const totalPages = notesData?.totalPage || 1;
+
+    const handleAccess = (id: number) => {
         navigate(`/note/${id}`);
+    };
+
+    const handleDelete = (id: number) => {
+        onDelete(id);
+    };
+
+    const handleUpdate = (note: Note) => {
+        onUpdate(note);
+    };
+
+    const handlePageChange = (direction: 'prev' | 'next') => {
+        setCurrentPage(prev =>
+            direction === 'prev'
+                ? Math.max(0, prev - 1)
+                : Math.min(totalPages - 1, prev + 1)
+        );
+    };
+
+    if (!setId) {
+        return (
+            <div className="flex justify-center items-center py-8">
+                <div className="text-destructive">Invalid set ID</div>
+            </div>
+        );
+    }
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center py-8">
+                <div className="text-muted-foreground">Loading notes...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex justify-center items-center py-8">
+                <div className="text-destructive">Error loading notes. Please try again.</div>
+            </div>
+        );
+    }
+
+    if (notes.length === 0) {
+        return (
+            <div className="flex flex-col justify-center items-center py-12 gap-4">
+                <div className="text-muted-foreground text-lg">No notes found</div>
+                <div className="text-muted-foreground text-sm">Create your first note to get started!</div>
+            </div>
+        );
     }
 
     return (
@@ -69,32 +86,69 @@ export default function NoteListPage() {
             {/* Notes Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {notes.map((note) => (
-                    <NoteCard key={note.id} note={note} onAccess={handleAccess} />
+                    <NoteCard
+                        key={note.id}
+                        note={{
+                            id: note.id,
+                            title: note.title,
+                            description: note.description || 'No description available...',
+                            privacy: note.privacy,
+                            timeAgo: getTimeAgo(note.updated_at),
+                            created_at: new Date(note.created_at).toLocaleDateString('en-GB', {
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric'
+                            })
+                        }}
+                        onAccess={() => handleAccess(note.id)}
+                        onUpdate={() => handleUpdate(note)}
+                        onDelete={() => handleDelete(note.id)}
+                    />
                 ))}
             </div>
 
             {/* Pagination */}
-            <div className="flex justify-center items-center gap-4">
-                <Button
-                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                    disabled={currentPage === 1}
-                    className="p-2 hover:bg-white rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                    <span className="text-gray-700">‹</span>
-                </Button>
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4">
+                    <Button
+                        onClick={() => handlePageChange('prev')}
+                        disabled={currentPage === 0}
+                        className="p-2 hover:bg-card-secondary rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                        <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+                    </Button>
 
-                <span className="text-sm font-medium text-gray-700">
-                    {currentPage}/{totalPages}
-                </span>
+                    <span className="text-sm font-medium">
+                        {currentPage + 1}/{totalPages}
+                    </span>
 
-                <Button
-                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                    disabled={currentPage === totalPages}
-                    className="p-2 hover:bg-white rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                    <span className="text-gray-700">›</span>
-                </Button>
-            </div>
+                    <Button
+                        onClick={() => handlePageChange('next')}
+                        disabled={currentPage === totalPages - 1}
+                        className="p-2 hover:bg-card-secondary rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                        <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                    </Button>
+                </div>
+            )}
         </div>
     );
+}
+
+// Helper function to calculate time ago
+function getTimeAgo(dateString: string): string {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMs = now.getTime() - date.getTime();
+    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+
+    if (diffInHours < 1) {
+        const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+        return `${diffInMinutes} minute${diffInMinutes !== 1 ? 's' : ''} ago`;
+    } else if (diffInHours < 24) {
+        return `${diffInHours} hour${diffInHours !== 1 ? 's' : ''} ago`;
+    } else {
+        const diffInDays = Math.floor(diffInHours / 24);
+        return `${diffInDays} day${diffInDays !== 1 ? 's' : ''} ago`;
+    }
 }

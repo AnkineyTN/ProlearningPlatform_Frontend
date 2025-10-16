@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import Checklist from '@/components/cards/CheckListCard';
 import SetCard, { type Set } from '@/components/cards/SetCard';
-import NoteCard from '@/components/cards/NoteCard';
+// import NoteCard from '@/components/cards/NoteCard';
 import Header from '@/components/header/HeaderDashboard';
 import { useDeleteSet, useUpdateSet } from '@/hooks/useSetOperations';
 import { type UpdateSetPayload } from '@/services/api';
@@ -45,22 +45,22 @@ const Dashboard = () => {
         numNotes: item.numNotes ?? 0,
     }));
 
-    const notes = [
-        {
-            title: "Supervised Learning Algorithms",
-            category: "Machine Learning Basic",
-            preview: "Supervised learning is a machine learning method in which an algorithm learns from labe...",
-            time: "2 hours ago",
-            date: "16 Sep 2025"
-        },
-        {
-            title: "Stack and Queue",
-            category: "Data Structures",
-            preview: "Stack is a LIFO (Last In First Out) data structure, while Queue is FIFO (First In First Out). Impleme...",
-            time: "2 hours ago",
-            date: "16 Sep 2025"
-        }
-    ];
+    // const notes = [
+    //     {
+    //         title: "Supervised Learning Algorithms",
+    //         category: "Machine Learning Basic",
+    //         preview: "Supervised learning is a machine learning method in which an algorithm learns from labe...",
+    //         time: "2 hours ago",
+    //         date: "16 Sep 2025"
+    //     },
+    //     {
+    //         title: "Stack and Queue",
+    //         category: "Data Structures",
+    //         preview: "Stack is a LIFO (Last In First Out) data structure, while Queue is FIFO (First In First Out). Impleme...",
+    //         time: "2 hours ago",
+    //         date: "16 Sep 2025"
+    //     }
+    // ];
 
     const calendar = [
         ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -116,9 +116,9 @@ const Dashboard = () => {
         navigate("/notes");
     };
 
-    const handleAccessNote = (id: string) => {
-        navigate(`/note/${id}`);
-    };
+    // const handleAccessNote = (id: string) => {
+    //     navigate(`/note/${id}`);
+    // };
 
     const handleChecklistChange = (idx: number, checked: boolean) => {
         const newItems = [...checklistItems];
@@ -163,11 +163,11 @@ const Dashboard = () => {
                                 View all <ChevronRight className="w-4 h-4" />
                             </button>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        {/* <div className="grid grid-cols-2 gap-4">
                             {notes.map((note, idx) => (
                                 <NoteCard key={idx} note={note} onAccess={handleAccessNote} />
                             ))}
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Right Column */}

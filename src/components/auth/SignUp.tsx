@@ -1,4 +1,4 @@
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
 import { signupSchema, type SignupFormData } from '@/schemas/auth'
@@ -12,13 +12,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircleIcon, Lock, Mail, User, Eye, EyeOff, RefreshCw, CircleDot } from 'lucide-react'
 import { useState } from 'react'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import { toast } from 'react-toastify'
 
 export default function SignUp() {
@@ -27,8 +20,11 @@ export default function SignUp() {
     const { isLoading, error } = useAppSelector(state => state.auth)
     const [showPassword, setShowPassword] = useState(false)
 
-    const { register, handleSubmit, control, formState: { errors } } = useForm<SignupFormData>({
-        resolver: zodResolver(signupSchema)
+    const { register, handleSubmit, formState: { errors } } = useForm<SignupFormData>({
+        resolver: zodResolver(signupSchema),
+        defaultValues: {
+            role: 'ROLE_USER',
+        },
     })
 
     const onSubmit = async (data: SignupFormData) => {
@@ -40,7 +36,7 @@ export default function SignUp() {
                 lastName: data.lastName,
                 email: data.email,
                 password: data.password,
-                role: data.role,
+                role: 'ROLE_USER'
             })
 
             // Hiển thị toast
@@ -163,38 +159,8 @@ export default function SignUp() {
                                 ) : (
                                     <div className="text-sm text-gray-500 flex items-center gap-2">
                                         <CircleDot size={16} />
-                                        6 or more characters
+                                        8 or more characters
                                     </div>
-                                )}
-                            </div>
-
-                            <div>
-                                <Label htmlFor="role" className="font-bold text-base mb-2">Role</Label>
-                                <div className="relative mb-1">
-                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10 pointer-events-none">
-                                        <User size={16} />
-                                    </span>
-                                    <Controller
-                                        name="role"
-                                        control={control}
-                                        render={({ field }) => (
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                <SelectTrigger
-                                                    id="role"
-                                                    className={`ps-9 ${errors.role ? 'border-red-500' : ''}`}
-                                                >
-                                                    <SelectValue placeholder="Select your role" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="ROLE_USER">User</SelectItem>
-                                                    <SelectItem value="ROLE_TEACHER">Teacher</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        )}
-                                    />
-                                </div>
-                                {errors.role && (
-                                    <p className="text-sm text-red-500">{errors.role.message}</p>
                                 )}
                             </div>
 

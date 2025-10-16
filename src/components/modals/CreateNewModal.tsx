@@ -63,7 +63,7 @@ export default function CreateNewModal({ type, isOpen, onClose, onSubmit, initia
                     <div>
                         <label className="flex items-center gap-2 text-sm font-medium mb-2">
                             <Heading className="w-4 h-4" />
-                            Set Title
+                            {type} Title
                         </label>
                         <input
                             type="text"

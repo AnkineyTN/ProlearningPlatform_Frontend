@@ -7,11 +7,3 @@ export const useSetData = ({ page, size, sort }: SetQueryParams) => {
         queryFn: () => setAPI.getSetData({ page, size, sort }),
     })
 }
-
-// export const useUsersList = (params?: UsersListParams) => {
-//     return useQuery({
-//         queryKey: ['usersList', params],
-//         queryFn: () => dashboardAPI.getUsers(params),
-//         placeholderData: keepPreviousData,
-//     })
-// }

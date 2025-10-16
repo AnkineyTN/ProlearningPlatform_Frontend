@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useCreateNote, useDeleteNote, useUpdateNote } from '@/hooks/useNotes';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,24 +10,78 @@ import MindmapListPage from './components/MindmapListPage';
 import NoteListPage from './components/NoteListPage';
 import TestListPage from './components/TestListPage';
 import RecordListPage from './components/RecordListPage';
+import type { Note } from '@/components/cards/NoteCard';
 
 interface HeaderProps {
     onSearch?: (query: string) => void;
+    setId: string;
 }
 
-export default function SetSeriesPage({ onSearch }: HeaderProps) {
+export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
     const [activeTab, setActiveTab] = useState('Notes');
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const tabs = ['Notes', 'Flashcards', 'Mindmaps', 'Tests', 'Records'];
-    // const navigate = useNavigate();
+
+    const createNoteMutation = useCreateNote();
+    const updateNoteMutation = useUpdateNote();
+    const deleteNoteMutation = useDeleteNote();
 
     const handleTabClick = (tab: string) => {
         setActiveTab(tab);
+    };
+
+    const handleCreate = async (data: { title: string; description: string; privacy: string }) => {
+        if (activeTab === 'Notes' && setId) {
+            try {
+                await createNoteMutation.mutateAsync({
+                    title: data.title,
+                    description: data.description,
+                    privacy: data.privacy.toUpperCase(),
+                    setId: Number(setId)
+                });
+                setIsCreateModalOpen(false);
+            } catch (error) {
+                console.error('Error creating note:', error);
+            }
+        } else {
+            console.log('New created:', data);
+        }
+    };
+
+    const handleUpdate = (note: Note) => {
+        setSelectedNote(note);
+        setIsUpdateModalOpen(true);
     }
 
-    const handleCreate = (newElement: any) => {
-        console.log('New created:', newElement);
-        // Xử lý tạo set mới ở đây
+    const handleUpdateSubmit = async (data: any) => {
+        if (!selectedNote) return;
+
+        try {
+            const payload = {
+                title: data.title,
+                privacy: data.privacy === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE',
+                description: data.description,
+            };
+
+            await updateNoteMutation.mutateAsync({
+                id: selectedNote.id,
+                payload
+            });
+            setIsUpdateModalOpen(false);
+            setSelectedNote(null);
+        } catch (error) {
+            console.error('Error updating note:', error);
+        }
+    }
+
+    const handleDelete = async (id: number) => {
+        try {
+            await deleteNoteMutation.mutateAsync(id);
+        } catch (error) {
+            console.error('Error deleting note:', error);
+        }
     };
 
     return (
@@ -53,8 +108,15 @@ export default function SetSeriesPage({ onSearch }: HeaderProps) {
 
                 {/* Action Bar */}
                 <div className="flex justify-between items-center mb-6">
-                    <Button className="bg-foreground text-background px-5 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-colors" onClick={() => setIsModalOpen(true)}>
-                        + Create a new {activeTab.slice(0, -1).toLowerCase()}
+                    <Button
+                        className="bg-foreground text-background px-5 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-colors disabled:opacity-50"
+                        onClick={() => setIsCreateModalOpen(true)}
+                        disabled={createNoteMutation.isPending}
+                    >
+                        {createNoteMutation.isPending
+                            ? 'Creating...'
+                            : `+ Create a new ${activeTab.slice(0, -1).toLowerCase()}`
+                        }
                     </Button>
                     <div className="relative">
                         <div className="relative">
@@ -68,8 +130,15 @@ export default function SetSeriesPage({ onSearch }: HeaderProps) {
                         </div>
                     </div>
                 </div>
-                {/* Notes Grid */}
-                {activeTab === 'Notes' && <NoteListPage />}
+
+                {/* Content Grid */}
+                {activeTab === 'Notes' && (
+                    <NoteListPage 
+                        setId={Number(setId)} 
+                        onUpdate={handleUpdate}
+                        onDelete={(noteId) => handleDelete(noteId)}
+                    />
+                )}
                 {activeTab === 'Flashcards' && <FlashcardListPage />}
                 {activeTab === 'Mindmaps' && <MindmapListPage />}
                 {activeTab === 'Tests' && <TestListPage />}
@@ -77,10 +146,24 @@ export default function SetSeriesPage({ onSearch }: HeaderProps) {
 
                 <CreateNewModal
                     type={activeTab.slice(0, -1)}
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
+                    isOpen={isCreateModalOpen}
+                    onClose={() => setIsCreateModalOpen(false)}
                     onSubmit={handleCreate}
                 />
+
+                {isUpdateModalOpen && selectedNote && (
+                    <CreateNewModal
+                        type={activeTab.slice(0, -1)}
+                        isOpen={isUpdateModalOpen}
+                        onClose={() => setIsUpdateModalOpen(false)}
+                        onSubmit={handleUpdateSubmit}
+                        initialData={{
+                            title: selectedNote.title,
+                            description: selectedNote.description,
+                            privacy: selectedNote.privacy.charAt(0).toUpperCase() + selectedNote.privacy.slice(1).toLowerCase(),
+                        }}
+                    />
+                )}
             </div>
         </div>
     );

@@ -9,6 +9,18 @@ import LandingPage from '@/pages/LandingPage'
 import OnboardingApp from "@/pages/OnboardingApp.tsx";
 import SetSeriesPage from '@/pages/SetSeriesPage'
 import TextEditor from '@/pages/TextEditor'
+import { useParams } from 'react-router-dom';
+
+// Wrapper component to extract setId from params and pass as prop
+function SetSeriesPageWrapper() {
+    const { id } = useParams();
+    return <SetSeriesPage setId={id ?? ''} />;
+}
+
+function TextEditorWrapper() {
+    const { id } = useParams();
+    return <TextEditor initialTitle={id ? `Note ${id}` : 'Untitled Note'} noteId={id ?? ''} />;
+}
 
 export const routeConfig: RouteObject[] = [
     // Public routes
@@ -43,7 +55,7 @@ export const routeConfig: RouteObject[] = [
             },
             {
                 path: 'sets/:id',
-                element: <SetSeriesPage />
+                element: <SetSeriesPageWrapper />
             },
         ]
     },
@@ -53,7 +65,7 @@ export const routeConfig: RouteObject[] = [
         children: [
             {
                 path: 'note/:id',
-                element: <TextEditor />
+                element: <TextEditorWrapper />
             }
         ]
     }
