@@ -1,6 +1,7 @@
 import { SwatchBook, MoreVertical, Clock } from 'lucide-react';
 
 export interface Flashcard {
+    id: string;
     title: string;
     category: string;
     preview: string;
@@ -10,7 +11,7 @@ export interface Flashcard {
 
 export default function FlashCard({ flashcard, onAccess }: { flashcard: Flashcard, onAccess: (id: string) => void }) {
     const handleClick = () => {
-        onAccess(flashcard.title); // Giả sử 'title' là ID của flashcard
+        onAccess(flashcard.id);
     }
     return (
         <div className="bg-card rounded-xl p-5 shadow-sm cursor-pointer" onClick={handleClick}>

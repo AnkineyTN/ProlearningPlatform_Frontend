@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import HeaderSetDetails from './components/HeaderSetDetails';
 import CreateNewModal from '@/components/modals/CreateNewModal';
+import CreateMethodModal from '@/components/modals/CreateMethodModal';
+import AISourceModal from '@/components/modals/AISourceModal';
 import FlashcardListPage from './components/FlashcardListPage';
 import MindmapListPage from './components/MindmapListPage';
 import NoteListPage from './components/NoteListPage';
@@ -20,8 +22,13 @@ interface HeaderProps {
 export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
     const [activeTab, setActiveTab] = useState('Notes');
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+
+    // Modal states
+    const [isMethodModalOpen, setIsMethodModalOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isAISourceModalOpen, setIsAISourceModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
     const tabs = ['Notes', 'Flashcards', 'Mindmaps', 'Tests', 'Records'];
 
     const createNoteMutation = useCreateNote();
@@ -30,6 +37,43 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
 
     const handleTabClick = (tab: string) => {
         setActiveTab(tab);
+    };
+
+    const handleCreateButtonClick = () => {
+        if (activeTab === 'Notes') {
+            // For Notes, go directly to create modal
+            setIsCreateModalOpen(true);
+        } else {
+            // For other tabs, show method selection modal
+            setIsMethodModalOpen(true);
+        }
+    };
+
+    const handleSelectManual = () => {
+        setIsCreateModalOpen(true);
+    };
+
+    const handleSelectAI = () => {
+        setIsAISourceModalOpen(true);
+    };
+
+    const handleBackFromCreate = () => {
+        setIsCreateModalOpen(false);
+        if (activeTab !== 'Notes') {
+            setIsMethodModalOpen(true);
+        }
+    };
+
+    const handleBackFromAISource = () => {
+        setIsAISourceModalOpen(false);
+        setIsMethodModalOpen(true);
+    };
+
+    const handleAISourceSubmit = async (data: { source: 'notes' | 'files'; selectedItems: any[] }) => {
+        console.log('AI Generation with:', data);
+        // TODO: Implement AI generation logic here
+        // This would call your AI generation API with the selected source
+        setIsAISourceModalOpen(false);
     };
 
     const handleCreate = async (data: { title: string; description: string; privacy: string }) => {
@@ -46,14 +90,17 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
                 console.error('Error creating note:', error);
             }
         } else {
-            console.log('New created:', data);
+            // For other tabs (Flashcards, Tests, etc.)
+            console.log('New item created:', data);
+            // TODO: Implement create logic for other types
+            setIsCreateModalOpen(false);
         }
     };
 
     const handleUpdate = (note: Note) => {
         setSelectedNote(note);
         setIsUpdateModalOpen(true);
-    }
+    };
 
     const handleUpdateSubmit = async (data: any) => {
         if (!selectedNote) return;
@@ -74,7 +121,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
         } catch (error) {
             console.error('Error updating note:', error);
         }
-    }
+    };
 
     const handleDelete = async (id: number) => {
         try {
@@ -97,8 +144,8 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
                             key={tab}
                             onClick={() => handleTabClick(tab)}
                             className={`cursor-pointer px-6 py-2 rounded-full text-foreground text-sm border border-ring font-medium transition-colors whitespace-nowrap ${activeTab === tab
-                                ? 'border-blue-500 bg-card-selected hover:bg-muted'
-                                : 'border-ring bg-card hover:bg-secondary'
+                                    ? 'border-blue-500 bg-card-selected hover:bg-muted'
+                                    : 'border-ring bg-card hover:bg-secondary'
                                 }`}
                         >
                             {tab}
@@ -110,7 +157,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
                 <div className="flex justify-between items-center mb-6">
                     <Button
                         className="bg-foreground text-background px-5 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-colors disabled:opacity-50"
-                        onClick={() => setIsCreateModalOpen(true)}
+                        onClick={handleCreateButtonClick}
                         disabled={createNoteMutation.isPending}
                     >
                         {createNoteMutation.isPending
@@ -133,8 +180,8 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
 
                 {/* Content Grid */}
                 {activeTab === 'Notes' && (
-                    <NoteListPage 
-                        setId={Number(setId)} 
+                    <NoteListPage
+                        setId={Number(setId)}
                         onUpdate={handleUpdate}
                         onDelete={(noteId) => handleDelete(noteId)}
                     />
@@ -144,13 +191,37 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
                 {activeTab === 'Tests' && <TestListPage />}
                 {activeTab === 'Records' && <RecordListPage />}
 
+                {/* Method Selection Modal (for Flashcards, Tests, etc.) */}
+                <CreateMethodModal
+                    type={activeTab.slice(0, -1)}
+                    isOpen={isMethodModalOpen}
+                    onClose={() => setIsMethodModalOpen(false)}
+                    onSelectManual={handleSelectManual}
+                    onSelectAI={handleSelectAI}
+                />
+
+                {/* AI Source Selection Modal */}
+                <AISourceModal
+                    setId={Number(setId)}
+                    currentPage={0}
+                    pageSize={6}
+                    type={activeTab.slice(0, -1)}
+                    isOpen={isAISourceModalOpen}
+                    onClose={() => setIsAISourceModalOpen(false)}
+                    onBack={handleBackFromAISource}
+                    onSubmit={handleAISourceSubmit}
+                />
+
+                {/* Manual Create Modal */}
                 <CreateNewModal
                     type={activeTab.slice(0, -1)}
                     isOpen={isCreateModalOpen}
                     onClose={() => setIsCreateModalOpen(false)}
+                    onBack={activeTab !== 'Notes' ? handleBackFromCreate : undefined}
                     onSubmit={handleCreate}
                 />
 
+                {/* Update Modal */}
                 {isUpdateModalOpen && selectedNote && (
                     <CreateNewModal
                         type={activeTab.slice(0, -1)}

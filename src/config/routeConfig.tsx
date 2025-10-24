@@ -9,7 +9,9 @@ import LandingPage from '@/pages/LandingPage'
 import OnboardingApp from "@/pages/OnboardingApp.tsx";
 import SetSeriesPage from '@/pages/SetSeriesPage'
 import TextEditor from '@/pages/TextEditor'
+import FlashcardEditor from '@/pages/flashcard/FlashcardEditor'
 import { useParams } from 'react-router-dom';
+import FlashcardApp from '@/pages/flashcard/FlashcardApp'
 
 // Wrapper component to extract setId from params and pass as prop
 function SetSeriesPageWrapper() {
@@ -57,6 +59,14 @@ export const routeConfig: RouteObject[] = [
                 path: 'sets/:id',
                 element: <SetSeriesPageWrapper />
             },
+            {
+                path: 'flashcards/new',
+                element: <FlashcardEditor />
+            },
+            {
+                path: 'flashcard/:id',
+                element: <FlashcardApp />
+            }
         ]
     },
     {

@@ -1,16 +1,24 @@
 import { useState } from 'react';
-import { X, Lock, Heading, AlignJustify } from 'lucide-react';
+import { X, Lock, Heading, AlignJustify, ArrowLeft } from 'lucide-react';
+import {
+    Select,
+    SelectTrigger,
+    SelectContent,
+    SelectItem,
+    SelectValue,
+} from '@/components/ui/select'
 import { Button } from '@/components/ui/button';
 
-interface CreateModalProps {
+interface CreateNewModalProps {
     type: string;
     isOpen: boolean;
     onClose: () => void;
+    onBack?: () => void;
     onSubmit: (data: { title: string; description: string; privacy: string }) => void;
     initialData?: { title: string; description: string; privacy: string };
 }
 
-export default function CreateNewModal({ type, isOpen, onClose, onSubmit, initialData }: CreateModalProps) {
+export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit, initialData }: CreateNewModalProps) {
     const [title, setTitle] = useState(initialData?.title || '');
     const [description, setDescription] = useState(initialData?.description || '');
     const [privacy, setPrivacy] = useState(initialData?.privacy || 'Public');
@@ -29,11 +37,16 @@ export default function CreateNewModal({ type, isOpen, onClose, onSubmit, initia
     };
 
     const handleCancel = () => {
-        // Reset form
-        setTitle('');
-        setDescription('');
-        setPrivacy('Public');
-        onClose();
+        if (onBack) {
+            // If there's a back handler, use it
+            onBack();
+        } else {
+            // Otherwise, close and reset
+            setTitle('');
+            setDescription('');
+            setPrivacy('Public');
+            onClose();
+        }
     };
 
     return (
@@ -45,7 +58,7 @@ export default function CreateNewModal({ type, isOpen, onClose, onSubmit, initia
             />
 
             {/* Modal */}
-            <div className="relative bg-background rounded-lg shadow-xl w-full max-w-md mx-4 p-6">
+            <div className="relative bg-background rounded-lg shadow-xl w-full max-w-4xl mx-4 p-6">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold">New {type}</h2>
@@ -80,15 +93,19 @@ export default function CreateNewModal({ type, isOpen, onClose, onSubmit, initia
                             <Lock className="w-4 h-4" />
                             Privacy
                         </label>
-                        <select
+                        <Select
                             value={privacy}
-                            onChange={(e) => setPrivacy(e.target.value)}
-                            className="w-full px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-foreground"
+                            onValueChange={(val) => setPrivacy(val)}
                         >
-                            <option>Public</option>
-                            <option>Private</option>
-                            <option>Unlisted</option>
-                        </select>
+                            <SelectTrigger className="w-full px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-foreground">
+                                <SelectValue placeholder="Select privacy" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Public">🌐 Public</SelectItem>
+                                <SelectItem value="Private">🔒 Private</SelectItem>
+                                <SelectItem value="Unlisted">👁️ Unlisted</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
 
                     {/* Description */}
@@ -111,9 +128,10 @@ export default function CreateNewModal({ type, isOpen, onClose, onSubmit, initia
                 <div className="flex justify-end gap-3 mt-6">
                     <Button
                         onClick={handleCancel}
-                        className="px-6 py-2 border border-border rounded-lg bg-background text-foreground hover:bg-card-secondary transition-colors cursor-pointer"
+                        className="px-6 py-2 border border-border rounded-lg bg-background text-foreground hover:bg-card-secondary transition-colors cursor-pointer flex items-center gap-2"
                     >
-                        Cancel
+                        {onBack && <ArrowLeft className="w-4 h-4" />}
+                        {onBack ? 'Back' : 'Cancel'}
                     </Button>
                     <Button
                         onClick={handleSubmit}

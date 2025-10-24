@@ -135,8 +135,7 @@ export default function SetCard({ set, onAccess, onDelete, onUpdate }: SetCardPr
             {/* Progress Bar */}
             <div className="w-full bg-card-secondary rounded-full h-2 mb-3">
                 <div
-                    className="bg-foreground h-2 rounded-full transition-all"
-                    style={{ width: `${set.progress}%` }}
+                    className={`bg-foreground h-2 rounded-full transition-all w-[${set.progress}px]`}
                 />
             </div>
 

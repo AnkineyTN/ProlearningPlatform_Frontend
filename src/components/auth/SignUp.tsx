@@ -208,7 +208,7 @@ export default function SignUp() {
                     </CardFooter>
                 </Card>
             </div>
-            <div className={"w-[50vw] h-100 bg-gradient-to-r from-popover-foreground to-muted-foreground h-screen px-14 py-10"}>
+            <div className={"w-[50vw] h-screen bg-gradient-to-r from-popover-foreground to-muted-foreground px-14 py-10"}>
                 <div className={"text-background text-8xl font-bold"}>CREATE AN ACCOUNT!</div>
             </div>
         </div>
