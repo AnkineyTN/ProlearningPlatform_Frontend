@@ -5,7 +5,11 @@ export const signupSchema = z.object({
     lastName: z.string().min(2, 'Last name must be at least 2 characters').max(50, 'Last name must not exceed 50 characters'),
     email: z.string().email('Invalid email address'),
     password: z.string().min(8, 'Password must be at least 8 characters').max(20, 'Password must not exceed 20 characters'),
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
     role: z.enum(['ROLE_USER', 'ROLE_ADMIN', 'ROLE_TEACHER'])
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
 })
 
 export const loginSchema = z.object({

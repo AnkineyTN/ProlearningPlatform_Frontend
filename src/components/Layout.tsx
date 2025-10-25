@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import AppSidebar from './sidebar/app-sidebar.tsx';
-import { authAPI } from "@/services/api.ts";
+import { authAPI } from "@/services/endpoints/auth";
 
 interface LayoutProps {
     children: React.ReactNode;

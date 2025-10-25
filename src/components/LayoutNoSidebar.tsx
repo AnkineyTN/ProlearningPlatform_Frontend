@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { authAPI } from "@/services/api.ts";
+import { authAPI } from "@/services/endpoints/auth";
 
 interface LayoutProps {
     children: React.ReactNode;

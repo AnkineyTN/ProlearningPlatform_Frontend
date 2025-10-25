@@ -5,7 +5,7 @@ import { store } from './store'
 import { routeConfig } from './config/routeConfig.tsx'
 import { ThemeProvider } from "@/components/theme/theme-provider.tsx"
 import { useEffect } from "react";
-import { authAPI } from "@/services/api.ts";
+import { authAPI } from "@/services/endpoints/auth.ts";
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 

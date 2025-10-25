@@ -5,11 +5,9 @@ import SetCard from '@/components/cards/SetCard';
 import HeaderSet from '@/components/header/HeaderSet';
 import CreateNewModal from '@/components/modals/CreateNewModal';
 import { Button } from '@/components/ui/button';
-import { useSetData } from '@/hooks/useDashboard';
-import { useCreateSet } from '@/hooks/useCreateSet';
-import { useDeleteSet, useUpdateSet } from '@/hooks/useSetOperations';
+import { useDeleteSet, useUpdateSet, useSetData, useCreateSet } from '@/hooks/useSets';
 import { type Set } from '@/components/cards/SetCard';
-import { type CreateSetPayload, type UpdateSetPayload } from '@/services/api';
+import { type CreateSetPayload, type UpdateSetPayload } from '@/services/types/set.types';
 
 const TABS = [
     { id: 'all', label: 'All', count: 16 },
@@ -136,8 +134,8 @@ export default function SetListPage() {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`px-4 py-2 rounded-full text-sm font-medium cursor-pointer transition-colors ${activeTab === tab.id
-                                        ? 'bg-foreground text-background'
-                                        : 'bg-card text-muted-foreground hover:bg-card-secondary'
+                                    ? 'bg-foreground text-background'
+                                    : 'bg-card text-muted-foreground hover:bg-card-secondary'
                                     }`}
                             >
                                 {tab.label} <span className="ml-1">{tab.count}</span>

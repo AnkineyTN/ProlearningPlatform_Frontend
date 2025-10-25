@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { noteAPI } from '@/services/endpoints/notes';
 import {
-    noteAPI,
     type CreateNotePayload,
     type ExplainTextRequest,
     type SummarizeFileRequest,
     type ConvertToVectorDBRequest,
     type DeleteNoteDocRequest,
-} from '@/services/api';
+} from '@/services/types/note.types';
 
 // Hook to get note detail
 export const useNoteDetail = (noteId: number) => {

@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { FileText, ChevronDown, Download, Save, Upload, FileIcon, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface EditorHeaderProps {
     title: string;
@@ -67,7 +68,7 @@ const EditorHeader: React.FC<EditorHeaderProps> = ({
                 <div className="flex items-center gap-3">
                     <FileText onClick={onBack} className="w-6 h-6 text-foreground cursor-pointer" />
                     {isEditingTitle ? (
-                        <input
+                        <Input
                             type="text"
                             value={title}
                             onChange={(e) => onTitleChange(e.target.value)}
@@ -96,7 +97,7 @@ const EditorHeader: React.FC<EditorHeaderProps> = ({
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <input
+                    <Input
                         ref={fileInputRef}
                         type="file"
                         className="hidden"

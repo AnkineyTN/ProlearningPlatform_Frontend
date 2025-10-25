@@ -1,5 +1,25 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { setAPI, type UpdateSetPayload } from '@/services/api';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import { setAPI } from '@/services/endpoints/sets';
+import { type CreateSetPayload, type SetQueryParams, type UpdateSetPayload } from '@/services/types/set.types';
+
+export const useSetData = ({ page, size, sort }: SetQueryParams) => {
+    return useQuery({
+        queryKey: ['setData', { page, size, sort }],
+        queryFn: () => setAPI.getSetData({ page, size, sort }),
+    })
+}
+
+export const useCreateSet = () => {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: (payload: CreateSetPayload) => setAPI.createSet(payload),
+        onSuccess: () => {
+            // Refresh lại danh sách sets sau khi tạo thành công
+            queryClient.invalidateQueries({ queryKey: ['setData'] })
+        },
+    })
+};
 
 // Hook for deleting a set
 export const useDeleteSet = () => {

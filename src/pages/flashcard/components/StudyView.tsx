@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/theme/mode-toggle";
 import FlipFlashcard from "./FlipFlashcard";
 
 interface StudyViewProps {

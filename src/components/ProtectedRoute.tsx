@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode } from 'react'
 import { Navigate } from 'react-router-dom'
-import { authAPI } from '@/services/api'
+import { authAPI } from '@/services/endpoints/auth'
 import { setUser, logout } from '@/store/authSlice'
 import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 

@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
 import { signupSchema, type SignupFormData } from '@/schemas/auth'
-import { authAPI } from '@/services/api'
+import { authAPI } from '@/services/endpoints/auth'
 import { loginStart, loginFailure, loginSuccess } from '@/store/authSlice'
 import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 import { Button } from '@/components/ui/button'
@@ -19,6 +19,7 @@ export default function SignUp() {
     const navigate = useNavigate()
     const { isLoading, error } = useAppSelector(state => state.auth)
     const [showPassword, setShowPassword] = useState(false)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
     const { register, handleSubmit, formState: { errors } } = useForm<SignupFormData>({
         resolver: zodResolver(signupSchema),
@@ -27,10 +28,18 @@ export default function SignUp() {
         },
     })
 
+    const handleGoogleLogin = async () => {
+        try {
+            const response = await authAPI.googleAuth()
+            window.location.href = response.data.data.authorizationUrl
+        } catch (error: any) {
+            toast.error('Failed to connect with Google')
+        }
+    }
+
     const onSubmit = async (data: SignupFormData) => {
         dispatch(loginStart())
         try {
-            // Đăng ký
             await authAPI.signup({
                 firstName: data.firstName,
                 lastName: data.lastName,
@@ -39,13 +48,11 @@ export default function SignUp() {
                 role: 'ROLE_USER'
             })
 
-            // Hiển thị toast
             toast.success('🎉 Account created successfully!', {
                 position: "top-right",
                 autoClose: 2000,
             })
 
-            // Tự động đăng nhập
             const loginResponse = await authAPI.login({
                 email: data.email,
                 password: data.password
@@ -144,7 +151,7 @@ export default function SignUp() {
                                         id="password"
                                         type={showPassword ? 'text' : 'password'}
                                         {...register('password')}
-                                        placeholder={"••••••"}
+                                        placeholder={"••••••••"}
                                         className={`ps-9 pe-9 ${errors.password ? 'border-red-500' : ''}`}
                                     />
                                     <span
@@ -164,6 +171,31 @@ export default function SignUp() {
                                 )}
                             </div>
 
+                            <div>
+                                <Label htmlFor="confirmPassword" className="font-bold text-base mb-2">Confirm Password</Label>
+                                <div className="relative mb-1">
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                        <Lock size={16} />
+                                    </span>
+                                    <Input
+                                        id="confirmPassword"
+                                        type={showConfirmPassword ? 'text' : 'password'}
+                                        {...register('confirmPassword')}
+                                        placeholder={"••••••••"}
+                                        className={`ps-9 pe-9 ${errors.confirmPassword ? 'border-red-500' : ''}`}
+                                    />
+                                    <span
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    >
+                                        {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                    </span>
+                                </div>
+                                {errors.confirmPassword && (
+                                    <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
+                                )}
+                            </div>
+
                             {error && (
                                 <Alert variant="destructive">
                                     <AlertCircleIcon />
@@ -173,7 +205,7 @@ export default function SignUp() {
 
                             <Button
                                 type="submit"
-                                className="w-full cursor-pointer"
+                                className="w-full cursor-pointer mt-2"
                                 disabled={isLoading}
                                 data-testid="create-btn"
                             >
@@ -187,7 +219,12 @@ export default function SignUp() {
                                     Or continue with
                                 </span>
                             </div>
-                            <Button variant={"outline"} className="w-full cursor-pointer">
+                            <Button
+                                variant={"outline"}
+                                className="w-full cursor-pointer"
+                                type="button"
+                                onClick={handleGoogleLogin}
+                            >
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <path
                                         d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
