@@ -15,7 +15,7 @@ export default function NoteListPage({ setId: propSetId, onUpdate, onDelete }: N
     const [currentPage, setCurrentPage] = useState(0);
     const navigate = useNavigate();
     const { setId: paramSetId } = useParams<{ setId: string }>();
-    const pageSize = 6;
+    const pageSize = 12;
 
     const setId = propSetId || Number(paramSetId);
 
@@ -26,6 +26,7 @@ export default function NoteListPage({ setId: propSetId, onUpdate, onDelete }: N
     );
 
     const notes = notesData?.items || [];
+    console.log("🚀 ~ NoteListPage ~ notesData:", notesData)
     const totalPages = notesData?.totalPage || 1;
 
     const handleAccess = (id: number) => {

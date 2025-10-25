@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Edit, Trash2 } from 'lucide-react';
 import { FileText, MoreVertical, Clock } from 'lucide-react';
+import { Button } from '../ui/button';
 
 export interface Note {
     id: number;
@@ -84,21 +85,23 @@ export default function NoteCard({ note, onAccess, onDelete, onUpdate }: NoteCar
 
                     {/* Dropdown Menu */}
                     {showMenu && (
-                        <div className="absolute right-0 mt-1 w-40 bg-card border border-border rounded-lg shadow-lg z-10 overflow-hidden">
-                            <button
+                        <div className="absolute right-0 mt-1 w-30 bg-card border border-border rounded-lg shadow-lg z-10 overflow-hidden">
+                            <Button
+                                variant="ghost"
                                 onClick={handleUpdate}
-                                className="w-full px-4 py-2 text-left text-sm hover:bg-card-secondary transition-colors flex items-center gap-2"
+                                className="w-full text-center transition-colors flex items-center gap-2"
                             >
                                 <Edit className="w-4 h-4" />
                                 Update
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                                variant="ghost"
                                 onClick={handleDelete}
-                                className="w-full px-4 py-2 text-left text-sm hover:bg-destructive/10 text-destructive transition-colors flex items-center gap-2"
+                                className="w-full text-center text-destructive transition-colors flex items-center gap-2"
                             >
                                 <Trash2 className="w-4 h-4" />
                                 Delete
-                            </button>
+                            </Button>
                         </div>
                     )}
                 </div>

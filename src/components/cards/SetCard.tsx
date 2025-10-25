@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { BookOpen, MoreVertical, Clock, FileText, Headphones, Trash2, Edit } from 'lucide-react';
+import { Button } from '../ui/button';
 
 export interface Set {
     id: number;
@@ -83,31 +84,34 @@ export default function SetCard({ set, onAccess, onDelete, onUpdate }: SetCardPr
 
                 {/* More Options Button with Dropdown */}
                 <div className="relative" ref={menuRef}>
-                    <button
+                    <Button
                         onClick={handleMoreClick}
-                        className="hover:bg-card-secondary p-1 rounded cursor-pointer transition-colors"
+                        variant="ghost"
+                        className="p-1 rounded cursor-pointer transition-colors"
                         title="More options"
                     >
                         <MoreVertical className="w-4 h-4" />
-                    </button>
+                    </Button>
 
                     {/* Dropdown Menu */}
                     {showMenu && (
-                        <div className="absolute right-0 mt-1 w-40 bg-card border border-border rounded-lg shadow-lg z-10 overflow-hidden">
-                            <button
+                        <div className="absolute right-0 mt-1 w-30 bg-card border border-border rounded-lg shadow-lg z-10 overflow-hidden">
+                            <Button
+                                variant="ghost"
                                 onClick={handleUpdate}
-                                className="w-full px-4 py-2 text-left text-sm hover:bg-card-secondary transition-colors flex items-center gap-2"
+                                className="w-full text-center transition-colors flex items-center gap-2"
                             >
                                 <Edit className="w-4 h-4" />
                                 Update
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                                variant="ghost"
                                 onClick={handleDelete}
-                                className="w-full px-4 py-2 text-left text-sm hover:bg-destructive/10 text-destructive transition-colors flex items-center gap-2"
+                                className="w-full text-center text-destructive transition-colors flex items-center gap-2"
                             >
                                 <Trash2 className="w-4 h-4" />
                                 Delete
-                            </button>
+                            </Button>
                         </div>
                     )}
                 </div>

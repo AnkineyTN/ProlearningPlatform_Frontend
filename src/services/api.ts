@@ -268,7 +268,7 @@ export const noteAPI = {
         api.patch(`/note/update/${noteId}`, payload),
     deleteNote: (noteId: number): Promise<AxiosResponse> =>
         api.delete(`/note/delete/${noteId}`),
-    getAllNotesBySet: (setId: number, pageNo: number = 0, pageSize: number = 10): Promise<AxiosResponse<{ status: number; message: string; data: NoteListResponse }>> =>
+    getAllNotesBySet: (setId: number, pageNo: number, pageSize: number): Promise<AxiosResponse<{ status: number; message: string; data: NoteListResponse }>> =>
         api.get(`/note/all/${setId}?pageNo=${pageNo}&pageSize=${pageSize}`),
     autoSaveNote: (noteId: number, data: AutoSaveNoteRequest): Promise<AxiosResponse> =>
         api.patch(`/note/save/${noteId}`, data),

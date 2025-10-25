@@ -9,7 +9,7 @@ import LandingPage from '@/pages/LandingPage'
 import OnboardingApp from "@/pages/OnboardingApp.tsx";
 import SetSeriesPage from '@/pages/SetSeriesPage'
 import TextEditor from '@/pages/TextEditor'
-import FlashcardEditor from '@/pages/flashcard/FlashcardEditor'
+import FlashcardEditor from '@/pages/flashcard/components/FlashcardEditor'
 import { useParams } from 'react-router-dom';
 import FlashcardApp from '@/pages/flashcard/FlashcardApp'
 
@@ -60,7 +60,7 @@ export const routeConfig: RouteObject[] = [
                 element: <SetSeriesPageWrapper />
             },
             {
-                path: 'flashcards/new',
+                path: 'flashcards/edit/:id',
                 element: <FlashcardEditor />
             },
             {

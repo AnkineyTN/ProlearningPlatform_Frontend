@@ -3,7 +3,6 @@ import { SwatchBook, MoreVertical, Clock } from 'lucide-react';
 export interface Flashcard {
     id: string;
     title: string;
-    category: string;
     preview: string;
     time: string;
     date: string;
@@ -22,7 +21,6 @@ export default function FlashCard({ flashcard, onAccess }: { flashcard: Flashcar
                 </button>
             </div>
             <h2 className="font-semibold mb-1">{flashcard.title}</h2 >
-            <p className="text-xs text-muted-foreground mb-3">{flashcard.category}</p>
             <p className="text-sm text-muted-foreground mb-4">{flashcard.preview}</p>
             <div className="flex justify-between items-center text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">

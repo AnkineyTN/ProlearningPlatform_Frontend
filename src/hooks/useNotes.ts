@@ -21,7 +21,7 @@ export const useNoteDetail = (noteId: number) => {
 };
 
 // Hook to get all notes by set
-export const useNotesBySet = (setId: number, pageNo: number = 0, pageSize: number = 10) => {
+export const useNotesBySet = (setId: number, pageNo: number, pageSize: number) => {
     return useQuery({
         queryKey: ['notes', setId, pageNo, pageSize],
         queryFn: async () => {
