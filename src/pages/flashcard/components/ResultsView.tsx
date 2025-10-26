@@ -27,13 +27,13 @@ export default function ResultsView({ studiedCards, totalCards, onHome, onContin
 
                         <div className="grid grid-cols-2 gap-6 mb-8">
                             <div className="p-6 bg-muted rounded-lg">
-                                <div className="text-4xl font-bold text-blue-600 mb-2">
+                                <div className="text-4xl font-bold text-foreground mb-2">
                                     {studiedCards}
                                 </div>
                                 <div className="text-sm text-muted-foreground">Cards Studied</div>
                             </div>
                             <div className="p-6 bg-muted rounded-lg">
-                                <div className="text-4xl font-bold text-gray-600 mb-2">
+                                <div className="text-4xl font-bold text-muted-foreground mb-2">
                                     {totalCards - studiedCards}
                                 </div>
                                 <div className="text-sm text-muted-foreground">Not Yet Studied</div>

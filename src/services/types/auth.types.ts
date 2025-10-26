@@ -23,6 +23,15 @@ export interface LoginData {
     password: string
 }
 
+export interface GoogleAuthResponse {
+    status: string
+    message: string
+    data: {
+        authorizationUrl: string
+    }
+    metadata: Record<string, any>
+}
+
 export interface MeResponse {
     user: User
 }

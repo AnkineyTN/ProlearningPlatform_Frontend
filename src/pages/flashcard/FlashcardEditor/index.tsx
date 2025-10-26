@@ -1,23 +1,10 @@
 import { useState } from 'react';
-import { Plus, Lock, Image, Shuffle, Trash2, GripVertical, MoreHorizontal } from 'lucide-react';
+import { Plus, Lock, Shuffle, Trash2, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-interface FlashcardItem {
-    id: string;
-    term: string;
-    definition: string;
-    imageUrl?: string;
-}
-
-interface FlashcardEditorProps {
-    initialTitle?: string;
-    initialDescription?: string;
-    initialPrivacy?: string;
-    onSave?: (data: any) => void;
-    onCancel?: () => void;
-}
+import FlashcardItemWrapper from './FlashcardItemWrapper';
+import { type FlashcardItem, type FlashcardEditorProps } from './type';
 
 export default function FlashcardEditor({
     initialTitle = '',
@@ -36,7 +23,7 @@ export default function FlashcardEditor({
     const [draggedItem, setDraggedItem] = useState<string | null>(null);
 
     const addFlashcard = () => {
-        const newId = (flashcards.length + 1).toString();
+        const newId = Date.now().toString();
         setFlashcards([...flashcards, { id: newId, term: '', definition: '' }]);
     };
 
@@ -62,11 +49,13 @@ export default function FlashcardEditor({
             const draggedIndex = flashcards.findIndex(card => card.id === draggedItem);
             const targetIndex = flashcards.findIndex(card => card.id === id);
 
-            const newCards = [...flashcards];
-            const [removed] = newCards.splice(draggedIndex, 1);
-            newCards.splice(targetIndex, 0, removed);
+            if (draggedIndex !== -1 && targetIndex !== -1) {
+                const newCards = [...flashcards];
+                const [removed] = newCards.splice(draggedIndex, 1);
+                newCards.splice(targetIndex, 0, removed);
 
-            setFlashcards(newCards);
+                setFlashcards(newCards);
+            }
         }
     };
 
@@ -160,74 +149,18 @@ export default function FlashcardEditor({
                 {/* Flashcards */}
                 <div className="space-y-4 mb-6">
                     {flashcards.map((card, index) => (
-                        <div
+                        <FlashcardItemWrapper
                             key={card.id}
-                            draggable
-                            onDragStart={() => handleDragStart(card.id)}
-                            onDragOver={(e) => handleDragOver(e, card.id)}
+                            card={card}
+                            index={index}
+                            onUpdate={updateFlashcard}
+                            onDelete={deleteFlashcard}
+                            canDelete={flashcards.length > 2}
+                            onDragStart={handleDragStart}
+                            onDragOver={handleDragOver}
                             onDragEnd={handleDragEnd}
-                            className="bg-card rounded-lg p-6 border border-border hover:border-muted-foreground transition-colors"
-                        >
-                            <div className="flex items-start gap-4">
-                                {/* Number and Drag Handle */}
-                                <div className="flex flex-col items-center gap-2 pt-2">
-                                    <span className="text-lg font-semibold text-muted-foreground">{index + 1}</span>
-                                    <button className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
-                                        <GripVertical className="w-5 h-5" />
-                                    </button>
-                                </div>
-
-                                {/* Content */}
-                                <div className="flex-1 grid grid-cols-2 gap-4">
-                                    {/* Term */}
-                                    <div className="space-y-2">
-                                        <textarea
-                                            value={card.term}
-                                            onChange={(e) => updateFlashcard(card.id, 'term', e.target.value)}
-                                            placeholder="Term"
-                                            className="w-full px-4 py-3 bg-background border-b-2 border-border focus:border-foreground focus:outline-none resize-none min-h-[100px]"
-                                        />
-                                        <label className="text-xs font-semibold text-muted-foreground uppercase">
-                                            TERM
-                                        </label>
-                                        <button className="p-2 hover:bg-secondary rounded transition-colors">
-                                            <div className="w-full border-2 border-dashed border-border rounded-lg p-4 flex flex-col items-center justify-center text-muted-foreground hover:border-foreground transition-colors cursor-pointer">
-                                                <Image className="w-6 h-6 mb-1" />
-                                                <span className="text-xs font-semibold uppercase">Image</span>
-                                            </div>
-                                        </button>
-                                    </div>
-
-                                    {/* Definition */}
-                                    <div className="space-y-2">
-                                        <textarea
-                                            value={card.definition}
-                                            onChange={(e) => updateFlashcard(card.id, 'definition', e.target.value)}
-                                            placeholder="Definition"
-                                            className="w-full px-4 py-3 bg-background border-b-2 border-border focus:border-foreground focus:outline-none resize-none min-h-[100px]"
-                                        />
-                                        <label className="text-xs font-semibold text-muted-foreground uppercase">
-                                            DEFINITION
-                                        </label>
-                                        <button className="p-2 hover:bg-secondary rounded transition-colors">
-                                            <div className="w-full border-2 border-dashed border-border rounded-lg p-4 flex flex-col items-center justify-center text-muted-foreground hover:border-foreground transition-colors cursor-pointer">
-                                                <Image className="w-6 h-6 mb-1" />
-                                                <span className="text-xs font-semibold uppercase">Image</span>
-                                            </div>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Delete Button */}
-                                <button
-                                    onClick={() => deleteFlashcard(card.id)}
-                                    disabled={flashcards.length <= 2}
-                                    className="p-2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                                >
-                                    <Trash2 className="w-5 h-5" />
-                                </button>
-                            </div>
-                        </div>
+                            isDragging={draggedItem === card.id}
+                        />
                     ))}
                 </div>
 

@@ -9,9 +9,11 @@ import LandingPage from '@/pages/LandingPage'
 import OnboardingApp from "@/pages/OnboardingApp.tsx";
 import SetSeriesPage from '@/pages/SetSeriesPage'
 import TextEditor from '@/pages/TextEditor'
-import FlashcardEditor from '@/pages/flashcard/components/FlashcardEditor'
+import FlashcardEditor from '@/pages/flashcard/FlashcardEditor'
 import { useParams } from 'react-router-dom';
 import FlashcardApp from '@/pages/flashcard/FlashcardApp'
+import GoogleAuthCallback from '@/pages/GoogleAuthCallback'
+import GoogleAuthFailure from '@/pages/GoogleAuthFailure'
 
 // Wrapper component to extract setId from params and pass as prop
 function SetSeriesPageWrapper() {
@@ -41,6 +43,14 @@ export const routeConfig: RouteObject[] = [
     {
         path: '/onboarding',
         element: <OnboardingApp />
+    },
+    {
+        path: '/auth/google/callback',
+        element: <GoogleAuthCallback />
+    },
+    {
+        path: '/auth/google/failure',
+        element: <GoogleAuthFailure />
     },
     // Protected routes
     {
