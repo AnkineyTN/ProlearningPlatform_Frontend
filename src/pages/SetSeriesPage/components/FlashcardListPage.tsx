@@ -9,7 +9,7 @@ export default function FlashcardListPage() {
 
     const flashcards = [
         {
-            id: 1,
+            id: "1",
             title: 'OOP Interview Question',
             category: '20 Sep 2025',
             preview: 'Supervised learning is a machine learning method in which an algorithm learns from...',
@@ -17,7 +17,7 @@ export default function FlashcardListPage() {
             date: '16 Sep 2025'
         },
         {
-            id: 2,
+            id: "2",
             title: 'Stack and Queue',
             category: '15 Sep 2025',
             preview: 'Stack is a LIFO (Last In First Out) data structure, while Queue is FIFO (First In Fir...',
@@ -25,7 +25,7 @@ export default function FlashcardListPage() {
             date: '16 Sep 2025'
         },
         {
-            id: 3,
+            id: "3",
             title: 'Supervised Learning Algo...',
             category: '01 Sep 2025',
             preview: 'Supervised learning is a machine learning method in which an algorithm learns from...',
@@ -33,7 +33,7 @@ export default function FlashcardListPage() {
             date: '16 Sep 2025'
         },
         {
-            id: 4,
+            id: "4",
             title: 'Supervised Learning Algo...',
             category: '10 Aug 2025',
             preview: 'Supervised learning is a machine learning method in which an algorithm learns from...',
@@ -41,7 +41,7 @@ export default function FlashcardListPage() {
             date: '16 Sep 2025'
         },
         {
-            id: 5,
+            id: "5",
             title: 'Stack and Queue',
             category: '22 Jul 2025',
             preview: 'Stack is a LIFO (Last In First Out) data structure, while Queue is FIFO (First In Fir...',
@@ -49,7 +49,7 @@ export default function FlashcardListPage() {
             date: '16 Sep 2025'
         },
         {
-            id: 6,
+            id: "6",
             title: 'Supervised Learning Algo...',
             category: '20 Jun 2025',
             preview: 'Supervised learning is a machine learning method in which an algorithm learns from...',
