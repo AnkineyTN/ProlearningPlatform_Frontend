@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react';
+import { Youtube, Music, Sparkles, Facebook, Globe, Instagram, Users, CircleDot, MoreHorizontal } from 'lucide-react';
 import SwitchButton from './SwitchButton';
 
 export default function SourceSelection({
@@ -13,42 +13,53 @@ export default function SourceSelection({
     onBack: () => void;
 }) {
     const sources = [
-        'Social Media',
-        'Search Engine',
-        'Friend or Colleague',
-        'Advertisement',
-        'Blog or Article',
-        'Other'
+        { id: 'YouTube', label: 'YouTube', icon: Youtube, color: 'bg-red-500' },
+        { id: 'TikTok', label: 'TikTok', icon: Music, color: 'bg-black' },
+        { id: 'ChatGPT', label: 'ChatGPT', icon: Sparkles, color: 'bg-teal-500' },
+        { id: 'Facebook', label: 'Facebook', icon: Facebook, color: 'bg-blue-500' },
+        { id: 'Google', label: 'Google', icon: Globe, color: 'bg-gray-400' },
+        { id: 'Instagram', label: 'Instagram', icon: Instagram, color: 'bg-pink-500' },
+        { id: 'Classmate', label: 'Classmate', icon: Users, color: 'bg-gray-500' },
+        { id: 'Reddit', label: 'Reddit', icon: CircleDot, color: 'bg-orange-500' },
+        { id: 'Other', label: 'Other', icon: MoreHorizontal, color: '' }
     ];
 
     return (
         <div className="min-h-screen flex items-center justify-center p-6">
-            <div className="w-full max-w-2xl">
+            <div className="w-full max-w-3xl">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold text-foreground mb-3">How did you hear about us?</h1>
-                    <p className="text-muted-foreground">We'd love to know how you discovered our platform</p>
+                    <h1 className="text-4xl font-bold text-foreground mb-3">
+                        How did you hear about<br />ProLearning?
+                    </h1>
+                    <p className="text-muted-foreground">
+                        Help us understand how you discovered our platform so<br />we can improve our reach
+                    </p>
                 </div>
 
-                <div className="space-y-3 mb-8">
-                    {sources.map((source) => (
-                        <button
-                            key={source}
-                            onClick={() => onSourceSelect(source)}
-                            className={`w-full p-5 rounded-xl border-2 transition-all text-left ${selectedSource === source
-                                ? 'border-blue-500 bg-card-selected'
-                                : 'border-ring bg-card-secondary hover:border-gray-300'
+                <div className="grid grid-cols-3 gap-4 mb-8">
+                    {sources.map((source) => {
+                        const Icon = source.icon;
+                        const isSelected = selectedSource === source.id;
+                        
+                        return (
+                            <button
+                                key={source.id}
+                                onClick={() => onSourceSelect(source.id)}
+                                className={`p-6 rounded-2xl border-2 transition-all ${
+                                    isSelected
+                                        ? 'border-blue-500 bg-card-selected'
+                                        : 'border-ring bg-card-secondary hover:border-gray-300'
                                 }`}
-                        >
-                            <div className="flex items-center justify-between">
-                                <span className="font-semibold text-foreground">{source}</span>
-                                {selectedSource === source && (
-                                    <div className="w-6 h-6 bg-foreground rounded-full flex items-center justify-center">
-                                        <Check className="w-4 h-4 text-background" />
+                            >
+                                <div className="flex flex-col items-center gap-3">
+                                    <div className={`w-12 h-12 rounded-xl ${source.color} flex items-center justify-center`}>
+                                        <Icon className="w-6 h-6 text-white" />
                                     </div>
-                                )}
-                            </div>
-                        </button>
-                    ))}
+                                    <span className="font-medium text-foreground">{source.label}</span>
+                                </div>
+                            </button>
+                        );
+                    })}
                 </div>
 
                 <SwitchButton
@@ -59,4 +70,4 @@ export default function SourceSelection({
             </div>
         </div>
     );
-};
+}

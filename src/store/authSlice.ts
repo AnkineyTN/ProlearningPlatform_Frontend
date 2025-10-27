@@ -1,11 +1,14 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
 interface User {
-    id: string
-    name: string
+    id: number
+    firstName: string
+    lastName: string
     email: string
-    createdAt: string
-    updatedAt: string
+    roles: string[]
+    language: string
+    education: string
+    hearAppFrom: string
 }
 
 interface AuthState {
@@ -45,6 +48,7 @@ const authSlice = createSlice({
             state.token = action.payload.token
             state.error = null
             localStorage.setItem('token', action.payload.token)
+            localStorage.setItem('user', JSON.stringify(action.payload.user))
         },
         loginFailure: (state, action: PayloadAction<string>) => {
             state.isLoading = false
@@ -52,16 +56,18 @@ const authSlice = createSlice({
             state.user = null
             state.token = null
             localStorage.removeItem('token')
+            localStorage.removeItem('user')
         },
         logout: (state) => {
             state.user = null
             state.token = null
             state.error = null
             localStorage.removeItem('token')
-            localStorage.removeItem('user') // Xóa user khỏi localStorage
+            localStorage.removeItem('user')
         },
         setUser: (state, action: PayloadAction<User>) => {
             state.user = action.payload
+            localStorage.setItem('user', JSON.stringify(action.payload))
         }
     }
 })

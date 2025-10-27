@@ -1,17 +1,18 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
-import { signupSchema, type SignupFormData } from '../schemas/auth'
-// import { authAPI } from '../services/api'
-import { loginStart, loginFailure } from '../store/authSlice'
-import { useAppDispatch, useAppSelector } from '../hooks/redux'
+import { signupSchema, type SignupFormData } from '@/schemas/auth'
+import { authAPI } from '@/services/endpoints/auth'
+import { loginStart, loginFailure, loginSuccess } from '@/store/authSlice'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import {AlertCircleIcon, Lock, Mail, User, Eye, EyeOff, RefreshCw, CircleDot} from 'lucide-react'
+import { AlertCircleIcon, Lock, Mail, User, Eye, EyeOff, RefreshCw, CircleDot } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 export default function SignUp() {
     const dispatch = useAppDispatch()
@@ -21,27 +22,53 @@ export default function SignUp() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
     const { register, handleSubmit, formState: { errors } } = useForm<SignupFormData>({
-        resolver: zodResolver(signupSchema)
+        resolver: zodResolver(signupSchema),
+        defaultValues: {
+            role: 'ROLE_USER',
+        },
     })
 
-    const onSubmit = async () => {
+    const handleGoogleLogin = async () => {
+        try {
+            const response = await authAPI.googleAuth()
+            window.location.href = response.data.data.authorizationUrl
+        } catch (error: any) {
+            toast.error('Failed to connect with Google')
+        }
+    }
+
+    const onSubmit = async (data: SignupFormData) => {
         dispatch(loginStart())
         try {
-            // const response = await authAPI.signup({
-            //     name: data.name,
-            //     email: data.email,
-            //     password: data.password
-            // })
+            await authAPI.signup({
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                password: data.password,
+                role: 'ROLE_USER'
+            })
 
-            // dispatch(loginSuccess({
-            //     user: response.data.user,
-            //     token: response.data.token
-            // }))
+            toast.success('🎉 Account created successfully!', {
+                position: "top-right",
+                autoClose: 2000,
+            })
+
+            const loginResponse = await authAPI.login({
+                email: data.email,
+                password: data.password
+            })
+
+            dispatch(loginSuccess({
+                user: loginResponse.data.data.userResponseDto,
+                token: loginResponse.data.data.accessToken
+            }))
 
             navigate('/onboarding')
-        } catch (error: any) {
+        }
+        catch (error: any) {
+            toast.error(error.response?.data?.message || 'Failed to create account')
             dispatch(loginFailure(
-                error.response?.data?.message || 'Sign up fail. Please try again'
+                error.response?.data?.message || 'Failed to create account'
             ))
         }
     }
@@ -59,21 +86,39 @@ export default function SignUp() {
                     <CardContent>
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 text-start">
                             <div>
-                                <Label htmlFor="name" className="font-bold text-base mb-2">Name</Label>
+                                <Label htmlFor="name" className="font-bold text-base mb-2">First name</Label>
                                 <div className="relative mb-1">
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                         <User size={16} />
                                     </span>
                                     <Input
-                                        id="name"
+                                        id="firstName"
                                         type="text"
-                                        {...register('name')}
+                                        {...register('firstName')}
                                         placeholder={"Your name"}
-                                        className={`ps-9 ${errors.name ? 'border-red-500' : ''}`}
+                                        className={`ps-9 ${errors.firstName ? 'border-red-500' : ''}`}
                                     />
                                 </div>
-                                {errors.name && (
-                                    <p className="text-sm text-red-500">{errors.name.message}</p>
+                                {errors.firstName && (
+                                    <p className="text-sm text-red-500">{errors.firstName.message}</p>
+                                )}
+                            </div>
+                            <div>
+                                <Label htmlFor="name" className="font-bold text-base mb-2">Last name</Label>
+                                <div className="relative mb-1">
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                        <User size={16} />
+                                    </span>
+                                    <Input
+                                        id="lastName"
+                                        type="text"
+                                        {...register('lastName')}
+                                        placeholder={"Your name"}
+                                        className={`ps-9 ${errors.lastName ? 'border-red-500' : ''}`}
+                                    />
+                                </div>
+                                {errors.lastName && (
+                                    <p className="text-sm text-red-500">{errors.lastName.message}</p>
                                 )}
                             </div>
 
@@ -106,7 +151,7 @@ export default function SignUp() {
                                         id="password"
                                         type={showPassword ? 'text' : 'password'}
                                         {...register('password')}
-                                        placeholder={"••••••"}
+                                        placeholder={"••••••••"}
                                         className={`ps-9 pe-9 ${errors.password ? 'border-red-500' : ''}`}
                                     />
                                     <span
@@ -120,8 +165,8 @@ export default function SignUp() {
                                     <p className="text-sm text-red-500">{errors.password.message}</p>
                                 ) : (
                                     <div className="text-sm text-gray-500 flex items-center gap-2">
-                                        <CircleDot size={16}/>
-                                        6 or more characters
+                                        <CircleDot size={16} />
+                                        8 or more characters
                                     </div>
                                 )}
                             </div>
@@ -136,7 +181,7 @@ export default function SignUp() {
                                         id="confirmPassword"
                                         type={showConfirmPassword ? 'text' : 'password'}
                                         {...register('confirmPassword')}
-                                        placeholder={"••••••"}
+                                        placeholder={"••••••••"}
                                         className={`ps-9 pe-9 ${errors.confirmPassword ? 'border-red-500' : ''}`}
                                     />
                                     <span
@@ -160,7 +205,7 @@ export default function SignUp() {
 
                             <Button
                                 type="submit"
-                                className="w-full"
+                                className="w-full cursor-pointer mt-2"
                                 disabled={isLoading}
                                 data-testid="create-btn"
                             >
@@ -170,11 +215,16 @@ export default function SignUp() {
                                 Create account
                             </Button>
                             <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                              <span className="bg-card text-muted-foreground relative z-10 px-2">
-                                Or continue with
-                              </span>
+                                <span className="bg-card text-muted-foreground relative z-10 px-2">
+                                    Or continue with
+                                </span>
                             </div>
-                            <Button variant={"outline"} className="w-full cursor-pointer">
+                            <Button
+                                variant={"outline"}
+                                className="w-full cursor-pointer"
+                                type="button"
+                                onClick={handleGoogleLogin}
+                            >
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <path
                                         d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
@@ -195,7 +245,7 @@ export default function SignUp() {
                     </CardFooter>
                 </Card>
             </div>
-            <div className={"w-[50vw] bg-gradient-to-r from-popover-foreground to-muted-foreground h-screen px-14 py-10"}>
+            <div className={"w-[50vw] h-screen bg-gradient-to-r from-popover-foreground to-muted-foreground px-14 py-10"}>
                 <div className={"text-background text-8xl font-bold"}>CREATE AN ACCOUNT!</div>
             </div>
         </div>

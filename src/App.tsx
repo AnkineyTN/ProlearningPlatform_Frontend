@@ -3,9 +3,11 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { store } from './store'
 import { routeConfig } from './config/routeConfig.tsx'
-import { ThemeProvider } from "@/components/theme-provider.tsx"
-import {useEffect} from "react";
-import {authAPI} from "@/services/api.ts";
+import { ThemeProvider } from "@/components/theme/theme-provider.tsx"
+import { useEffect } from "react";
+import { authAPI } from "@/services/endpoints/auth.ts";
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const queryClient = new QueryClient()
 
@@ -27,6 +29,7 @@ function App() {
 
     return (
         <Provider store={store}>
+            <ToastContainer />
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
                 <QueryClientProvider client={queryClient}>
                     <Router>

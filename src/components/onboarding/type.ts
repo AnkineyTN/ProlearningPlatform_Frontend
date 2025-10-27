@@ -4,7 +4,7 @@ interface OnboardingData {
     role: string;
     source: string;
     premium: boolean;
-    studySet?: {
+    studySet: {
         name: string;
         description: string;
         privacy: string;

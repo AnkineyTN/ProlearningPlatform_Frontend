@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { profileAPI, authAPI, type ChangePasswordData, type UpdateProfileData } from '../services/api'
+import { profileAPI } from '@/services/endpoints/profile'
+import { authAPI } from '@/services/endpoints/auth'
+import { type ChangePasswordData, type UpdateProfileData } from '@/services/types/profile.types'
 import { toast } from 'react-hot-toast' // hoặc thư viện toast khác bạn đang dùng
 
 export const useMe = () => {
