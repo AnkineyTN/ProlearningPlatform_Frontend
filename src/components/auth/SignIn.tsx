@@ -12,10 +12,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { AlertCircleIcon, Eye, EyeOff, LockIcon, Mail, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { toast } from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 export default function SignIn() {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
+    const { t } = useTranslation()
     const { isLoading, error } = useAppSelector(state => state.auth)
     const [showPassword, setShowPassword] = useState(false);
 
@@ -28,7 +30,7 @@ export default function SignIn() {
             const response = await authAPI.googleAuth()
             window.location.href = response.data.data.authorizationUrl
         } catch (error: any) {
-            toast.error('Failed to connect with Google')
+            toast.error(t('signin.failedGoogleConnect'))
         }
     }
 
@@ -45,7 +47,7 @@ export default function SignIn() {
             navigate('/dashboard')
         } catch (error: any) {
             dispatch(loginFailure(
-                error.response?.data?.message || 'Wrong username or password'
+                error.response?.data?.message || t("signin.wrongCredentials")
             ))
         }
     }
@@ -58,16 +60,16 @@ export default function SignIn() {
             <div className="w-[50vw] flex items-center justify-center">
                 <Card className="w-110 px-4 py-8">
                     <CardHeader className={"text-start"}>
-                        <CardTitle className={"font-bold text-2xl"}>Sign in to your account</CardTitle>
+                        <CardTitle className={"font-bold text-2xl"}>{t('signin.title')}</CardTitle>
                         <CardDescription>
-                            Welcome back! Please sign in to continue.
+                            {t('signin.description')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-start">
                             <div>
                                 <div>
-                                    <Label htmlFor="email" className={"font-bold text-base mb-2"}>Email</Label>
+                                    <Label htmlFor="email" className={"font-bold text-base mb-2"}>{t('signin.email')}</Label>
                                     <div className="relative mb-1">
                                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                             <Mail size={16} />
@@ -89,12 +91,12 @@ export default function SignIn() {
 
                             <div>
                                 <div className="flex items-center mb-2">
-                                    <Label htmlFor="password" className={"font-bold text-base"}>Password</Label>
+                                    <Label htmlFor="password" className={"font-bold text-base"}>{t('signin.password')}</Label>
                                     <a
                                         href="#"
                                         className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                                     >
-                                        Forgot your password?
+                                        {t('signin.forgotPassword')}
                                     </a>
                                 </div>
                                 <div className="relative mb-1">
@@ -142,12 +144,12 @@ export default function SignIn() {
                                 {isLoading && (
                                     <RefreshCw className="w-4 h-4 animate-spin" />
                                 )}
-                                Sign in
+                                {t('signin.subtitle')}
 
                             </Button>
                             <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                                 <span className="bg-card text-muted-foreground relative z-10 px-2">
-                                    Or continue with
+                                    {t('signin.orContinueWith')}
                                 </span>
                             </div>
                             <Button
@@ -168,9 +170,9 @@ export default function SignIn() {
                     </CardContent>
                     <CardFooter>
                         <p className="text-muted-foreground">
-                            Don't have an account? {'  '}
+                            {t('signin.noAccount')} {'  '}
                             <Link to="/signup" className="ms-1 text-foreground font-bold underline">
-                                Sign up
+                                {t('signin.createAccount')}
                             </Link>
                         </p>
                     </CardFooter>

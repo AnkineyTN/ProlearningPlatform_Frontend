@@ -1,5 +1,6 @@
 import { Check, Book, Layers } from 'lucide-react';
 import SwitchButton from './SwitchButton';
+import { useTranslation } from 'react-i18next';
 
 export default function RoleSelection({
     selectedRole,
@@ -11,13 +12,14 @@ export default function RoleSelection({
     onRoleSelect: (role: string) => void;
     onNext: () => void;
     onBack: () => void;
-}) {
+    }) {
+    const { t } = useTranslation();
     return (
         <div className="min-h-screen flex items-center justify-center p-6">
             <div className="w-full max-w-2xl">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold text-foreground mb-3">I am a...</h1>
-                    <p className="text-muted-foreground">Tell us about your role</p>
+                    <h1 className="text-4xl font-bold text-foreground mb-3">{t('onboarding.roleSelection.header')}</h1>
+                    <p className="text-muted-foreground">{t('onboarding.roleSelection.description')}</p>
                 </div>
 
                 <div className="space-y-4 mb-8">
@@ -34,8 +36,8 @@ export default function RoleSelection({
                                     <Book className="w-6 h-6 text-blue-600" />
                                 </div>
                                 <div className="text-left">
-                                    <div className="font-semibold text-foreground text-lg">Student</div>
-                                    <div className="text-sm text-muted-foreground">Learning and studying materials</div>
+                                    <div className="font-semibold text-foreground text-lg">{t('onboarding.roleSelection.student')}</div>
+                                    <div className="text-sm text-muted-foreground">{t('onboarding.roleSelection.studentDescription')}</div>
                                 </div>
                             </div>
                             {selectedRole === 'student' && (
@@ -59,8 +61,8 @@ export default function RoleSelection({
                                     <Layers className="w-6 h-6 text-green-600" />
                                 </div>
                                 <div className="text-left">
-                                    <div className="font-semibold text-foreground text-lg">Teacher</div>
-                                    <div className="text-sm text-muted-foreground">Creating and sharing study materials</div>
+                                    <div className="font-semibold text-foreground text-lg">{t('onboarding.roleSelection.teacher')}</div>
+                                    <div className="text-sm text-muted-foreground">{t('onboarding.roleSelection.teacherDescription')}</div>
                                 </div>
                             </div>
                             {selectedRole === 'teacher' && (

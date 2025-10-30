@@ -1,6 +1,7 @@
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { ModeToggle } from "@/components/theme/mode-toggle";
+import { LanguageToggle } from '@/components/language/language-toggle';
 
 interface HeaderProps {
     onSearch?: (query: string) => void;
@@ -15,7 +16,7 @@ export default function HeaderSet({ onSearch }: HeaderProps) {
             <div className="flex items-center gap-4">
                 {/* Search Bar */}
                 <div className="relative">
-                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
                     <Input
                         type="text"
                         placeholder="Search..."
@@ -24,8 +25,10 @@ export default function HeaderSet({ onSearch }: HeaderProps) {
                     />
                 </div>
 
-                {/* Dark Mode Toggle */}
-                <ModeToggle />
+                <div className="flex w-full justify-between px-4 gap-4">
+                    <ModeToggle />
+                    <LanguageToggle />
+                </div>
             </div>
         </div>
     );

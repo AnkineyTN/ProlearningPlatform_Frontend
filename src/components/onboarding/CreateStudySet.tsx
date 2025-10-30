@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useTranslation } from 'react-i18next';
 
 type CreateStudySetProps = {
     studySet: { name: string; description: string; privacy: string };
@@ -25,19 +26,20 @@ export default function CreateStudySet({
     onSkip,
     onBack
 }: CreateStudySetProps) {
+    const { t } = useTranslation();
     return (
         <div className="min-h-screen flex items-center justify-center p-6">
             <div className="w-full max-w-5xl">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold text-foreground mb-3">Name Your First Study Set</h1>
-                    <p className="text-muted-foreground">Create your personalized learning space to organize your study materials</p>
+                    <h1 className="text-4xl font-bold text-foreground mb-3">{t('onboarding.createStudySet.title')}</h1>
+                    <p className="text-muted-foreground">{t('onboarding.createStudySet.description')}</p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-8">
                     <div className="space-y-4">
                         <div>
                             <Label className={"block text-sm font-semibold text-foreground mb-2"}>
-                                Study Set Name <span className="text-red-500">*</span>
+                                {t('onboarding.createStudySet.nameLabel')} <span className="text-red-500">*</span>
                             </Label>
                             <Input
                                 type="text"
@@ -52,10 +54,10 @@ export default function CreateStudySet({
 
                         <div>
                             <Label className="block text-sm font-semibold text-foreground mb-2">
-                                Description <span className="text-gray-500 font-normal">(Optional)</span>
+                                {t('onboarding.createStudySet.descriptionLabel')} <span className="text-gray-500 font-normal">(Optional)</span>
                             </Label>
                             <Textarea
-                                placeholder="Add a description to help you remember what this study set is about..."
+                                placeholder={t('onboarding.createStudySet.descriptionPlaceholder')}
                                 value={studySet.description}
                                 onChange={(e) => onStudySetChange('description', e.target.value)}
                                 className="w-full px-4 py-3 bg-card"
@@ -66,7 +68,7 @@ export default function CreateStudySet({
                         </div>
 
                         <div>
-                            <Label className="block text-sm font-semibold text-foreground mb-2">Privacy</Label>
+                            <Label className="block text-sm font-semibold text-foreground mb-2">{t('onboarding.createStudySet.privacyLabel')}</Label>
                             <Select
                                 value={studySet.privacy}
                                 onValueChange={(value) => onStudySetChange('privacy', value)}
@@ -75,9 +77,9 @@ export default function CreateStudySet({
                                     <SelectValue placeholder="Select privacy level" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="public">🌐 Public</SelectItem>
-                                    <SelectItem value="private">🔒 Private</SelectItem>
-                                    <SelectItem value="unlisted">👁️ Unlisted</SelectItem>
+                                    <SelectItem value="public">🌐 {t('onboarding.createStudySet.privacyPublic')}</SelectItem>
+                                    <SelectItem value="private">🔒 {t('onboarding.createStudySet.privacyPrivate')}</SelectItem>
+                                    <SelectItem value="unlisted">👁️ {t('onboarding.createStudySet.privacyUnlisted')}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -87,12 +89,12 @@ export default function CreateStudySet({
                             disabled={!studySet.name.trim()}
                             className="w-full py-4 bg-card-inverse text-background rounded-xl font-semibold hover:bg-card-hovered transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <span>+ Create Set</span>
+                            <span>+ {t('onboarding.createStudySet.createSet')}</span>
                         </button>
                     </div>
 
                     <div className="bg-card-secondary rounded-2xl border-2 border-ring p-6">
-                        <h3 className="text-xl font-bold text-foreground mb-6">What is a study set?</h3>
+                        <h3 className="text-xl font-bold text-foreground mb-6">{t('onboarding.createStudySet.whatIsStudySet')}</h3>
 
                         <div className="space-y-4 mb-6">
                             <div className="flex items-start gap-3">
@@ -100,7 +102,7 @@ export default function CreateStudySet({
                                     <Layers className="w-5 h-5 text-blue-600" />
                                 </div>
                                 <div>
-                                    <p className="text-foreground">Organize your materials into separate classes or semesters.</p>
+                                    <p className="text-foreground">{t('onboarding.createStudySet.organizeMaterials')}</p>
                                 </div>
                             </div>
 
@@ -109,7 +111,7 @@ export default function CreateStudySet({
                                     <Book className="w-5 h-5 text-purple-600" />
                                 </div>
                                 <div>
-                                    <p className="text-foreground">Keep all of a class's materials in one place.</p>
+                                    <p className="text-foreground">{t('onboarding.createStudySet.keepMaterialsInOnePlace')}</p>
                                 </div>
                             </div>
 
@@ -118,7 +120,7 @@ export default function CreateStudySet({
                                     <Infinity className="w-5 h-5 text-orange-600" />
                                 </div>
                                 <div>
-                                    <p className="text-foreground">You can make as many study sets as you want.</p>
+                                    <p className="text-foreground">{t('onboarding.createStudySet.makeManyStudySets')}</p>
                                 </div>
                             </div>
                         </div>
@@ -126,12 +128,12 @@ export default function CreateStudySet({
                         <div className="bg-card-yellow rounded-xl p-4 border border-card-yellow-foreground">
                             <div className="flex items-start gap-2 mb-3">
                                 <span className="text-lg">💡</span>
-                                <h4 className="font-semibold text-foreground">Quick Tips</h4>
+                                <h4 className="font-semibold text-foreground">{t('onboarding.createStudySet.quickTips')}</h4>
                             </div>
                             <ul className="space-y-2 text-sm text-foreground">
-                                <li>💡 Use descriptive names like "CS101 - Data Structures"</li>
-                                <li>💡 Add semester info: "Spring 2025 - React Development"</li>
-                                <li>💡 Include your learning goal: "Mastering AI Fundamentals"</li>
+                                <li>💡 {t('onboarding.createStudySet.quickTip1')}</li>
+                                <li>💡 {t('onboarding.createStudySet.quickTip2')}</li>
+                                <li>💡 {t('onboarding.createStudySet.quickTip3')}</li>
                             </ul>
                         </div>
                     </div>
@@ -143,13 +145,13 @@ export default function CreateStudySet({
                         className="px-4 py-2 rounded-xl border border-ring bg-card text-foreground hover:bg-card-secondary transition-colors flex items-center gap-2 cursor-pointer"
                     >
                         <ChevronLeft className="w-4 h-4" />
-                        <span>Back</span>
+                        <span>{t('onboarding.back')}</span>
                     </button>
                     <button
                         onClick={onSkip}
                         className="px-4 py-2 rounded-xl bg-foreground text-background hover:bg-card-hovered transition-colors flex items-center gap-2 cursor-pointer"
                     >
-                        <span>Skip for now</span>
+                        <span>{t('onboarding.skipForNow')}</span>
                         <ChevronRight className="w-4 h-4" />
                     </button>
                 </div>

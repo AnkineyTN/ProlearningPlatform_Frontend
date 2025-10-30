@@ -13,10 +13,12 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircleIcon, Lock, Mail, User, Eye, EyeOff, RefreshCw, CircleDot } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
 
 export default function SignUp() {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
+    const { t } = useTranslation()
     const { isLoading, error } = useAppSelector(state => state.auth)
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -33,7 +35,7 @@ export default function SignUp() {
             const response = await authAPI.googleAuth()
             window.location.href = response.data.data.authorizationUrl
         } catch (error: any) {
-            toast.error('Failed to connect with Google')
+            toast.error(t('signin.failedGoogleConnect'))
         }
     }
 
@@ -48,7 +50,7 @@ export default function SignUp() {
                 role: 'ROLE_USER'
             })
 
-            toast.success('🎉 Account created successfully!', {
+            toast.success('🎉 ' + t('signup.success'), {
                 position: "top-right",
                 autoClose: 2000,
             })
@@ -66,9 +68,12 @@ export default function SignUp() {
             navigate('/onboarding')
         }
         catch (error: any) {
-            toast.error(error.response?.data?.message || 'Failed to create account')
+            toast.error(error.response?.data?.message || t('signup.failed'), {
+                position: "top-right",
+                autoClose: 3000,
+            })
             dispatch(loginFailure(
-                error.response?.data?.message || 'Failed to create account'
+                error.response?.data?.message || t('signup.failed')
             ))
         }
     }
@@ -78,15 +83,15 @@ export default function SignUp() {
             <div className="w-[50vw] flex items-center justify-center">
                 <Card className="w-110 px-4 py-6">
                     <CardHeader className="text-start">
-                        <CardTitle className="font-bold text-2xl">Create your account</CardTitle>
+                        <CardTitle className="font-bold text-2xl">{t('signup.title')}</CardTitle>
                         <CardDescription>
-                            Please fill in the details to get started.
+                            {t('signup.description')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 text-start">
                             <div>
-                                <Label htmlFor="name" className="font-bold text-base mb-2">First name</Label>
+                                <Label htmlFor="name" className="font-bold text-base mb-2">{t('signup.firstName')}</Label>
                                 <div className="relative mb-1">
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                         <User size={16} />
@@ -104,7 +109,7 @@ export default function SignUp() {
                                 )}
                             </div>
                             <div>
-                                <Label htmlFor="name" className="font-bold text-base mb-2">Last name</Label>
+                                <Label htmlFor="name" className="font-bold text-base mb-2">{t('signup.lastName')}</Label>
                                 <div className="relative mb-1">
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                         <User size={16} />
@@ -123,7 +128,7 @@ export default function SignUp() {
                             </div>
 
                             <div>
-                                <Label htmlFor="email" className="font-bold text-base mb-2">Email</Label>
+                                <Label htmlFor="email" className="font-bold text-base mb-2">{t('signup.email')}</Label>
                                 <div className="relative mb-1">
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                         <Mail size={16} />
@@ -142,7 +147,7 @@ export default function SignUp() {
                             </div>
 
                             <div>
-                                <Label htmlFor="password" className="font-bold text-base mb-2">Password</Label>
+                                <Label htmlFor="password" className="font-bold text-base mb-2">{t('signup.password')}</Label>
                                 <div className="relative mb-2">
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                         <Lock size={16} />
@@ -166,13 +171,13 @@ export default function SignUp() {
                                 ) : (
                                     <div className="text-sm text-gray-500 flex items-center gap-2">
                                         <CircleDot size={16} />
-                                        8 or more characters
+                                        {t('signup.passwordRequirement')}
                                     </div>
                                 )}
                             </div>
 
                             <div>
-                                <Label htmlFor="confirmPassword" className="font-bold text-base mb-2">Confirm Password</Label>
+                                <Label htmlFor="confirmPassword" className="font-bold text-base mb-2">{t('signup.confirmPassword')}</Label>
                                 <div className="relative mb-1">
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                         <Lock size={16} />
@@ -212,11 +217,11 @@ export default function SignUp() {
                                 {isLoading && (
                                     <RefreshCw className="w-4 h-4 animate-spin" />
                                 )}
-                                Create account
+                                {t('signup.createAccount')}
                             </Button>
                             <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                                 <span className="bg-card text-muted-foreground relative z-10 px-2">
-                                    Or continue with
+                                    {t('signup.orContinueWith')}
                                 </span>
                             </div>
                             <Button
@@ -237,9 +242,9 @@ export default function SignUp() {
                     </CardContent>
                     <CardFooter>
                         <p className="text-muted-foreground">
-                            Already have an account?{' '}
+                            {t('signup.haveAccount')}
                             <Link to="/login" className="ms-1 text-foreground font-bold underline">
-                                Sign in
+                                {t('signup.signIn')}
                             </Link>
                         </p>
                     </CardFooter>

@@ -8,6 +8,7 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 
 interface CreateNewModalProps {
     type: string;
@@ -22,6 +23,7 @@ export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit
     const [title, setTitle] = useState(initialData?.title || '');
     const [description, setDescription] = useState(initialData?.description || '');
     const [privacy, setPrivacy] = useState(initialData?.privacy || 'Public');
+    const { t } = useTranslation();
 
     if (!isOpen) return null;
 
@@ -61,7 +63,7 @@ export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit
             <div className="relative bg-background rounded-lg shadow-xl w-full max-w-4xl mx-4 p-6">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold">New {type}</h2>
+                    <h2 className="text-2xl font-bold">{t('modal.new')} {type}</h2>
                     <button
                         onClick={handleCancel}
                         className="p-1 hover:bg-card rounded transition-colors cursor-pointer"
@@ -76,7 +78,7 @@ export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit
                     <div>
                         <label className="flex items-center gap-2 text-sm font-medium mb-2">
                             <Heading className="w-4 h-4" />
-                            {type} Title
+                            {type} {t('modal.title')}
                         </label>
                         <input
                             type="text"
@@ -91,7 +93,7 @@ export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit
                     <div>
                         <label className="flex items-center gap-2 text-sm font-medium mb-2">
                             <Lock className="w-4 h-4" />
-                            Privacy
+                            {t('modal.privacy')}
                         </label>
                         <Select
                             value={privacy}
@@ -101,9 +103,9 @@ export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit
                                 <SelectValue placeholder="Select privacy" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="Public">🌐 Public</SelectItem>
-                                <SelectItem value="Private">🔒 Private</SelectItem>
-                                <SelectItem value="Unlisted">👁️ Unlisted</SelectItem>
+                                <SelectItem value="Public">🌐 {t('modal.public')}</SelectItem>
+                                <SelectItem value="Private">🔒 {t('modal.private')}</SelectItem>
+                                <SelectItem value="Unlisted">👁️ {t('modal.unlisted')}</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -112,7 +114,7 @@ export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit
                     <div>
                         <label className="flex items-center gap-2 text-sm font-medium mb-2">
                             <AlignJustify className="w-4 h-4" />
-                            Description <span className="text-muted-foreground">(Optional)</span>
+                            <span>{t('modal.description')}</span> <span className="text-muted-foreground">({t('modal.optional')})</span>
                         </label>
                         <textarea
                             value={description}
@@ -131,14 +133,14 @@ export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit
                         className="px-6 py-2 border border-border rounded-lg bg-background text-foreground hover:bg-card-secondary transition-colors cursor-pointer flex items-center gap-2"
                     >
                         {onBack && <ArrowLeft className="w-4 h-4" />}
-                        {onBack ? 'Back' : 'Cancel'}
+                        {onBack ? t('modal.back') : t('modal.cancel')}
                     </Button>
                     <Button
                         onClick={handleSubmit}
                         disabled={!title.trim()}
                         className="px-6 py-2 bg-foreground text-background rounded-lg cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Complete
+                        {t('modal.create')}
                     </Button>
                 </div>
             </div>

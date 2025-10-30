@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { authAPI } from "@/services/endpoints/auth.ts";
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import './i18n/config'
 
 const queryClient = new QueryClient()
 

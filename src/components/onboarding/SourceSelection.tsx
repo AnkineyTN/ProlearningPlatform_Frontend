@@ -1,5 +1,6 @@
 import { Youtube, Music, Sparkles, Facebook, Globe, Instagram, Users, CircleDot, MoreHorizontal } from 'lucide-react';
 import SwitchButton from './SwitchButton';
+import { useTranslation } from 'react-i18next';
 
 export default function SourceSelection({
     selectedSource,
@@ -11,7 +12,8 @@ export default function SourceSelection({
     onSourceSelect: (source: string) => void;
     onNext: () => void;
     onBack: () => void;
-}) {
+    }) {
+    const { t } = useTranslation();
     const sources = [
         { id: 'YouTube', label: 'YouTube', icon: Youtube, color: 'bg-red-500' },
         { id: 'TikTok', label: 'TikTok', icon: Music, color: 'bg-black' },
@@ -29,10 +31,10 @@ export default function SourceSelection({
             <div className="w-full max-w-3xl">
                 <div className="text-center mb-12">
                     <h1 className="text-4xl font-bold text-foreground mb-3">
-                        How did you hear about<br />ProLearning?
+                        {t('onboarding.sourceSelection.header')}
                     </h1>
                     <p className="text-muted-foreground">
-                        Help us understand how you discovered our platform so<br />we can improve our reach
+                        {t('onboarding.sourceSelection.description')}
                     </p>
                 </div>
 

@@ -1,4 +1,5 @@
 import { X, Pencil, Sparkles } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface CreateMethodModalProps {
     type: string;
@@ -15,6 +16,7 @@ export default function CreateMethodModal({
     onSelectManual,
     onSelectAI
 }: CreateMethodModalProps) {
+    const { t } = useTranslation();
     if (!isOpen) return null;
 
     return (
@@ -29,7 +31,7 @@ export default function CreateMethodModal({
             <div className="relative bg-background rounded-lg shadow-xl w-full max-w-4xl mx-4 px-10 py-8">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold">Create new {type.toLowerCase()}</h2>
+                    <h2 className="text-2xl font-bold">{t('modal.method.header', { type })}</h2>
                     <button
                         onClick={onClose}
                         className="p-1 hover:bg-card rounded transition-colors cursor-pointer"
@@ -50,11 +52,11 @@ export default function CreateMethodModal({
                                 <Pencil className="w-6 h-6" />
                             </div>
                             <div>
-                                <h3 className="font-semibold text-lg mb-2">Create manually</h3>
+                                <h3 className="font-semibold text-lg mb-2">{t('modal.method.manualCreation')}</h3>
                                 <ul className="text-sm text-muted-foreground space-y-1">
-                                    <li>✓ Custom content</li>
-                                    <li>✓ Add images</li>
-                                    <li>✓ Import from text</li>
+                                    <li>✓ {t('modal.method.customContent')}</li>
+                                    <li>✓ {t('modal.method.addImages')}</li>
+                                    <li>✓ {t('modal.method.importFromText')}</li>
                                 </ul>
                             </div>
                         </div>
@@ -70,11 +72,11 @@ export default function CreateMethodModal({
                                 <Sparkles className="w-6 h-6" />
                             </div>
                             <div>
-                                <h3 className="font-semibold text-lg mb-2">Generated with AI</h3>
+                                <h3 className="font-semibold text-lg mb-2">{t('modal.method.aiGeneration')}</h3>
                                 <ul className="text-sm text-muted-foreground space-y-1">
-                                    <li>✓ Quick generation</li>
-                                    <li>✓ Smart content extraction</li>
-                                    <li>✓ Multiple sources</li>
+                                    <li>✓ {t('modal.method.quickGeneration')}</li>
+                                    <li>✓ {t('modal.method.smartContentExtraction')}</li>
+                                    <li>✓ {t('modal.method.multipleSources')}</li>
                                 </ul>
                             </div>
                         </div>

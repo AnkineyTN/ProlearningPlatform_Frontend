@@ -1,0 +1,236 @@
+{
+    "landing": {
+        "createAccount": "Tạo tài khoản",
+        "cta": {
+            "buttonText": "Bắt đầu miễn phí",
+            "description": "Tham gia hàng ngàn học viên đã và đang biến đổi sự nghiệp của họ",
+            "title": "Sẵn sàng bắt đầu hành trình của bạn?"
+        },
+        "features": {
+            "certifiedPrograms": {
+                "description": "Hoàn thành các chương trình được chứng nhận để nâng cao hồ sơ cá nhân của bạn.",
+                "title": "Chương trình chứng nhận"
+            },
+            "communityLearning": {
+                "description": "Kết nối với cộng đồng học viên và giảng viên để trao đổi kiến thức và kinh nghiệm.",
+                "title": "Học tập cộng đồng"
+            },
+            "fastTrackLearning": {
+                "description": "Tiếp cận các lộ trình học tập được thiết kế để giúp bạn đạt được mục tiêu nhanh hơn.",
+                "title": "Học tập nhanh"
+            },
+            "interactiveCourses": {
+                "description": "Tham gia các khóa học tương tác với bài tập thực hành và phản hồi ngay lập tức.",
+                "title": "Khóa học tương tác"
+            }
+        },
+        "footer": {
+            "about": "Về chúng tôi",
+            "careers": "Cơ hội nghề nghiệp",
+            "company": "Công ty",
+            "contact": "Liên hệ",
+            "courses": "Khóa học",
+            "description": "Trao quyền cho người học trên toàn thế giới với giáo dục chất lượng.",
+            "features": "Tính năng",
+            "legal": "Pháp lý",
+            "pricing": "Giá cả",
+            "privacy": "Chính sách bảo mật",
+            "product": "Sản phẩm",
+            "security": "Bảo mật",
+            "terms": "Điều khoản dịch vụ"
+        },
+        "getStarted": "Bắt đầu",
+        "intro": {
+            "description": "Làm chủ các kỹ năng mới, phát triển sự nghiệp và đạt được mục tiêu của bạn với các khóa học từ chuyên gia và các lộ trình học tập cá nhân hóa.",
+            "header": "Biến đổi tương lai của bạn ngay hôm nay",
+            "platform": "DÀNH CHO BẠN!",
+            "subheader": "NỀN TẢNG HỌC TẬP TỐT NHẤT"
+        },
+        "stats": {
+            "activeStudents": "Học viên tích cực",
+            "expertInstructors": "Giảng viên chuyên gia",
+            "qualityCourses": "Khóa học chất lượng",
+            "successRate": "Tỷ lệ thành công"
+        },
+        "testimonials": {
+            "emily": {
+                "content": "Tôi yêu thích sự linh hoạt và chất lượng nội dung. Rất đáng để giới thiệu!"
+            },
+            "michael": {
+                "content": "Tôi đã phát triển kỹ năng phân tích dữ liệu của mình nhờ các khóa học chuyên sâu và sự hỗ trợ từ cộng đồng."
+            },
+            "sarah": {
+                "content": "Nền tảng này đã thay đổi cách tôi học lập trình. Các khóa học rất thực tế và dễ theo dõi!"
+            }
+        },
+        "title": {
+            "about": "Về chúng tôi",
+            "features": "Tính năng của chúng tôi",
+            "plans": "Kế hoạch",
+            "testimonials": "Được học viên trên toàn thế giới yêu thích"
+        },
+        "watchDemo": "Xem bản demo",
+        "whyChooseUs": "Tại sao chọn ProLearning?",
+        "whyChooseUsDescription": "Trải nghiệm học tập như chưa từng có với nền tảng ProLearning."
+    },
+    "modal": {
+        "ai": {
+            "chooseFiles": "Chọn tệp",
+            "fromNotes": "Từ ghi chú",
+            "header": "Tạo {type} với AI",
+            "selectNotes": "Chọn ghi chú để tạo {type} từ:",
+            "selected": "đã chọn",
+            "uploadFiles": "Tải lên tệp",
+            "uploadedFiles": "Tệp đã tải lên"
+        },
+        "back": "Quay lại",
+        "generateWithAI": "Tạo với AI",
+        "method": {
+            "addImages": "Thêm hình ảnh",
+            "aiGeneration": "Tạo nội dung bằng AI",
+            "customContent": "Nội dung tùy chỉnh",
+            "description": "Chọn phương pháp để tạo {type} của bạn:",
+            "header": "Tạo mới {type}",
+            "importFromText": "Nhập từ văn bản",
+            "manualCreation": "Tạo thủ công",
+            "multipleSources": "Nhiều nguồn",
+            "quickGeneration": "Tạo nhanh",
+            "smartContentExtraction": "Trích xuất nội dung thông minh"
+        },
+        "new": "Mới",
+        "title": "Tiêu đề",
+        "privacy": "Quyền riêng tư",
+        "public": "Công khai",
+        "private": "Riêng tư",
+        "unlisted": "Không công khai",
+        "description": "Mô tả",
+        "optional": "Tùy chọn",
+        "create": "Tạo",
+        "cancel": "Hủy"
+    },
+    "sidebar": {
+        "blog": "Blog",
+        "logout": "Đăng xuất",
+        "pomodoro": "Pomodoro",
+        "profile": "Hồ sơ",
+        "settings": "Cài đặt",
+        "socials": "Mạng xã hội",
+        "todo": "Việc cần làm"
+    },
+    "signin": {
+        "createAccount": "Đăng ký",
+        "description": "Chào mừng bạn trở lại! Vui lòng đăng nhập để tiếp tục.",
+        "email": "Email",
+        "failedGoogleConnect": "Kết nối với Google không thành công",
+        "forgotPassword": "Quên mật khẩu?",
+        "noAccount": "Bạn chưa có tài khoản?",
+        "orContinueWith": "Hoặc tiếp tục với",
+        "password": "Mật khẩu",
+        "subtitle": "Đăng nhập",
+        "title": "Đăng Nhập Tài Khoản",
+        "wrongCredentials": "Sai tên người dùng hoặc mật khẩu"
+    },
+    "signup": {
+        "confirmPassword": "Xác nhận mật khẩu",
+        "createAccount": "Tạo tài khoản",
+        "description": "Vui lòng điền thông tin để bắt đầu.",
+        "email": "Email",
+        "failed": "Tạo tài khoản không thành công",
+        "firstName": "Họ",
+        "haveAccount": "Bạn đã có tài khoản?",
+        "lastName": "Tên",
+        "orContinueWith": "Hoặc tiếp tục với",
+        "password": "Mật khẩu",
+        "passwordRequirement": "8 ký tự trở lên",
+        "signIn": "Đăng nhập",
+        "subtitle": "Đăng ký",
+        "success": "Tạo tài khoản thành công!",
+        "title": "Tạo tài khoản của bạn"
+    },
+    "dashboard": {
+        "yourSets": "Bộ sưu tập của bạn",
+        "viewAll": "Xem tất cả",
+        "recentNotes": "Ghi chú gần đây"
+    },
+    "card": {
+        "checklist": {
+            "title": "Danh sách kiểm tra của bạn hôm nay!",
+            "seeMore": "Xem thêm"
+        }
+    },
+    "onboarding": {
+        "languageSelection": {
+            "title": "Chọn ngôn ngữ của bạn",
+            "description": "Chọn ngôn ngữ bạn muốn sử dụng cho trải nghiệm học tập của mình",
+            "info": "Bạn có thể thay đổi sở thích ngôn ngữ bất cứ lúc nào trong cài đặt tài khoản của mình."
+        },
+        "roleSelection": {
+            "header": "Bạn là ai?",
+            "description": "Điều này giúp chúng tôi điều chỉnh trải nghiệm học tập của bạn phù hợp với nhu cầu và mục tiêu của bạn."
+        },
+        "sourceSelection": {
+            "header": "Bạn đã nghe về ProLearning từ đâu?",
+            "description": "Giúp chúng tôi hiểu cách bạn phát hiện ra nền tảng của chúng tôi để chúng tôi có thể cải thiện khả năng tiếp cận của mình.",
+            "student": "Học sinh",
+            "studentDescription": "Tài liệu học tập và nghiên cứu",
+            "teacher": "Giáo viên",
+            "teacherDescription": "Tạo và chia sẻ tài liệu học tập"
+        },
+        "educationSelection": {
+            "title": "Trình độ học vấn của bạn là gì?",
+            "highSchool": "Trung học phổ thông",
+            "highSchoolDescription": "Hoàn thành giáo dục trung học",
+            "college": "Cao đẳng",
+            "collegeDescription": "Bằng cử nhân hoặc tương đương",
+            "gradSchool": "Sau đại học",
+            "gradSchoolDescription": "Bằng thạc sĩ hoặc tiến sĩ",
+            "medSchool": "Trường y",
+            "medSchoolDescription": "Chương trình đào tạo y khoa",
+            "other": "Khác",
+            "otherDescription": "Giáo dục thay thế hoặc phi truyền thống",
+            "description": "Giúp chúng tôi cá nhân hóa trải nghiệm học tập của bạn"
+        },
+        "premiumSelection": {
+            "title": "Chọn gói của bạn",
+            "description": "Chọn gói phù hợp nhất với nhu cầu và mục tiêu học tập của bạn.",
+            "free": "Miễn phí",
+            "freeFeatures": {
+                "accessToBasicContent": "Truy cập nội dung cơ bản",
+                "limitedStudyModes": "Chế độ học tập hạn chế",
+                "communitySupport": "Hỗ trợ cộng đồng"
+            },
+            "premium": "Gói cao cấp",
+            "premiumFeatures": {
+                "everythingInFree": "Tất cả trong gói miễn phí",
+                "advancedStudyModes": "Chế độ học tập nâng cao",
+                "adFreeExperience": "Trải nghiệm không có quảng cáo",
+                "prioritySupport": "Hỗ trợ ưu tiên",
+                "offlineAccess": "Truy cập ngoại tuyến"
+            },
+            "selectPremium": "Chọn gói cao cấp"
+        },
+        "createStudySet": {
+            "title": "Đặt tên cho bộ tài liệu học tập đầu tiên của bạn",
+            "description": "Tạo không gian học tập cá nhân hóa của bạn để tổ chức tài liệu học tập",
+            "nameLabel": "Tên bộ tài liệu học tập",
+            "descriptionLabel": "Mô tả",
+            "descriptionPlaceholder": "Thêm mô tả để giúp bạn nhớ bộ tài liệu học tập này về cái gì...",
+            "privacyLabel": "Quyền riêng tư",
+            "privacyPublic": "Công khai",
+            "privacyPrivate": "Riêng tư",
+            "privacyUnlisted": "Không niêm yết",
+            "createSet": "Tạo bộ tài liệu",
+            "whatIsStudySet": "Bộ tài liệu học tập là gì?",
+            "organizeMaterials": "Tổ chức tài liệu của bạn thành các lớp hoặc học kỳ riêng biệt.",
+            "keepMaterialsInOnePlace": "Giữ tất cả tài liệu của một lớp trong một nơi.",
+            "makeManyStudySets": "Bạn có thể tạo nhiều bộ tài liệu học tập như bạn muốn.",
+            "quickTips": "Mẹo nhanh",
+            "quickTip1": "Sử dụng tên mô tả như \"CS101 - Cấu trúc dữ liệu\"",
+            "quickTip2": "Thêm thông tin học kỳ: \"Mùa xuân 2025 - Phát triển React\"",
+            "quickTip3": "Bao gồm mục tiêu học tập của bạn: \"Nắm vững các nguyên tắc cơ bản về AI\""
+        },
+        "skipForNow": "Bỏ qua cho bây giờ",
+        "back": "Quay lại",
+        "continue": "Tiếp tục"
+    }
+}

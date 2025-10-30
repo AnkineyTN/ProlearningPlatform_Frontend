@@ -33,11 +33,13 @@ import {
 import { logout } from "@/store/authSlice.ts";
 import { useNavigate } from "react-router-dom";
 import LogoFG from '@/assets/logo_fg';
+import { useTranslation } from 'react-i18next';
 
 const AppSidebar: React.FC = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
     const { user } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const handleLogout = () => {
         dispatch(logout())
@@ -45,37 +47,37 @@ const AppSidebar: React.FC = ({ ...props }: React.ComponentProps<typeof Sidebar>
     }
     const menuItems = [
         {
-            title: 'Dashboard',
+            title: t('sidebar.dashboard'),
             icon: LayoutDashboard,
             url: '/dashboard'
         },
         {
-            title: 'Set List',
+            title: t('sidebar.setList'),
             icon: LayoutList,
             url: '/sets'
         },
         {
-            title: 'To-Do',
+            title: t('sidebar.todo'),
             icon: CheckCheck,
             url: '/todo'
         },
         {
-            title: 'Pomodoro',
+            title: t('sidebar.pomodoro'),
             icon: Hourglass,
             url: '/pomodoro'
         },
         {
-            title: 'Blog',
+            title: t('sidebar.blog'),
             icon: Book,
             url: '/blog'
         },
         {
-            title: 'Socials',
+            title: t('sidebar.socials'),
             icon: Heart,
             url: '/socials'
         },
         {
-            title: 'Settings',
+            title: t('sidebar.settings'),
             icon: Settings,
             url: '/settings'
         }
@@ -154,15 +156,15 @@ const AppSidebar: React.FC = ({ ...props }: React.ComponentProps<typeof Sidebar>
                             >
                                 <DropdownMenuItem onClick={handleProfile}>
                                     <User className="mr-2 size-4" />
-                                    <span>Profile</span>
+                                    <span>{t('sidebar.profile')}</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
                                     <Settings className="mr-2 size-4" />
-                                    <span>Settings</span>
+                                    <span>{t('sidebar.settings')}</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={handleLogout}>
                                     <LogOut className="mr-2 size-4" />
-                                    <span>Logout</span>
+                                    <span>{t('sidebar.logout')}</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

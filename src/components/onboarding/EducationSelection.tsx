@@ -1,5 +1,6 @@
 import { Check, GraduationCap, BookOpen, Award, Briefcase, MoreHorizontal } from 'lucide-react';
 import SwitchButton from './SwitchButton';
+import {  useTranslation } from 'react-i18next';
 
 export default function EducationSelection({
     selectedEducation,
@@ -11,36 +12,37 @@ export default function EducationSelection({
     onEducationSelect: (edu: string) => void;
     onNext: () => void;
     onBack: () => void;
-}) {
+    }) {
+    const { t } = useTranslation();
     const educationLevels = [
         {
             id: 'High School',
-            label: 'High School',
-            description: 'Secondary education completion',
+            label: t('onboarding.educationSelection.highSchool'),
+            description: t('onboarding.educationSelection.highSchoolDescription'),
             icon: GraduationCap
         },
         {
             id: 'College',
-            label: 'College',
-            description: 'Undergraduate degree or equivalent',
+            label: t('onboarding.educationSelection.college'),
+            description: t('onboarding.educationSelection.collegeDescription'),
             icon: BookOpen
         },
         {
             id: 'Grad School',
-            label: 'Grad School',
-            description: "Master's or Doctoral degree",
+            label: t('onboarding.educationSelection.gradSchool'),
+            description: t('onboarding.educationSelection.gradSchoolDescription'),
             icon: Award
         },
         {
             id: 'Med School',
-            label: 'Med School',
-            description: 'Medical degree program',
+            label: t('onboarding.educationSelection.medSchool'),
+            description: t('onboarding.educationSelection.medSchoolDescription'),
             icon: Briefcase
         },
         {
             id: 'Other',
-            label: 'Other',
-            description: 'Alternative or non-traditional education',
+            label: t('onboarding.educationSelection.other'),
+            description: t('onboarding.educationSelection.otherDescription'),
             icon: MoreHorizontal
         }
     ];
@@ -49,8 +51,8 @@ export default function EducationSelection({
         <div className="min-h-screen flex items-center justify-center p-6">
             <div className="w-full max-w-2xl">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold text-foreground mb-3">What is your education?</h1>
-                    <p className="text-muted-foreground">Help us personalize your learning experience</p>
+                    <h1 className="text-4xl font-bold text-foreground mb-3">{t('onboarding.educationSelection.title')}</h1>
+                    <p className="text-muted-foreground">{t('onboarding.educationSelection.description')}</p>
                 </div>
 
                 <div className="space-y-3 mb-8">

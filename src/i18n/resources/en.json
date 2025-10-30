@@ -1,0 +1,236 @@
+{
+    "landing": {
+        "createAccount": "Create an account",
+        "cta": {
+            "buttonText": "Get Started Free",
+            "description": "Join thousands of learners who are already transforming their careers",
+            "title": "Ready to Start Your Journey?"
+        },
+        "features": {
+            "certifiedPrograms": {
+                "description": "Complete certified programs to enhance your personal profile.",
+                "title": "Certified Programs"
+            },
+            "communityLearning": {
+                "description": "Connect with a community of learners and instructors to exchange knowledge and experiences.",
+                "title": "Community Learning"
+            },
+            "fastTrackLearning": {
+                "description": "Access learning paths designed to help you achieve your goals faster.",
+                "title": "Fast Track Learning"
+            },
+            "interactiveCourses": {
+                "description": "Join interactive courses with hands-on exercises and instant feedback.",
+                "title": "Interactive Courses"
+            }
+        },
+        "footer": {
+            "about": "About Us",
+            "careers": "Careers",
+            "company": "Company",
+            "contact": "Contact",
+            "courses": "Courses",
+            "description": "Empowering learners worldwide with quality education.",
+            "features": "Features",
+            "legal": "Legal",
+            "pricing": "Pricing",
+            "privacy": "Privacy",
+            "product": "Product",
+            "security": "Security",
+            "terms": "Terms of Service"
+        },
+        "getStarted": "Get Started",
+        "intro": {
+            "description": "Master new skills, advance your career, and achieve your goals with expert-led courses and personalized learning paths.",
+            "header": "Transform Your Future Today",
+            "platform": "PLATFORM FOR YOU!",
+            "subheader": "THE BEST LEARNING"
+        },
+        "stats": {
+            "activeStudents": "Active Students",
+            "expertInstructors": "Expert Instructors",
+            "qualityCourses": "Quality Courses",
+            "successRate": "Success Rate"
+        },
+        "testimonials": {
+            "emily": {
+                "content": "I love the flexibility and quality of the content. It's definitely worth recommending!"
+            },
+            "michael": {
+                "content": "I have developed my data analysis skills thanks to the in-depth courses and support from the community."
+            },
+            "sarah": {
+                "content": "This platform has changed the way I learn programming. The courses are very practical and easy to follow!"
+            }
+        },
+        "title": {
+            "about": "About us",
+            "features": "Our features",
+            "plans": "Plans",
+            "testimonials": "Loved by Students Worldwide"
+        },
+        "watchDemo": "Watch Demo",
+        "whyChooseUs": "Why Choose ProLearning?",
+        "whyChooseUsDescription": "Experience learning like never before with our cutting-edge platform"
+    },
+    "modal": {
+        "ai": {
+            "chooseFiles": "Choose Files",
+            "fromNotes": "From Notes",
+            "header": "Create {type} with AI",
+            "selectNotes": "Select notes to create {type} from:",
+            "selected": "selected",
+            "uploadFiles": "Upload Files",
+            "uploadedFiles": "Uploaded Files"
+        },
+        "back": "Back",
+        "generateWithAI": "Generate with AI",
+        "method": {
+            "addImages": "Add images",
+            "aiGeneration": "AI Generation",
+            "customContent": "Custom content",
+            "description": "Select a method to create your {type}:",
+            "header": "Create new {type}",
+            "importFromText": "Import from text",
+            "manualCreation": "Manual Creation",
+            "multipleSources": "Multiple sources",
+            "quickGeneration": "Quick generation",
+            "smartContentExtraction": "Smart content extraction"
+        },
+        "new": "New",
+        "title": "Title",
+        "privacy": "Privacy",
+        "public": "Public",
+        "private": "Private",
+        "unlisted": "Unlisted",
+        "description": "Description",
+        "optional": "Optional",
+        "create": "Create",
+        "cancel": "Cancel"
+    },
+    "sidebar": {
+        "blog": "Blog",
+        "logout": "Logout",
+        "pomodoro": "Pomodoro",
+        "profile": "Profile",
+        "settings": "Settings",
+        "socials": "Socials",
+        "todo": "To-Do"
+    },
+    "signin": {
+        "createAccount": "Sign up",
+        "description": "Welcome back! Please sign in to continue.",
+        "email": "Email",
+        "failedGoogleConnect": "Failed to connect with Google",
+        "forgotPassword": "Forgot Password?",
+        "noAccount": "Don't have an account?",
+        "orContinueWith": "Or continue with",
+        "password": "Password",
+        "subtitle": "Sign in",
+        "title": "Sign In to Your Account",
+        "wrongCredentials": "Wrong username or password"
+    },
+    "signup": {
+        "confirmPassword": "Confirm Password",
+        "createAccount": "Create Account",
+        "description": "Please fill in the details to get started.",
+        "email": "Email",
+        "failed": "Failed to create account",
+        "firstName": "First Name",
+        "haveAccount": "Already have an account?",
+        "lastName": "Last Name",
+        "orContinueWith": "Or continue with",
+        "password": "Password",
+        "passwordRequirement": "8 or more characters",
+        "signIn": "Sign in",
+        "subtitle": "Sign up",
+        "success": "Account created successfully!",
+        "title": "Create Your Account"
+    },
+    "dashboard": {
+        "yourSets": "Your Sets",
+        "viewAll": "View all",
+        "recentNotes": "Recent notes"
+    },
+    "card": {
+        "checklist": {
+            "title": "Your checklist today!",
+            "seeMore": "See more"
+        }
+    },
+    "onboarding": {
+        "languageSelection": {
+            "title": "Choose Your Language",
+            "description": "Choose the language you'd like to use for your learning experience",
+            "info": "You can change your language preference anytime in your account settings."
+        },
+        "roleSelection": {
+            "header": "What best describes your role?",
+            "description": "This helps us tailor your learning experience to suit your needs and goals."
+        },
+        "sourceSelection": {
+            "header": "How did you hear about ProLearning?",
+            "description": "Help us understand how you discovered our platform so we can improve our reach.",
+            "student": "Student",
+            "studentDescription": "Learning and studying materials",
+            "teacher": "Teacher",
+            "teacherDescription": "Creating and sharing study materials"
+        },
+        "educationSelection": {
+            "title": "What is your education?",
+            "highSchool": "High School",
+            "highSchoolDescription": "Secondary education completion",
+            "college": "College",
+            "collegeDescription": "Undergraduate degree or equivalent",
+            "gradSchool": "Grad School",
+            "gradSchoolDescription": "Master's or Doctoral degree",
+            "medSchool": "Med School",
+            "medSchoolDescription": "Medical degree program",
+            "other": "Other",
+            "otherDescription": "Alternative or non-traditional education",
+            "description": "Help us personalize your learning experience"
+        },
+        "premiumSelection": {
+            "title": "Choose Your Plan",
+            "description": "Select the plan that best suits your learning needs and goals.",
+            "free": "Free",
+            "freeFeatures": {
+                "accessToBasicContent": "Access to basic content",
+                "limitedStudyModes": "Limited study modes",
+                "communitySupport": "Community support"
+            },
+            "premium": "Premium",
+            "premiumFeatures": {
+                "everythingInFree": "Everything in Free",
+                "advancedStudyModes": "Advanced study modes",
+                "adFreeExperience": "Ad-free experience",
+                "prioritySupport": "Priority support",
+                "offlineAccess": "Offline access"
+            },
+            "selectPremium": "Select Premium"
+        },
+        "createStudySet": {
+            "title": "Name Your First Study Set",
+            "description": "Create your personalized learning space to organize your study materials",
+            "nameLabel": "Study Set Name",
+            "descriptionLabel": "Description",
+            "descriptionPlaceholder": "Add a description to help you remember what this study set is about...",
+            "privacyLabel": "Privacy",
+            "privacyPublic": "Public",
+            "privacyPrivate": "Private",
+            "privacyUnlisted": "Unlisted",
+            "createSet": "Create Set",
+            "whatIsStudySet": "What is a study set?",
+            "organizeMaterials": "Organize your materials into separate classes or semesters.",
+            "keepMaterialsInOnePlace": "Keep all of a class's materials in one place.",
+            "makeManyStudySets": "You can make as many study sets as you want.",
+            "quickTips": "Quick Tips",
+            "quickTip1": "Use descriptive names like \"CS101 - Data Structures\"",
+            "quickTip2": "Add semester info: \"Spring 2025 - React Development\"",
+            "quickTip3": "Include your learning goal: \"Mastering AI Fundamentals\""
+        },
+        "skipForNow": "Skip for now",
+        "back": "Back",
+        "continue": "Continue"
+    }
+}

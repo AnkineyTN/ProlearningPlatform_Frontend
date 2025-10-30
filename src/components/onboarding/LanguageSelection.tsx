@@ -1,5 +1,6 @@
 import { Check, Info } from 'lucide-react';
 import SwitchButton from './SwitchButton';
+import { useTranslation } from 'react-i18next';
 
 export default function LanguageSelection({
     selectedLanguage,
@@ -11,13 +12,14 @@ export default function LanguageSelection({
     onLanguageSelect: (lang: string) => void;
     onNext: () => void;
     onBack: () => void;
-}) {
+    }) {
+    const { t } = useTranslation();
     return (
         <div className="min-h-screen flex items-center justify-center p-6">
             <div className="w-full max-w-2xl">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold text-foreground mb-3">Select Your Language</h1>
-                    <p className="text-muted-foreground">Choose the language you'd like to use for your learning experience</p>
+                    <h1 className="text-4xl font-bold text-foreground mb-3">{t('onboarding.languageSelection.header')}</h1>
+                    <p className="text-muted-foreground">{t('onboarding.languageSelection.description')}</p>
                 </div>
 
                 <div className="space-y-4 mb-8">
@@ -66,7 +68,7 @@ export default function LanguageSelection({
 
                 <div className="bg-card rounded-xl p-4 flex items-start gap-3 mb-8">
                     <Info className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-muted-foreground">You can change your language preference anytime in your account settings.</p>
+                    <p className="text-sm text-muted-foreground">{t('onboarding.languageSelection.info')}</p>
                 </div>
 
                 <SwitchButton onPre={onBack} onNext={onNext} disablePre={!selectedLanguage} />

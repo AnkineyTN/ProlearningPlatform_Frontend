@@ -9,8 +9,10 @@ import Header from '@/components/header/HeaderDashboard';
 import { useDeleteSet, useUpdateSet } from '@/hooks/useSets';
 import { type UpdateSetPayload } from '@/services/types/set.types';
 import CreateNewModal from '@/components/modals/CreateNewModal';
+import { useTranslation } from 'react-i18next';
 
 const Dashboard = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const deleteSetMutation = useDeleteSet();
     const updateSetMutation = useUpdateSet();
@@ -43,23 +45,6 @@ const Dashboard = () => {
         description: item.description ?? '',
         numNotes: item.numNotes ?? 0,
     }));
-
-    // const notes = [
-    //     {
-    //         title: "Supervised Learning Algorithms",
-    //         category: "Machine Learning Basic",
-    //         preview: "Supervised learning is a machine learning method in which an algorithm learns from labe...",
-    //         time: "2 hours ago",
-    //         date: "16 Sep 2025"
-    //     },
-    //     {
-    //         title: "Stack and Queue",
-    //         category: "Data Structures",
-    //         preview: "Stack is a LIFO (Last In First Out) data structure, while Queue is FIFO (First In First Out). Impleme...",
-    //         time: "2 hours ago",
-    //         date: "16 Sep 2025"
-    //     }
-    // ];
 
     const calendar = [
         ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -142,9 +127,9 @@ const Dashboard = () => {
                             completionRate={completionRate}
                         />
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-bold">Your Sets</h2>
+                            <h2 className="text-xl font-bold">{t('dashboard.yourSets')}</h2>
                             <button onClick={handleViewSets} className="text-sm flex items-center gap-1 hover:underline cursor-pointer">
-                                View all <ChevronRight className="w-4 h-4" />
+                                {t('dashboard.viewAll')} <ChevronRight className="w-4 h-4" />
                             </button>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
@@ -157,9 +142,9 @@ const Dashboard = () => {
                             ))}
                         </div>
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-bold">Recent notes</h2>
+                            <h2 className="text-xl font-bold">{t('dashboard.recentNotes')}</h2>
                             <button onClick={handleViewNotes} className="text-sm flex items-center gap-1 hover:underline cursor-pointer">
-                                View all <ChevronRight className="w-4 h-4" />
+                                {t('dashboard.viewAll')} <ChevronRight className="w-4 h-4" />
                             </button>
                         </div>
                         {/* <div className="grid grid-cols-2 gap-4">

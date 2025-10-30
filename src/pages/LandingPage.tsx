@@ -2,57 +2,60 @@ import { useState } from 'react';
 import { BookOpen, Users, Award, Zap, CheckCircle, Star, ArrowRight } from 'lucide-react';
 import LogoFG from '@/assets/logo_fg';
 import { ModeToggle } from "@/components/theme/mode-toggle";
+import { useTranslation } from 'react-i18next';
+import { LanguageToggle } from '@/components/language/language-toggle';
 
 export default function LandingPage() {
   const [activeFeature, setActiveFeature] = useState(0);
+  const { t } = useTranslation();
 
   const features = [
     {
       icon: <BookOpen className="w-8 h-8" />,
-      title: "Interactive Courses",
-      description: "Engage with dynamic content designed by industry experts"
+      title: t("landing.features.interactiveCourses.title"),
+      description: t("landing.features.interactiveCourses.description")
     },
     {
       icon: <Users className="w-8 h-8" />,
-      title: "Community Learning",
-      description: "Connect with thousands of learners worldwide"
+      title: t("landing.features.communityLearning.title"),
+      description: t("landing.features.communityLearning.description")
     },
     {
       icon: <Award className="w-8 h-8" />,
-      title: "Certified Programs",
-      description: "Earn recognized certifications upon completion"
+      title: t("landing.features.certifiedPrograms.title"),
+      description: t("landing.features.certifiedPrograms.description")
     },
     {
       icon: <Zap className="w-8 h-8" />,
-      title: "Fast Track Learning",
-      description: "Learn at your own pace with adaptive technology"
+      title: t("landing.features.fastTrackLearning.title"),
+      description: t("landing.features.fastTrackLearning.description")
     }
   ];
 
   const stats = [
-    { number: "50K+", label: "Active Students" },
-    { number: "500+", label: "Expert Instructors" },
-    { number: "1000+", label: "Quality Courses" },
-    { number: "95%", label: "Success Rate" }
+    { number: "50K+", label: t("landing.stats.activeStudents") },
+    { number: "500+", label: t("landing.stats.expertInstructors") },
+    { number: "1000+", label: t("landing.stats.qualityCourses") },
+    { number: "95%", label: t("landing.stats.successRate") }
   ];
 
   const testimonials = [
     {
       name: "Sarah Johnson",
       role: "Software Developer",
-      content: "ProLearning transformed my career. The courses are practical and well-structured.",
+      content: t("landing.testimonials.sarah.content"),
       rating: 5
     },
     {
       name: "Michael Chen",
       role: "Data Scientist",
-      content: "Best investment in my education. The instructors are top-notch!",
+      content: t("landing.testimonials.michael.content"),
       rating: 5
     },
     {
       name: "Emily Rodriguez",
       role: "UX Designer",
-      content: "I love the flexibility and the quality of content. Highly recommended!",
+      content: t("landing.testimonials.emily.content"),
       rating: 5
     }
   ];
@@ -71,20 +74,21 @@ export default function LandingPage() {
             </div>
 
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-muted-foreground hover:text-blue-600 transition-colors font-medium">Our features</a>
-              <a href="#plans" className="text-muted-foreground hover:text-blue-600 transition-colors font-medium">Plans</a>
-              <a href="#about" className="text-muted-foreground hover:text-blue-600 transition-colors font-medium">About us</a>
+              <a href="#features" className="text-muted-foreground hover:text-blue-600 transition-colors font-medium">{t("landing.title.features")}</a>
+              <a href="#plans" className="text-muted-foreground hover:text-blue-600 transition-colors font-medium">{t("landing.title.plans")}</a>
+              <a href="#about" className="text-muted-foreground hover:text-blue-600 transition-colors font-medium">{t("landing.title.about")}</a>
             </div>
 
             <div className="hidden md:flex items-center space-x-4">
               <button
                 onClick={() => window.location.href = '/signup'}
                 className="cursor-pointer bg-foreground text-background hover:bg-card-hovered px-6 py-2.5 rounded-full transition-all font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
-                Create an account
+                {t("landing.createAccount")}
               </button>
-              <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b">
-                <div className="flex w-full justify-between px-4">
+              <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+                <div className="flex w-full justify-between px-4 gap-4">
                   <ModeToggle />
+                  <LanguageToggle />
                 </div>
               </header>
             </div>
@@ -98,28 +102,28 @@ export default function LandingPage() {
           <div className="text-center space-y-8">
             <div className="inline-block">
               <span className="px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
-                🎓 Transform Your Future Today
+                🎓 {t("landing.intro.header")}
               </span>
             </div>
 
             <h1 className="text-6xl md:text-7xl font-bold text-popover-foreground leading-tight">
-              THE BEST LEARNING<br />
+              {t("landing.intro.subheader")}<br />
               <span className="bg-gradient-to-r from-blue-500 to-indigo-600 bg-clip-text text-transparent">
-                PLATFORM FOR YOU!
+                {t("landing.intro.platform")}
               </span>
             </h1>
 
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Master new skills, advance your career, and achieve your goals with expert-led courses and personalized learning paths.
+              {t("landing.intro.description")}
             </p>
 
             <div className="flex items-center justify-center gap-4 pt-4">
               <button onClick={() => window.location.href = '/login'} className="cursor-pointer bg-foreground hover:bg-card-hovered text-background px-8 py-4 rounded-full transition-all font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 flex items-center gap-2">
-                GET STARTED!
+                {t("landing.getStarted")}
                 <ArrowRight className="w-5 h-5" />
               </button>
               <button onClick={() => window.location.href = '/videodemo'} className="cursor-pointer bg-card hover:bg-card-secondary text-foreground px-8 py-4 rounded-full transition-all font-semibold text-lg shadow-lg border-2 border-mute">
-                Watch Demo
+                {t("landing.watchDemo")}
               </button>
             </div>
 
@@ -141,10 +145,10 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-foreground">
-              Why Choose ProLearning?
+              {t("landing.whyChooseUs")}
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Experience learning like never before with our cutting-edge platform
+              {t("landing.whyChooseUsDescription")}
             </p>
           </div>
 
@@ -176,7 +180,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-foreground">
-              Loved by Students Worldwide
+              {t("landing.title.testimonials")}
             </h2>
           </div>
 
@@ -203,13 +207,13 @@ export default function LandingPage() {
       <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-600">
         <div className="max-w-4xl mx-auto px-6 text-center space-y-8">
           <h2 className="text-4xl md:text-5xl font-bold text-white">
-            Ready to Start Your Journey?
+            {t("landing.cta.title")}
           </h2>
           <p className="text-xl text-blue-100">
-            Join thousands of learners who are already transforming their careers
+            {t("landing.cta.description")}
           </p>
           <button className="bg-white text-blue-600 px-10 py-4 rounded-full hover:bg-gray-100 transition-all font-bold text-lg shadow-2xl transform hover:scale-105 flex items-center gap-2 mx-auto">
-            Get Started Free
+            {t("landing.cta.buttonText")}
             <CheckCircle className="w-6 h-6" />
           </button>
         </div>
@@ -226,33 +230,33 @@ export default function LandingPage() {
                 </div>
                 <span className="text-xl font-bold text-foreground">ProLearning</span>
               </div>
-              <p className="text-muted-foreground">Empowering learners worldwide with quality education.</p>
+              <p className="text-muted-foreground">{t("landing.footer.description")}</p>
             </div>
 
             <div>
-              <h4 className="font-bold text-foreground mb-4">Product</h4>
+              <h4 className="font-bold text-foreground mb-4">{t("landing.footer.product")}</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="hover:text-foreground transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Courses</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t("landing.footer.features")}</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t("landing.footer.pricing")}</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t("landing.footer.courses")}</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-bold text-foreground mb-4">Company</h4>
+              <h4 className="font-bold text-foreground mb-4">{t("landing.footer.company")}</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="hover:text-foreground transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t("landing.footer.about")}</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t("landing.footer.careers")}</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t("landing.footer.contact")}</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-bold text-foreground mb-4">Legal</h4>
+              <h4 className="font-bold text-foreground mb-4">{t("landing.footer.legal")}</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="hover:text-foreground transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Terms</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Security</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t("landing.footer.privacy")}</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t("landing.footer.terms")}</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t("landing.footer.security")}</a></li>
               </ul>
             </div>
           </div>

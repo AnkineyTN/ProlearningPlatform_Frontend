@@ -3,6 +3,7 @@ import { X, FileText, Upload, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNotesBySet } from '@/hooks/useNotes';
 import NoteCardSelect from '@/components/cards/NoteCardSelect';
+import { useTranslation } from 'react-i18next';
 
 interface AISourceModalProps {
     setId: number;
@@ -33,10 +34,11 @@ function getTimeAgo(dateString: string): string {
 }
 
 export default function AISourceModal({ setId, currentPage, pageSize, type, isOpen, onClose, onBack, onSubmit }: AISourceModalProps) {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<'notes' | 'files'>('notes');
-    const [selectedNotes] = useState<number[]>([]);
+    const [selectedNotes, setSelectedNotes] = useState<number[]>([]);
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-    const { data: notesData } = useNotesBySet(
+    const { data: notesData, isLoading, error } = useNotesBySet(
         setId,
         currentPage,
         pageSize
@@ -45,13 +47,13 @@ export default function AISourceModal({ setId, currentPage, pageSize, type, isOp
 
     if (!isOpen) return null;
 
-    // const toggleNoteSelection = (noteId: number) => {
-    //     setSelectedNotes(prev =>
-    //         prev.includes(noteId)
-    //             ? prev.filter(id => id !== noteId)
-    //             : [...prev, noteId]
-    //     );
-    // };
+    const toggleNoteSelection = (noteId: number) => {
+        setSelectedNotes(prev =>
+            prev.includes(noteId)
+                ? prev.filter(id => id !== noteId)
+                : [...prev, noteId]
+        );
+    };
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -83,7 +85,7 @@ export default function AISourceModal({ setId, currentPage, pageSize, type, isOp
             <div className="relative bg-background rounded-lg shadow-xl w-full max-w-4xl mx-4 px-10 py-8">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold">Generate {type.toLowerCase()} with AI</h2>
+                    <h2 className="text-2xl font-bold">{t('modal.ai.header', { type: type.toLowerCase() })}</h2>
                     <button
                         onClick={onClose}
                         className="p-1 hover:bg-card rounded transition-colors cursor-pointer"
@@ -103,7 +105,7 @@ export default function AISourceModal({ setId, currentPage, pageSize, type, isOp
                     >
                         <div className="flex items-center gap-2">
                             <FileText className="w-4 h-4" />
-                            From notes
+                            {t('modal.ai.fromNotes')}
                         </div>
                     </button>
                     <button
@@ -115,7 +117,7 @@ export default function AISourceModal({ setId, currentPage, pageSize, type, isOp
                     >
                         <div className="flex items-center gap-2">
                             <Upload className="w-4 h-4" />
-                            Upload files
+                            {t('modal.ai.uploadFiles')}
                         </div>
                     </button>
                 </div>
@@ -125,7 +127,7 @@ export default function AISourceModal({ setId, currentPage, pageSize, type, isOp
                     {activeTab === 'notes' && (
                         <div>
                             <p className="text-sm text-muted-foreground mb-4">
-                                Select notes to generate {type.toLowerCase()} from:
+                                {t('modal.ai.selectNotes', { type: type.toLowerCase() })}
                             </p>
                             <div className="space-y-2">
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
@@ -151,7 +153,7 @@ export default function AISourceModal({ setId, currentPage, pageSize, type, isOp
                             </div>
                             {selectedNotes.length > 0 && (
                                 <p className="text-sm text-muted-foreground mt-3">
-                                    {selectedNotes.length} note{selectedNotes.length > 1 ? 's' : ''} selected
+                                    {selectedNotes.length} note{selectedNotes.length > 1 ? 's' : ''} {t('modal.ai.selected')}
                                 </p>
                             )}
                         </div>
@@ -161,9 +163,9 @@ export default function AISourceModal({ setId, currentPage, pageSize, type, isOp
                         <div className="flex flex-col items-center justify-center">
                             <div className="mt-2 w-full border-2 border-dashed border-ring rounded-lg p-8 text-center hover:border-foreground transition-colors">
                                 <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                                <h3 className="font-medium mb-2">Upload files</h3>
+                                <h3 className="font-medium mb-2">{t('modal.uploadFiles')}</h3>
                                 <p className="text-sm text-muted-foreground mb-4">
-                                    PDF, DOCX, TXT or other documents
+                                    PDF, DOCX, TXT
                                 </p>
                                 <label className="inline-block">
                                     <input
@@ -174,14 +176,14 @@ export default function AISourceModal({ setId, currentPage, pageSize, type, isOp
                                         accept=".pdf,.docx,.txt,.doc"
                                     />
                                     <span className="px-4 py-2 bg-foreground text-background rounded-lg cursor-pointer hover:opacity-90 transition-opacity inline-block">
-                                        Choose files
+                                        {t('modal.ai.chooseFiles')}
                                     </span>
                                 </label>
                             </div>
 
                             {uploadedFiles.length > 0 && (
                                 <div className="w-full mt-4">
-                                    <p className="text-sm font-medium mb-2">Uploaded files:</p>
+                                    <p className="text-sm font-medium mb-2">{t('modal.uploadedFiles')}:</p>
                                     <div className="space-y-2">
                                         {uploadedFiles.map((file, index) => (
                                             <div
@@ -211,14 +213,14 @@ export default function AISourceModal({ setId, currentPage, pageSize, type, isOp
                         className="px-6 py-2 border border-border rounded-lg bg-background text-foreground hover:bg-card transition-colors cursor-pointer flex items-center gap-2"
                     >
                         <ArrowLeft className="w-4 h-4" />
-                        Back
+                        {t('modal.back')}
                     </Button>
                     <Button
                         onClick={handleSubmit}
                         disabled={!canSubmit}
                         className="px-6 py-2 bg-foreground text-background rounded-lg cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Generate with AI
+                        {t('modal.generateWithAI')}
                     </Button>
                 </div>
             </div>
