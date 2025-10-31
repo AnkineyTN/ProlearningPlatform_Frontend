@@ -57,3 +57,5 @@ jobs:
             docker compose down
             docker pull ${{ secrets.REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}:dev
             docker compose --env-file .env.dev up -d
+
+# final change for dev deploy workflow
