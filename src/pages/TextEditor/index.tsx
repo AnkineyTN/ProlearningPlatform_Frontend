@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/mantine/style.css";
@@ -17,7 +17,6 @@ import EditorHeader from './EditorHeader';
 import FileTabs from './FileTabs';
 import ExplainPopup from './ExplainPopup';
 import FileSidebar from './FileSidebar';
-// import { useEditorLogic } from '@/hooks/';
 import { useFileManagement } from '@/hooks/useFileManagement';
 import { useExplainFeature } from '@/hooks/useExplainFeature';
 import "./style.scss";
@@ -38,6 +37,10 @@ const NotionEditor: React.FC<EditorProps> = ({
     const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
+    // Ref để track timeout cho debounce
+    const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const hasUnsavedChanges = useRef<boolean>(false);
 
     const { data: noteData, isLoading, error } = useNoteDetail(Number(noteId));
     const autoSaveMutation = useAutoSaveNote();
@@ -113,25 +116,73 @@ const NotionEditor: React.FC<EditorProps> = ({
         }
     }, [noteData]);
 
-    // Auto-save every 15 seconds
-    useEffect(() => {
-        const autoSaveInterval = setInterval(async () => {
-            try {
-                const blocks = editor.document;
-                const contentString = JSON.stringify(blocks);
-                await autoSaveMutation.mutateAsync({
-                    noteId: Number(noteId),
-                    title,
-                    content: contentString
-                });
-                setLastSaved(new Date());
-            } catch (error) {
-                console.error('Auto-save failed:', error);
-            }
-        }, 15000);
+    // Hàm thực hiện auto-save
+    const performAutoSave = async () => {
+        if (!hasUnsavedChanges.current) return;
 
-        return () => clearInterval(autoSaveInterval);
-    }, [title, editor, noteId]);
+        try {
+            setIsSaving(true);
+            const blocks = editor.document;
+            const contentString = JSON.stringify(blocks);
+            await autoSaveMutation.mutateAsync({
+                noteId: Number(noteId),
+                title,
+                content: contentString
+            });
+            setLastSaved(new Date());
+            hasUnsavedChanges.current = false;
+        } catch (error) {
+            console.error('Auto-save failed:', error);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    // Debounced auto-save: chỉ save sau 20s kể từ lần edit cuối
+    const triggerAutoSave = () => {
+        hasUnsavedChanges.current = true;
+
+        // Clear timeout cũ nếu có
+        if (autoSaveTimeoutRef.current) {
+            clearTimeout(autoSaveTimeoutRef.current);
+        }
+
+        // Set timeout mới: save sau 20s
+        autoSaveTimeoutRef.current = setTimeout(() => {
+            performAutoSave();
+        }, 20000); // 20 giây
+    };
+
+    // Listen to editor changes
+    useEffect(() => {
+        const unsubscribe = editor.onChange(() => {
+            triggerAutoSave();
+        });
+
+        return () => {
+            unsubscribe();
+        };
+    }, [editor, title]);
+
+    // Listen to title changes
+    useEffect(() => {
+        if (noteData && title !== noteData.title) {
+            triggerAutoSave();
+        }
+    }, [title]);
+
+    // Cleanup timeout khi unmount
+    useEffect(() => {
+        return () => {
+            if (autoSaveTimeoutRef.current) {
+                clearTimeout(autoSaveTimeoutRef.current);
+            }
+            // Save ngay khi unmount nếu có thay đổi chưa save
+            if (hasUnsavedChanges.current) {
+                performAutoSave();
+            }
+        };
+    }, []);
 
     // Handlers
     const handleBack = () => navigate(-1);
@@ -145,6 +196,11 @@ const NotionEditor: React.FC<EditorProps> = ({
     };
 
     const handleSave = async () => {
+        // Clear timeout để không save 2 lần
+        if (autoSaveTimeoutRef.current) {
+            clearTimeout(autoSaveTimeoutRef.current);
+        }
+
         const blocks = editor.document;
         setIsSaving(true);
         try {
@@ -158,6 +214,7 @@ const NotionEditor: React.FC<EditorProps> = ({
                     content: contentString
                 });
                 setLastSaved(new Date());
+                hasUnsavedChanges.current = false;
             }
         } catch (error) {
             console.error('Error saving note:', error);

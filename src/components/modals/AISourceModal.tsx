@@ -36,9 +36,9 @@ function getTimeAgo(dateString: string): string {
 export default function AISourceModal({ setId, currentPage, pageSize, type, isOpen, onClose, onBack, onSubmit }: AISourceModalProps) {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<'notes' | 'files'>('notes');
-    const [selectedNotes, setSelectedNotes] = useState<number[]>([]);
+    const [selectedNotes] = useState<number[]>([]);
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-    const { data: notesData, isLoading, error } = useNotesBySet(
+    const { data: notesData } = useNotesBySet(
         setId,
         currentPage,
         pageSize
@@ -47,13 +47,13 @@ export default function AISourceModal({ setId, currentPage, pageSize, type, isOp
 
     if (!isOpen) return null;
 
-    const toggleNoteSelection = (noteId: number) => {
-        setSelectedNotes(prev =>
-            prev.includes(noteId)
-                ? prev.filter(id => id !== noteId)
-                : [...prev, noteId]
-        );
-    };
+    // const toggleNoteSelection = (noteId: number) => {
+    //     setSelectedNotes(prev =>
+    //         prev.includes(noteId)
+    //             ? prev.filter(id => id !== noteId)
+    //             : [...prev, noteId]
+    //     );
+    // };
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
