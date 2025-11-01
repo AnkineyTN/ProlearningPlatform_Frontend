@@ -3,8 +3,8 @@ import FlipFlashcard from "./FlipFlashcard";
 
 interface StudyViewProps {
     flashcards: Array<{
-        question: string;
-        answer: string;
+        frontCard: string;
+        backCard: string;
     }>;
     currentCardIndex: number;
     isFlipped: boolean;

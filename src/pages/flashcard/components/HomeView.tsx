@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 
 interface HomeViewProps {
     flashcards: Array<{
-        question: string;
-        answer: string;
+        frontCard: string;
+        backCard: string;
     }>;
     onCardClick: (index: number) => void;
     onStudy: () => void;
@@ -140,10 +140,10 @@ export default function HomeView({ flashcards, onCardClick, onStudy, onMatching,
                             <CardContent className="p-4">
                                 <div className="flex items-start gap-4">
                                     <div className="flex-1 max-w-[250px]">
-                                        <p className="font-medium mb-2">{card.question}</p>
+                                        <p className="font-medium mb-2">{card.frontCard}</p>
                                     </div>
                                     <div className="flex-1 border-l pl-6">
-                                        <p className="text-foreground">{card.answer}</p>
+                                        <p className="text-foreground">{card.backCard}</p>
                                     </div>
                                     <div className="flex gap-2">
                                         <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer">

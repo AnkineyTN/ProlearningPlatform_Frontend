@@ -26,6 +26,11 @@ function TextEditorWrapper() {
     return <TextEditor initialTitle={id ? `Note ${id}` : 'Untitled Note'} noteId={id ?? ''} />;
 }
 
+function FlashcardAppWrapper() {
+    const { setId, flashcardId } = useParams();
+    return <FlashcardApp flashcardId={flashcardId ?? ''} setId={setId ?? ''} />;
+}
+
 export const routeConfig: RouteObject[] = [
     // Public routes
     {
@@ -74,8 +79,8 @@ export const routeConfig: RouteObject[] = [
                 element: <FlashcardEditor />
             },
             {
-                path: 'flashcard/:id',
-                element: <FlashcardApp />
+                path: '/sets/:setId/flashcards/:flashcardId',
+                element: <FlashcardAppWrapper />
             }
         ]
     },

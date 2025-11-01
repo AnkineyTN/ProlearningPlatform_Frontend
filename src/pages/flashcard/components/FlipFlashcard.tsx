@@ -4,8 +4,8 @@ import { ChevronLeft, ChevronRight, Shuffle } from 'lucide-react';
 interface FlipFlashcardProps {
     isFlipped: boolean;
     flashcards: Array<{
-        question: string;
-        answer: string;
+        frontCard: string;
+        backCard: string;
     }>;
     currentCardIndex: number;
     onFlip: () => void;
@@ -50,7 +50,7 @@ export default function FlipFlashcard({
                                     Question
                                 </div>
                                 <p className="text-3xl font-medium leading-relaxed">
-                                    {flashcards[currentCardIndex].question}
+                                    {flashcards[currentCardIndex].frontCard}
                                 </p>
                             </div>
                             <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground">
@@ -72,7 +72,7 @@ export default function FlipFlashcard({
                                     Answer
                                 </div>
                                 <p className="text-3xl font-medium leading-relaxed">
-                                    {flashcards[currentCardIndex].answer}
+                                    {flashcards[currentCardIndex].backCard}
                                 </p>
                             </div>
                             <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground">

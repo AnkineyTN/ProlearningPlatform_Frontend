@@ -1,4 +1,15 @@
 {
+    "card": {
+        "checklist": {
+            "seeMore": "Xem thêm",
+            "title": "Danh sách kiểm tra của bạn hôm nay!"
+        }
+    },
+    "dashboard": {
+        "recentNotes": "Ghi chú gần đây",
+        "viewAll": "Xem tất cả",
+        "yourSets": "Bộ sưu tập của bạn"
+    },
     "landing": {
         "createAccount": "Tạo tài khoản",
         "cta": {
@@ -84,6 +95,9 @@
             "uploadedFiles": "Tệp đã tải lên"
         },
         "back": "Quay lại",
+        "cancel": "Hủy",
+        "create": "Tạo",
+        "description": "Mô tả",
         "generateWithAI": "Tạo với AI",
         "method": {
             "addImages": "Thêm hình ảnh",
@@ -98,21 +112,95 @@
             "smartContentExtraction": "Trích xuất nội dung thông minh"
         },
         "new": "Mới",
-        "title": "Tiêu đề",
-        "privacy": "Quyền riêng tư",
-        "public": "Công khai",
-        "private": "Riêng tư",
-        "unlisted": "Không công khai",
-        "description": "Mô tả",
         "optional": "Tùy chọn",
-        "create": "Tạo",
-        "cancel": "Hủy"
+        "privacy": "Quyền riêng tư",
+        "private": "Riêng tư",
+        "public": "Công khai",
+        "title": "Tiêu đề",
+        "unlisted": "Không công khai"
+    },
+    "onboarding": {
+        "back": "Quay lại",
+        "continue": "Tiếp tục",
+        "createStudySet": {
+            "createSet": "Tạo bộ tài liệu",
+            "description": "Tạo không gian học tập cá nhân hóa của bạn để tổ chức tài liệu học tập",
+            "descriptionLabel": "Mô tả",
+            "descriptionPlaceholder": "Thêm mô tả để giúp bạn nhớ bộ tài liệu học tập này về cái gì...",
+            "keepMaterialsInOnePlace": "Giữ tất cả tài liệu của một lớp trong một nơi.",
+            "makeManyStudySets": "Bạn có thể tạo nhiều bộ tài liệu học tập như bạn muốn.",
+            "nameLabel": "Tên bộ tài liệu học tập",
+            "organizeMaterials": "Tổ chức tài liệu của bạn thành các lớp hoặc học kỳ riêng biệt.",
+            "privacyLabel": "Quyền riêng tư",
+            "privacyPrivate": "Riêng tư",
+            "privacyPublic": "Công khai",
+            "privacyUnlisted": "Không niêm yết",
+            "quickTip1": "Sử dụng tên mô tả như \"CS101 - Cấu trúc dữ liệu\"",
+            "quickTip2": "Thêm thông tin học kỳ: \"Mùa xuân 2025 - Phát triển React\"",
+            "quickTip3": "Bao gồm mục tiêu học tập của bạn: \"Nắm vững các nguyên tắc cơ bản về AI\"",
+            "quickTips": "Mẹo nhanh",
+            "title": "Đặt tên cho bộ tài liệu học tập đầu tiên của bạn",
+            "whatIsStudySet": "Bộ tài liệu học tập là gì?"
+        },
+        "educationSelection": {
+            "college": "Cao đẳng",
+            "collegeDescription": "Bằng cử nhân hoặc tương đương",
+            "description": "Giúp chúng tôi cá nhân hóa trải nghiệm học tập của bạn",
+            "gradSchool": "Sau đại học",
+            "gradSchoolDescription": "Bằng thạc sĩ hoặc tiến sĩ",
+            "highSchool": "Trung học phổ thông",
+            "highSchoolDescription": "Hoàn thành giáo dục trung học",
+            "medSchool": "Trường y",
+            "medSchoolDescription": "Chương trình đào tạo y khoa",
+            "other": "Khác",
+            "otherDescription": "Giáo dục thay thế hoặc phi truyền thống",
+            "title": "Trình độ học vấn của bạn là gì?"
+        },
+        "languageSelection": {
+            "description": "Chọn ngôn ngữ bạn muốn sử dụng cho trải nghiệm học tập của mình",
+            "info": "Bạn có thể thay đổi sở thích ngôn ngữ bất cứ lúc nào trong cài đặt tài khoản của mình.",
+            "title": "Chọn ngôn ngữ của bạn"
+        },
+        "premiumSelection": {
+            "description": "Chọn gói phù hợp nhất với nhu cầu và mục tiêu học tập của bạn.",
+            "free": "Miễn phí",
+            "freeFeatures": {
+                "accessToBasicContent": "Truy cập nội dung cơ bản",
+                "communitySupport": "Hỗ trợ cộng đồng",
+                "limitedStudyModes": "Chế độ học tập hạn chế"
+            },
+            "premium": "Gói cao cấp",
+            "premiumFeatures": {
+                "adFreeExperience": "Trải nghiệm không có quảng cáo",
+                "advancedStudyModes": "Chế độ học tập nâng cao",
+                "everythingInFree": "Tất cả trong gói miễn phí",
+                "offlineAccess": "Truy cập ngoại tuyến",
+                "prioritySupport": "Hỗ trợ ưu tiên"
+            },
+            "selectPremium": "Chọn gói cao cấp",
+            "title": "Chọn gói của bạn"
+        },
+        "roleSelection": {
+            "description": "Điều này giúp chúng tôi điều chỉnh trải nghiệm học tập của bạn phù hợp với nhu cầu và mục tiêu của bạn.",
+            "header": "Bạn là ai?"
+        },
+        "skipForNow": "Bỏ qua cho bây giờ",
+        "sourceSelection": {
+            "description": "Giúp chúng tôi hiểu cách bạn phát hiện ra nền tảng của chúng tôi để chúng tôi có thể cải thiện khả năng tiếp cận của mình.",
+            "header": "Bạn đã nghe về ProLearning từ đâu?",
+            "student": "Học sinh",
+            "studentDescription": "Tài liệu học tập và nghiên cứu",
+            "teacher": "Giáo viên",
+            "teacherDescription": "Tạo và chia sẻ tài liệu học tập"
+        }
     },
     "sidebar": {
         "blog": "Blog",
+        "dashboard": "Trang chủ",
         "logout": "Đăng xuất",
         "pomodoro": "Pomodoro",
         "profile": "Hồ sơ",
+        "setList": "Danh sách tài liệu",
         "settings": "Cài đặt",
         "socials": "Mạng xã hội",
         "todo": "Việc cần làm"
@@ -146,91 +234,5 @@
         "subtitle": "Đăng ký",
         "success": "Tạo tài khoản thành công!",
         "title": "Tạo tài khoản của bạn"
-    },
-    "dashboard": {
-        "yourSets": "Bộ sưu tập của bạn",
-        "viewAll": "Xem tất cả",
-        "recentNotes": "Ghi chú gần đây"
-    },
-    "card": {
-        "checklist": {
-            "title": "Danh sách kiểm tra của bạn hôm nay!",
-            "seeMore": "Xem thêm"
-        }
-    },
-    "onboarding": {
-        "languageSelection": {
-            "title": "Chọn ngôn ngữ của bạn",
-            "description": "Chọn ngôn ngữ bạn muốn sử dụng cho trải nghiệm học tập của mình",
-            "info": "Bạn có thể thay đổi sở thích ngôn ngữ bất cứ lúc nào trong cài đặt tài khoản của mình."
-        },
-        "roleSelection": {
-            "header": "Bạn là ai?",
-            "description": "Điều này giúp chúng tôi điều chỉnh trải nghiệm học tập của bạn phù hợp với nhu cầu và mục tiêu của bạn."
-        },
-        "sourceSelection": {
-            "header": "Bạn đã nghe về ProLearning từ đâu?",
-            "description": "Giúp chúng tôi hiểu cách bạn phát hiện ra nền tảng của chúng tôi để chúng tôi có thể cải thiện khả năng tiếp cận của mình.",
-            "student": "Học sinh",
-            "studentDescription": "Tài liệu học tập và nghiên cứu",
-            "teacher": "Giáo viên",
-            "teacherDescription": "Tạo và chia sẻ tài liệu học tập"
-        },
-        "educationSelection": {
-            "title": "Trình độ học vấn của bạn là gì?",
-            "highSchool": "Trung học phổ thông",
-            "highSchoolDescription": "Hoàn thành giáo dục trung học",
-            "college": "Cao đẳng",
-            "collegeDescription": "Bằng cử nhân hoặc tương đương",
-            "gradSchool": "Sau đại học",
-            "gradSchoolDescription": "Bằng thạc sĩ hoặc tiến sĩ",
-            "medSchool": "Trường y",
-            "medSchoolDescription": "Chương trình đào tạo y khoa",
-            "other": "Khác",
-            "otherDescription": "Giáo dục thay thế hoặc phi truyền thống",
-            "description": "Giúp chúng tôi cá nhân hóa trải nghiệm học tập của bạn"
-        },
-        "premiumSelection": {
-            "title": "Chọn gói của bạn",
-            "description": "Chọn gói phù hợp nhất với nhu cầu và mục tiêu học tập của bạn.",
-            "free": "Miễn phí",
-            "freeFeatures": {
-                "accessToBasicContent": "Truy cập nội dung cơ bản",
-                "limitedStudyModes": "Chế độ học tập hạn chế",
-                "communitySupport": "Hỗ trợ cộng đồng"
-            },
-            "premium": "Gói cao cấp",
-            "premiumFeatures": {
-                "everythingInFree": "Tất cả trong gói miễn phí",
-                "advancedStudyModes": "Chế độ học tập nâng cao",
-                "adFreeExperience": "Trải nghiệm không có quảng cáo",
-                "prioritySupport": "Hỗ trợ ưu tiên",
-                "offlineAccess": "Truy cập ngoại tuyến"
-            },
-            "selectPremium": "Chọn gói cao cấp"
-        },
-        "createStudySet": {
-            "title": "Đặt tên cho bộ tài liệu học tập đầu tiên của bạn",
-            "description": "Tạo không gian học tập cá nhân hóa của bạn để tổ chức tài liệu học tập",
-            "nameLabel": "Tên bộ tài liệu học tập",
-            "descriptionLabel": "Mô tả",
-            "descriptionPlaceholder": "Thêm mô tả để giúp bạn nhớ bộ tài liệu học tập này về cái gì...",
-            "privacyLabel": "Quyền riêng tư",
-            "privacyPublic": "Công khai",
-            "privacyPrivate": "Riêng tư",
-            "privacyUnlisted": "Không niêm yết",
-            "createSet": "Tạo bộ tài liệu",
-            "whatIsStudySet": "Bộ tài liệu học tập là gì?",
-            "organizeMaterials": "Tổ chức tài liệu của bạn thành các lớp hoặc học kỳ riêng biệt.",
-            "keepMaterialsInOnePlace": "Giữ tất cả tài liệu của một lớp trong một nơi.",
-            "makeManyStudySets": "Bạn có thể tạo nhiều bộ tài liệu học tập như bạn muốn.",
-            "quickTips": "Mẹo nhanh",
-            "quickTip1": "Sử dụng tên mô tả như \"CS101 - Cấu trúc dữ liệu\"",
-            "quickTip2": "Thêm thông tin học kỳ: \"Mùa xuân 2025 - Phát triển React\"",
-            "quickTip3": "Bao gồm mục tiêu học tập của bạn: \"Nắm vững các nguyên tắc cơ bản về AI\""
-        },
-        "skipForNow": "Bỏ qua cho bây giờ",
-        "back": "Quay lại",
-        "continue": "Tiếp tục"
     }
 }

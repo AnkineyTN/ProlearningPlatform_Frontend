@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNotesBySet } from '@/hooks/useNotes';
+import { getTimeAgo } from '@/lib/utils';
 
 interface NoteListPageProps {
     setId?: number;
@@ -26,7 +27,6 @@ export default function NoteListPage({ setId: propSetId, onUpdate, onDelete }: N
     );
 
     const notes = notesData?.items || [];
-    console.log("🚀 ~ NoteListPage ~ notesData:", notesData)
     const totalPages = notesData?.totalPage || 1;
 
     const handleAccess = (id: number) => {
@@ -134,22 +134,4 @@ export default function NoteListPage({ setId: propSetId, onUpdate, onDelete }: N
             )}
         </div>
     );
-}
-
-// Helper function to calculate time ago
-function getTimeAgo(dateString: string): string {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMs = now.getTime() - date.getTime();
-    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-
-    if (diffInHours < 1) {
-        const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
-        return `${diffInMinutes} minute${diffInMinutes !== 1 ? 's' : ''} ago`;
-    } else if (diffInHours < 24) {
-        return `${diffInHours} hour${diffInHours !== 1 ? 's' : ''} ago`;
-    } else {
-        const diffInDays = Math.floor(diffInHours / 24);
-        return `${diffInDays} day${diffInDays !== 1 ? 's' : ''} ago`;
-    }
 }

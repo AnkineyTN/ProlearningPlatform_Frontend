@@ -1,4 +1,15 @@
 {
+    "card": {
+        "checklist": {
+            "seeMore": "See more",
+            "title": "Your checklist today!"
+        }
+    },
+    "dashboard": {
+        "recentNotes": "Recent notes",
+        "viewAll": "View all",
+        "yourSets": "Your Sets"
+    },
     "landing": {
         "createAccount": "Create an account",
         "cta": {
@@ -84,6 +95,9 @@
             "uploadedFiles": "Uploaded Files"
         },
         "back": "Back",
+        "cancel": "Cancel",
+        "create": "Create",
+        "description": "Description",
         "generateWithAI": "Generate with AI",
         "method": {
             "addImages": "Add images",
@@ -98,21 +112,95 @@
             "smartContentExtraction": "Smart content extraction"
         },
         "new": "New",
-        "title": "Title",
-        "privacy": "Privacy",
-        "public": "Public",
-        "private": "Private",
-        "unlisted": "Unlisted",
-        "description": "Description",
         "optional": "Optional",
-        "create": "Create",
-        "cancel": "Cancel"
+        "privacy": "Privacy",
+        "private": "Private",
+        "public": "Public",
+        "title": "Title",
+        "unlisted": "Unlisted"
+    },
+    "onboarding": {
+        "back": "Back",
+        "continue": "Continue",
+        "createStudySet": {
+            "createSet": "Create Set",
+            "description": "Create your personalized learning space to organize your study materials",
+            "descriptionLabel": "Description",
+            "descriptionPlaceholder": "Add a description to help you remember what this study set is about...",
+            "keepMaterialsInOnePlace": "Keep all of a class's materials in one place.",
+            "makeManyStudySets": "You can make as many study sets as you want.",
+            "nameLabel": "Study Set Name",
+            "organizeMaterials": "Organize your materials into separate classes or semesters.",
+            "privacyLabel": "Privacy",
+            "privacyPrivate": "Private",
+            "privacyPublic": "Public",
+            "privacyUnlisted": "Unlisted",
+            "quickTip1": "Use descriptive names like \"CS101 - Data Structures\"",
+            "quickTip2": "Add semester info: \"Spring 2025 - React Development\"",
+            "quickTip3": "Include your learning goal: \"Mastering AI Fundamentals\"",
+            "quickTips": "Quick Tips",
+            "title": "Name Your First Study Set",
+            "whatIsStudySet": "What is a study set?"
+        },
+        "educationSelection": {
+            "college": "College",
+            "collegeDescription": "Undergraduate degree or equivalent",
+            "description": "Help us personalize your learning experience",
+            "gradSchool": "Grad School",
+            "gradSchoolDescription": "Master's or Doctoral degree",
+            "highSchool": "High School",
+            "highSchoolDescription": "Secondary education completion",
+            "medSchool": "Med School",
+            "medSchoolDescription": "Medical degree program",
+            "other": "Other",
+            "otherDescription": "Alternative or non-traditional education",
+            "title": "What is your education?"
+        },
+        "languageSelection": {
+            "description": "Choose the language you'd like to use for your learning experience",
+            "info": "You can change your language preference anytime in your account settings.",
+            "title": "Choose Your Language"
+        },
+        "premiumSelection": {
+            "description": "Select the plan that best suits your learning needs and goals.",
+            "free": "Free",
+            "freeFeatures": {
+                "accessToBasicContent": "Access to basic content",
+                "communitySupport": "Community support",
+                "limitedStudyModes": "Limited study modes"
+            },
+            "premium": "Premium",
+            "premiumFeatures": {
+                "adFreeExperience": "Ad-free experience",
+                "advancedStudyModes": "Advanced study modes",
+                "everythingInFree": "Everything in Free",
+                "offlineAccess": "Offline access",
+                "prioritySupport": "Priority support"
+            },
+            "selectPremium": "Select Premium",
+            "title": "Choose Your Plan"
+        },
+        "roleSelection": {
+            "description": "This helps us tailor your learning experience to suit your needs and goals.",
+            "header": "What best describes your role?"
+        },
+        "skipForNow": "Skip for now",
+        "sourceSelection": {
+            "description": "Help us understand how you discovered our platform so we can improve our reach.",
+            "header": "How did you hear about ProLearning?",
+            "student": "Student",
+            "studentDescription": "Learning and studying materials",
+            "teacher": "Teacher",
+            "teacherDescription": "Creating and sharing study materials"
+        }
     },
     "sidebar": {
         "blog": "Blog",
+        "dashboard": "Dashboard",
         "logout": "Logout",
         "pomodoro": "Pomodoro",
         "profile": "Profile",
+        "setList": "Set List",
         "settings": "Settings",
         "socials": "Socials",
         "todo": "To-Do"
@@ -146,91 +234,5 @@
         "subtitle": "Sign up",
         "success": "Account created successfully!",
         "title": "Create Your Account"
-    },
-    "dashboard": {
-        "yourSets": "Your Sets",
-        "viewAll": "View all",
-        "recentNotes": "Recent notes"
-    },
-    "card": {
-        "checklist": {
-            "title": "Your checklist today!",
-            "seeMore": "See more"
-        }
-    },
-    "onboarding": {
-        "languageSelection": {
-            "title": "Choose Your Language",
-            "description": "Choose the language you'd like to use for your learning experience",
-            "info": "You can change your language preference anytime in your account settings."
-        },
-        "roleSelection": {
-            "header": "What best describes your role?",
-            "description": "This helps us tailor your learning experience to suit your needs and goals."
-        },
-        "sourceSelection": {
-            "header": "How did you hear about ProLearning?",
-            "description": "Help us understand how you discovered our platform so we can improve our reach.",
-            "student": "Student",
-            "studentDescription": "Learning and studying materials",
-            "teacher": "Teacher",
-            "teacherDescription": "Creating and sharing study materials"
-        },
-        "educationSelection": {
-            "title": "What is your education?",
-            "highSchool": "High School",
-            "highSchoolDescription": "Secondary education completion",
-            "college": "College",
-            "collegeDescription": "Undergraduate degree or equivalent",
-            "gradSchool": "Grad School",
-            "gradSchoolDescription": "Master's or Doctoral degree",
-            "medSchool": "Med School",
-            "medSchoolDescription": "Medical degree program",
-            "other": "Other",
-            "otherDescription": "Alternative or non-traditional education",
-            "description": "Help us personalize your learning experience"
-        },
-        "premiumSelection": {
-            "title": "Choose Your Plan",
-            "description": "Select the plan that best suits your learning needs and goals.",
-            "free": "Free",
-            "freeFeatures": {
-                "accessToBasicContent": "Access to basic content",
-                "limitedStudyModes": "Limited study modes",
-                "communitySupport": "Community support"
-            },
-            "premium": "Premium",
-            "premiumFeatures": {
-                "everythingInFree": "Everything in Free",
-                "advancedStudyModes": "Advanced study modes",
-                "adFreeExperience": "Ad-free experience",
-                "prioritySupport": "Priority support",
-                "offlineAccess": "Offline access"
-            },
-            "selectPremium": "Select Premium"
-        },
-        "createStudySet": {
-            "title": "Name Your First Study Set",
-            "description": "Create your personalized learning space to organize your study materials",
-            "nameLabel": "Study Set Name",
-            "descriptionLabel": "Description",
-            "descriptionPlaceholder": "Add a description to help you remember what this study set is about...",
-            "privacyLabel": "Privacy",
-            "privacyPublic": "Public",
-            "privacyPrivate": "Private",
-            "privacyUnlisted": "Unlisted",
-            "createSet": "Create Set",
-            "whatIsStudySet": "What is a study set?",
-            "organizeMaterials": "Organize your materials into separate classes or semesters.",
-            "keepMaterialsInOnePlace": "Keep all of a class's materials in one place.",
-            "makeManyStudySets": "You can make as many study sets as you want.",
-            "quickTips": "Quick Tips",
-            "quickTip1": "Use descriptive names like \"CS101 - Data Structures\"",
-            "quickTip2": "Add semester info: \"Spring 2025 - React Development\"",
-            "quickTip3": "Include your learning goal: \"Mastering AI Fundamentals\""
-        },
-        "skipForNow": "Skip for now",
-        "back": "Back",
-        "continue": "Continue"
     }
 }

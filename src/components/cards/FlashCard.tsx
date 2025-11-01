@@ -5,7 +5,7 @@ export interface Flashcard {
     title: string;
     preview: string;
     time: string;
-    date: string;
+    created_at: string;
 }
 
 export default function FlashCard({ flashcard, onAccess }: { flashcard: Flashcard, onAccess: (id: string) => void }) {
@@ -26,7 +26,7 @@ export default function FlashCard({ flashcard, onAccess }: { flashcard: Flashcar
                 <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" /> {flashcard.time}
                 </span>
-                <span>{flashcard.date}</span>
+                <span>{flashcard.created_at}</span>
             </div>
         </div>
     );
