@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
+import { Document, Page, pdfjs } from 'react-pdf';
 import { File, X, Sparkles, Check, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+
+// Setup worker
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 interface UploadedFile {
     id: number;
@@ -20,6 +26,7 @@ interface FileSidebarProps {
     onSummarize: () => void;
     onApplySummary: () => void;
     onRegenerateSummary: () => void;
+    onTextSelected?: (text: string) => void;
 }
 
 const FileSidebar: React.FC<FileSidebarProps> = ({
@@ -30,9 +37,24 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
     onClose,
     onSummarize,
     onApplySummary,
-    onRegenerateSummary
+    onRegenerateSummary,
+    onTextSelected
 }) => {
-    const [viewMode, setViewMode] = useState<'preview' | 'html'>('preview');
+    const [numPages, setNumPages] = useState<number>(0);
+    const [pageNumber, setPageNumber] = useState<number>(1);
+
+    const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+        setNumPages(numPages);
+    };
+
+    const handleTextSelection = () => {
+        const selection = window.getSelection();
+        const selectedText = selection?.toString().trim();
+
+        if (selectedText && onTextSelected) {
+            onTextSelected(selectedText);
+        }
+    };
 
     if (!show || !file) return null;
 
@@ -62,50 +84,68 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
                 </div>
             </div>
 
-            {/* View Mode Toggle (for PDFs with HTML content) */}
-            {file.extension === 'pdf' && file.content && (
-                <div className="px-4 pt-3 pb-2 flex gap-2 border-b border-gray-200">
-                    <button
-                        onClick={() => setViewMode('preview')}
-                        className={`flex-1 px-3 py-2 text-sm rounded transition-colors ${viewMode === 'preview'
-                                ? 'bg-purple-600 text-white font-medium'
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                            }`}
-                    >
-                        📄 PDF Preview
-                    </button>
-                    <button
-                        onClick={() => setViewMode('html')}
-                        className={`flex-1 px-3 py-2 text-sm rounded transition-colors ${viewMode === 'html'
-                                ? 'bg-purple-600 text-white font-medium'
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                            }`}
-                    >
-                        🌐 HTML Content
-                    </button>
-                </div>
-            )}
-
             {/* File Preview/Content */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto" onMouseUp={handleTextSelection}>
                 {file.extension === 'pdf' ? (
-                    viewMode === 'html' && file.content ? (
-                        <div className="h-full">
-                            {/* HTML Content Display */}
-                            <div
-                                className="w-full h-full overflow-auto bg-white"
-                                dangerouslySetInnerHTML={{ __html: file.content }}
+                    <div className="h-full p-4">
+                        <Document
+                            file={{
+                                url: file.fileUrl,
+                            }}
+                            onLoadSuccess={onDocumentLoadSuccess}
+                            onLoadError={(error) => console.error('PDF load error:', error)}
+                            className="flex flex-col items-center"
+                            loading={
+                                <div className="flex items-center justify-center p-8">
+                                    <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+                                    <span className="ml-2">Loading PDF...</span>
+                                </div>
+                            }
+                            error={
+                                <div className="text-center p-8">
+                                    <p className="text-red-600 mb-2">Failed to load PDF</p>
+                                    <a
+                                        href={file.fileUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-purple-600 hover:underline text-sm"
+                                    >
+                                        Open in new tab →
+                                    </a>
+                                </div>
+                            }
+                        >
+                            <Page
+                                pageNumber={pageNumber}
+                                renderTextLayer={true}
+                                renderAnnotationLayer={true}
+                                className="border border-gray-200 rounded shadow-sm"
+                                width={700}
                             />
-                        </div>
-                    ) : (
-                        <div className="h-full p-4">
-                            <iframe
-                                src={file.fileUrl}
-                                className="w-full h-full border border-gray-200 rounded"
-                                title="PDF Preview"
-                            />
-                        </div>
-                    )
+                        </Document>
+
+                        {numPages > 1 && (
+                            <div className="flex items-center justify-center gap-4 mt-4">
+                                <button
+                                    onClick={() => setPageNumber(prev => Math.max(1, prev - 1))}
+                                    disabled={pageNumber <= 1}
+                                    className="px-3 py-1 bg-purple-600 text-white rounded disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
+                                >
+                                    Previous
+                                </button>
+                                <span className="text-sm">
+                                    Page {pageNumber} of {numPages}
+                                </span>
+                                <button
+                                    onClick={() => setPageNumber(prev => Math.min(numPages, prev + 1))}
+                                    disabled={pageNumber >= numPages}
+                                    className="px-3 py-1 bg-purple-600 text-white rounded disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 ) : (
                     <div className="text-center text-gray-500 py-8 px-4">
                         <File className="w-16 h-16 mx-auto mb-4 opacity-50" />

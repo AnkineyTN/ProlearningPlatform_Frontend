@@ -338,6 +338,10 @@ const NotionEditor: React.FC<EditorProps> = ({
                 onSummarize={handleSummarizeFile}
                 onApplySummary={handleApplySummary}
                 onRegenerateSummary={() => setFileSummary('')}
+                onTextSelected={(selectedText) => {
+                    console.log("Text được chọn:", selectedText);
+                    // Xử lý text ở đây
+                }}
             />
         </div>
     );
