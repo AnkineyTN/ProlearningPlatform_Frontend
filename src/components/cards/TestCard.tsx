@@ -20,9 +20,9 @@ export default function TestCard({ test, onAccess }: { test: Test, onAccess: (id
                     <MoreVertical className="w-4 h-4" />
                 </button>
             </div>
-            <h2 className="font-semibold mb-1">{test.title}</h2 >
-            <p className="text-xs text-muted-foreground mb-3">{test.category}</p>
-            <p className="text-sm text-muted-foreground mb-4">{test.preview}</p>
+            <h2 className="font-semibold mb-1 overflow-hidden text-ellipsis whitespace-nowrap">{test.title}</h2 >
+            <p className="text-xs text-muted-foreground mb-3 overflow-hidden text-ellipsis whitespace-nowrap">{test.category}</p>
+            <p className="text-sm text-muted-foreground mb-4 overflow-hidden text-ellipsis whitespace-nowrap">{test.preview}</p>
             <div className="flex justify-between items-center text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" /> {test.time}

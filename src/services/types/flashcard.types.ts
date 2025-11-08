@@ -38,7 +38,7 @@ export interface Card {
     frontCard: string;
     backCard: string;
     imageUrl: string | null;
-    cardStatus: 'NEW' | 'LEARNING' | 'KNOWN';
+    imageAssetId: string | null;
 }
 
 export interface FlashcardDetail {
@@ -59,5 +59,19 @@ export interface FlashcardDetailResponse {
     status: string;
     message: string;
     data: FlashcardDetail;
+    metadata: null;
+}
+
+export interface CreateFlashcardManualRequest {
+    title: string;
+    description: string;
+    privacy: 'PUBLIC' | 'PRIVATE';
+    cards:  Card[];
+}
+
+export interface CreateFlashcardResponse {
+    status: string;
+    message: string;
+    data: Flashcard;
     metadata: null;
 }

@@ -78,7 +78,7 @@ export default function FlashcardListPage({ setId }: FlashcardListPageProps) {
                         flashcard={{
                             id: flashcard.id,
                             title: flashcard.title,
-                            preview: flashcard.description,
+                            description: flashcard.description,
                             time: getTimeAgo(flashcard.lastStudy),
                             created_at: new Date(flashcard.lastStudy).toLocaleDateString('en-GB', {
                                 day: '2-digit',

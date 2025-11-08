@@ -13,9 +13,13 @@ const GoogleAuthCallback = () => {
             // Lưu token vào localStorage
             localStorage.setItem('accessToken', accessToken)
 
-            // Hoặc nếu bạn dùng context/redux thì dispatch action ở đây
-            // dispatch(setAccessToken(accessToken))
-
+            if (!accessToken) {
+                toast.error('Đăng nhập Google thất bại', {
+                    position: "top-right",
+                })
+                navigate('/login')
+                return
+            }
             toast.success('Đăng nhập thành công!')
 
             // Redirect về dashboard

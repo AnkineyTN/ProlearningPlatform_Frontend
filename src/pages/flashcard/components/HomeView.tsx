@@ -7,9 +7,11 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface HomeViewProps {
+    setId: string;
     flashcards: Array<{
         frontCard: string;
         backCard: string;
+        imageUrl?: string;
     }>;
     onCardClick: (index: number) => void;
     onStudy: () => void;
@@ -21,7 +23,7 @@ interface HomeViewProps {
     onNext: () => void;
 }
 
-export default function HomeView({ flashcards, onCardClick, onStudy, onMatching, isFlipped, currentCardIndex, onFlip, onPrevious, onNext }: HomeViewProps) {
+export default function HomeView({ setId, flashcards, onCardClick, onStudy, onMatching, isFlipped, currentCardIndex, onFlip, onPrevious, onNext }: HomeViewProps) {
     const navigate = useNavigate();
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -53,7 +55,7 @@ export default function HomeView({ flashcards, onCardClick, onStudy, onMatching,
     };
 
     const handleUpdate = (e: React.MouseEvent) => {
-        navigate(`/flashcards/edit/${currentCardIndex}`);
+        navigate(`/sets/${setId}/flashcards/update/${currentCardIndex}`);
         e.stopPropagation();
         setShowMenu(false);
     };
@@ -137,13 +139,16 @@ export default function HomeView({ flashcards, onCardClick, onStudy, onMatching,
                             className="cursor-pointer transition-all hover:shadow-md"
                             onClick={() => onCardClick(index)}
                         >
-                            <CardContent className="p-4">
+                            <CardContent>
                                 <div className="flex items-start gap-4">
                                     <div className="flex-1 max-w-[250px]">
                                         <p className="font-medium mb-2">{card.frontCard}</p>
                                     </div>
                                     <div className="flex-1 border-l pl-6">
                                         <p className="text-foreground">{card.backCard}</p>
+                                    </div>
+                                    <div className="">
+                                        {card.imageUrl && <img src={card.imageUrl} alt="Flashcard Icon" className="w-16 rounded" />}
                                     </div>
                                     <div className="flex gap-2">
                                         <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer">

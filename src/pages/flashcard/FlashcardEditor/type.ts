@@ -8,6 +8,10 @@ export interface FlashcardItem {
 export interface FlashcardItemProps {
     card: FlashcardItem;
     index: number;
+    onDragStart: (id: string) => void;
+    onDragOver: (e: React.DragEvent, id: string) => void;
+    onDragEnd: () => void;
+    isDragging: boolean;
     onUpdate: (id: string, field: 'term' | 'definition', value: string) => void;
     onDelete: (id: string) => void;
     canDelete: boolean;
@@ -32,4 +36,3 @@ export interface FlashcardEditorProps {
     onSave?: (data: any) => void;
     onCancel?: () => void;
 }
-

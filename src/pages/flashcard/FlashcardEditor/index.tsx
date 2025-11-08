@@ -1,117 +1,150 @@
-import { useState } from 'react';
-import { Plus, Lock, Shuffle, Trash2, MoreHorizontal } from 'lucide-react';
+// pages/FlashcardEditor.tsx
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useCreateFlashcardManual } from '@/hooks/useFlashcards';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Plus, ArrowLeft } from 'lucide-react';
+import FlashcardItemWrapper from './FlashcardItemComponent';
 import { Label } from '@/components/ui/label';
-import FlashcardItemWrapper from './FlashcardItemWrapper';
-import { type FlashcardItem, type FlashcardEditorProps } from './type';
+import { Input } from '@/components/ui/input';
+import { Shuffle } from 'lucide-react';
+import { MoreHorizontal } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
-export default function FlashcardEditor({
-    initialTitle = '',
-    initialDescription = '',
-    initialPrivacy = 'Public',
-    onSave,
-    onCancel
-}: FlashcardEditorProps) {
-    const [title, setTitle] = useState(initialTitle);
-    const [description, setDescription] = useState(initialDescription);
-    const [privacy] = useState(initialPrivacy);
-    const [flashcards, setFlashcards] = useState<FlashcardItem[]>([
-        { id: '1', term: '', definition: '' },
-        { id: '2', term: '', definition: '' },
+interface FlashcardCard {
+    id: string;
+    term: string;
+    definition: string;
+    imageUrl?: string;
+    assetId?: string | null;
+}
+
+export default function FlashcardEditor({ setId }: { setId: string }) {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const createFlashcardMutation = useCreateFlashcardManual();
+
+    const { title, description, privacy } = location.state || {};
+
+    const [cards, setCards] = useState<FlashcardCard[]>([
+        { id: crypto.randomUUID(), term: '', definition: '', assetId: '' }
     ]);
-    const [draggedItem, setDraggedItem] = useState<string | null>(null);
 
-    const addFlashcard = () => {
-        const newId = Date.now().toString();
-        setFlashcards([...flashcards, { id: newId, term: '', definition: '' }]);
+    const [draggedCardId, setDraggedCardId] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!title || !setId) {
+            navigate(`/sets/${setId}`);
+        }
+    }, [title, setId, navigate]);
+
+    const addCard = () => {
+        setCards([...cards, { id: crypto.randomUUID(), term: '', definition: '' }]);
     };
 
-    const deleteFlashcard = (id: string) => {
-        if (flashcards.length > 2) {
-            setFlashcards(flashcards.filter(card => card.id !== id));
+    const removeCard = (id: string) => {
+        if (cards.length > 1) {
+            setCards(cards.filter(card => card.id !== id));
         }
     };
 
-    const updateFlashcard = (id: string, field: 'term' | 'definition', value: string) => {
-        setFlashcards(flashcards.map(card =>
+    const updateCard = (id: string, field: 'term' | 'definition', value: string) => {
+        setCards(cards.map(card =>
             card.id === id ? { ...card, [field]: value } : card
         ));
     };
 
-    const handleDragStart = (id: string) => {
-        setDraggedItem(id);
+    const handleDragStart = (cardId: string) => {
+        setDraggedCardId(cardId);
     };
 
-    const handleDragOver = (e: React.DragEvent, id: string) => {
+    const handleDragOver = (e: React.DragEvent, targetCardId: string) => {
         e.preventDefault();
-        if (draggedItem && draggedItem !== id) {
-            const draggedIndex = flashcards.findIndex(card => card.id === draggedItem);
-            const targetIndex = flashcards.findIndex(card => card.id === id);
 
-            if (draggedIndex !== -1 && targetIndex !== -1) {
-                const newCards = [...flashcards];
-                const [removed] = newCards.splice(draggedIndex, 1);
-                newCards.splice(targetIndex, 0, removed);
+        if (!draggedCardId || draggedCardId === targetCardId) return;
 
-                setFlashcards(newCards);
-            }
-        }
+        const draggedIndex = cards.findIndex(c => c.id === draggedCardId);
+        const targetIndex = cards.findIndex(c => c.id === targetCardId);
+
+        if (draggedIndex === -1 || targetIndex === -1) return;
+
+        const newCards = [...cards];
+        const [draggedCard] = newCards.splice(draggedIndex, 1);
+        newCards.splice(targetIndex, 0, draggedCard);
+
+        setCards(newCards);
     };
 
     const handleDragEnd = () => {
-        setDraggedItem(null);
+        setDraggedCardId(null);
     };
 
-    const handleSave = () => {
-        onSave?.({
-            title,
-            description,
-            privacy,
-            flashcards: flashcards.filter(card => card.term.trim() || card.definition.trim())
-        });
+    const handleSave = async () => {
+        // Validate
+        const validCards = cards.filter(card => card.term.trim() && card.definition.trim());
+
+        if (validCards.length === 0) {
+            alert('Please add at least one card with both term and definition');
+            return;
+        }
+
+        try {
+            await createFlashcardMutation.mutateAsync({
+                setId: Number(setId),
+                data: {
+                    title,
+                    description,
+                    privacy: privacy as 'PUBLIC' | 'PRIVATE',
+                    cards: validCards.map(({ term, definition, imageUrl, assetId }) => ({
+                        frontCard: term,
+                        backCard: definition,
+                        imageUrl: imageUrl || null,
+                        imageAssetId: assetId || null
+                    }))
+                }
+            });
+
+            // Navigate back to set page
+            navigate(`/sets/${setId}`);
+        } catch (error) {
+            console.error('Error saving flashcard:', error);
+        }
+    };
+
+    const handleBack = () => {
+        navigate(`/sets/${setId}`);
     };
 
     return (
-        <div className="min-h-screen bg-background p-6">
-            <div className="max-w-7xl mx-auto">
+        <div className="min-h-screen p-6 bg-background">
+            <div className="max-w-5xl mx-auto">
                 {/* Header */}
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold">Create a new flashcard set</h1>
-                    <div className="flex gap-3">
-                        <Button
-                            onClick={onCancel}
-                            className="px-6 py-2 border border-border rounded-lg bg-card text-foreground hover:bg-secondary transition-colors cursor-pointer"
-                        >
-                            Cancel
-                        </Button>
+                <div className="mb-8">
+                    <Button
+                        onClick={handleBack}
+                        variant="ghost"
+                        className="mb-4 text-muted-foreground hover:text-foreground"
+                    >
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Back
+                    </Button>
+
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-3xl font-bold mb-2">{title}</h1>
+                            <p className="text-muted-foreground">{description}</p>
+                        </div>
+
                         <Button
                             onClick={handleSave}
-                            disabled={!title.trim()}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={createFlashcardMutation.isPending}
+                            className="bg-foreground text-background px-8"
                         >
-                            Create and Practice
+                            {createFlashcardMutation.isPending ? 'Saving...' : 'Create'}
                         </Button>
                     </div>
                 </div>
 
-                {/* Title and Description */}
-                <div className="bg-card rounded-lg p-6 mb-6 border border-border">
-                    <input
-                        type="text"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        placeholder="Title"
-                        className="w-full text-2xl font-semibold bg-transparent border-none focus:outline-none mb-4 placeholder:text-muted-foreground"
-                    />
-                    <textarea
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Add description..."
-                        className="w-full bg-transparent border-none focus:outline-none resize-none placeholder:text-muted-foreground"
-                        rows={2}
-                    />
-                </div>
 
                 {/* Controls */}
                 <div className="flex items-center justify-between mb-6">
@@ -119,13 +152,6 @@ export default function FlashcardEditor({
                         <Button className="flex items-center gap-2 px-4 py-2 bg-card text-foreground border border-border rounded-lg hover:bg-secondary transition-colors cursor-pointer">
                             <Plus className="w-4 h-4" />
                             Import
-                        </Button>
-                        <Button className="flex items-center gap-2 px-4 py-2 bg-card text-foreground border border-border rounded-lg hover:bg-secondary transition-colors cursor-pointer">
-                            <Plus className="w-4 h-4" />
-                            Add diagram
-                        </Button>
-                        <Button className="p-2 bg-card text-foreground border border-border rounded-lg hover:bg-secondary transition-colors cursor-pointer">
-                            <Lock className="w-4 h-4" />
                         </Button>
                     </div>
                     <div className="flex items-center gap-4">
@@ -146,31 +172,33 @@ export default function FlashcardEditor({
                     </div>
                 </div>
 
-                {/* Flashcards */}
-                <div className="space-y-4 mb-6">
-                    {flashcards.map((card, index) => (
-                        <FlashcardItemWrapper
-                            key={card.id}
-                            card={card}
-                            index={index}
-                            onUpdate={updateFlashcard}
-                            onDelete={deleteFlashcard}
-                            canDelete={flashcards.length > 2}
-                            onDragStart={handleDragStart}
-                            onDragOver={handleDragOver}
-                            onDragEnd={handleDragEnd}
-                            isDragging={draggedItem === card.id}
-                        />
-                    ))}
-                </div>
+                {/* Cards */}
+                {cards.map((card, index) => (
+                    <FlashcardItemWrapper
+                        key={card.id}
+                        card={card}
+                        index={index}
+                        onUpdate={updateCard}
+                        onDelete={removeCard}
+                        canDelete={cards.length > 1}
+                        onDragStart={handleDragStart}
+                        onDragOver={handleDragOver}
+                        onDragEnd={handleDragEnd}
+                        isDragging={draggedCardId === card.id}
+                    />
+                ))}
+            </div>
 
-                {/* Add Card Button */}
-                <button
-                    onClick={addFlashcard}
-                    className="w-full py-4 border-2 border-dashed border-border rounded-lg text-foreground font-semibold hover:border-foreground hover:bg-card transition-all cursor-pointer"
+            {/* Add Card Button */}
+            <div className="flex justify-center">
+                <Button
+                    onClick={addCard}
+                    variant="outline"
+                    className="flex items-center gap-2 w-full max-w-md border-dashed border-2"
                 >
-                    + Add card
-                </button>
+                    <Plus className="w-5 h-5" />
+                    Add Card
+                </Button>
             </div>
         </div>
     );

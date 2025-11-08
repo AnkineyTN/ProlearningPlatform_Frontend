@@ -31,6 +31,11 @@ function FlashcardAppWrapper() {
     return <FlashcardApp flashcardId={flashcardId ?? ''} setId={setId ?? ''} />;
 }
 
+function FlashcardEditorWrapper() {
+    const { setId } = useParams();
+    return <FlashcardEditor setId={setId ?? ''} />;
+}
+
 export const routeConfig: RouteObject[] = [
     // Public routes
     {
@@ -75,13 +80,13 @@ export const routeConfig: RouteObject[] = [
                 element: <SetSeriesPageWrapper />
             },
             {
-                path: 'flashcards/edit/:id',
-                element: <FlashcardEditor />
+                path: 'sets/:setId/flashcards/editor',
+                element: <FlashcardEditorWrapper />
             },
             {
-                path: '/sets/:setId/flashcards/:flashcardId',
+                path: 'sets/:setId/flashcards/:flashcardId',
                 element: <FlashcardAppWrapper />
-            }
+            },
         ]
     },
     {

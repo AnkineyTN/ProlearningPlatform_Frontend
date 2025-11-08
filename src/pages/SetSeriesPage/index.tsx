@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Thêm import này
 import { useCreateNote, useDeleteNote, useUpdateNote } from '@/hooks/useNotes';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,9 +20,18 @@ interface HeaderProps {
     setId: string;
 }
 
+// Type cho flashcard data tạm thời
+interface FlashcardDraft {
+    title: string;
+    description: string;
+    privacy: string;
+}
+
 export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('Notes');
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+    const [flashcardDraft, setFlashcardDraft] = useState<FlashcardDraft | null>(null);
 
     // Modal states
     const [isMethodModalOpen, setIsMethodModalOpen] = useState(false);
@@ -73,21 +83,49 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
     };
 
     const handleCreate = async (data: { title: string; description: string; privacy: string }) => {
-        if (activeTab === 'Notes' && setId) {
-            try {
-                await createNoteMutation.mutateAsync({
-                    title: data.title,
-                    description: data.description,
-                    privacy: data.privacy.toUpperCase(),
-                    setId: Number(setId)
-                });
+        switch (activeTab) {
+            case 'Notes':
+                try {
+                    await createNoteMutation.mutateAsync({
+                        title: data.title,
+                        description: data.description,
+                        privacy: data.privacy.toUpperCase(),
+                        setId: Number(setId)
+                    });
+                    setIsCreateModalOpen(false);
+                } catch (error) {
+                    console.error('Error creating note:', error);
+                }
+                break;
+            case 'Flashcards':
+                try {
+                    // Lưu draft data và chuyển sang FlashcardEditor
+                    setFlashcardDraft({
+                        title: data.title,
+                        description: data.description,
+                        privacy: data.privacy.toUpperCase(),
+                    });
+                    setIsCreateModalOpen(false);
+
+                    // Navigate đến FlashcardEditor với draft data
+                    navigate(`/sets/${setId}/flashcards/editor`, {
+                        state: {
+                            title: data.title,
+                            description: data.description,
+                            privacy: data.privacy.toUpperCase(),
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error navigating to flashcard editor:', error);
+                }
+                break;
+            case 'Mindmaps':
+            case 'Tests':
+            case 'Records':
+                break;
+            default:
+                console.log('New item created:', data);
                 setIsCreateModalOpen(false);
-            } catch (error) {
-                console.error('Error creating note:', error);
-            }
-        } else {
-            console.log('New item created:', data);
-            setIsCreateModalOpen(false);
         }
     };
 

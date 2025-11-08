@@ -106,8 +106,8 @@ export default function NoteCard({ note, onAccess, onDelete, onUpdate }: NoteCar
                     )}
                 </div>
             </div>
-            <h2 className="font-semibold mb-1">{note.title}</h2 >
-            <p className="text-sm text-muted-foreground mb-4">{note.description}</p>
+            <h2 className="font-semibold mb-1 overflow-hidden text-ellipsis whitespace-nowrap">{note.title}</h2 >
+            <p className="text-sm text-muted-foreground mb-4 overflow-hidden text-ellipsis whitespace-nowrap">{note.description}</p>
             <div className="flex justify-between items-center text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" /> {note.timeAgo}

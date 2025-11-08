@@ -1,5 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { flashcardAPI } from '@/services/endpoints/flashcard';
+import type { CreateFlashcardManualRequest } from '@/services/types/flashcard.types';
 
 interface UseFlashcardsParams {
     setId: number;
@@ -29,5 +30,21 @@ export const useFlashcardDetail = (setId: number, flashcardId: string) => {
         },
         staleTime: 5 * 60 * 1000,
         enabled: !!flashcardId,
+    });
+};
+
+export const useCreateFlashcardManual = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ setId, data }: { setId: number; data: CreateFlashcardManualRequest }) =>
+            flashcardAPI.createManual(setId, data),
+        onSuccess: (data, variables) => {
+            // Invalidate flashcard list để refetch data mới
+            queryClient.invalidateQueries({ queryKey: ['flashcards', variables.setId] });
+        },
+        onError: (error: any) => {
+            console.error('Error creating flashcard:', error);
+        },
     });
 };

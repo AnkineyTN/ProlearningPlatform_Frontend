@@ -83,7 +83,6 @@ export const useExplainFeature = ({ noteId, editor, explainMutation }: any) => {
 
     const generateSummaryBlocks = (summaryText: string): any[] => {
         const parts = summaryText.split('\n\n');
-        console.log("🚀 ~ generateSummaryBlocks ~ parts:", parts)
         const blocks: any[] = [];
 
         function parseNode(node: ChildNode): any[] {
@@ -146,7 +145,6 @@ export const useExplainFeature = ({ noteId, editor, explainMutation }: any) => {
             },
             ...generateSummaryBlocks(answerText)
         ];
-        console.log("🚀 ~ generateExplanationBlocks ~ blocks:", blocks)
         return blocks;
     };
 
@@ -156,12 +154,8 @@ export const useExplainFeature = ({ noteId, editor, explainMutation }: any) => {
             console.log("Applying explanation to editor...");
 
             const blocks = editor.document;
-            console.log("🚀 ~ handleApplyExplanation ~ blocks:", blocks);
 
             let anchorBlock = blocks[blocks.length - 1];
-            console.log("🚀 ~ handleApplyExplanation ~ anchorBlock:", anchorBlock);
-
-            console.log("🚀 ~ handleApplyExplanation ~ explainPopup.selectedText:", explainPopup.selectedText);
 
             if (explainPopup.selectedText) {
                 const found = blocks.find(
@@ -173,12 +167,10 @@ export const useExplainFeature = ({ noteId, editor, explainMutation }: any) => {
                                 c.text && c.text.includes(explainPopup.selectedText)
                         )
                 );
-                console.log("🚀 ~ handleApplyExplanation ~ found:", found);
                 if (found) anchorBlock = found;
             }
 
             const explanationBlocks = generateExplanationBlocks(explainPopup.answer);
-            console.log("🚀 ~ handleApplyExplanation ~ explanationBlocks:", explanationBlocks);
 
             editor.insertBlocks(
                 explanationBlocks,

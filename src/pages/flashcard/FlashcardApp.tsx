@@ -119,6 +119,7 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
 
             {viewMode === 'home' && (
                 <HomeView
+                    setId={setId}
                     flashcards={flashcards}
                     onCardClick={handleCardClick}
                     onStudy={startStudying}

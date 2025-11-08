@@ -117,8 +117,8 @@ export default function SetCard({ set, onAccess, onDelete, onUpdate }: SetCardPr
                 </div>
             </div>
 
-            <h3 className="font-semibold mb-1">{set.title}</h3>
-            <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{set.description}</p>
+            <h3 className="font-semibold mb-1 overflow-hidden text-ellipsis whitespace-nowrap">{set.title}</h3>
+            <p className="text-sm text-muted-foreground mb-4 line-clamp-2 overflow-hidden text-ellipsis whitespace-nowrap">{set.description}</p>
 
             <div className="flex gap-4 text-xs text-muted-foreground mb-4 flex-wrap">
                 <span className="flex items-center gap-1">

@@ -24,4 +24,11 @@ export const flashcardAPI = {
         flashcardId: string
     ): Promise<AxiosResponse<FlashcardDetailResponse>> =>
         api.get(`/sets/${setId}/flashcards/${flashcardId}`),
+    
+    createManual: (
+        setId: number,
+        data: { title: string; description: string; cards: Array<{ frontCard: string; backCard: string; imageUrl?: string | null }> }
+    ): Promise<AxiosResponse<any>> => {
+        return api.post(`/sets/${setId}/flashcards/manual`, data);
+    },
 };
