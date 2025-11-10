@@ -23,7 +23,6 @@ const ExplainPopup: React.FC<ExplainPopupProps> = ({
     onApply,
     onCancel
 }) => {
-    console.log("🎨 ExplainPopup render:", { show, answer, loading });
     if (!show) return null;
     if (!answer) {
         return (

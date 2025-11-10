@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFlashcards } from '@/hooks/useFlashcards';
-import FlashCard from '@/components/cards/FlashCard';
+import FlashCard, { type Flashcard } from '@/components/cards/FlashCard';
 import { Button } from '@/components/ui/button';
 import { getTimeAgo } from '@/lib/utils';
 
 interface FlashcardListPageProps {
     setId: number;
+    onUpdate: (flashcard: Flashcard) => void;
+    onDelete: (flashcardId: string) => void;
 }
 
-export default function FlashcardListPage({ setId }: FlashcardListPageProps) {
-    const [currentPage, setCurrentPage] = useState(0); // API uses 0-based indexing
+export default function FlashcardListPage({ setId, onUpdate, onDelete }: FlashcardListPageProps) {
+    const [currentPage, setCurrentPage] = useState(0);
     const pageSize = 6;
     const navigate = useNavigate();
 
@@ -85,8 +87,11 @@ export default function FlashcardListPage({ setId }: FlashcardListPageProps) {
                                 month: 'short',
                                 year: 'numeric'
                             }),
+                            privacy: flashcard.privacy
                         }}
                         onAccess={handleAccess}
+                        onUpdate={onUpdate}
+                        onDelete={onDelete}
                     />
                 ))}
             </div>

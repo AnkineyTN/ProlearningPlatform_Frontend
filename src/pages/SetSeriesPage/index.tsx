@@ -14,24 +14,21 @@ import NoteListPage from './components/NoteListPage';
 import TestListPage from './components/TestListPage';
 import RecordListPage from './components/RecordListPage';
 import type { Note } from '@/components/cards/NoteCard';
+import { useUpdateFlashcard, useDeleteFlashcard } from '@/hooks/useFlashcards';
+import type { Flashcard } from '@/components/cards/FlashCard';
 
 interface HeaderProps {
     onSearch?: (query: string) => void;
     setId: string;
 }
 
-// Type cho flashcard data tạm thời
-interface FlashcardDraft {
-    title: string;
-    description: string;
-    privacy: string;
-}
-
 export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('Notes');
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-    const [flashcardDraft, setFlashcardDraft] = useState<FlashcardDraft | null>(null);
+    const [selectedFlashcard, setSelectedFlashcard] = useState<Flashcard | null>(null);
+    const updateFlashcardMutation = useUpdateFlashcard();
+    const deleteFlashcardMutation = useDeleteFlashcard();
 
     // Modal states
     const [isMethodModalOpen, setIsMethodModalOpen] = useState(false);
@@ -99,15 +96,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
                 break;
             case 'Flashcards':
                 try {
-                    // Lưu draft data và chuyển sang FlashcardEditor
-                    setFlashcardDraft({
-                        title: data.title,
-                        description: data.description,
-                        privacy: data.privacy.toUpperCase(),
-                    });
                     setIsCreateModalOpen(false);
-
-                    // Navigate đến FlashcardEditor với draft data
                     navigate(`/sets/${setId}/flashcards/editor`, {
                         state: {
                             title: data.title,
@@ -129,37 +118,71 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
         }
     };
 
+    const handleUpdateFlashcard = (flashcard: Flashcard) => {
+        setSelectedFlashcard(flashcard);
+        setIsUpdateModalOpen(true);
+        setActiveTab('Flashcards');
+    };
+
     const handleUpdate = (note: Note) => {
         setSelectedNote(note);
         setIsUpdateModalOpen(true);
     };
 
     const handleUpdateSubmit = async (data: any) => {
-        if (!selectedNote) return;
+        if (selectedNote) {
+            try {
+                const payload = {
+                    title: data.title,
+                    privacy: data.privacy === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE',
+                    description: data.description,
+                };
 
-        try {
-            const payload = {
-                title: data.title,
-                privacy: data.privacy === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE',
-                description: data.description,
-            };
+                await updateNoteMutation.mutateAsync({
+                    id: selectedNote.id,
+                    payload
+                });
+                setIsUpdateModalOpen(false);
+                setSelectedNote(null);
+            } catch (error) {
+                console.error('Error updating note:', error);
+            }
+        }
 
-            await updateNoteMutation.mutateAsync({
-                id: selectedNote.id,
-                payload
-            });
-            setIsUpdateModalOpen(false);
-            setSelectedNote(null);
-        } catch (error) {
-            console.error('Error updating note:', error);
+        if (selectedFlashcard) {
+            try {
+                const payload = {
+                    title: data.title,
+                    privacy: data.privacy.toUpperCase() as 'PUBLIC' | 'PRIVATE',
+                    description: data.description,
+                };
+
+                await updateFlashcardMutation.mutateAsync({
+                    setId: Number(setId),
+                    flashcardId: selectedFlashcard.id,
+                    payload
+                });
+                setIsUpdateModalOpen(false);
+                setSelectedFlashcard(null);
+            } catch (error) {
+                console.error('Error updating flashcard:', error);
+            }
         }
     };
 
-    const handleDelete = async (id: number) => {
+    const handleDeleteNote = async (id: number) => {
         try {
             await deleteNoteMutation.mutateAsync(id);
         } catch (error) {
             console.error('Error deleting note:', error);
+        }
+    };
+
+    const handleDeleteFlashcard = async (id: string) => {
+        try {
+            await deleteFlashcardMutation.mutateAsync({ setId: Number(setId), flashcardId: id });
+        } catch (error) {
+            console.error('Error deleting flashcard:', error);
         }
     };
 
@@ -214,10 +237,16 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
                     <NoteListPage
                         setId={Number(setId)}
                         onUpdate={handleUpdate}
-                        onDelete={(noteId) => handleDelete(noteId)}
+                        onDelete={(noteId) => handleDeleteNote(noteId)}
                     />
                 )}
-                {activeTab === 'Flashcards' && <FlashcardListPage setId={Number(setId)} />}
+                {activeTab === 'Flashcards' && (
+                    <FlashcardListPage
+                        setId={Number(setId)}
+                        onUpdate={handleUpdateFlashcard}
+                        onDelete={(flashcardId) => handleDeleteFlashcard(flashcardId)}
+                    />
+                )}
                 {activeTab === 'Mindmaps' && <MindmapListPage />}
                 {activeTab === 'Tests' && <TestListPage />}
                 {activeTab === 'Records' && <RecordListPage />}
@@ -250,16 +279,23 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
                     onSubmit={handleCreate}
                 />
 
-                {isUpdateModalOpen && selectedNote && (
+                {isUpdateModalOpen && (selectedNote || selectedFlashcard) && (
                     <CreateNewModal
                         type={activeTab.slice(0, -1)}
                         isOpen={isUpdateModalOpen}
-                        onClose={() => setIsUpdateModalOpen(false)}
+                        onClose={() => {
+                            setIsUpdateModalOpen(false);
+                            setSelectedNote(null);
+                            setSelectedFlashcard(null);
+                        }}
                         onSubmit={handleUpdateSubmit}
                         initialData={{
-                            title: selectedNote.title,
-                            description: selectedNote.description,
-                            privacy: selectedNote.privacy.charAt(0).toUpperCase() + selectedNote.privacy.slice(1).toLowerCase(),
+                            title: selectedNote?.title || selectedFlashcard?.title || '',
+                            description: selectedNote?.description || selectedFlashcard?.description || '',
+                            privacy: (selectedNote?.privacy || selectedFlashcard?.privacy || 'PUBLIC')
+                                .charAt(0).toUpperCase() +
+                                (selectedNote?.privacy || selectedFlashcard?.privacy || 'public')
+                                    .slice(1).toLowerCase(),
                         }}
                     />
                 )}

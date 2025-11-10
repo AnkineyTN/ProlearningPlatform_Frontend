@@ -27,7 +27,7 @@ export default function FlashcardEditor({ setId }: { setId: string }) {
     const { title, description, privacy } = location.state || {};
 
     const [cards, setCards] = useState<FlashcardCard[]>([
-        { id: crypto.randomUUID(), term: '', definition: '', assetId: '' }
+        { id: crypto.randomUUID(), term: '', definition: '', assetId: '', imageUrl: '' }
     ]);
 
     const [draggedCardId, setDraggedCardId] = useState<string | null>(null);
@@ -48,10 +48,16 @@ export default function FlashcardEditor({ setId }: { setId: string }) {
         }
     };
 
-    const updateCard = (id: string, field: 'term' | 'definition', value: string) => {
-        setCards(cards.map(card =>
-            card.id === id ? { ...card, [field]: value } : card
-        ));
+    const updateCard = (
+        id: string,
+        field: 'term' | 'definition' | 'imageUrl' | 'assetId',
+        value: string | null
+    ) => {
+        setCards(prevCards =>
+            prevCards.map(card =>
+                card.id === id ? { ...card, [field]: value } : card
+            )
+        );
     };
 
     const handleDragStart = (cardId: string) => {

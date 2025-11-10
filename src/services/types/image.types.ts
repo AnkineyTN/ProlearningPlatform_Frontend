@@ -1,4 +1,3 @@
-// services/types/image.types.ts
 export interface ImageSignatureResponse {
     status: string;
     message: string;

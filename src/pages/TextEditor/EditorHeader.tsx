@@ -107,7 +107,7 @@ const EditorHeader: React.FC<EditorHeaderProps> = ({
                     <Button
                         variant="outline"
                         size="sm"
-                        className="gap-2 cursor-pointer"
+                        className={`gap-2 cursor-pointer ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         onClick={() => fileInputRef.current?.click()}
                         disabled={isUploading}
                     >

@@ -27,6 +27,10 @@ export default function FlashcardItemWrapper({
                 onUpdate={onUpdate}
                 onDelete={onDelete}
                 canDelete={canDelete}
+                onDragStart={onDragStart}
+                onDragOver={onDragOver}
+                onDragEnd={onDragEnd}
+                isDragging={isDragging}
             />
         </div>
     );

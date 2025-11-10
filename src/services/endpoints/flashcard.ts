@@ -1,8 +1,6 @@
-// service/endpoints/flashcard.ts
-
 import type { AxiosResponse } from 'axios';
 import api from '../client';
-import type { FlashcardResponse, FlashcardDetailResponse } from '../types/flashcard.types';
+import type { FlashcardResponse, FlashcardDetailResponse, DeleteFlashcardResponse } from '../types/flashcard.types';
 
 export const flashcardAPI = {
     getAllFlashcardsBySet: (
@@ -31,4 +29,18 @@ export const flashcardAPI = {
     ): Promise<AxiosResponse<any>> => {
         return api.post(`/sets/${setId}/flashcards/manual`, data);
     },
+
+    updateFlashcard: (
+        setId: number,
+        flashcardId: string,
+        data: { title: string; description: string; privacy: 'PUBLIC' | 'PRIVATE' }
+    ): Promise<AxiosResponse<any>> => {
+        return api.patch(`/sets/${setId}/flashcards/${flashcardId}`, data);
+    },
+
+    deleteFlashcard: (
+        setId: number,
+        flashcardId: string
+    ): Promise<AxiosResponse<DeleteFlashcardResponse>> =>
+        api.delete(`/sets/${setId}/flashcards/${flashcardId}`)
 };

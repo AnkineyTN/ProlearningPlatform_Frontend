@@ -1,32 +1,23 @@
 import React, { useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
 import { File, X, Sparkles, Check, Loader2 } from 'lucide-react';
+import { Document, Page } from 'react-pdf';
 import { Button } from '@/components/ui/button';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-import 'react-pdf/dist/Page/TextLayer.css';
-
-// Setup worker
-pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
-
-interface UploadedFile {
-    id: number;
-    fileName: string;
-    fileUrl: string;
-    extension: string;
-    publicId: string;
-    content: string;
-}
 
 interface FileSidebarProps {
     show: boolean;
-    file: UploadedFile | null;
+    file: {
+        id: number;
+        fileName: string;
+        fileUrl: string;
+        extension: string;
+    } | null;
     summary: string;
     isSummarizing: boolean;
     onClose: () => void;
     onSummarize: () => void;
     onApplySummary: () => void;
     onRegenerateSummary: () => void;
-    onTextSelected?: (text: string) => void;
+    onTextSelected: (text: string) => void;
 }
 
 const FileSidebar: React.FC<FileSidebarProps> = ({
@@ -59,9 +50,9 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
     if (!show || !file) return null;
 
     return (
-        <div className="fixed right-0 top-0 bottom-0 w-200 bg-white border-l border-gray-200 shadow-2xl z-50 flex flex-col">
+        <div className="h-full border-l border-ring shadow-2xl flex flex-col">
             {/* Sidebar Header */}
-            <div className="border-b border-gray-200 p-4 flex items-center justify-between">
+            <div className="border-b border-ring p-4 flex items-center justify-between flex-shrink-0">
                 <div className="flex items-center gap-2">
                     <File className="w-5 h-5 text-purple-600" />
                     <h2 className="font-semibold">Document Preview</h2>
@@ -75,10 +66,10 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
             </div>
 
             {/* File Info */}
-            <div className="p-4 border-b border-gray-200">
-                <div className="bg-gray-100 rounded-lg p-3">
+            <div className="p-4 border-b border-ring flex-shrink-0">
+                <div className="bg-card-secondary rounded-lg p-3">
                     <p className="text-sm font-medium truncate">{file.fileName}</p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                         {file.extension.toUpperCase()} • Uploaded
                     </p>
                 </div>
@@ -120,7 +111,7 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
                                 renderTextLayer={true}
                                 renderAnnotationLayer={true}
                                 className="border border-gray-200 rounded shadow-sm"
-                                width={700}
+                                width={Math.min(window.innerWidth * 0.35, 700)}
                             />
                         </Document>
 
@@ -147,7 +138,7 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
                         )}
                     </div>
                 ) : (
-                    <div className="text-center text-gray-500 py-8 px-4">
+                    <div className="text-center text-muted-foreground py-8 px-4">
                         <File className="w-16 h-16 mx-auto mb-4 opacity-50" />
                         <p className="mb-2">Preview not available for this file type</p>
                         <a
@@ -163,7 +154,7 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
             </div>
 
             {/* Summary Section */}
-            <div className="border-t border-gray-200 p-4 bg-gray-50">
+            <div className="border-t border-ring p-4 flex-shrink-0">
                 {!summary ? (
                     <Button
                         className="w-full gap-2 bg-purple-600 hover:bg-purple-700 cursor-pointer text-white"

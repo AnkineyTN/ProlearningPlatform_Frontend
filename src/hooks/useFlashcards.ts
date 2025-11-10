@@ -48,3 +48,34 @@ export const useCreateFlashcardManual = () => {
         },
     });
 };
+
+export const useUpdateFlashcard = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ setId, flashcardId, payload }: {
+            setId: number;
+            flashcardId: string;
+            payload: { title: string; description: string; privacy: 'PUBLIC' | 'PRIVATE' }
+        }) => flashcardAPI.updateFlashcard(setId, flashcardId, payload),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['flashcards'] });
+        },
+    });
+};
+
+export const useDeleteFlashcard = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ setId, flashcardId }: { setId: number; flashcardId: string }) =>
+            flashcardAPI.deleteFlashcard(setId, flashcardId),
+        onSuccess: (data, variables) => {
+            // Invalidate flashcard list để refetch data mới
+            queryClient.invalidateQueries({ queryKey: ['flashcards', variables.setId] });
+        },
+        onError: (error: any) => {
+            console.error('Error deleting flashcard:', error);
+        },
+    });
+};

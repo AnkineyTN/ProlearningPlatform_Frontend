@@ -1,5 +1,3 @@
-// service/types/flashcard.types.ts
-
 export interface Flashcard {
     id: string;
     title: string;
@@ -74,4 +72,33 @@ export interface CreateFlashcardResponse {
     message: string;
     data: Flashcard;
     metadata: null;
+}
+
+export interface UpdateFlashcardRequest {
+    title: string;
+    description: string;
+    privacy: 'PUBLIC' | 'PRIVATE';
+}
+
+export interface UpdateFlashcardResponse {
+    status: string;
+    message: string;
+    data: Flashcard & {
+        numCards: number;
+        createdAt: string;
+        updatedAt: string;
+    };
+    metadata: Record<string, never>;
+}
+
+export interface DeleteFlashcardResponse {
+    status: string;
+    message: string;
+    data: null;
+    metadata: Record<string, never>;
+}
+
+export interface DeleteFlashcardRequest {
+    setId: number;
+    flashcardId: string;
 }

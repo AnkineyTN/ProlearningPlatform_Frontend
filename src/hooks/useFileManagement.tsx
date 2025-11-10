@@ -21,6 +21,7 @@ export const useFileManagement = ({
     const [showFileSidebar, setShowFileSidebar] = useState<boolean>(false);
     const [fileSummary, setFileSummary] = useState<string>('');
     const [isSummarizing, setIsSummarizing] = useState<boolean>(false);
+    const [isUploading, setIsUploading] = useState<boolean>(false);
 
     const selectedFile = useMemo(() => {
         return uploadedFilesList.find(f => f.id === selectedFileId) || null;
@@ -40,6 +41,7 @@ export const useFileManagement = ({
         }
 
         try {
+            setIsUploading(true);
             const response = await uploadFileMutation.mutateAsync({ file, noteId });
             const uploadedData: UploadedFile = response.data.data;
 
@@ -76,6 +78,8 @@ export const useFileManagement = ({
         } catch (error) {
             console.error('Upload failed:', error);
             alert('Failed to upload file. Please try again.');
+        } finally {
+            setIsUploading(false);
         }
     };
 
@@ -202,6 +206,8 @@ export const useFileManagement = ({
         handleFileUpload,
         handleSummarizeFile,
         handleApplySummary,
-        handleRemoveFile
+        handleRemoveFile,
+        isUploading,
+        setIsUploading
     };
 };

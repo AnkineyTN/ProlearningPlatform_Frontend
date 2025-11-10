@@ -14,7 +14,6 @@ export default function FlashcardItemComponent({
 }: FlashcardItemProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const uploadImageMutation = useUploadImageFile();
-
     const handleImageClick = () => {
         fileInputRef.current?.click();
     };
@@ -22,14 +21,10 @@ export default function FlashcardItemComponent({
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-
-        // Validate file type
         if (!file.type.startsWith('image/')) {
             alert('Please select an image file');
             return;
         }
-
-        // Validate file size (e.g., max 5MB)
         if (file.size > 5 * 1024 * 1024) {
             alert('Image size must be less than 5MB');
             return;
@@ -37,9 +32,9 @@ export default function FlashcardItemComponent({
 
         try {
             const result = await uploadImageMutation.mutateAsync(file);
-            // Update both imageUrl and assetId (cast onUpdate to any because its declared type only accepts term/definition)
-            (onUpdate as any)(card.id, 'imageUrl', result.url);
-            (onUpdate as any)(card.id, 'assetId', result.assetId);
+            onUpdate(card.id, 'imageUrl', result.url);
+            onUpdate(card.id, 'assetId', String(result.assetId));
+            fileInputRef.current!.value = '';
         } catch (error) {
             console.error('Upload failed:', error);
             alert('Failed to upload image. Please try again.');
