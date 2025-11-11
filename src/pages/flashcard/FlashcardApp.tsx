@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useFlashcardDetail } from '@/hooks/useFlashcards';
+import { useDeleteCard, useFlashcardDetail, useUpdateCard } from '@/hooks/useFlashcards';
 import HomeView from './components/HomeView';
 import StudyView from './components/StudyView';
 import ResultsView from './components/ResultsView';
@@ -11,8 +11,8 @@ import type { Card } from '@/services/types/flashcard.types';
 type ViewMode = 'home' | 'study' | 'matching' | 'results';
 
 interface FlashcardDetailProps {
-    setId: string;
-    flashcardId: string;
+    setId: number;
+    flashcardId: number | string;
 }
 
 export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDetailProps) {
@@ -20,11 +20,13 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
     const [isFlipped, setIsFlipped] = useState(false);
     const [viewMode, setViewMode] = useState<ViewMode>('home');
     const [studiedCards, setStudiedCards] = useState<Set<number>>(new Set());
+    const updateCardMutation = useUpdateCard();
+    const deleteCardMutation = useDeleteCard();
 
     // Fetch flashcard data from API
     const { data, isLoading, isError, error } = useFlashcardDetail(
         Number(setId),
-        flashcardId || ''
+        Number(flashcardId)
     );
 
     const handleFlip = () => {
@@ -113,6 +115,40 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
         );
     }
 
+    const handleUpdateCard = async (data: {
+        id: number;
+        frontCard: string;
+        backCard: string;
+        imageAssetId?: number;
+        cardStatus?: 'NEW' | 'LEARNING' | 'KNOWN';
+    }) => {
+        try {
+            await updateCardMutation.mutateAsync({
+                setId,
+                flashcardId,
+                cardId: data.id,
+                data
+            });
+            // Success notification
+            console.log('Card updated successfully');
+        } catch (error) {
+            console.error('Failed to update card:', error);
+        }
+    };
+
+    const handleDeleteCard = async (cardId: number) => {
+        try {
+            await deleteCardMutation.mutateAsync({
+                setId,
+                flashcardId,
+                cardId
+            });
+            console.log('Card deleted successfully');
+        } catch (error) {
+            console.error('Failed to delete card:', error);
+        }
+    };
+
     return (
         <div>
             <FlashcardHeader setId={Number(setId)} title={title} description={description} />
@@ -120,6 +156,7 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
             {viewMode === 'home' && (
                 <HomeView
                     setId={setId}
+                    flashcardId={flashcardId}
                     flashcards={flashcards}
                     onCardClick={handleCardClick}
                     onStudy={startStudying}
@@ -129,6 +166,9 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
                     onFlip={handleFlip}
                     onPrevious={handlePrevious}
                     onNext={handleNext}
+                    onUpdateCard={handleUpdateCard}
+                    onDeleteCard={handleDeleteCard}
+                    isUpdating={updateCardMutation.isPending}
                 />
             )}
 

@@ -4,11 +4,12 @@ import { useFlashcards } from '@/hooks/useFlashcards';
 import FlashCard, { type Flashcard } from '@/components/cards/FlashCard';
 import { Button } from '@/components/ui/button';
 import { getTimeAgo } from '@/lib/utils';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface FlashcardListPageProps {
     setId: number;
     onUpdate: (flashcard: Flashcard) => void;
-    onDelete: (flashcardId: string) => void;
+    onDelete: (flashcardId: number | string) => void;
 }
 
 export default function FlashcardListPage({ setId, onUpdate, onDelete }: FlashcardListPageProps) {
@@ -23,7 +24,7 @@ export default function FlashcardListPage({ setId, onUpdate, onDelete }: Flashca
         sort: 'id,ASC'
     });
 
-    const handleAccess = (id: string) => {
+    const handleAccess = (id: number | string) => {
         navigate(`/sets/${setId}/flashcards/${id}`);
     };
 
@@ -100,23 +101,25 @@ export default function FlashcardListPage({ setId, onUpdate, onDelete }: Flashca
             {totalPages > 1 && (
                 <div className="flex justify-center items-center gap-4">
                     <Button
+                        variant="ghost"
                         onClick={handlePreviousPage}
                         disabled={currentPage === 0}
-                        className="p-2 hover:bg-white rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="p-2 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                     >
-                        <span className="text-gray-700">‹</span>
+                        <ChevronLeft className="text-foreground" />
                     </Button>
 
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="text-sm font-medium">
                         {displayPage}/{totalPages}
                     </span>
 
                     <Button
+                        variant="ghost"
                         onClick={handleNextPage}
                         disabled={currentPage >= totalPages - 1}
-                        className="p-2 hover:bg-white rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="p-2 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                     >
-                        <span className="text-gray-700">›</span>
+                        <ChevronRight className="text-foreground" />
                     </Button>
                 </div>
             )}

@@ -1,18 +1,18 @@
-
-import { Edit, Eye, Volume2, Brain, Blocks, Heart, MoreVertical, Share2, Trash2 } from "lucide-react";
+import { Edit, Trash2, Volume2, Brain, Blocks, Heart, MoreVertical, Share2, X, Check, Image as ImageIcon, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import FlipFlashcard from "./FlipFlashcard";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import type { Card as CardData } from "@/services/types/flashcard.types";
+import { useUploadImageFile } from '@/hooks/useImageUpload';
 
 interface HomeViewProps {
-    setId: string;
-    flashcards: Array<{
-        frontCard: string;
-        backCard: string;
-        imageUrl?: string;
-    }>;
+    setId: number;
+    flashcardId: number | string;
+    flashcards: CardData[];
     onCardClick: (index: number) => void;
     onStudy: () => void;
     onMatching: () => void;
@@ -21,12 +21,50 @@ interface HomeViewProps {
     onFlip: () => void;
     onPrevious: () => void;
     onNext: () => void;
+    onUpdateCard: (data: {
+        id: number;
+        frontCard: string;
+        backCard: string;
+        imageAssetId?: number;
+        cardStatus?: 'NEW' | 'LEARNING' | 'KNOWN';
+    }) => void;
+    onDeleteCard: (cardId: number) => void;
+    isUpdating?: boolean;
 }
 
-export default function HomeView({ setId, flashcards, onCardClick, onStudy, onMatching, isFlipped, currentCardIndex, onFlip, onPrevious, onNext }: HomeViewProps) {
+export default function HomeView({
+    setId,
+    flashcards,
+    onCardClick,
+    onStudy,
+    onMatching,
+    isFlipped,
+    currentCardIndex,
+    onFlip,
+    onPrevious,
+    onNext,
+    onUpdateCard,
+    onDeleteCard,
+    isUpdating = false
+}: HomeViewProps) {
     const navigate = useNavigate();
     const [showMenu, setShowMenu] = useState(false);
+    const [editingCardId, setEditingCardId] = useState<number | null>(null);
+    const [editData, setEditData] = useState<{
+        frontCard: string;
+        backCard: string;
+        imageUrl?: string;
+        imageAssetId?: number;
+    }>({
+        frontCard: '',
+        backCard: '',
+        imageUrl: undefined,
+        imageAssetId: undefined
+    });
     const menuRef = useRef<HTMLDivElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const uploadImageMutation = useUploadImageFile();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -59,6 +97,108 @@ export default function HomeView({ setId, flashcards, onCardClick, onStudy, onMa
         e.stopPropagation();
         setShowMenu(false);
     };
+
+    const handleEditCard = (card: CardData, e: React.MouseEvent) => {
+        e.stopPropagation();
+        setEditingCardId(card.id);
+        setEditData({
+            frontCard: card.frontCard,
+            backCard: card.backCard,
+            imageUrl: card.imageUrl || undefined,
+            imageAssetId:  undefined
+        });
+    };
+
+    const handleCancelEdit = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setEditingCardId(null);
+        setEditData({
+            frontCard: '',
+            backCard: '',
+            imageUrl: undefined,
+            imageAssetId: undefined
+        });
+    };
+
+    const handleSaveEdit = async (card: CardData, e: React.MouseEvent) => {
+        e.stopPropagation();
+
+        if (!editData.frontCard.trim() || !editData.backCard.trim()) {
+            alert('Front and back card cannot be empty');
+            return;
+        }
+
+        await onUpdateCard({
+            id: card.id,
+            frontCard: editData.frontCard.trim(),
+            backCard: editData.backCard.trim(),
+            imageAssetId: editData.imageAssetId,
+            cardStatus: card.cardStatus
+        });
+
+        setEditingCardId(null);
+        setEditData({
+            frontCard: '',
+            backCard: '',
+            imageUrl: undefined,
+            imageAssetId: undefined
+        });
+    };
+
+    const handleDeleteCard = (cardId: number, e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (window.confirm('Are you sure you want to delete this card?')) {
+            onDeleteCard(cardId);
+        }
+    };
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file');
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Image size must be less than 5MB');
+            return;
+        }
+
+        try {
+            const result = await uploadImageMutation.mutateAsync(file);
+            setEditData(prev => ({
+                ...prev,
+                imageUrl: result.url,
+                imageAssetId: result.assetId
+            }));
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        } catch (error) {
+            console.error('Upload failed:', error);
+            alert('Failed to upload image. Please try again.');
+        }
+    };
+
+    const handleRemoveImage = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setEditData(prev => ({
+            ...prev,
+            imageUrl: undefined,
+            imageAssetId: undefined
+        }));
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
+    const handleImageClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        fileInputRef.current?.click();
+    };
+
     return (
         <>
             <div className="max-w-4xl mx-auto p-6">
@@ -83,7 +223,6 @@ export default function HomeView({ setId, flashcards, onCardClick, onStudy, onMa
                         <Button variant="ghost" size="icon" className='cursor-pointer'>
                             <Heart className="w-5 h-5" />
                         </Button>
-                        {/* More Options Button with Dropdown */}
                         <div className="relative" ref={menuRef}>
                             <Button
                                 variant="ghost"
@@ -94,7 +233,6 @@ export default function HomeView({ setId, flashcards, onCardClick, onStudy, onMa
                                 <MoreVertical className="w-4 h-4" />
                             </Button>
 
-                            {/* Dropdown Menu */}
                             {showMenu && (
                                 <div className="absolute right-0 mt-1 w-30 bg-card border border-border rounded-lg shadow-lg z-10 overflow-hidden">
                                     <Button
@@ -121,6 +259,7 @@ export default function HomeView({ setId, flashcards, onCardClick, onStudy, onMa
                         </Button>
                     </div>
                 </div>
+
                 <div className="mb-6">
                     <FlipFlashcard
                         isFlipped={isFlipped}
@@ -131,37 +270,151 @@ export default function HomeView({ setId, flashcards, onCardClick, onStudy, onMa
                         onNext={onNext}
                     />
                 </div>
+
                 <h2 className="text-lg font-bold mb-4">Card ({flashcards.length})</h2>
+
+                <Input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                />
+
                 <div className="space-y-3">
                     {flashcards.map((card, index) => (
                         <Card
-                            key={index}
-                            className="cursor-pointer transition-all hover:shadow-md"
-                            onClick={() => onCardClick(index)}
+                            key={card.id}
+                            className={`transition-all ${editingCardId === card.id ? 'shadow-lg' : 'cursor-pointer hover:shadow-md'}`}
+                            onClick={() => editingCardId !== card.id && onCardClick(index)}
                         >
                             <CardContent>
-                                <div className="flex items-start gap-4">
-                                    <div className="flex-1 max-w-[250px]">
-                                        <p className="font-medium mb-2">{card.frontCard}</p>
+                                {editingCardId === card.id ? (
+                                    // Edit Mode
+                                    <div className="space-y-4 flex flex-col justify-end" onClick={(e) => e.stopPropagation()}>
+                                        <div className="flex items-center gap-4">
+                                            <div className="flex-1 max-w-[250px]">
+                                                <label className="text-sm font-medium text-muted-foreground mb-2 block">
+                                                    Term
+                                                </label>
+                                                <Textarea
+                                                    value={editData.frontCard}
+                                                    onChange={(e) => setEditData(prev => ({ ...prev, frontCard: e.target.value }))}
+                                                    placeholder="Enter front card text"
+                                                    className="min-h-[50px] resize-none"
+                                                    autoFocus
+                                                />
+                                            </div>
+                                            <div className="flex-1 border-l pl-6">
+                                                <label className="text-sm font-medium text-muted-foreground mb-2 block">
+                                                    Definition
+                                                </label>
+                                                <Textarea
+                                                    value={editData.backCard}
+                                                    onChange={(e) => setEditData(prev => ({ ...prev, backCard: e.target.value }))}
+                                                    placeholder="Enter back card text"
+                                                    className="min-h-[50px] resize-none"
+                                                />
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                {editData.imageUrl ? (
+                                                    <div className="relative group">
+                                                        <img
+                                                            src={editData.imageUrl}
+                                                            alt="Card"
+                                                            className="w-16 h-16 object-cover rounded border-2 border-border"
+                                                        />
+                                                        <button
+                                                            onClick={handleRemoveImage}
+                                                            className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        >
+                                                            <X className="w-3 h-3" />
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <Button
+                                                        variant="outline"
+                                                        onClick={handleImageClick}
+                                                        disabled={uploadImageMutation.isPending}
+                                                        className="h-16 w-16 rounded transition-colors cursor-pointer border-2 border-dashed flex flex-col items-center justify-center text-muted-foreground hover:border-foreground disabled:opacity-50"
+                                                    >
+                                                        {uploadImageMutation.isPending ? (
+                                                            <Loader2 className="w-6 h-6 animate-spin" />
+                                                        ) : (
+                                                            <>
+                                                                <ImageIcon className="w-6 h-6" />
+                                                                <span className="text-xs">Image</span>
+                                                            </>
+                                                        )}
+                                                    </Button>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2 ml-auto">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={handleCancelEdit}
+                                                className="gap-2 cursor-pointer"
+                                            >
+                                                <X className="w-4 h-4" />
+                                                Cancel
+                                            </Button>
+                                            <Button
+                                                variant="default"
+                                                size="sm"
+                                                onClick={(e) => handleSaveEdit(card, e)}
+                                                disabled={isUpdating || !editData.frontCard.trim() || !editData.backCard.trim()}
+                                                className="gap-2 cursor-pointer"
+                                            >
+                                                <Check className="w-4 h-4" />
+                                                {isUpdating ? 'Saving...' : 'Save'}
+                                            </Button>
+                                        </div>
                                     </div>
-                                    <div className="flex-1 border-l pl-6">
-                                        <p className="text-foreground">{card.backCard}</p>
+                                ) : (
+                                    // View Mode
+                                    <div className="flex items-start gap-4">
+                                        <div className="flex-1 max-w-[250px]">
+                                            <p className="font-medium mb-2">{card.frontCard}</p>
+                                        </div>
+                                        <div className="flex-1 border-l pl-6">
+                                            <p className="text-foreground">{card.backCard}</p>
+                                        </div>
+                                        <div className="">
+                                            {card.imageUrl && (
+                                                <img
+                                                    src={card.imageUrl}
+                                                    alt="Flashcard"
+                                                    className="w-16 h-16 object-cover rounded"
+                                                />
+                                            )}
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-8 w-8 cursor-pointer hover:bg-accent"
+                                                onClick={(e) => handleEditCard(card, e)}
+                                                title="Edit card"
+                                            >
+                                                <Edit className="w-4 h-4" />
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-8 w-8 cursor-pointer text-destructive hover:text-destructive hover:bg-destructive/10"
+                                                onClick={(e) => handleDeleteCard(card.id, e)}
+                                                title="Delete card"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer hover:bg-accent">
+                                                <Volume2 className="w-4 h-4" />
+                                            </Button>
+                                        </div>
                                     </div>
-                                    <div className="">
-                                        {card.imageUrl && <img src={card.imageUrl} alt="Flashcard Icon" className="w-16 rounded" />}
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer">
-                                            <Edit className="w-4 h-4" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer">
-                                            <Eye className="w-4 h-4" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer">
-                                            <Volume2 className="w-4 h-4" />
-                                        </Button>
-                                    </div>
-                                </div>
+                                )}
                             </CardContent>
                         </Card>
                     ))}

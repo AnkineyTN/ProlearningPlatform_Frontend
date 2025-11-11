@@ -28,11 +28,11 @@ export const useUploadImageFile = () => {
             const { secure_url, public_id } = cloudinaryResponse.data;
 
             // Bước 3: Gọi callback để verify
-            const callbackResponse = await imageAPI.uploadCallback({
-                assetId,
-                publicId: public_id,
-                url: secure_url,
-            });
+            // const callbackResponse = await imageAPI.uploadCallback({
+            //     assetId,
+            //     publicId: public_id,
+            //     url: secure_url,
+            // });
 
             return {
                 url: secure_url,

@@ -28,12 +28,17 @@ function TextEditorWrapper() {
 
 function FlashcardAppWrapper() {
     const { setId, flashcardId } = useParams();
-    return <FlashcardApp flashcardId={flashcardId ?? ''} setId={setId ?? ''} />;
+    return <FlashcardApp flashcardId={flashcardId ?? ''} setId={Number(setId) ?? ''} />;
 }
 
 function FlashcardEditorWrapper() {
     const { setId } = useParams();
-    return <FlashcardEditor setId={setId ?? ''} />;
+    return <FlashcardEditor setId={Number(setId) ?? ''} />;
+}
+
+function FlashcardUpdateWrapper() {
+    const { setId, flashcardId } = useParams();
+    return <FlashcardEditor setId={Number(setId) ?? ''} flashcardId={Number(flashcardId) ?? ''} />;
 }
 
 export const routeConfig: RouteObject[] = [
@@ -82,6 +87,10 @@ export const routeConfig: RouteObject[] = [
             {
                 path: 'sets/:setId/flashcards/editor',
                 element: <FlashcardEditorWrapper />
+            },
+            {
+                path: 'sets/:setId/flashcards/update/:flashcardId',
+                element: <FlashcardUpdateWrapper />
             },
             {
                 path: 'sets/:setId/flashcards/:flashcardId',

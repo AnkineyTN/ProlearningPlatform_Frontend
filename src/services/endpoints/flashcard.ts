@@ -19,7 +19,7 @@ export const flashcardAPI = {
 
     getFlashcardDetail: (
         setId: number,
-        flashcardId: string
+        flashcardId: number
     ): Promise<AxiosResponse<FlashcardDetailResponse>> =>
         api.get(`/sets/${setId}/flashcards/${flashcardId}`),
     
@@ -32,7 +32,7 @@ export const flashcardAPI = {
 
     updateFlashcard: (
         setId: number,
-        flashcardId: string,
+        flashcardId: number | string,
         data: { title: string; description: string; privacy: 'PUBLIC' | 'PRIVATE' }
     ): Promise<AxiosResponse<any>> => {
         return api.patch(`/sets/${setId}/flashcards/${flashcardId}`, data);
@@ -40,7 +40,28 @@ export const flashcardAPI = {
 
     deleteFlashcard: (
         setId: number,
-        flashcardId: string
+        flashcardId: number | string
     ): Promise<AxiosResponse<DeleteFlashcardResponse>> =>
-        api.delete(`/sets/${setId}/flashcards/${flashcardId}`)
+        api.delete(`/sets/${setId}/flashcards/${flashcardId}`),
+    
+    updateCard: (
+        setId: number,
+        flashcardId: number | string,
+        cardId: number,
+        data: {
+            id: number;
+            frontCard: string;
+            backCard: string;
+            imageAssetId?: number | null;
+            cardStatus?: 'NEW' | 'LEARNING' | 'KNOWN';
+        }
+    ): Promise<AxiosResponse<any>> =>
+        api.patch(`/sets/${setId}/flashcards/${flashcardId}/cards/${cardId}`, data),
+
+    deleteCard: (
+        setId: number,
+        flashcardId: number | string,
+        cardId: number
+    ): Promise<AxiosResponse<any>> =>
+        api.delete(`/sets/${setId}/flashcards/${flashcardId}/cards/${cardId}`)
 };

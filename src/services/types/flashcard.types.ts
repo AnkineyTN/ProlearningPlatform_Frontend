@@ -1,5 +1,5 @@
 export interface Flashcard {
-    id: string;
+    id: number | string;
     title: string;
     description: string;
     status: 'NOT_COMPLETED' | 'COMPLETED';
@@ -33,10 +33,12 @@ export interface GetFlashcardsParams {
 }
 
 export interface Card {
+    id: number;
     frontCard: string;
     backCard: string;
-    imageUrl: string | null;
-    imageAssetId: string | null;
+    imageUrl?: string;
+    imageAssetId?: string;
+    cardStatus?: 'NEW' | 'LEARNING' | 'KNOWN';
 }
 
 export interface FlashcardDetail {
@@ -100,5 +102,33 @@ export interface DeleteFlashcardResponse {
 
 export interface DeleteFlashcardRequest {
     setId: number;
-    flashcardId: string;
+    flashcardId: number;
+}
+
+export interface UpdateCardRequest {
+    id: number;
+    frontCard: string;
+    backCard: string;
+    imageAssetId?: number;
+    cardStatus?: 'NEW' | 'LEARNING' | 'KNOWN';
+}
+
+export interface UpdateCardResponse {
+    status: string;
+    message: string;
+    data: {
+        id: number;
+        frontCard: string;
+        backCard: string;
+        imageUrl?: string;
+        cardStatus?: 'NEW' | 'LEARNING' | 'KNOWN';
+    };
+    metadata: Record<string, never>;
+}
+
+export interface DeleteCardResponse {
+    status: string;
+    message: string;
+    data: null;
+    metadata: Record<string, never>;
 }

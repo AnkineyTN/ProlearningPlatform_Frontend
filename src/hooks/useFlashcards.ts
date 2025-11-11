@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { flashcardAPI } from '@/services/endpoints/flashcard';
-import type { CreateFlashcardManualRequest } from '@/services/types/flashcard.types';
+import type { CreateFlashcardManualRequest, UpdateCardRequest } from '@/services/types/flashcard.types';
 
 interface UseFlashcardsParams {
     setId: number;
@@ -21,7 +21,7 @@ export const useFlashcards = ({ setId, page, size, sort = 'id,ASC' }: UseFlashca
     });
 };
 
-export const useFlashcardDetail = (setId: number, flashcardId: string) => {
+export const useFlashcardDetail = (setId: number, flashcardId: number) => {
     return useQuery({
         queryKey: ['flashcard-detail', setId, flashcardId],
         queryFn: async () => {
@@ -41,6 +41,7 @@ export const useCreateFlashcardManual = () => {
             flashcardAPI.createManual(setId, data),
         onSuccess: (data, variables) => {
             // Invalidate flashcard list để refetch data mới
+            console.log('Created flashcard:', data);
             queryClient.invalidateQueries({ queryKey: ['flashcards', variables.setId] });
         },
         onError: (error: any) => {
@@ -55,7 +56,7 @@ export const useUpdateFlashcard = () => {
     return useMutation({
         mutationFn: ({ setId, flashcardId, payload }: {
             setId: number;
-            flashcardId: string;
+            flashcardId: number | string;
             payload: { title: string; description: string; privacy: 'PUBLIC' | 'PRIVATE' }
         }) => flashcardAPI.updateFlashcard(setId, flashcardId, payload),
         onSuccess: () => {
@@ -68,14 +69,69 @@ export const useDeleteFlashcard = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ setId, flashcardId }: { setId: number; flashcardId: string }) =>
+        mutationFn: ({ setId, flashcardId }: { setId: number; flashcardId: number | string }) =>
             flashcardAPI.deleteFlashcard(setId, flashcardId),
         onSuccess: (data, variables) => {
+            console.log('Deleted flashcard:', data);
             // Invalidate flashcard list để refetch data mới
             queryClient.invalidateQueries({ queryKey: ['flashcards', variables.setId] });
         },
         onError: (error: any) => {
             console.error('Error deleting flashcard:', error);
+        },
+    });
+};
+
+export const useUpdateCard = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({
+            setId,
+            flashcardId,
+            cardId,
+            data
+        }: {
+            setId: number;
+            flashcardId: number | string;
+            cardId: number;
+            data: UpdateCardRequest;
+        }) => flashcardAPI.updateCard(setId, flashcardId, cardId, data),
+        onSuccess: (data, variables) => {
+            console.log('Updated card:', data);
+            // Invalidate flashcard detail để refetch data mới
+            queryClient.invalidateQueries({
+                queryKey: ['flashcard-detail', variables.setId, variables.flashcardId]
+            });
+        },
+        onError: (error: any) => {
+            console.error('Error updating card:', error);
+        },
+    });
+};
+
+export const useDeleteCard = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({
+            setId,
+            flashcardId,
+            cardId
+        }: {
+            setId: number;
+            flashcardId: number | string;
+            cardId: number;
+        }) => flashcardAPI.deleteCard(setId, flashcardId, cardId),
+        onSuccess: (data, variables) => {
+            console.log('Deleted card:', data);
+            // Invalidate flashcard detail để refetch data mới
+            queryClient.invalidateQueries({
+                queryKey: ['flashcard-detail', variables.setId, variables.flashcardId]
+            });
+        },
+        onError: (error: any) => {
+            console.error('Error deleting card:', error);
         },
     });
 };

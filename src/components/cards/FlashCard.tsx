@@ -4,7 +4,7 @@ import { Edit, Trash2 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 export interface Flashcard {
-    id: string;
+    id: number | string;
     title: string;
     description: string;
     time: string;
@@ -14,9 +14,9 @@ export interface Flashcard {
 
 interface FlashCardProps {
     flashcard: Flashcard;
-    onAccess: (id: string) => void;
+    onAccess: (id: number | string) => void;
     onUpdate: (flashcard: Flashcard) => void;
-    onDelete: (flashcardId: string) => void;
+    onDelete: (flashcardId: number | string) => void;
 }
 
 export default function FlashCard({ flashcard, onAccess, onUpdate, onDelete }: FlashCardProps) {

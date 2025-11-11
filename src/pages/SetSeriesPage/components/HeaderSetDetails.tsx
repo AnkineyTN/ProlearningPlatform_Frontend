@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { BookOpen, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ModeToggle } from "@/components/theme/mode-toggle";
+import { LanguageToggle } from "@/components/language/language-toggle";
 
 export default function HeaderSetDetails() {
     const navigate = useNavigate();
@@ -32,8 +33,9 @@ export default function HeaderSetDetails() {
                     </div>
                 </div>
             </div>
-            <div className="mt-4">
+            <div className="flex flex-col justify-between px-4 gap-4">
                 <ModeToggle />
+                <LanguageToggle />
             </div>
         </div>
     );

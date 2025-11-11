@@ -12,14 +12,14 @@ import { MoreHorizontal } from 'lucide-react';
 import { Trash2 } from 'lucide-react';
 
 interface FlashcardCard {
-    id: string;
+    id: number | string;
     term: string;
     definition: string;
     imageUrl?: string;
-    assetId?: string | null;
+    assetId?: string;
 }
 
-export default function FlashcardEditor({ setId }: { setId: string }) {
+export default function FlashcardEditor({ setId, flashcardId }: { setId: number; flashcardId?: number }) {
     const location = useLocation();
     const navigate = useNavigate();
     const createFlashcardMutation = useCreateFlashcardManual();
@@ -34,7 +34,7 @@ export default function FlashcardEditor({ setId }: { setId: string }) {
 
     useEffect(() => {
         if (!title || !setId) {
-            navigate(`/sets/${setId}`);
+            navigate(`/sets/${setId}/flashcards/${flashcardId || ''}`);
         }
     }, [title, setId, navigate]);
 
@@ -42,16 +42,16 @@ export default function FlashcardEditor({ setId }: { setId: string }) {
         setCards([...cards, { id: crypto.randomUUID(), term: '', definition: '' }]);
     };
 
-    const removeCard = (id: string) => {
+    const removeCard = (id: number | string) => {
         if (cards.length > 1) {
             setCards(cards.filter(card => card.id !== id));
         }
     };
 
     const updateCard = (
-        id: string,
+        id: number | string,
         field: 'term' | 'definition' | 'imageUrl' | 'assetId',
-        value: string | null
+        value?: string
     ) => {
         setCards(prevCards =>
             prevCards.map(card =>
@@ -101,11 +101,12 @@ export default function FlashcardEditor({ setId }: { setId: string }) {
                     title,
                     description,
                     privacy: privacy as 'PUBLIC' | 'PRIVATE',
-                    cards: validCards.map(({ term, definition, imageUrl, assetId }) => ({
+                    cards: validCards.map(({ id, term, definition, imageUrl, assetId }) => ({
+                        id: id as number,
                         frontCard: term,
                         backCard: definition,
-                        imageUrl: imageUrl || null,
-                        imageAssetId: assetId || null
+                        imageUrl: imageUrl || undefined,
+                        imageAssetId: assetId || undefined
                     }))
                 }
             });

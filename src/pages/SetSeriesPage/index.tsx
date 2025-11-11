@@ -178,7 +178,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
         }
     };
 
-    const handleDeleteFlashcard = async (id: string) => {
+    const handleDeleteFlashcard = async (id: number | string) => {
         try {
             await deleteFlashcardMutation.mutateAsync({ setId: Number(setId), flashcardId: id });
         } catch (error) {

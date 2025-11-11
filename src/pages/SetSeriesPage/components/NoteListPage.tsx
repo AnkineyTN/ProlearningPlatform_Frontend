@@ -16,7 +16,7 @@ export default function NoteListPage({ setId: propSetId, onUpdate, onDelete }: N
     const [currentPage, setCurrentPage] = useState(0);
     const navigate = useNavigate();
     const { setId: paramSetId } = useParams<{ setId: string }>();
-    const pageSize = 12;
+    const pageSize = 6;
 
     const setId = propSetId || Number(paramSetId);
 
@@ -112,9 +112,10 @@ export default function NoteListPage({ setId: propSetId, onUpdate, onDelete }: N
             {totalPages > 1 && (
                 <div className="flex justify-center items-center gap-4">
                     <Button
+                        variant={"ghost"}
                         onClick={() => handlePageChange('prev')}
                         disabled={currentPage === 0}
-                        className="p-2 hover:bg-card-secondary rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="p-2 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         <ChevronLeft className="w-5 h-5 text-muted-foreground" />
                     </Button>
@@ -124,9 +125,10 @@ export default function NoteListPage({ setId: propSetId, onUpdate, onDelete }: N
                     </span>
 
                     <Button
+                        variant={"ghost"}
                         onClick={() => handlePageChange('next')}
                         disabled={currentPage === totalPages - 1}
-                        className="p-2 hover:bg-card-secondary rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="p-2 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         <ChevronRight className="w-5 h-5 text-muted-foreground" />
                     </Button>
