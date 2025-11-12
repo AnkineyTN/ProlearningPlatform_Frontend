@@ -4,7 +4,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import Checklist from '@/components/cards/CheckListCard';
 import SetCard, { type Set } from '@/components/cards/SetCard';
-// import NoteCard from '@/components/cards/NoteCard';
 import Header from '@/components/header/HeaderDashboard';
 import { useDeleteSet, useUpdateSet } from '@/hooks/useSets';
 import { type UpdateSetPayload } from '@/services/types/set.types';

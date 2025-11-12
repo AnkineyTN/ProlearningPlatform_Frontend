@@ -14,17 +14,19 @@ import { AlertCircleIcon, Lock, Mail, User, Eye, EyeOff, RefreshCw, CircleDot } 
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
+import LogoFG from '@/assets/logo_fg';
 
 export default function SignUp() {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const { t } = useTranslation()
+    const signupSchemaInstance = signupSchema(t)
     const { isLoading, error } = useAppSelector(state => state.auth)
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
     const { register, handleSubmit, formState: { errors } } = useForm<SignupFormData>({
-        resolver: zodResolver(signupSchema),
+        resolver: zodResolver(signupSchemaInstance),
         defaultValues: {
             role: 'ROLE_USER',
         },
@@ -68,18 +70,19 @@ export default function SignUp() {
             navigate('/onboarding')
         }
         catch (error: any) {
-            toast.error(error.response?.data?.message || t('signup.failed'), {
-                position: "top-right",
-                autoClose: 3000,
-            })
             dispatch(loginFailure(
-                error.response?.data?.message || t('signup.failed')
+                t('signup.failed')
             ))
         }
     }
 
     return (
         <div className={"min-w-screen min-h-screen flex items-center justify-center"}>
+            <a href="/dashboard">
+                <div className="absolute top-8 left-10 size-10">
+                    <LogoFG />
+                </div>
+            </a>
             <div className="w-[50vw] flex items-center justify-center">
                 <Card className="w-110 px-4 py-6">
                     <CardHeader className="text-start">
@@ -91,7 +94,10 @@ export default function SignUp() {
                     <CardContent>
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 text-start">
                             <div>
-                                <Label htmlFor="name" className="font-bold text-base mb-2">{t('signup.firstName')}</Label>
+                                <Label htmlFor="name" className="font-bold text-base mb-2">
+                                    {t('signup.firstName')}
+                                    <span className="text-red-500">*</span>
+                                </Label>
                                 <div className="relative mb-1">
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                         <User size={16} />
@@ -100,7 +106,7 @@ export default function SignUp() {
                                         id="firstName"
                                         type="text"
                                         {...register('firstName')}
-                                        placeholder={"Your name"}
+                                        placeholder={t('signup.firstNamePlaceholder')}
                                         className={`ps-9 ${errors.firstName ? 'border-red-500' : ''}`}
                                     />
                                 </div>
@@ -109,7 +115,10 @@ export default function SignUp() {
                                 )}
                             </div>
                             <div>
-                                <Label htmlFor="name" className="font-bold text-base mb-2">{t('signup.lastName')}</Label>
+                                <Label htmlFor="name" className="font-bold text-base mb-2">
+                                    {t('signup.lastName')}
+                                    <span className="text-red-500">*</span>
+                                </Label>
                                 <div className="relative mb-1">
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                         <User size={16} />
@@ -118,7 +127,7 @@ export default function SignUp() {
                                         id="lastName"
                                         type="text"
                                         {...register('lastName')}
-                                        placeholder={"Your name"}
+                                        placeholder={t('signup.lastNamePlaceholder')}
                                         className={`ps-9 ${errors.lastName ? 'border-red-500' : ''}`}
                                     />
                                 </div>
@@ -137,7 +146,7 @@ export default function SignUp() {
                                         id="email"
                                         type="email"
                                         {...register('email')}
-                                        placeholder={"Your email"}
+                                        placeholder={t('signup.emailPlaceholder')}
                                         className={`ps-9 ${errors.email ? 'border-red-500' : ''}`}
                                     />
                                 </div>
@@ -147,7 +156,10 @@ export default function SignUp() {
                             </div>
 
                             <div>
-                                <Label htmlFor="password" className="font-bold text-base mb-2">{t('signup.password')}</Label>
+                                <Label htmlFor="password" className="font-bold text-base mb-2">
+                                    {t('signup.password')}
+                                    <span className="text-red-500">*</span>
+                                </Label>
                                 <div className="relative mb-2">
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                         <Lock size={16} />
@@ -177,7 +189,10 @@ export default function SignUp() {
                             </div>
 
                             <div>
-                                <Label htmlFor="confirmPassword" className="font-bold text-base mb-2">{t('signup.confirmPassword')}</Label>
+                                <Label htmlFor="confirmPassword" className="font-bold text-base mb-2">
+                                    {t('signup.confirmPassword')}
+                                    <span className="text-red-500">*</span>
+                                </Label>
                                 <div className="relative mb-1">
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                         <Lock size={16} />

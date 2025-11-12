@@ -13,16 +13,18 @@ import { AlertCircleIcon, Eye, EyeOff, LockIcon, Mail, RefreshCw } from "lucide-
 import { useState } from "react";
 import { toast } from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import LogoFG from '@/assets/logo_fg';
 
 export default function SignIn() {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const { t } = useTranslation()
+    const loginSchemaInstance = loginSchema(t)
     const { isLoading, error } = useAppSelector(state => state.auth)
     const [showPassword, setShowPassword] = useState(false);
 
     const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema)
+        resolver: zodResolver(loginSchemaInstance),
     })
 
     const handleGoogleLogin = async () => {
@@ -47,13 +49,18 @@ export default function SignIn() {
             navigate('/dashboard')
         } catch (error: any) {
             dispatch(loginFailure(
-                error.response?.data?.message || t("signin.wrongCredentials")
+                t("signin.wrongCredentials")
             ))
         }
     }
 
     return (
         <div className={"min-w-screen min-h-screen flex items-center justify-center"}>
+            <a href="/dashboard">
+                <div className="absolute top-8 left-1/2 ms-10 size-10">
+                    <LogoFG />
+                </div>
+            </a>
             <div className={"w-[50vw] bg-gradient-to-r from-popover-foreground to-muted-foreground h-screen px-14 py-10"}>
                 <div className={"text-background text-8xl font-bold"}>WELCOME BACK!</div>
             </div>
@@ -69,7 +76,10 @@ export default function SignIn() {
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-start">
                             <div>
                                 <div>
-                                    <Label htmlFor="email" className={"font-bold text-base mb-2"}>{t('signin.email')}</Label>
+                                    <Label htmlFor="email" className={"font-bold text-base mb-2"}>
+                                        {t('signin.email')}
+                                        <span className="text-red-500">*</span>
+                                    </Label>
                                     <div className="relative mb-1">
                                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                             <Mail size={16} />
@@ -78,7 +88,7 @@ export default function SignIn() {
                                             id="name"
                                             type="text"
                                             {...register('email')}
-                                            placeholder="Your email"
+                                            placeholder={t('signup.emailPlaceholder')}
                                             className={`ps-9 ${errors.email ? 'border-red-500' : ''}`}
                                             required
                                         />
@@ -91,7 +101,10 @@ export default function SignIn() {
 
                             <div>
                                 <div className="flex items-center mb-2">
-                                    <Label htmlFor="password" className={"font-bold text-base"}>{t('signin.password')}</Label>
+                                    <Label htmlFor="password" className={"font-bold text-base"}>
+                                        {t('signin.password')}
+                                        <span className="text-red-500">*</span>
+                                    </Label>
                                     <a
                                         href="#"
                                         className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
@@ -99,7 +112,7 @@ export default function SignIn() {
                                         {t('signin.forgotPassword')}
                                     </a>
                                 </div>
-                                <div className="relative mb-1">
+                                <div className="relative mb-2">
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                         <LockIcon size={16} />
                                     </span>
@@ -107,7 +120,7 @@ export default function SignIn() {
                                     <Input
                                         id="password"
                                         type={showPassword ? 'text' : 'password'}
-                                        placeholder={"••••••"}
+                                        placeholder={"••••••••"}
                                         required
                                         {...register('password')}
                                         className={`ps-9 pe-9 ${errors.password ? 'border-red-500' : ''}`}
@@ -120,11 +133,10 @@ export default function SignIn() {
                                     >
                                         {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                                     </span>
-
-                                    {errors.password && (
-                                        <p className="text-red-500 text-sm">{errors.password.message}</p>
-                                    )}
                                 </div>
+                                {errors.password && (
+                                    <p className="text-red-500 text-sm">{errors.password.message}</p>
+                                )}
                             </div>
 
                             {error && (

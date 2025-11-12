@@ -1,21 +1,22 @@
 import { z } from 'zod'
+import { type TFunction } from 'i18next'
 
-export const signupSchema = z.object({
-    firstName: z.string().min(2, 'First name must be at least 2 characters').max(50, 'First name must not exceed 50 characters'),
-    lastName: z.string().min(2, 'Last name must be at least 2 characters').max(50, 'Last name must not exceed 50 characters'),
-    email: z.string().email('Invalid email address'),
-    password: z.string().min(8, 'Password must be at least 8 characters').max(20, 'Password must not exceed 20 characters'),
-    confirmPassword: z.string().min(1, 'Please confirm your password'),
+export const signupSchema = (t: TFunction) => z.object({
+    firstName: z.string().trim().min(2, t('signup.firstNameMin')).max(50, t('signup.firstNameMax')),
+    lastName: z.string().trim().min(2, t('signup.lastNameMin')).max(50, t('signup.lastNameMax')),
+    email: z.string().email(t('signup.invalidEmail')),
+    password: z.string().min(8, t('signup.passwordMin')).max(20, t('signup.passwordMax')),
+    confirmPassword: z.string().min(1, t('signup.confirmPasswordPlease')),
     role: z.enum(['ROLE_USER', 'ROLE_ADMIN', 'ROLE_TEACHER'])
 }).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: t('signup.passwordNotMatch'),
     path: ["confirmPassword"],
 })
 
-export const loginSchema = z.object({
-    email: z.string().email('Invalid email address'),
-    password: z.string().min(1, 'Password is required')
+export const loginSchema = (t: TFunction) => z.object({
+    email: z.string().email(t('signin.invalidEmail')),
+    password: z.string().min(8, t('signup.passwordMin')).max(20, t('signup.passwordMax')),
 })
 
-export type SignupFormData = z.infer<typeof signupSchema>
-export type LoginFormData = z.infer<typeof loginSchema>
+export type SignupFormData = z.infer<ReturnType<typeof signupSchema>>
+export type LoginFormData = z.infer<ReturnType<typeof loginSchema>>

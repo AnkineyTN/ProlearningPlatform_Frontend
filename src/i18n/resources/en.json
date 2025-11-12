@@ -216,14 +216,16 @@
         "password": "Password",
         "subtitle": "Sign in",
         "title": "Sign In to Your Account",
-        "wrongCredentials": "Wrong username or password"
+        "wrongCredentials": "Wrong username or password",
+        "invalidEmail": "Invalid email",
+        "passwordRequired": "Password is required"
     },
     "signup": {
         "confirmPassword": "Confirm Password",
         "createAccount": "Create Account",
         "description": "Please fill in the details to get started.",
         "email": "Email",
-        "failed": "Failed to create account",
+        "failed": "Account already exists",
         "firstName": "First Name",
         "haveAccount": "Already have an account?",
         "lastName": "Last Name",
@@ -233,6 +235,19 @@
         "signIn": "Sign in",
         "subtitle": "Sign up",
         "success": "Account created successfully!",
-        "title": "Create Your Account"
+        "title": "Create Your Account",
+        "firstNameMin": "First name must be at least 2 characters",
+        "firstNameMax": "First name must not exceed 50 characters",
+        "lastNameMin": "Last name must be at least 2 characters",
+        "lastNameMax": "Last name must not exceed 50 characters",
+        "invalidEmail": "Invalid email address",
+        "passwordRequired": "Password is required",
+        "passwordMin": "Password must be at least 8 characters",
+        "passwordMax": "Password must not exceed 20 characters",
+        "confirmPasswordPlease": "Please confirm your password",
+        "passwordNotMatch": "Passwords don't match",
+        "emailPlaceholder": "Your email",
+        "firstNamePlaceholder": "Your first name",
+        "lastNamePlaceholder": "Your last name"
     }
 }

@@ -216,14 +216,16 @@
         "password": "Mật khẩu",
         "subtitle": "Đăng nhập",
         "title": "Đăng Nhập Tài Khoản",
-        "wrongCredentials": "Sai tên người dùng hoặc mật khẩu"
+        "wrongCredentials": "Sai tên người dùng hoặc mật khẩu",
+        "invalidEmail": "Email không hợp lệ",
+        "passwordRequired": "Mật khẩu là bắt buộc"
     },
     "signup": {
         "confirmPassword": "Xác nhận mật khẩu",
         "createAccount": "Tạo tài khoản",
         "description": "Vui lòng điền thông tin để bắt đầu.",
         "email": "Email",
-        "failed": "Tạo tài khoản không thành công",
+        "failed": "Tài khoản đã tồn tại",
         "firstName": "Họ",
         "haveAccount": "Bạn đã có tài khoản?",
         "lastName": "Tên",
@@ -233,6 +235,18 @@
         "signIn": "Đăng nhập",
         "subtitle": "Đăng ký",
         "success": "Tạo tài khoản thành công!",
-        "title": "Tạo tài khoản của bạn"
+        "title": "Tạo tài khoản của bạn",
+        "firstNameMin": "Họ phải có ít nhất 2 ký tự",
+        "firstNameMax": "Họ không được vượt quá 50 ký tự",
+        "lastNameMin": "Tên phải có ít nhất 2 ký tự",
+        "lastNameMax": "Tên không được vượt quá 50 ký tự",
+        "invalidEmail": "Email không hợp lệ",
+        "passwordMin": "Mật khẩu phải có ít nhất 8 ký tự",
+        "passwordMax": "Mật khẩu không được vượt quá 20 ký tự",
+        "confirmPasswordPlease": "Vui lòng xác nhận mật khẩu",
+        "passwordNotMatch": "Mật khẩu không khớp",
+        "emailPlaceholder": "Email của bạn",
+        "firstNamePlaceholder": "Tên của bạn",
+        "lastNamePlaceholder": "Họ của bạn"
     }
 }

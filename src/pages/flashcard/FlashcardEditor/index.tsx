@@ -12,6 +12,7 @@ import {
     useDeleteMultipleCards
 } from '@/hooks/useFlashcards';
 import FlashcardItemWrapper from './FlashcardItemComponent';
+import ImportModal from '../components/ImportModal';
 
 interface FlashcardCard {
     id: number | string;
@@ -19,6 +20,8 @@ interface FlashcardCard {
     definition: string;
     imageUrl?: string;
     assetId?: number;
+    // staged action: CREATE for new local cards, UPDATE for edited existing cards, DELETE when marked for deletion
+    _action?: 'CREATE' | 'UPDATE' | 'DELETE' | null;
 }
 
 export default function FlashcardEditor({
@@ -53,10 +56,13 @@ export default function FlashcardEditor({
     const [description, setDescription] = useState(locationDescription || '');
 
     const [cards, setCards] = useState<FlashcardCard[]>([
-        { id: crypto.randomUUID(), term: '', definition: '', assetId: undefined, imageUrl: '' }
+        { id: crypto.randomUUID(), term: '', definition: '', assetId: undefined, imageUrl: '', _action: 'CREATE' as 'CREATE' }
     ]);
 
     const [draggedCardId, setDraggedCardId] = useState<string | null>(null);
+
+    // State cho Import Modal
+    const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
     // Load data khi ở Update mode
     useEffect(() => {
@@ -66,12 +72,14 @@ export default function FlashcardEditor({
             setDescription(flashcard.description || '');
 
             if (flashcard.cards && flashcard.cards.length > 0) {
+                // initialize cards and set _action = null (no staged change yet)
                 setCards(flashcard.cards.map((card: any) => ({
                     id: card.id,
                     term: card.frontCard || '',
                     definition: card.backCard || '',
                     imageUrl: card.imageUrl || '',
-                    assetId: card.imageAssetId || ''
+                    assetId: card.imageAssetId || undefined,
+                    _action: null
                 })));
             }
         }
@@ -85,13 +93,24 @@ export default function FlashcardEditor({
     }, [locationTitle, setId, navigate, isUpdateMode]);
 
     const addCard = () => {
-        setCards([...cards, { id: crypto.randomUUID(), term: '', definition: '' }]);
+        setCards([...cards, { id: crypto.randomUUID(), term: '', definition: '', imageUrl: '', assetId: undefined, _action: 'CREATE' as 'CREATE' }]);
     };
 
     const removeCard = (id: number | string) => {
-        if (cards.length > 1) {
-            setCards(cards.filter(card => card.id !== id));
-        }
+        // If removing a new (local) card (id is string uuid) -> remove from array
+        // If removing an existing card (id is number) -> mark as DELETE so Save All can process
+        if (cards.length <= 1) return;
+
+                setCards(prev => prev.map(card => {
+            if (card.id === id) {
+                if (typeof id === 'number') {
+                    return { ...card, _action: 'DELETE' as 'DELETE' };
+                }
+                // signal removal for local-created card by returning null which will be filtered out
+                return null as any;
+            }
+            return card;
+        }).filter(Boolean));
     };
 
     const updateCard = (
@@ -100,9 +119,20 @@ export default function FlashcardEditor({
         value?: string
     ) => {
         setCards(prevCards =>
-            prevCards.map(card =>
-                card.id === id ? { ...card, [field]: value } : card
-            )
+            prevCards.map(card => {
+                if (card.id !== id) return card;
+
+                const updated = { ...card, [field]: value } as FlashcardCard;
+
+                // If this card was created locally, keep CREATE. Otherwise mark as UPDATE (unless it's DELETE)
+                if (card._action === 'CREATE') {
+                    updated._action = 'CREATE' as 'CREATE';
+                } else if (card._action !== 'DELETE') {
+                    updated._action = 'UPDATE' as 'UPDATE';
+                }
+
+                return updated;
+            })
         );
     };
 
@@ -131,6 +161,26 @@ export default function FlashcardEditor({
         setDraggedCardId(null);
     };
 
+    // Handler cho Import Modal
+    const handleImport = (importedCards: { term: string; definition: string }[]) => {
+        const newCards = importedCards.map(card => ({
+            id: crypto.randomUUID(),
+            term: card.term,
+            definition: card.definition,
+            imageUrl: '',
+            assetId: undefined,
+            _action: 'CREATE' as 'CREATE'
+        }));
+
+        // Nếu chỉ có 1 card rỗng, thay thế nó
+        if (cards.length === 1 && !cards[0].term && !cards[0].definition) {
+            setCards(newCards);
+        } else {
+            // Ngược lại, thêm vào cuối
+            setCards([...cards, ...newCards]);
+        }
+    };
+
     const handleSave = async () => {
         // Validate
         const validCards = cards.filter(card => card.term.trim() && card.definition.trim());
@@ -142,20 +192,11 @@ export default function FlashcardEditor({
 
         try {
             if (isUpdateMode) {
-                // UPDATE MODE
-                const originalCardIds = flashcardData?.data.cards?.map((c: any) => c.id) || [];
-                const currentCardIds = validCards.filter(c => typeof c.id === 'number').map(c => c.id);
+                // UPDATE MODE - use staged _action flags to decide which API calls to make
+                const cardsToCreate = cards.filter(c => c._action === 'CREATE' && c.term.trim() && c.definition.trim());
+                const cardsToUpdate = cards.filter(c => c._action === 'UPDATE' && typeof c.id === 'number' && c.term.trim() && c.definition.trim());
+                const cardsToDelete = cards.filter(c => c._action === 'DELETE' && typeof c.id === 'number').map(c => c.id as number);
 
-                // Tìm cards cần update (cards đã tồn tại)
-                const cardsToUpdate = validCards.filter(card => typeof card.id === 'number');
-
-                // Tìm cards cần add (cards mới tạo - có id là string UUID)
-                const cardsToAdd = validCards.filter(card => typeof card.id === 'string');
-
-                // Tìm cards cần delete (cards có trong original nhưng không có trong current)
-                const cardsToDelete = originalCardIds.filter((id: number) => !currentCardIds.includes(id));
-
-                // Execute updates
                 if (cardsToUpdate.length > 0) {
                     await updateCardsMutation.mutateAsync({
                         setId: Number(setId),
@@ -165,26 +206,24 @@ export default function FlashcardEditor({
                             frontCard: card.term,
                             backCard: card.definition,
                             imageUrl: card.imageUrl || undefined,
-                            imageAssetId: card.assetId || undefined
+                            imageAssetId: card.assetId as number | undefined
                         }))
                     });
                 }
 
-                // Add new cards
-                if (cardsToAdd.length > 0) {
+                if (cardsToCreate.length > 0) {
                     await addCardsMutation.mutateAsync({
                         setId: Number(setId),
                         flashcardId: flashcardId!,
-                        cards: cardsToAdd.map(card => ({
+                        cards: cardsToCreate.map(card => ({
                             frontCard: card.term,
                             backCard: card.definition,
                             imageUrl: card.imageUrl || undefined,
-                            imageAssetId: card.assetId || undefined
+                            imageAssetId: card.assetId as number | undefined
                         }))
                     });
                 }
 
-                // Delete removed cards
                 if (cardsToDelete.length > 0) {
                     await deleteCardsMutation.mutateAsync({
                         setId: Number(setId),
@@ -196,19 +235,21 @@ export default function FlashcardEditor({
                 // Navigate back to flashcard detail
                 navigate(`/sets/${setId}/flashcards/${flashcardId}`);
             } else {
+                // CREATE MODE - send only cards that are not deleted
                 await createFlashcardMutation.mutateAsync({
                     setId: Number(setId),
                     data: {
                         title,
                         description,
                         privacy: privacy as 'PUBLIC' | 'PRIVATE',
-                        cards: validCards.map(({ id, term, definition, imageUrl, assetId }) => ({
-                            id: id as number,
-                            frontCard: term,
-                            backCard: definition,
-                            imageUrl: imageUrl || undefined,
-                            imageAssetId: assetId || undefined
-                        }))
+                        cards: (cards
+                            .filter(c => c._action !== 'DELETE' && c.term.trim() && c.definition.trim())
+                            .map(card => ({
+                                frontCard: card.term,
+                                backCard: card.definition,
+                                imageUrl: card.imageUrl || undefined,
+                                imageAssetId: card.assetId as number | undefined
+                            })) as any)
                     }
                 });
 
@@ -275,7 +316,10 @@ export default function FlashcardEditor({
                 {/* Controls */}
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex gap-3">
-                        <Button className="flex items-center gap-2 px-4 py-2 bg-card text-foreground border border-border rounded-lg hover:bg-secondary transition-colors cursor-pointer">
+                        <Button
+                            onClick={() => setIsImportModalOpen(true)}
+                            className="flex items-center gap-2 px-4 py-2 bg-card text-foreground border border-border rounded-lg hover:bg-secondary transition-colors cursor-pointer"
+                        >
                             <Plus className="w-4 h-4" />
                             Import
                         </Button>
@@ -298,21 +342,23 @@ export default function FlashcardEditor({
                     </div>
                 </div>
 
-                {/* Cards */}
-                {cards.map((card, index) => (
-                    <FlashcardItemWrapper
-                        key={card.id}
-                        card={card}
-                        index={index}
-                        onUpdate={updateCard}
-                        onDelete={removeCard}
-                        canDelete={cards.length > 1}
-                        onDragStart={handleDragStart}
-                        onDragOver={handleDragOver}
-                        onDragEnd={handleDragEnd}
-                        isDragging={draggedCardId === card.id}
-                    />
-                ))}
+                {/* Cards (hide those marked for deletion) */}
+                {cards
+                    .filter(c => c._action !== 'DELETE')
+                    .map((card, index) => (
+                        <FlashcardItemWrapper
+                            key={card.id}
+                            card={card}
+                            index={index}
+                            onUpdate={updateCard}
+                            onDelete={removeCard}
+                            canDelete={cards.filter(c => c._action !== 'DELETE').length > 1}
+                            onDragStart={handleDragStart}
+                            onDragOver={handleDragOver}
+                            onDragEnd={handleDragEnd}
+                            isDragging={draggedCardId === card.id}
+                        />
+                    ))}
 
                 {/* Add Card Button */}
                 <div className="flex justify-center mt-6">
@@ -326,6 +372,13 @@ export default function FlashcardEditor({
                     </Button>
                 </div>
             </div>
+
+            {/* Import Modal */}
+            <ImportModal
+                isOpen={isImportModalOpen}
+                onClose={() => setIsImportModalOpen(false)}
+                onInsert={handleImport}
+            />
         </div>
     );
 }
