@@ -1,42 +1,88 @@
-// pages/FlashcardEditor.tsx
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useCreateFlashcardManual } from '@/hooks/useFlashcards';
 import { Button } from '@/components/ui/button';
-import { Plus, ArrowLeft } from 'lucide-react';
-import FlashcardItemWrapper from './FlashcardItemComponent';
-import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Shuffle } from 'lucide-react';
-import { MoreHorizontal } from 'lucide-react';
-import { Trash2 } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { ArrowLeft, Plus, Shuffle, MoreHorizontal, Trash2 } from 'lucide-react';
+import {
+    useCreateFlashcardManual,
+    useFlashcardDetail,
+    useAddCards,
+    useUpdateMultipleCards,
+    useDeleteMultipleCards
+} from '@/hooks/useFlashcards';
+import FlashcardItemWrapper from './FlashcardItemComponent';
 
 interface FlashcardCard {
     id: number | string;
     term: string;
     definition: string;
     imageUrl?: string;
-    assetId?: string;
+    assetId?: number;
 }
 
-export default function FlashcardEditor({ setId, flashcardId }: { setId: number; flashcardId?: number }) {
+export default function FlashcardEditor({
+    setId,
+    flashcardId
+}: {
+    setId: number;
+    flashcardId?: number;
+}) {
     const location = useLocation();
     const navigate = useNavigate();
-    const createFlashcardMutation = useCreateFlashcardManual();
 
-    const { title, description, privacy } = location.state || {};
+    // Xác định mode: Create hoặc Update
+    const isUpdateMode = !!flashcardId;
+
+    const createFlashcardMutation = useCreateFlashcardManual();
+    const addCardsMutation = useAddCards();
+    const updateCardsMutation = useUpdateMultipleCards();
+    const deleteCardsMutation = useDeleteMultipleCards();
+
+    // Fetch data nếu là Update mode
+    const { data: flashcardData, isLoading } = useFlashcardDetail(
+        setId,
+        flashcardId || 0,
+    );
+
+    // State từ location (cho Create mode)
+    const { title: locationTitle, description: locationDescription, privacy } = location.state || {};
+
+    // State cho title và description
+    const [title, setTitle] = useState(locationTitle || '');
+    const [description, setDescription] = useState(locationDescription || '');
 
     const [cards, setCards] = useState<FlashcardCard[]>([
-        { id: crypto.randomUUID(), term: '', definition: '', assetId: '', imageUrl: '' }
+        { id: crypto.randomUUID(), term: '', definition: '', assetId: undefined, imageUrl: '' }
     ]);
 
     const [draggedCardId, setDraggedCardId] = useState<string | null>(null);
 
+    // Load data khi ở Update mode
     useEffect(() => {
-        if (!title || !setId) {
-            navigate(`/sets/${setId}/flashcards/${flashcardId || ''}`);
+        if (isUpdateMode && flashcardData?.data) {
+            const flashcard = flashcardData.data;
+            setTitle(flashcard.title || '');
+            setDescription(flashcard.description || '');
+
+            if (flashcard.cards && flashcard.cards.length > 0) {
+                setCards(flashcard.cards.map((card: any) => ({
+                    id: card.id,
+                    term: card.frontCard || '',
+                    definition: card.backCard || '',
+                    imageUrl: card.imageUrl || '',
+                    assetId: card.imageAssetId || ''
+                })));
+            }
         }
-    }, [title, setId, navigate]);
+    }, [flashcardData, isUpdateMode]);
+
+    // Validate route cho Create mode
+    useEffect(() => {
+        if (!isUpdateMode && (!locationTitle || !setId)) {
+            navigate(`/sets/${setId}`);
+        }
+    }, [locationTitle, setId, navigate, isUpdateMode]);
 
     const addCard = () => {
         setCards([...cards, { id: crypto.randomUUID(), term: '', definition: '' }]);
@@ -95,32 +141,106 @@ export default function FlashcardEditor({ setId, flashcardId }: { setId: number;
         }
 
         try {
-            await createFlashcardMutation.mutateAsync({
-                setId: Number(setId),
-                data: {
-                    title,
-                    description,
-                    privacy: privacy as 'PUBLIC' | 'PRIVATE',
-                    cards: validCards.map(({ id, term, definition, imageUrl, assetId }) => ({
-                        id: id as number,
-                        frontCard: term,
-                        backCard: definition,
-                        imageUrl: imageUrl || undefined,
-                        imageAssetId: assetId || undefined
-                    }))
-                }
-            });
+            if (isUpdateMode) {
+                // UPDATE MODE
+                const originalCardIds = flashcardData?.data.cards?.map((c: any) => c.id) || [];
+                const currentCardIds = validCards.filter(c => typeof c.id === 'number').map(c => c.id);
 
-            // Navigate back to set page
-            navigate(`/sets/${setId}`);
+                // Tìm cards cần update (cards đã tồn tại)
+                const cardsToUpdate = validCards.filter(card => typeof card.id === 'number');
+
+                // Tìm cards cần add (cards mới tạo - có id là string UUID)
+                const cardsToAdd = validCards.filter(card => typeof card.id === 'string');
+
+                // Tìm cards cần delete (cards có trong original nhưng không có trong current)
+                const cardsToDelete = originalCardIds.filter((id: number) => !currentCardIds.includes(id));
+
+                // Execute updates
+                if (cardsToUpdate.length > 0) {
+                    await updateCardsMutation.mutateAsync({
+                        setId: Number(setId),
+                        flashcardId: flashcardId!,
+                        cards: cardsToUpdate.map(card => ({
+                            id: card.id as number,
+                            frontCard: card.term,
+                            backCard: card.definition,
+                            imageUrl: card.imageUrl || undefined,
+                            imageAssetId: card.assetId || undefined
+                        }))
+                    });
+                }
+
+                // Add new cards
+                if (cardsToAdd.length > 0) {
+                    await addCardsMutation.mutateAsync({
+                        setId: Number(setId),
+                        flashcardId: flashcardId!,
+                        cards: cardsToAdd.map(card => ({
+                            frontCard: card.term,
+                            backCard: card.definition,
+                            imageUrl: card.imageUrl || undefined,
+                            imageAssetId: card.assetId || undefined
+                        }))
+                    });
+                }
+
+                // Delete removed cards
+                if (cardsToDelete.length > 0) {
+                    await deleteCardsMutation.mutateAsync({
+                        setId: Number(setId),
+                        flashcardId: flashcardId!,
+                        data: { cardIds: cardsToDelete }
+                    });
+                }
+
+                // Navigate back to flashcard detail
+                navigate(`/sets/${setId}/flashcards/${flashcardId}`);
+            } else {
+                await createFlashcardMutation.mutateAsync({
+                    setId: Number(setId),
+                    data: {
+                        title,
+                        description,
+                        privacy: privacy as 'PUBLIC' | 'PRIVATE',
+                        cards: validCards.map(({ id, term, definition, imageUrl, assetId }) => ({
+                            id: id as number,
+                            frontCard: term,
+                            backCard: definition,
+                            imageUrl: imageUrl || undefined,
+                            imageAssetId: assetId || undefined
+                        }))
+                    }
+                });
+
+                // Navigate back to set page
+                navigate(`/sets/${setId}`);
+            }
         } catch (error) {
             console.error('Error saving flashcard:', error);
+            alert('Failed to save. Please try again.');
         }
     };
 
     const handleBack = () => {
-        navigate(`/sets/${setId}`);
+        if (isUpdateMode) {
+            navigate(`/sets/${setId}/flashcards/${flashcardId}`);
+        } else {
+            navigate(`/sets/${setId}`);
+        }
     };
+
+    if (isUpdateMode && isLoading) {
+        return (
+            <div className="min-h-screen p-6 bg-background flex items-center justify-center">
+                <p className="text-muted-foreground">Loading...</p>
+            </div>
+        );
+    }
+
+    const isSaving = createFlashcardMutation.isPending ||
+        addCardsMutation.isPending ||
+        updateCardsMutation.isPending ||
+        deleteCardsMutation.isPending;
 
     return (
         <div className="min-h-screen p-6 bg-background">
@@ -137,21 +257,20 @@ export default function FlashcardEditor({ setId, flashcardId }: { setId: number;
                     </Button>
 
                     <div className="flex items-center justify-between">
-                        <div>
+                        <div className="flex-1">
                             <h1 className="text-3xl font-bold mb-2">{title}</h1>
                             <p className="text-muted-foreground">{description}</p>
                         </div>
 
                         <Button
                             onClick={handleSave}
-                            disabled={createFlashcardMutation.isPending}
+                            disabled={isSaving}
                             className="bg-foreground text-background px-8"
                         >
-                            {createFlashcardMutation.isPending ? 'Saving...' : 'Create'}
+                            {isSaving ? 'Saving...' : (isUpdateMode ? 'Update' : 'Create')}
                         </Button>
                     </div>
                 </div>
-
 
                 {/* Controls */}
                 <div className="flex items-center justify-between mb-6">
@@ -194,18 +313,18 @@ export default function FlashcardEditor({ setId, flashcardId }: { setId: number;
                         isDragging={draggedCardId === card.id}
                     />
                 ))}
-            </div>
 
-            {/* Add Card Button */}
-            <div className="flex justify-center">
-                <Button
-                    onClick={addCard}
-                    variant="outline"
-                    className="flex items-center gap-2 w-full max-w-md border-dashed border-2"
-                >
-                    <Plus className="w-5 h-5" />
-                    Add Card
-                </Button>
+                {/* Add Card Button */}
+                <div className="flex justify-center mt-6">
+                    <Button
+                        onClick={addCard}
+                        variant="outline"
+                        className="flex items-center gap-2 w-full max-w-md border-dashed border-2"
+                    >
+                        <Plus className="w-5 h-5" />
+                        Add Card
+                    </Button>
+                </div>
             </div>
         </div>
     );

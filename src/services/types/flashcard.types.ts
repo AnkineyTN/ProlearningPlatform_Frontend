@@ -37,7 +37,7 @@ export interface Card {
     frontCard: string;
     backCard: string;
     imageUrl?: string;
-    imageAssetId?: string;
+    imageAssetId?: number;
     cardStatus?: 'NEW' | 'LEARNING' | 'KNOWN';
 }
 
@@ -66,7 +66,7 @@ export interface CreateFlashcardManualRequest {
     title: string;
     description: string;
     privacy: 'PUBLIC' | 'PRIVATE';
-    cards:  Card[];
+    cards: Card[];
 }
 
 export interface CreateFlashcardResponse {
@@ -130,5 +130,67 @@ export interface DeleteCardResponse {
     status: string;
     message: string;
     data: null;
+    metadata: Record<string, never>;
+}
+
+export interface AddCardsRequest {
+    frontCard: string;
+    backCard: string;
+    imageAssetId?: number;
+    imageUrl?: string;
+}
+
+export interface AddCardsResponse {
+    status: string;
+    message: string;
+    data: {
+        id: string;
+        title: string;
+        description: string;
+        status: 'COMPLETED' | 'NOT_COMPLETED';
+        privacy: 'PUBLIC' | 'PRIVATE';
+        lastStudy: string;
+        known: number;
+        learning: number;
+        remain: number;
+        createMethod: 'MANUAL' | 'AI';
+        numCards: number;
+        createdAt: string;
+        updatedAt: string;
+        cards: Card[];
+    };
+    metadata: Record<string, never>;
+}
+
+export interface DeleteMultipleCardsRequest {
+    cardIds: number[];
+}
+
+export interface DeleteMultipleCardsResponse {
+    status: string;
+    message: string;
+    data: string;
+    metadata: Record<string, never>;
+}
+
+export interface UpdateMultipleCardsRequest {
+    id: number;
+    frontCard: string;
+    backCard: string;
+    imageAssetId?: number;
+    imageUrl?: string;
+    cardStatus?: 'NEW' | 'LEARNING' | 'KNOWN';
+}
+
+export interface UpdateMultipleCardsResponse {
+    status: string;
+    message: string;
+    data: Array<{
+        id: number;
+        frontCard: string;
+        backCard: string;
+        imageUrl?: string;
+        cardStatus?: 'NEW' | 'LEARNING' | 'KNOWN';
+    }>;
     metadata: Record<string, never>;
 }

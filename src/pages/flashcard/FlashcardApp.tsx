@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
-import { useDeleteCard, useFlashcardDetail, useUpdateCard } from '@/hooks/useFlashcards';
+import { useDeleteCard, useFlashcardDetail, useUpdateCard, useDeleteFlashcard } from '@/hooks/useFlashcards';
 import HomeView from './components/HomeView';
 import StudyView from './components/StudyView';
 import ResultsView from './components/ResultsView';
 import MatchingView from './components/MatchingView';
 import FlashcardHeader from './components/FlashcardHeader';
 import type { Card } from '@/services/types/flashcard.types';
+import { useNavigate } from 'react-router-dom';
 
 // Types
 type ViewMode = 'home' | 'study' | 'matching' | 'results';
@@ -22,6 +23,8 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
     const [studiedCards, setStudiedCards] = useState<Set<number>>(new Set());
     const updateCardMutation = useUpdateCard();
     const deleteCardMutation = useDeleteCard();
+    const deleteFlashcardMutation = useDeleteFlashcard();
+    const navigate = useNavigate();
 
     // Fetch flashcard data from API
     const { data, isLoading, isError, error } = useFlashcardDetail(
@@ -149,6 +152,21 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
         }
     };
 
+    const handleDeleteFlashcard = async () => {
+        try {
+            await deleteFlashcardMutation.mutateAsync({
+                setId: Number(setId),
+                flashcardId: Number(flashcardId)
+            });
+
+            // Navigate to set page after successful deletion
+            navigate(`/sets/${setId}`);
+        } catch (error) {
+            console.error('Error deleting flashcard:', error);
+            alert('Failed to delete flashcard. Please try again.');
+        }
+    };
+
     return (
         <div>
             <FlashcardHeader setId={Number(setId)} title={title} description={description} />
@@ -168,7 +186,9 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
                     onNext={handleNext}
                     onUpdateCard={handleUpdateCard}
                     onDeleteCard={handleDeleteCard}
+                    onDeleteFlashcard={handleDeleteFlashcard}
                     isUpdating={updateCardMutation.isPending}
+                    isDeletingFlashcard={deleteFlashcardMutation.isPending}
                 />
             )}
 

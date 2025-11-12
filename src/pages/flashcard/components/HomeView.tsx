@@ -30,11 +30,14 @@ interface HomeViewProps {
     }) => void;
     onDeleteCard: (cardId: number) => void;
     isUpdating?: boolean;
+    onDeleteFlashcard?: () => void;
+    isDeletingFlashcard?: boolean;
 }
 
 export default function HomeView({
     setId,
     flashcards,
+    flashcardId,
     onCardClick,
     onStudy,
     onMatching,
@@ -45,6 +48,7 @@ export default function HomeView({
     onNext,
     onUpdateCard,
     onDeleteCard,
+    onDeleteFlashcard,
     isUpdating = false
 }: HomeViewProps) {
     const navigate = useNavigate();
@@ -87,15 +91,24 @@ export default function HomeView({
         setShowMenu(!showMenu);
     };
 
-    const handleDelete = (e: React.MouseEvent) => {
+    const handleDelete = async (e: React.MouseEvent) => {
         e.stopPropagation();
         setShowMenu(false);
+
+        const confirmed = window.confirm(
+            'Are you sure you want to delete this flashcard set? This action cannot be undone.'
+        );
+
+        if (confirmed && onDeleteFlashcard) {
+            onDeleteFlashcard();
+        }
     };
 
     const handleUpdate = (e: React.MouseEvent) => {
-        navigate(`/sets/${setId}/flashcards/update/${currentCardIndex}`);
         e.stopPropagation();
         setShowMenu(false);
+        // Navigate to update page
+        navigate(`/sets/${setId}/flashcards/${flashcardId}/update`);
     };
 
     const handleEditCard = (card: CardData, e: React.MouseEvent) => {

@@ -1,6 +1,12 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { flashcardAPI } from '@/services/endpoints/flashcard';
-import type { CreateFlashcardManualRequest, UpdateCardRequest } from '@/services/types/flashcard.types';
+import type {
+    CreateFlashcardManualRequest,
+    UpdateCardRequest,
+    AddCardsRequest,
+    DeleteMultipleCardsRequest,
+    UpdateMultipleCardsRequest
+} from '../services/types/flashcard.types';
 
 interface UseFlashcardsParams {
     setId: number;
@@ -132,6 +138,92 @@ export const useDeleteCard = () => {
         },
         onError: (error: any) => {
             console.error('Error deleting card:', error);
+        },
+    });
+};
+
+export const useAddCards = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({
+            setId,
+            flashcardId,
+            cards
+        }: {
+            setId: number;
+            flashcardId: number | string;
+            cards: AddCardsRequest[];
+        }) => flashcardAPI.addCards(setId, flashcardId, cards),
+        onSuccess: (data, variables) => {
+            console.log('Added cards:', data);
+            // Invalidate flashcard detail và list để refetch data mới
+            queryClient.invalidateQueries({
+                queryKey: ['flashcard-detail', variables.setId, variables.flashcardId]
+            });
+            queryClient.invalidateQueries({
+                queryKey: ['flashcards', variables.setId]
+            });
+        },
+        onError: (error: any) => {
+            console.error('Error adding cards:', error);
+        },
+    });
+};
+
+// Hook để xóa nhiều cards cùng lúc
+export const useDeleteMultipleCards = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({
+            setId,
+            flashcardId,
+            data
+        }: {
+            setId: number;
+            flashcardId: number | string;
+            data: DeleteMultipleCardsRequest;
+        }) => flashcardAPI.deleteMultipleCards(setId, flashcardId, data),
+        onSuccess: (data, variables) => {
+            console.log('Deleted multiple cards:', data);
+            // Invalidate flashcard detail và list để refetch data mới
+            queryClient.invalidateQueries({
+                queryKey: ['flashcard-detail', variables.setId, variables.flashcardId]
+            });
+            queryClient.invalidateQueries({
+                queryKey: ['flashcards', variables.setId]
+            });
+        },
+        onError: (error: any) => {
+            console.error('Error deleting multiple cards:', error);
+        },
+    });
+};
+
+// Hook để update nhiều cards cùng lúc
+export const useUpdateMultipleCards = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({
+            setId,
+            flashcardId,
+            cards
+        }: {
+            setId: number;
+            flashcardId: number | string;
+            cards: UpdateMultipleCardsRequest[];
+        }) => flashcardAPI.updateMultipleCards(setId, flashcardId, cards),
+        onSuccess: (data, variables) => {
+            console.log('Updated multiple cards:', data);
+            // Invalidate flashcard detail để refetch data mới
+            queryClient.invalidateQueries({
+                queryKey: ['flashcard-detail', variables.setId, variables.flashcardId]
+            });
+        },
+        onError: (error: any) => {
+            console.error('Error updating multiple cards:', error);
         },
     });
 };

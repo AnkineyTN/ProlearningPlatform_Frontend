@@ -28,17 +28,17 @@ function TextEditorWrapper() {
 
 function FlashcardAppWrapper() {
     const { setId, flashcardId } = useParams();
-    return <FlashcardApp flashcardId={flashcardId ?? ''} setId={Number(setId) ?? ''} />;
+    return <FlashcardApp flashcardId={flashcardId ?? ''} setId={Number(setId) ?? 0} />;
 }
 
 function FlashcardEditorWrapper() {
     const { setId } = useParams();
-    return <FlashcardEditor setId={Number(setId) ?? ''} />;
+    return <FlashcardEditor setId={Number(setId) ?? 0} />;
 }
 
 function FlashcardUpdateWrapper() {
     const { setId, flashcardId } = useParams();
-    return <FlashcardEditor setId={Number(setId) ?? ''} flashcardId={Number(flashcardId) ?? ''} />;
+    return <FlashcardEditor setId={Number(setId) ?? 0} flashcardId={Number(flashcardId) ?? 0} />;
 }
 
 export const routeConfig: RouteObject[] = [
@@ -89,10 +89,12 @@ export const routeConfig: RouteObject[] = [
                 element: <FlashcardEditorWrapper />
             },
             {
-                path: 'sets/:setId/flashcards/update/:flashcardId',
+                // Route để UPDATE flashcard (phải đặt trước route detail)
+                path: 'sets/:setId/flashcards/:flashcardId/update',
                 element: <FlashcardUpdateWrapper />
             },
             {
+                // Route để VIEW flashcard detail
                 path: 'sets/:setId/flashcards/:flashcardId',
                 element: <FlashcardAppWrapper />
             },
