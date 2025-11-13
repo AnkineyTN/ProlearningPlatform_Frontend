@@ -6,6 +6,7 @@ interface UploadedFile {
     fileUrl: string;
     extension: string;
     publicId: string;
+    content: string;
 }
 
 export const useFileManagement = ({
@@ -24,7 +25,7 @@ export const useFileManagement = ({
     const [isUploading, setIsUploading] = useState<boolean>(false);
 
     const selectedFile = useMemo(() => {
-        return uploadedFilesList.find(f => f.id === selectedFileId) || null;
+        return uploadedFilesList.find(f => f.id === selectedFileId);
     }, [uploadedFilesList, selectedFileId]);
 
     const handleFileUpload = async (file: File) => {

@@ -1,23 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { Document, Page, pdfjs } from 'react-pdf';
 import { File, X, Sparkles, Check, Loader2 } from 'lucide-react';
-import { Document, Page } from 'react-pdf';
 import { Button } from '@/components/ui/button';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+
+// Setup worker
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
+
+interface UploadedFile {
+    id: number;
+    fileName: string;
+    fileUrl: string;
+    extension: string;
+    publicId: string;
+    content: string;
+}
 
 interface FileSidebarProps {
     show: boolean;
-    file: {
-        id: number;
-        fileName: string;
-        fileUrl: string;
-        extension: string;
-    } | null;
+    file: UploadedFile | null;
     summary: string;
     isSummarizing: boolean;
     onClose: () => void;
     onSummarize: () => void;
     onApplySummary: () => void;
     onRegenerateSummary: () => void;
-    onTextSelected: (text: string) => void;
+    onTextSelected?: (text: string) => void;
 }
 
 const FileSidebar: React.FC<FileSidebarProps> = ({
@@ -37,6 +46,10 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
     const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
         setNumPages(numPages);
     };
+
+    const memoizedFile = useMemo(() => {
+        return file?.fileUrl ? { url: file.fileUrl } : undefined;
+    }, [file?.fileUrl]);
 
     const handleTextSelection = () => {
         const selection = window.getSelection();
@@ -78,14 +91,12 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
             {/* File Preview/Content */}
             <div className="flex-1 overflow-y-auto" onMouseUp={handleTextSelection}>
                 {file.extension === 'pdf' ? (
-                    <div className="h-full p-4">
+                    <div className="max-h-[calc(100vh-225px)] p-4 overflow-auto">
                         <Document
-                            file={{
-                                url: file.fileUrl,
-                            }}
+                            file={memoizedFile}
                             onLoadSuccess={onDocumentLoadSuccess}
                             onLoadError={(error) => console.error('PDF load error:', error)}
-                            className="flex flex-col items-center"
+                            className="flex flex-col items-center gap-4"
                             loading={
                                 <div className="flex items-center justify-center p-8">
                                     <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
@@ -106,13 +117,27 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
                                 </div>
                             }
                         >
-                            <Page
-                                pageNumber={pageNumber}
-                                renderTextLayer={true}
-                                renderAnnotationLayer={true}
-                                className="border border-gray-200 rounded shadow-sm"
-                                width={Math.min(window.innerWidth * 0.35, 700)}
-                            />
+                            {/* Render all pages */}
+                            {Array.from(new Array(numPages), (index) => (
+                                <div key={`page_${index + 1}`} className="mb-4">
+                                    <Page
+                                        pageNumber={index + 1}
+                                        renderTextLayer={true}
+                                        renderAnnotationLayer={true}
+                                        className="border border-gray-200 rounded shadow-sm"
+                                        width={Math.min(window.innerWidth * 0.35, 700)}
+                                        loading={
+                                            <div className="flex items-center justify-center p-4 border border-gray-200 rounded">
+                                                <Loader2 className="w-6 h-6 animate-spin text-purple-600" />
+                                            </div>
+                                        }
+                                    />
+                                    {/* Page number label */}
+                                    <p className="text-center text-xs text-gray-500 mt-2">
+                                        Page {index + 1} of {numPages}
+                                    </p>
+                                </div>
+                            ))}
                         </Document>
 
                         {numPages > 1 && (
@@ -150,11 +175,12 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
                             Open in new tab →
                         </a>
                     </div>
-                )}
-            </div>
+                )
+                }
+            </div >
 
             {/* Summary Section */}
-            <div className="border-t border-ring p-4 flex-shrink-0">
+            < div className="border-t border-ring p-4 flex-shrink-0" >
                 {!summary ? (
                     <Button
                         className="w-full gap-2 bg-purple-600 hover:bg-purple-700 cursor-pointer text-white"
@@ -203,8 +229,8 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
                         </div>
                     </div>
                 )}
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 
