@@ -33,7 +33,7 @@ export default function HeaderSetDetails() {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col justify-between px-4 gap-4">
+            <div className="flex flex-col items-center justify-between px-4 gap-4">
                 <ModeToggle />
                 <LanguageToggle />
             </div>

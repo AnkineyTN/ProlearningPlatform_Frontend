@@ -86,7 +86,7 @@ export default function FlipFlashcard({
                 <Button
                     variant="outline"
                     size="lg"
-                    className='cursor-pointer px-8'
+                    className='cursor-pointer px-8 bg-card'
                     onClick={onPrevious}
                     disabled={currentCardIndex === 0}
                 >
@@ -94,7 +94,7 @@ export default function FlipFlashcard({
                     Previous
                 </Button>
 
-                <Button variant="outline" size="lg" className='cursor-pointer' onClick={onFlip}>
+                <Button variant="outline" size="lg" className='cursor-pointer bg-card' onClick={onFlip}>
                     <Shuffle className="w-5 h-5" />
                 </Button>
 

@@ -27,7 +27,7 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
     const navigate = useNavigate();
 
     // Fetch flashcard data from API
-    const { data, isLoading, isError, error } = useFlashcardDetail(
+    const { data, isLoading, isError, error, refetch } = useFlashcardDetail(
         Number(setId),
         Number(flashcardId)
     );
@@ -41,7 +41,10 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
 
     const title = useMemo(() => data?.data.title || 'Flashcard Set', [data]);
     const description = useMemo(() => data?.data.description || '', [data]);
-    const flashcards: Array<Card> = useMemo(() => data?.data.cards || [], [data]);
+    const flashcards: Array<Card> = useMemo(() => {
+        const cards = data?.data.cards || [];
+        return [...cards].sort((a, b) => a.id - b.id);
+    }, [data]);
 
     const handleNext = () => {
         if (currentCardIndex < flashcards.length - 1) {
@@ -132,7 +135,7 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
                 cardId: data.id,
                 data
             });
-            // Success notification
+            await refetch();
             console.log('Card updated successfully');
         } catch (error) {
             console.error('Failed to update card:', error);
@@ -146,6 +149,7 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
                 flashcardId,
                 cardId
             });
+            await refetch();
             console.log('Card deleted successfully');
         } catch (error) {
             console.error('Failed to delete card:', error);

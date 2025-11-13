@@ -69,8 +69,7 @@ export default function FlashcardListPage({ setId, onUpdate, onDelete }: Flashca
 
     const { data: flashcards, metadata } = data;
     const totalPages = metadata.totalPages;
-    const displayPage = currentPage + 1; // Display 1-based page number
-
+    const displayPage = currentPage + 1;
     return (
         <div>
             {/* Flashcards Grid */}
@@ -81,7 +80,7 @@ export default function FlashcardListPage({ setId, onUpdate, onDelete }: Flashca
                         flashcard={{
                             id: flashcard.id,
                             title: flashcard.title,
-                            description: flashcard.description,
+                            description: flashcard.description || 'No description available...',
                             time: getTimeAgo(flashcard.lastStudy),
                             created_at: new Date(flashcard.lastStudy).toLocaleDateString('en-GB', {
                                 day: '2-digit',

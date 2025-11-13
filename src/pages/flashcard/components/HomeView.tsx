@@ -217,7 +217,7 @@ export default function HomeView({
             <div className="max-w-4xl mx-auto p-6">
                 <div className="flex gap-2 mb-6">
                     <Button
-                        variant="outline"
+                        variant="default"
                         onClick={onStudy}
                         className="gap-2 cursor-pointer"
                     >
@@ -225,7 +225,7 @@ export default function HomeView({
                         Study
                     </Button>
                     <Button
-                        variant="outline"
+                        variant="default"
                         onClick={onMatching}
                         className="gap-2 cursor-pointer"
                     >
@@ -305,7 +305,7 @@ export default function HomeView({
                                 {editingCardId === card.id ? (
                                     // Edit Mode
                                     <div className="space-y-4 flex flex-col justify-end" onClick={(e) => e.stopPropagation()}>
-                                        <div className="flex items-center gap-4">
+                                        <div className="flex items-end gap-4">
                                             <div className="flex-1 max-w-[250px]">
                                                 <label className="text-sm font-medium text-muted-foreground mb-2 block">
                                                     Term

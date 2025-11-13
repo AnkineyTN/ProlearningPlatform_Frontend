@@ -27,14 +27,14 @@ export function LanguageToggle() {
                 <Button
                     variant="ghost"
                     size="default"
-                    className="rounded-full hover:bg-accent border-2 shadow-lg"
+                    className="rounded-full bg-card w-16 border-2 shadow-lg"
                 >
                     <span>{currentLanguage?.flag}</span>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
                 align="end"
-                className="w-46 mt-2 rounded-xl shadow-2xl border-2"
+                className="w-46 mt-2 bg-card rounded-xl shadow-2xl border-2"
             >
                 <div className="space-y-1">
                     {languages.map((lang) => (
