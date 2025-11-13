@@ -81,7 +81,7 @@ export const flashcardAPI = {
         flashcardId: number | string,
         cards: AddCardsRequest[]
     ): Promise<AxiosResponse<AddCardsResponse>> =>
-        api.patch(`/sets/${setId}/flashcards/${flashcardId}/cards`, cards),
+        api.post(`/sets/${setId}/flashcards/${flashcardId}/cards`, cards),
 
     // Delete multiple cards by IDs
     deleteMultipleCards: (
@@ -97,5 +97,5 @@ export const flashcardAPI = {
         flashcardId: number | string,
         cards: UpdateMultipleCardsRequest[]
     ): Promise<AxiosResponse<UpdateMultipleCardsResponse>> =>
-        api.post(`/sets/${setId}/flashcards/${flashcardId}/cards`, cards),
+        api.patch(`/sets/${setId}/flashcards/${flashcardId}/cards`, cards),
 };

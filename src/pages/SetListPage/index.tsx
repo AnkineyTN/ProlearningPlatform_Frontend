@@ -15,7 +15,6 @@ const TABS = [
     { id: 'progress', label: 'In progress', count: 11 },
 ] as const;
 
-const INITIAL_PAGE = 0;
 const PAGE_SIZE = 4;
 const SORT_CONFIG = [{ property: 'id', direction: 'ASC' }];
 
@@ -38,7 +37,8 @@ const mapSetData = (items: any[]): Set[] =>
 
 export default function SetListPage() {
     const [activeTab, setActiveTab] = useState('all');
-    const [currentPage, setCurrentPage] = useState(1);
+    // Start from 0 to match API (0-indexed)
+    const [currentPage, setCurrentPage] = useState(0);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [selectedSet, setSelectedSet] = useState<Set | null>(null);
@@ -48,14 +48,15 @@ export default function SetListPage() {
     const deleteSetMutation = useDeleteSet();
     const updateSetMutation = useUpdateSet();
 
+    // Fetch data based on currentPage state
     const { data: setData } = useSetData({
-        page: INITIAL_PAGE,
+        page: currentPage,
         size: PAGE_SIZE,
         sort: SORT_CONFIG,
     });
 
     const sets = mapSetData(setData?.data.data || []);
-    const totalPages = setData?.data.size || 5;
+    const totalPages = setData?.data.size || 1;
 
     // Handlers
     const handleCreateSet = async (data: any) => {
@@ -116,8 +117,8 @@ export default function SetListPage() {
     const handlePageChange = (direction: 'prev' | 'next') => {
         setCurrentPage(prev =>
             direction === 'prev'
-                ? Math.max(1, prev - 1)
-                : Math.min(totalPages, prev + 1)
+                ? Math.max(0, prev - 1)
+                : Math.min(totalPages - 1, prev + 1)
         );
     };
 
@@ -167,21 +168,23 @@ export default function SetListPage() {
 
                 <div className="flex justify-center items-center gap-4">
                     <Button
+                        variant="ghost"
                         onClick={() => handlePageChange('prev')}
-                        disabled={currentPage === 1}
-                        className="p-2 rounded-lg hover:bg-card-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        disabled={currentPage === 0}
+                        className="p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                         <ChevronLeft className="w-5 h-5 text-muted-foreground" />
                     </Button>
 
                     <span className="font-medium">
-                        {currentPage}/{totalPages}
+                        {currentPage + 1}/{totalPages}
                     </span>
 
                     <Button
+                        variant="ghost"
                         onClick={() => handlePageChange('next')}
-                        disabled={currentPage === totalPages}
-                        className="p-2 rounded-lg hover:bg-card-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        disabled={currentPage === totalPages - 1}
+                        className="p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                         <ChevronRight className="w-5 h-5 text-muted-foreground" />
                     </Button>
@@ -209,7 +212,7 @@ export default function SetListPage() {
                     initialData={{
                         title: selectedSet.title,
                         description: selectedSet.description,
-                        privacy: 'PUBLIC', // hoặc lấy từ set nếu có field này
+                        privacy: 'PUBLIC',
                     }}
                 />
             )}

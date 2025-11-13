@@ -20,7 +20,6 @@ interface FlashcardCard {
     definition: string;
     imageUrl?: string;
     assetId?: number;
-    // staged action: CREATE for new local cards, UPDATE for edited existing cards, DELETE when marked for deletion
     _action?: 'CREATE' | 'UPDATE' | 'DELETE' | null;
 }
 
@@ -34,7 +33,6 @@ export default function FlashcardEditor({
     const location = useLocation();
     const navigate = useNavigate();
 
-    // Xác định mode: Create hoặc Update
     const isUpdateMode = !!flashcardId;
 
     const createFlashcardMutation = useCreateFlashcardManual();
@@ -42,29 +40,26 @@ export default function FlashcardEditor({
     const updateCardsMutation = useUpdateMultipleCards();
     const deleteCardsMutation = useDeleteMultipleCards();
 
-    // Fetch data nếu là Update mode
     const { data: flashcardData, isLoading } = useFlashcardDetail(
         setId,
         flashcardId || 0,
     );
+    console.log("🚀 ~ FlashcardEditor ~ data:", flashcardData)
 
-    // State từ location (cho Create mode)
     const { title: locationTitle, description: locationDescription, privacy } = location.state || {};
 
-    // State cho title và description
     const [title, setTitle] = useState(locationTitle || '');
     const [description, setDescription] = useState(locationDescription || '');
 
     const [cards, setCards] = useState<FlashcardCard[]>([
-        { id: crypto.randomUUID(), term: '', definition: '', assetId: undefined, imageUrl: '', _action: 'CREATE' as 'CREATE' }
+        { id: crypto.randomUUID(), term: '', definition: '', imageUrl: '', assetId: undefined, _action: 'CREATE' as 'CREATE' }
     ]);
+    console.log("🚀 ~ FlashcardEditor ~ cards:", cards)
 
     const [draggedCardId, setDraggedCardId] = useState<string | null>(null);
 
-    // State cho Import Modal
     const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
-    // Load data khi ở Update mode
     useEffect(() => {
         if (isUpdateMode && flashcardData?.data) {
             const flashcard = flashcardData.data;
@@ -72,7 +67,6 @@ export default function FlashcardEditor({
             setDescription(flashcard.description || '');
 
             if (flashcard.cards && flashcard.cards.length > 0) {
-                // initialize cards and set _action = null (no staged change yet)
                 setCards(flashcard.cards.map((card: any) => ({
                     id: card.id,
                     term: card.frontCard || '',
@@ -85,7 +79,6 @@ export default function FlashcardEditor({
         }
     }, [flashcardData, isUpdateMode]);
 
-    // Validate route cho Create mode
     useEffect(() => {
         if (!isUpdateMode && (!locationTitle || !setId)) {
             navigate(`/sets/${setId}`);
@@ -97,8 +90,6 @@ export default function FlashcardEditor({
     };
 
     const removeCard = (id: number | string) => {
-        // If removing a new (local) card (id is string uuid) -> remove from array
-        // If removing an existing card (id is number) -> mark as DELETE so Save All can process
         if (cards.length <= 1) return;
 
                 setCards(prev => prev.map(card => {
@@ -106,7 +97,6 @@ export default function FlashcardEditor({
                 if (typeof id === 'number') {
                     return { ...card, _action: 'DELETE' as 'DELETE' };
                 }
-                // signal removal for local-created card by returning null which will be filtered out
                 return null as any;
             }
             return card;
@@ -116,7 +106,7 @@ export default function FlashcardEditor({
     const updateCard = (
         id: number | string,
         field: 'term' | 'definition' | 'imageUrl' | 'assetId',
-        value?: string
+        value?: string | number
     ) => {
         setCards(prevCards =>
             prevCards.map(card => {
@@ -124,7 +114,6 @@ export default function FlashcardEditor({
 
                 const updated = { ...card, [field]: value } as FlashcardCard;
 
-                // If this card was created locally, keep CREATE. Otherwise mark as UPDATE (unless it's DELETE)
                 if (card._action === 'CREATE') {
                     updated._action = 'CREATE' as 'CREATE';
                 } else if (card._action !== 'DELETE') {
@@ -161,28 +150,23 @@ export default function FlashcardEditor({
         setDraggedCardId(null);
     };
 
-    // Handler cho Import Modal
     const handleImport = (importedCards: { term: string; definition: string }[]) => {
         const newCards = importedCards.map(card => ({
             id: crypto.randomUUID(),
             term: card.term,
             definition: card.definition,
-            imageUrl: '',
             assetId: undefined,
             _action: 'CREATE' as 'CREATE'
         }));
 
-        // Nếu chỉ có 1 card rỗng, thay thế nó
         if (cards.length === 1 && !cards[0].term && !cards[0].definition) {
             setCards(newCards);
         } else {
-            // Ngược lại, thêm vào cuối
             setCards([...cards, ...newCards]);
         }
     };
 
     const handleSave = async () => {
-        // Validate
         const validCards = cards.filter(card => card.term.trim() && card.definition.trim());
 
         if (validCards.length === 0) {
@@ -192,37 +176,41 @@ export default function FlashcardEditor({
 
         try {
             if (isUpdateMode) {
-                // UPDATE MODE - use staged _action flags to decide which API calls to make
-                const cardsToCreate = cards.filter(c => c._action === 'CREATE' && c.term.trim() && c.definition.trim());
-                const cardsToUpdate = cards.filter(c => c._action === 'UPDATE' && typeof c.id === 'number' && c.term.trim() && c.definition.trim());
-                const cardsToDelete = cards.filter(c => c._action === 'DELETE' && typeof c.id === 'number').map(c => c.id as number);
+                const cardsToCreate = cards.filter(
+                    c => c._action === 'CREATE' && typeof c.id === 'string'
+                );
+                const cardsToUpdate = cards.filter(
+                    c => c._action === 'UPDATE' && typeof c.id === 'number'
+                );
+                const cardsToDelete = cards
+                    .filter(c => c._action === 'DELETE' && typeof c.id === 'number')
+                    .map(c => c.id as number);
 
                 if (cardsToUpdate.length > 0) {
                     await updateCardsMutation.mutateAsync({
-                        setId: Number(setId),
+                        setId,
                         flashcardId: flashcardId!,
-                        cards: cardsToUpdate.map(card => ({
-                            id: card.id as number,
-                            frontCard: card.term,
-                            backCard: card.definition,
-                            imageUrl: card.imageUrl || undefined,
-                            imageAssetId: card.assetId as number | undefined
+                        cards: cardsToUpdate.map(c => ({
+                            id: c.id as number,
+                            frontCard: c.term,
+                            backCard: c.definition,
+                            imageAssetId: c.assetId ? Number(c.assetId) : undefined
                         }))
                     });
                 }
 
                 if (cardsToCreate.length > 0) {
                     await addCardsMutation.mutateAsync({
-                        setId: Number(setId),
+                        setId,
                         flashcardId: flashcardId!,
-                        cards: cardsToCreate.map(card => ({
-                            frontCard: card.term,
-                            backCard: card.definition,
-                            imageUrl: card.imageUrl || undefined,
-                            imageAssetId: card.assetId as number | undefined
+                        cards: cardsToCreate.map(c => ({
+                            frontCard: c.term,
+                            backCard: c.definition,
+                            imageAssetId: c.assetId ? Number(c.assetId) : undefined
                         }))
                     });
                 }
+
 
                 if (cardsToDelete.length > 0) {
                     await deleteCardsMutation.mutateAsync({
@@ -232,11 +220,9 @@ export default function FlashcardEditor({
                     });
                 }
 
-                // Navigate back to flashcard detail
                 navigate(`/sets/${setId}/flashcards/${flashcardId}`);
             } else {
-                // CREATE MODE - send only cards that are not deleted
-                await createFlashcardMutation.mutateAsync({
+                const res = await createFlashcardMutation.mutateAsync({
                     setId: Number(setId),
                     data: {
                         title,
@@ -247,14 +233,12 @@ export default function FlashcardEditor({
                             .map(card => ({
                                 frontCard: card.term,
                                 backCard: card.definition,
-                                imageUrl: card.imageUrl || undefined,
                                 imageAssetId: card.assetId as number | undefined
                             })) as any)
                     }
                 });
 
-                // Navigate back to set page
-                navigate(`/sets/${setId}`);
+                navigate(`/sets/${setId}/flashcards/${res.data.data.id}`);
             }
         } catch (error) {
             console.error('Error saving flashcard:', error);

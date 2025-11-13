@@ -12,7 +12,7 @@ export interface FlashcardItemProps {
     onDragOver: (e: React.DragEvent, id: string) => void;
     onDragEnd: () => void;
     isDragging: boolean;
-    onUpdate: (id: number | string, field: 'term' | 'definition' | 'imageUrl' | 'assetId', value?: string) => void;
+    onUpdate: (id: number | string, field: 'term' | 'definition' | 'imageUrl' | 'assetId', value?: string | number) => void;
     onDelete: (id: number | string) => void;
     canDelete: boolean;
 }
@@ -20,7 +20,7 @@ export interface FlashcardItemProps {
 export interface FlashcardItemWrapperProps {
     card: FlashcardItem;
     index: number;
-    onUpdate: (id: number | string, field: 'term' | 'definition' | 'imageUrl' | 'assetId', value?: string) => void;
+    onUpdate: (id: number | string, field: 'term' | 'definition' | 'imageUrl' | 'assetId', value?: string | number) => void;
     onDelete: (id: number | string) => void;
     canDelete: boolean;
     onDragStart: (id: number | string) => void;

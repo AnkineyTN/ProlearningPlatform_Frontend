@@ -189,14 +189,14 @@ export default function ImportModal({ isOpen, onClose, onInsert }: ImportModalPr
                                                 <span className="text-sm font-medium text-muted-foreground min-w-[24px]">
                                                     {index + 1}
                                                 </span>
-                                                <div className="flex-1 grid grid-cols-2 gap-4">
-                                                    <div>
+                                                <div className="flex items-end gap-4">
+                                                    <div className='w-[160px]'>
                                                         <Label className="text-xs text-muted-foreground mb-1 block">
                                                             Term
                                                         </Label>
                                                         <p className="text-sm">{card.term}</p>
                                                     </div>
-                                                    <div>
+                                                    <div className="flex-1 border-l pl-6">
                                                         <Label className="text-xs text-muted-foreground mb-1 block">
                                                             Definition
                                                         </Label>

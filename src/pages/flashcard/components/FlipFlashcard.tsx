@@ -6,6 +6,7 @@ interface FlipFlashcardProps {
     flashcards: Array<{
         frontCard: string;
         backCard: string;
+        imageUrl?: string;
     }>;
     currentCardIndex: number;
     onFlip: () => void;
@@ -49,6 +50,13 @@ export default function FlipFlashcard({
                                 <div className="text-sm text-muted-foreground mb-4 uppercase tracking-wide">
                                     Question
                                 </div>
+                                {flashcards[currentCardIndex].imageUrl && (
+                                    <img
+                                        src={flashcards[currentCardIndex].imageUrl}
+                                        alt="Flashcard Image"
+                                        className="max-w-full max-h-50 object-contain rounded"
+                                    />
+                                )}
                                 <p className="text-3xl font-medium leading-relaxed">
                                     {flashcards[currentCardIndex].frontCard}
                                 </p>

@@ -9,6 +9,7 @@ import { useDeleteSet, useUpdateSet } from '@/hooks/useSets';
 import { type UpdateSetPayload } from '@/services/types/set.types';
 import CreateNewModal from '@/components/modals/CreateNewModal';
 import { useTranslation } from 'react-i18next';
+import { useAppSelector } from '@/hooks/redux';
 
 const Dashboard = () => {
     const { t } = useTranslation();
@@ -23,6 +24,7 @@ const Dashboard = () => {
         { label: 'Complete 2 reading exercise', checked: false },
         { label: 'Complete 2 reading exercise', checked: false }
     ]);
+    const { user } = useAppSelector((state) => state.auth);
 
     const page = 0;
     const size = 4;
@@ -146,11 +148,6 @@ const Dashboard = () => {
                                 {t('dashboard.viewAll')} <ChevronRight className="w-4 h-4" />
                             </button>
                         </div>
-                        {/* <div className="grid grid-cols-2 gap-4">
-                            {notes.map((note, idx) => (
-                                <NoteCard key={idx} note={note} onAccess={handleAccessNote} />
-                            ))}
-                        </div> */}
                     </div>
 
                     {/* Right Column */}
@@ -160,8 +157,8 @@ const Dashboard = () => {
                             <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden bg-orange-100">
                                 <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=300&h=300&fit=crop" alt="Profile" className="w-full h-full object-cover" />
                             </div>
-                            <h3 className="font-semibold text-lg">Augusta</h3>
-                            <p className="text-sm text-muted-foreground">augusta@wave.com</p>
+                            <h3 className="font-semibold text-lg">{user?.firstName || 'Unknown User'} {user?.lastName || ''}</h3>
+                            <p className="text-sm text-muted-foreground">{user?.email || 'no-email@example.com'}</p>
                         </div>
 
                         {/* Calendar */}

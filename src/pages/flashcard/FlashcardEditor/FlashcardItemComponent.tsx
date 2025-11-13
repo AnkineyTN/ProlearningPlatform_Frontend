@@ -12,6 +12,7 @@ export default function FlashcardItemComponent({
     onDelete,
     canDelete
 }: FlashcardItemProps) {
+    console.log("🚀 ~ FlashcardItemComponent ~ card:", card)
     const fileInputRef = useRef<HTMLInputElement>(null);
     const uploadImageMutation = useUploadImageFile();
     const handleImageClick = () => {
@@ -33,7 +34,7 @@ export default function FlashcardItemComponent({
         try {
             const result = await uploadImageMutation.mutateAsync(file);
             onUpdate(card.id, 'imageUrl', result.url);
-            onUpdate(card.id, 'assetId', String(result.assetId));
+            onUpdate(card.id, 'assetId', result.assetId);
             fileInputRef.current!.value = '';
         } catch (error) {
             console.error('Upload failed:', error);
@@ -42,10 +43,9 @@ export default function FlashcardItemComponent({
     };
 
     const handleRemoveImage = () => {
-        (onUpdate as any)(card.id, 'imageUrl', null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
+        // onUpdate(card.id, 'imageUrl', '');
+        onUpdate(card.id, 'assetId', undefined);
+        fileInputRef.current!.value = '';
     };
 
     return (
