@@ -9,6 +9,8 @@ import {
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
 
 interface CreateNewModalProps {
     type: string;
@@ -17,37 +19,75 @@ interface CreateNewModalProps {
     onBack?: () => void;
     onSubmit: (data: { title: string; description: string; privacy: string }) => void;
     initialData?: { title: string; description: string; privacy: string };
+    isUpdateMode?: boolean;
 }
 
-export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit, initialData }: CreateNewModalProps) {
+export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit, initialData, isUpdateMode }: CreateNewModalProps) {
     const [title, setTitle] = useState(initialData?.title || '');
     const [description, setDescription] = useState(initialData?.description || '');
     const [privacy, setPrivacy] = useState(initialData?.privacy || 'Public');
+    const [errors, setErrors] = useState<{ titleEmpty?: boolean; titleTooLong?: boolean; privacy?: boolean }>({});
     const { t } = useTranslation();
 
     if (!isOpen) return null;
 
     const handleSubmit = () => {
-        if (title.trim()) {
-            onSubmit({ title, description, privacy });
-            // Reset form
-            setTitle('');
-            setDescription('');
-            setPrivacy('Public');
-            onClose();
+        // Validate fields
+        const newErrors: { titleEmpty?: boolean; titleTooLong?: boolean; privacy?: boolean } = {};
+
+        if (!title.trim()) {
+            newErrors.titleEmpty = true;
         }
+
+        if (title.length >= 100) {
+            newErrors.titleTooLong = true;
+        }
+
+        if (!privacy) {
+            newErrors.privacy = true;
+        }
+
+        // If there are errors, set them and don't submit
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
+        // Submit if validation passes
+        onSubmit({ title, description, privacy });
+
+        // Reset form
+        setTitle('');
+        setDescription('');
+        setPrivacy('Public');
+        setErrors({});
+        onClose();
     };
 
     const handleCancel = () => {
         if (onBack) {
-            // If there's a back handler, use it
             onBack();
         } else {
-            // Otherwise, close and reset
             setTitle('');
             setDescription('');
             setPrivacy('Public');
+            setErrors({});
             onClose();
+        }
+    };
+
+    // Clear error when user starts typing
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.target.value);
+        if (errors.titleEmpty || errors.titleTooLong) {
+            setErrors(prev => ({ ...prev, titleEmpty: false, titleTooLong: false }));
+        }
+    };
+
+    const handlePrivacyChange = (val: string) => {
+        setPrivacy(val);
+        if (errors.privacy) {
+            setErrors(prev => ({ ...prev, privacy: false }));
         }
     };
 
@@ -60,10 +100,10 @@ export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit
             />
 
             {/* Modal */}
-            <div className="relative bg-background rounded-lg shadow-xl w-full max-w-4xl mx-4 p-6">
+            <div className="relative bg-background rounded-lg shadow-xl w-full max-w-xl mx-4 p-6">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold">{t('modal.new')} {type}</h2>
+                    <h2 className="text-2xl font-bold"> {isUpdateMode ? t('modal.update') : t('modal.new')} {type}</h2>
                     <button
                         onClick={handleCancel}
                         className="p-1 hover:bg-card rounded transition-colors cursor-pointer"
@@ -76,30 +116,44 @@ export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit
                 <div className="space-y-4">
                     {/* Set Title */}
                     <div>
-                        <label className="flex items-center gap-2 text-sm font-medium mb-2">
+                        <Label className="flex items-center gap-2 font-medium mb-3">
                             <Heading className="w-4 h-4" />
                             {type} {t('modal.title')}
-                        </label>
-                        <input
+                            <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
                             type="text"
                             value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className="w-full px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-foreground"
-                            placeholder="Enter set title"
+                            onChange={handleTitleChange}
+                            className={`w-full px-3 py-2 border rounded-lg bg-background focus:outline-none focus:ring-2 ${errors.titleEmpty || errors.titleTooLong
+                                    ? 'border-red-500 focus:ring-red-500'
+                                    : 'border-border focus:ring-foreground'
+                                }`}
+                            placeholder={`Enter ${type} title`}
                         />
+                        {errors.titleEmpty && (
+                            <p className="text-red-500 text-sm mt-1">Title is required</p>
+                        )}
+                        {errors.titleTooLong && (
+                            <p className="text-red-500 text-sm mt-1">Title must be less than 100 characters</p>
+                        )}
                     </div>
 
                     {/* Privacy */}
                     <div>
-                        <label className="flex items-center gap-2 text-sm font-medium mb-2">
+                        <Label className="flex items-center gap-2 font-medium mb-3">
                             <Lock className="w-4 h-4" />
                             {t('modal.privacy')}
-                        </label>
+                            <span className="text-red-500">*</span>
+                        </Label>
                         <Select
                             value={privacy}
-                            onValueChange={(val) => setPrivacy(val)}
+                            onValueChange={handlePrivacyChange}
                         >
-                            <SelectTrigger className="w-full px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-foreground">
+                            <SelectTrigger className={`w-full px-3 py-2 border rounded-lg bg-background focus:outline-none focus:ring-2 ${errors.privacy
+                                    ? 'border-red-500 focus:ring-red-500'
+                                    : 'border-border focus:ring-foreground'
+                                }`}>
                                 <SelectValue placeholder="Select privacy" />
                             </SelectTrigger>
                             <SelectContent>
@@ -108,14 +162,17 @@ export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit
                                 <SelectItem value="Unlisted">👁️ {t('modal.unlisted')}</SelectItem>
                             </SelectContent>
                         </Select>
+                        {errors.privacy && (
+                            <p className="text-red-500 text-sm mt-1">Privacy is required</p>
+                        )}
                     </div>
 
                     {/* Description */}
                     <div>
-                        <label className="flex items-center gap-2 text-sm font-medium mb-2">
+                        <Label className="flex items-center gap-2 font-medium mb-3">
                             <AlignJustify className="w-4 h-4" />
-                            <span>{t('modal.description')}</span> <span className="text-muted-foreground">({t('modal.optional')})</span>
-                        </label>
+                            <span>{t('modal.description')}</span>
+                        </Label>
                         <textarea
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
@@ -137,10 +194,9 @@ export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit
                     </Button>
                     <Button
                         onClick={handleSubmit}
-                        disabled={!title.trim()}
-                        className="px-6 py-2 bg-foreground text-background rounded-lg cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-6 py-2 bg-foreground text-background rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
                     >
-                        {t('modal.create')}
+                        {isUpdateMode ? t('modal.update') : t('modal.create')}
                     </Button>
                 </div>
             </div>

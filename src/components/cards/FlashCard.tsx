@@ -2,6 +2,7 @@ import { SwatchBook, MoreVertical, Clock } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Edit, Trash2 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 
 export interface Flashcard {
     id: number | string;
@@ -22,6 +23,7 @@ interface FlashCardProps {
 export default function FlashCard({ flashcard, onAccess, onUpdate, onDelete }: FlashCardProps) {
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -47,11 +49,12 @@ export default function FlashCard({ flashcard, onAccess, onUpdate, onDelete }: F
     const handleDelete = (e: React.MouseEvent) => {
         e.stopPropagation();
         setShowMenu(false);
-        if (onDelete) {
-            if (window.confirm(`Are you sure you want to delete "${flashcard.title}"?`)) {
-                onDelete(flashcard.id);
-            }
-        }
+        setShowDeleteDialog(true);
+    };
+
+    const handleConfirmDelete = () => {
+        onDelete(flashcard.id);
+        setShowDeleteDialog(false);
     };
 
     const handleUpdate = (e: React.MouseEvent) => {
@@ -63,7 +66,9 @@ export default function FlashCard({ flashcard, onAccess, onUpdate, onDelete }: F
     };
 
     const handleClick = () => {
-        onAccess(flashcard.id);
+        if (!showMenu && !showDeleteDialog) {
+            onAccess(flashcard.id);
+        }
     }
 
     return (
@@ -109,6 +114,13 @@ export default function FlashCard({ flashcard, onAccess, onUpdate, onDelete }: F
                 </span>
                 <span>{flashcard.created_at}</span>
             </div>
+            <DeleteConfirmDialog
+                isOpen={showDeleteDialog}
+                onClose={() => setShowDeleteDialog(false)}
+                onConfirm={handleConfirmDelete}
+                title="Delete Flashcard"
+                itemName={`"${flashcard.title}"`}
+            />
         </div>
     );
 };

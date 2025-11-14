@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { BookOpen, MoreVertical, Clock, FileText, Headphones, Trash2, Edit } from 'lucide-react';
 import { Button } from '../ui/button';
-
+import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 export interface Set {
     id: number;
     title: string;
@@ -28,6 +28,7 @@ interface SetCardProps {
 export default function SetCard({ set, onAccess, onDelete, onUpdate }: SetCardProps) {
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -50,14 +51,17 @@ export default function SetCard({ set, onAccess, onDelete, onUpdate }: SetCardPr
         setShowMenu(!showMenu);
     };
 
-    const handleDelete = (e: React.MouseEvent) => {
+    const handleDeleteClick = (e: React.MouseEvent) => {
         e.stopPropagation();
         setShowMenu(false);
+        setShowDeleteDialog(true);
+    };
+
+    const handleConfirmDelete = () => {
         if (onDelete) {
-            if (window.confirm(`Are you sure you want to delete "${set.title}"?`)) {
-                onDelete(set.id);
-            }
+            onDelete(set.id);
         }
+        setShowDeleteDialog(false);
     };
 
     const handleUpdate = (e: React.MouseEvent) => {
@@ -69,7 +73,7 @@ export default function SetCard({ set, onAccess, onDelete, onUpdate }: SetCardPr
     };
 
     const handleCardClick = () => {
-        if (!showMenu) {
+        if (!showMenu && !showDeleteDialog) {
             onAccess(set.id);
         }
     };
@@ -106,7 +110,7 @@ export default function SetCard({ set, onAccess, onDelete, onUpdate }: SetCardPr
                             </Button>
                             <Button
                                 variant="ghost"
-                                onClick={handleDelete}
+                                onClick={handleDeleteClick}
                                 className="w-full text-center text-destructive transition-colors flex items-center gap-2"
                             >
                                 <Trash2 className="w-4 h-4" />
@@ -132,7 +136,7 @@ export default function SetCard({ set, onAccess, onDelete, onUpdate }: SetCardPr
                 </span>
                 <span className="flex items-center gap-1">
                     <FileText className="w-3 h-3" />
-                    {typeof set.video === 'number' ? `${set.video} tài liệu` : set.video}
+                    {set.tests} tests
                 </span>
             </div>
 
@@ -149,6 +153,14 @@ export default function SetCard({ set, onAccess, onDelete, onUpdate }: SetCardPr
                 </span>
                 <span>{set.date}</span>
             </div>
+            {/* Delete Confirmation Dialog */}
+            <DeleteConfirmDialog
+                isOpen={showDeleteDialog}
+                onClose={() => setShowDeleteDialog(false)}
+                onConfirm={handleConfirmDelete}
+                title="Delete Set"
+                itemName={`"${set.title}"`}
+            />
         </div>
     );
 }

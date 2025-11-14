@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Edit, Trash2 } from 'lucide-react';
 import { FileText, MoreVertical, Clock } from 'lucide-react';
 import { Button } from '../ui/button';
+import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 
 export interface Note {
     id: number;
@@ -22,6 +23,7 @@ interface NoteCardProps {
 export default function NoteCard({ note, onAccess, onDelete, onUpdate }: NoteCardProps) {
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -44,14 +46,17 @@ export default function NoteCard({ note, onAccess, onDelete, onUpdate }: NoteCar
         setShowMenu(!showMenu);
     };
 
-    const handleDelete = (e: React.MouseEvent) => {
+    const handleDeleteClick = (e: React.MouseEvent) => {
         e.stopPropagation();
         setShowMenu(false);
+        setShowDeleteDialog(true);
+    };
+
+    const handleConfirmDelete = () => {
         if (onDelete) {
-            if (window.confirm(`Are you sure you want to delete "${note.title}"?`)) {
-                onDelete(note.id);
-            }
+            onDelete(note.id);
         }
+        setShowDeleteDialog(false);
     };
 
     const handleUpdate = (e: React.MouseEvent) => {
@@ -63,7 +68,7 @@ export default function NoteCard({ note, onAccess, onDelete, onUpdate }: NoteCar
     };
 
     const handleClick = () => {
-        if (!showMenu) {
+        if (!showMenu && !showDeleteDialog) {
             onAccess(note.id);
         }
     };
@@ -96,7 +101,7 @@ export default function NoteCard({ note, onAccess, onDelete, onUpdate }: NoteCar
                             </Button>
                             <Button
                                 variant="ghost"
-                                onClick={handleDelete}
+                                onClick={handleDeleteClick}
                                 className="w-full text-center text-destructive transition-colors flex items-center gap-2"
                             >
                                 <Trash2 className="w-4 h-4" />
@@ -114,6 +119,13 @@ export default function NoteCard({ note, onAccess, onDelete, onUpdate }: NoteCar
                 </span>
                 <span>{note.created_at}</span>
             </div>
+            <DeleteConfirmDialog
+                isOpen={showDeleteDialog}
+                onClose={() => setShowDeleteDialog(false)}
+                onConfirm={handleConfirmDelete}
+                title="Delete Note"
+                itemName={`"${note.title}"`}
+            />
         </div>
     );
 };

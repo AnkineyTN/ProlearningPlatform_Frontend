@@ -8,6 +8,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Card as CardData } from "@/services/types/flashcard.types";
 import { useUploadImageFile } from '@/hooks/useImageUpload';
+import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 
 interface HomeViewProps {
     setId: number;
@@ -67,7 +68,8 @@ export default function HomeView({
     });
     const menuRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [showDeleteCardDialog, setShowDeleteCardDialog] = useState(false);
     const uploadImageMutation = useUploadImageFile();
 
     useEffect(() => {
@@ -91,17 +93,17 @@ export default function HomeView({
         setShowMenu(!showMenu);
     };
 
-    const handleDelete = async (e: React.MouseEvent) => {
+    const handleDeleteFlashcard = async (e: React.MouseEvent) => {
         e.stopPropagation();
         setShowMenu(false);
+        setShowDeleteDialog(true);
+    };
 
-        const confirmed = window.confirm(
-            'Are you sure you want to delete this flashcard set? This action cannot be undone.'
-        );
-
-        if (confirmed && onDeleteFlashcard) {
+    const handleConfirmDeleteFlashcard = () => {
+        if (onDeleteFlashcard) {
             onDeleteFlashcard();
         }
+        setShowDeleteDialog(false);
     };
 
     const handleUpdate = (e: React.MouseEvent) => {
@@ -118,7 +120,7 @@ export default function HomeView({
             frontCard: card.frontCard,
             backCard: card.backCard,
             imageUrl: card.imageUrl || undefined,
-            imageAssetId:  undefined
+            imageAssetId: undefined
         });
     };
 
@@ -160,9 +162,13 @@ export default function HomeView({
 
     const handleDeleteCard = (cardId: number, e: React.MouseEvent) => {
         e.stopPropagation();
-        if (window.confirm('Are you sure you want to delete this card?')) {
-            onDeleteCard(cardId);
-        }
+        setShowMenu(false);
+        setShowDeleteCardDialog(true);
+    };
+
+    const handleConfirmDeleteCard = (cardId: number) => {
+        onDeleteCard(cardId);
+        setShowDeleteCardDialog(false);
     };
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -258,7 +264,7 @@ export default function HomeView({
                                     </Button>
                                     <Button
                                         variant="ghost"
-                                        onClick={handleDelete}
+                                        onClick={handleDeleteFlashcard}
                                         className="w-full text-center text-destructive transition-colors flex items-center gap-2"
                                     >
                                         <Trash2 className="w-4 h-4" />
@@ -432,6 +438,21 @@ export default function HomeView({
                         </Card>
                     ))}
                 </div>
+                <DeleteConfirmDialog
+                    isOpen={showDeleteCardDialog}
+                    onClose={() => setShowDeleteCardDialog(false)}
+                    onConfirm={() => handleConfirmDeleteCard(editingCardId!)}
+                    title="Delete Card"
+                    itemName={`this card`}
+                />
+
+                <DeleteConfirmDialog
+                    isOpen={showDeleteDialog}
+                    onClose={() => setShowDeleteDialog(false)}
+                    onConfirm={handleConfirmDeleteFlashcard}
+                    title="Delete Flashcard"
+                    itemName={`this flashcard`}
+                />
             </div>
         </>
     );

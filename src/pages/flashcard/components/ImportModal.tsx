@@ -189,7 +189,7 @@ export default function ImportModal({ isOpen, onClose, onInsert }: ImportModalPr
                                                 <span className="text-sm font-medium text-muted-foreground min-w-[24px]">
                                                     {index + 1}
                                                 </span>
-                                                <div className="flex items-end gap-4">
+                                                <div className="flex items-start gap-4">
                                                     <div className='w-[160px]'>
                                                         <Label className="text-xs text-muted-foreground mb-1 block">
                                                             Term

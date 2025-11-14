@@ -12,12 +12,12 @@ export interface SetData {
         lastUpdated: string
         date: string
     }>
-    page: number
-    size: number
-    sort: Array<{
-        property: string
-        direction: string
-    }>
+    metadata: {
+        totalItems: number
+        totalPages: number
+        currentPage: number
+        pageSize: number
+    }
 }
 
 export interface SetQueryParams {

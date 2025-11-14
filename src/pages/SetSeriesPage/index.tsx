@@ -297,6 +297,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
                                 (selectedNote?.privacy || selectedFlashcard?.privacy || 'public')
                                     .slice(1).toLowerCase(),
                         }}
+                        isUpdateMode={true}
                     />
                 )}
             </div>

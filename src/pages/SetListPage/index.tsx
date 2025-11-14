@@ -9,13 +9,7 @@ import { useDeleteSet, useUpdateSet, useSetData, useCreateSet } from '@/hooks/us
 import { type Set } from '@/components/cards/SetCard';
 import { type CreateSetPayload, type UpdateSetPayload } from '@/services/types/set.types';
 
-const TABS = [
-    { id: 'all', label: 'All', count: 16 },
-    { id: 'completed', label: 'Completed', count: 5 },
-    { id: 'progress', label: 'In progress', count: 11 },
-] as const;
-
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 9;
 const SORT_CONFIG = [{ property: 'id', direction: 'ASC' }];
 
 const mapSetData = (items: any[]): Set[] =>
@@ -31,13 +25,12 @@ const mapSetData = (items: any[]): Set[] =>
         video: item.video,
         lastUpdated: item.lastUpdated,
         date: item.date,
-        description: item.description ?? '',
+        description: item.description || 'No description available...',
         numNotes: item.numNotes ?? 0,
     }));
 
 export default function SetListPage() {
     const [activeTab, setActiveTab] = useState('all');
-    // Start from 0 to match API (0-indexed)
     const [currentPage, setCurrentPage] = useState(0);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -48,7 +41,6 @@ export default function SetListPage() {
     const deleteSetMutation = useDeleteSet();
     const updateSetMutation = useUpdateSet();
 
-    // Fetch data based on currentPage state
     const { data: setData } = useSetData({
         page: currentPage,
         size: PAGE_SIZE,
@@ -56,9 +48,17 @@ export default function SetListPage() {
     });
 
     const sets = mapSetData(setData?.data.data || []);
-    const totalPages = setData?.data.size || 1;
+    console.log("🚀 ~ SetListPage ~ sets:", sets)
+    const totalPages = setData?.data.metadata?.totalPages || 1;
+    const totalItems = setData?.data.metadata?.totalItems || 0;
+    const TABS = [
+        { id: 'all', label: 'All', count: totalItems },
+        { id: 'completed', label: 'Completed', count: 0 },
+        { id: 'progress', label: 'In progress', count: 0 },
+    ] as const;
 
-    // Handlers
+    const filteredSets = activeTab === 'all' ? sets : [];
+
     const handleCreateSet = async (data: any) => {
         try {
             const payload: CreateSetPayload = {
@@ -154,41 +154,68 @@ export default function SetListPage() {
                     </Button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                    {sets.map((set) => (
-                        <SetCard
-                            key={set.id}
-                            set={set}
-                            onAccess={handleSetAccess}
-                            onDelete={handleDeleteSet}
-                            onUpdate={handleUpdateSet}
-                        />
-                    ))}
-                </div>
+                {filteredSets.length > 0 ? (
+                    <div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                            {filteredSets.map((set) => (
+                                <SetCard
+                                    key={set.id}
+                                    set={set}
+                                    onAccess={handleSetAccess}
+                                    onDelete={handleDeleteSet}
+                                    onUpdate={handleUpdateSet}
+                                />
+                            ))}
+                        </div>
+                        <div className="flex justify-center items-center gap-4">
+                            <Button
+                                variant="ghost"
+                                onClick={() => handlePageChange('prev')}
+                                disabled={currentPage === 0}
+                                className="p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+                            </Button>
 
-                <div className="flex justify-center items-center gap-4">
-                    <Button
-                        variant="ghost"
-                        onClick={() => handlePageChange('prev')}
-                        disabled={currentPage === 0}
-                        className="p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                        <ChevronLeft className="w-5 h-5 text-muted-foreground" />
-                    </Button>
+                            <span className="font-medium">
+                                {currentPage + 1}/{totalPages}
+                            </span>
 
-                    <span className="font-medium">
-                        {currentPage + 1}/{totalPages}
-                    </span>
+                            <Button
+                                variant="ghost"
+                                onClick={() => handlePageChange('next')}
+                                disabled={currentPage === totalPages - 1}
+                                className="p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                            </Button>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="flex flex-col items-center justify-center py-16 mb-8">
+                        <div className="text-center">
+                            <div className="mb-4 text-6xl">📚</div>
+                            <h3 className="text-xl font-semibold mb-2 text-foreground">
+                                No sets available
+                            </h3>
+                            <p className="text-muted-foreground mb-6">
+                                {activeTab === 'all'
+                                    ? "Create your first study set to get started"
+                                    : `No ${activeTab === 'completed' ? 'completed' : 'in progress'} sets yet`
+                                }
+                            </p>
+                            {activeTab === 'all' && (
+                                <Button
+                                    onClick={() => setIsCreateModalOpen(true)}
+                                    className="px-6 py-2 bg-foreground text-background rounded-lg font-medium hover:opacity-90 transition-opacity"
+                                >
+                                    Create New Set
+                                </Button>
+                            )}
+                        </div>
 
-                    <Button
-                        variant="ghost"
-                        onClick={() => handlePageChange('next')}
-                        disabled={currentPage === totalPages - 1}
-                        className="p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                        <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                    </Button>
-                </div>
+                    </div>
+                )}
             </div>
 
             {/* Create Modal */}
@@ -214,6 +241,7 @@ export default function SetListPage() {
                         description: selectedSet.description,
                         privacy: 'PUBLIC',
                     }}
+                    isUpdateMode={true}
                 />
             )}
         </div>

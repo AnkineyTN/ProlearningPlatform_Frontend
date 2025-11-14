@@ -209,6 +209,7 @@ const Dashboard = () => {
             {/* Update Modal */}
             {selectedSet && (
                 <CreateNewModal
+                    isUpdateMode={true}
                     type="Set"
                     isOpen={isUpdateModalOpen}
                     onClose={() => {
