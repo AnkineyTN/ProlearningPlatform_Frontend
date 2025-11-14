@@ -40,8 +40,7 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
     onRegenerateSummary,
     onTextSelected
 }) => {
-    const [numPages, setNumPages] = useState<number>(0);
-    const [pageNumber, setPageNumber] = useState<number>(1);
+    const [numPages, setNumPages] = useState<number | null>(null);
 
     const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
         setNumPages(numPages);
@@ -95,7 +94,10 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
                         <Document
                             file={memoizedFile}
                             onLoadSuccess={onDocumentLoadSuccess}
-                            onLoadError={(error) => console.error('PDF load error:', error)}
+                            onLoadError={(error) => {
+                                console.error('PDF load error:', error);
+                                setNumPages(null);
+                            }}
                             className="flex flex-col items-center gap-4"
                             loading={
                                 <div className="flex items-center justify-center p-8">
@@ -117,50 +119,31 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
                                 </div>
                             }
                         >
-                            {/* Render all pages */}
-                            {Array.from(new Array(numPages), (index) => (
-                                <div key={`page_${index + 1}`} className="mb-4">
-                                    <Page
-                                        pageNumber={index + 1}
-                                        renderTextLayer={true}
-                                        renderAnnotationLayer={true}
-                                        className="border border-gray-200 rounded shadow-sm"
-                                        width={Math.min(window.innerWidth * 0.35, 700)}
-                                        loading={
-                                            <div className="flex items-center justify-center p-4 border border-gray-200 rounded">
-                                                <Loader2 className="w-6 h-6 animate-spin text-purple-600" />
-                                            </div>
-                                        }
-                                    />
-                                    {/* Page number label */}
-                                    <p className="text-center text-xs text-gray-500 mt-2">
-                                        Page {index + 1} of {numPages}
-                                    </p>
-                                </div>
-                            ))}
+                            {/* Render all pages - only when numPages is available */}
+                            {numPages && numPages > 0 && Array.from(
+                                { length: numPages },
+                                (_, index) => (
+                                    <div key={`page_${index + 1}`} className="mb-4">
+                                        <Page
+                                            pageNumber={index + 1}
+                                            renderTextLayer={true}
+                                            renderAnnotationLayer={true}
+                                            className="border border-gray-200 rounded shadow-sm"
+                                            width={Math.min(window.innerWidth * 0.35, 700)}
+                                            loading={
+                                                <div className="flex items-center justify-center p-4 border border-gray-200 rounded">
+                                                    <Loader2 className="w-6 h-6 animate-spin text-purple-600" />
+                                                </div>
+                                            }
+                                        />
+                                        {/* Page number label */}
+                                        <p className="text-center text-xs text-gray-500 mt-2">
+                                            Page {index + 1} of {numPages}
+                                        </p>
+                                    </div>
+                                )
+                            )}
                         </Document>
-
-                        {numPages > 1 && (
-                            <div className="flex items-center justify-center gap-4 mt-4">
-                                <button
-                                    onClick={() => setPageNumber(prev => Math.max(1, prev - 1))}
-                                    disabled={pageNumber <= 1}
-                                    className="px-3 py-1 bg-purple-600 text-white rounded disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
-                                >
-                                    Previous
-                                </button>
-                                <span className="text-sm">
-                                    Page {pageNumber} of {numPages}
-                                </span>
-                                <button
-                                    onClick={() => setPageNumber(prev => Math.min(numPages, prev + 1))}
-                                    disabled={pageNumber >= numPages}
-                                    className="px-3 py-1 bg-purple-600 text-white rounded disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
-                                >
-                                    Next
-                                </button>
-                            </div>
-                        )}
                     </div>
                 ) : (
                     <div className="text-center text-muted-foreground py-8 px-4">

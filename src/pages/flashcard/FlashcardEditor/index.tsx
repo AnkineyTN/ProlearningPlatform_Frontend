@@ -44,7 +44,6 @@ export default function FlashcardEditor({
         setId,
         flashcardId || 0,
     );
-    console.log("🚀 ~ FlashcardEditor ~ data:", flashcardData)
 
     const { title: locationTitle, description: locationDescription, privacy } = location.state || {};
 
@@ -54,7 +53,6 @@ export default function FlashcardEditor({
     const [cards, setCards] = useState<FlashcardCard[]>([
         { id: crypto.randomUUID(), term: '', definition: '', imageUrl: '', assetId: undefined, _action: 'CREATE' as 'CREATE' }
     ]);
-    console.log("🚀 ~ FlashcardEditor ~ cards:", cards)
 
     const [draggedCardId, setDraggedCardId] = useState<string | null>(null);
 

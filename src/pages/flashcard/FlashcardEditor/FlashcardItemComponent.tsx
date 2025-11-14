@@ -12,7 +12,6 @@ export default function FlashcardItemComponent({
     onDelete,
     canDelete
 }: FlashcardItemProps) {
-    console.log("🚀 ~ FlashcardItemComponent ~ card:", card)
     const fileInputRef = useRef<HTMLInputElement>(null);
     const uploadImageMutation = useUploadImageFile();
     const handleImageClick = () => {
