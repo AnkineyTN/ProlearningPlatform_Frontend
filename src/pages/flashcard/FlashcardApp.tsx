@@ -237,6 +237,7 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
                     onFlip={handleFlip}
                     onPrevious={handlePrevious}
                     onNext={handleNext}
+                    onShuffle={handleShuffle}
                 />
             )}
 

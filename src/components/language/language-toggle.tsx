@@ -27,7 +27,7 @@ export function LanguageToggle() {
                 <Button
                     variant="ghost"
                     size="default"
-                    className="rounded-full bg-card w-16 border-2 shadow-lg"
+                    className="rounded-full w-16 border-2 shadow-lg cursor-pointer"
                 >
                     <span>{currentLanguage?.flag}</span>
                 </Button>
@@ -38,12 +38,13 @@ export function LanguageToggle() {
             >
                 <div className="space-y-1">
                     {languages.map((lang) => (
-                        <button
+                        <Button
+                            variant="ghost"
                             key={lang.code}
                             onClick={() => changeLanguage(lang.code)}
                             className={`
                                 w-full flex items-center justify-between px-4 py-2 rounded-lg
-                                transition-all duration-200 hover:bg-accent
+                                transition-all duration-200 hover:bg-accent 
                                 ${i18n.language === lang.code ? 'bg-accent' : ''}
                             `}
                         >
@@ -54,7 +55,7 @@ export function LanguageToggle() {
                             {i18n.language === lang.code && (
                                 <Check className="w-4 h-4 text-green-600" strokeWidth={3} />
                             )}
-                        </button>
+                        </Button>
                     ))}
                 </div>
             </DropdownMenuContent>

@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button';
 import { useDeleteSet, useUpdateSet, useSetData, useCreateSet } from '@/hooks/useSets';
 import { type Set } from '@/components/cards/SetCard';
 import { type CreateSetPayload, type UpdateSetPayload } from '@/services/types/set.types';
+import { useTranslation } from 'react-i18next';
 
-const PAGE_SIZE = 9;
+const PAGE_SIZE = 6;
 const SORT_CONFIG = [{ property: 'id', direction: 'ASC' }];
 
 const mapSetData = (items: any[]): Set[] =>
@@ -25,12 +26,13 @@ const mapSetData = (items: any[]): Set[] =>
         video: item.video,
         lastUpdated: item.lastUpdated,
         date: item.date,
-        description: item.description || 'No description available...',
+        description: item.description,
         numNotes: item.numNotes ?? 0,
     }));
 
 export default function SetListPage() {
-    const [activeTab, setActiveTab] = useState('all');
+    const { t } = useTranslation();
+    const [activeTab, setActiveTab] = useState(t("setlist.all"));
     const [currentPage, setCurrentPage] = useState(0);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -48,16 +50,15 @@ export default function SetListPage() {
     });
 
     const sets = mapSetData(setData?.data.data || []);
-    console.log("🚀 ~ SetListPage ~ sets:", sets)
     const totalPages = setData?.data.metadata?.totalPages || 1;
     const totalItems = setData?.data.metadata?.totalItems || 0;
     const TABS = [
-        { id: 'all', label: 'All', count: totalItems },
-        { id: 'completed', label: 'Completed', count: 0 },
-        { id: 'progress', label: 'In progress', count: 0 },
+        { id: t("setlist.all"), label: t("setlist.all"), count: totalItems },
+        { id: t("setlist.completed"), label: t("setlist.completed"), count: 0 },
+        { id: t("setlist.in_progress"), label: t("setlist.in_progress"), count: 0 },
     ] as const;
 
-    const filteredSets = activeTab === 'all' ? sets : [];
+    const filteredSets = activeTab === t("setlist.all") ? sets : [];
 
     const handleCreateSet = async (data: any) => {
         try {
@@ -129,7 +130,7 @@ export default function SetListPage() {
 
                 <div className="flex justify-between items-center mb-6">
                     <div className="flex items-center gap-2">
-                        <span className="text-lg font-medium mr-4">Your Set</span>
+                        <span className="text-lg font-medium mr-4">{t("setlist.your_set")}</span>
                         {TABS.map(tab => (
                             <Button
                                 key={tab.id}
@@ -150,7 +151,7 @@ export default function SetListPage() {
                         className="px-4 py-2 bg-card text-foreground rounded-lg font-medium flex items-center gap-2 hover:bg-card-secondary transition-colors disabled:opacity-50"
                     >
                         <Plus className="w-5 h-5" />
-                        {createSetMutation.isPending ? 'Creating...' : 'New set'}
+                        {createSetMutation.isPending ? t("setlist.creating") : t("setlist.new_set")}
                     </Button>
                 </div>
 
@@ -238,8 +239,8 @@ export default function SetListPage() {
                     onSubmit={handleUpdateSubmit}
                     initialData={{
                         title: selectedSet.title,
-                        description: selectedSet.description,
-                        privacy: 'PUBLIC',
+                        description: selectedSet.description === 'No description available...' ? '' : selectedSet.description,
+                        privacy: 'Public',
                     }}
                     isUpdateMode={true}
                 />

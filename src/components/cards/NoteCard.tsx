@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { Edit, Trash2 } from 'lucide-react';
 import { FileText, MoreVertical, Clock } from 'lucide-react';
-import { Button } from '../ui/button';
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
+import { useTranslation } from 'react-i18next';
+import DropdownMenu from './DropdownMenu';
 
 export interface Note {
     id: number;
@@ -24,6 +24,7 @@ export default function NoteCard({ note, onAccess, onDelete, onUpdate }: NoteCar
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -90,24 +91,10 @@ export default function NoteCard({ note, onAccess, onDelete, onUpdate }: NoteCar
 
                     {/* Dropdown Menu */}
                     {showMenu && (
-                        <div className="absolute right-0 mt-1 w-30 bg-card border border-border rounded-lg shadow-lg z-10 overflow-hidden">
-                            <Button
-                                variant="ghost"
-                                onClick={handleUpdate}
-                                className="w-full text-center transition-colors flex items-center gap-2"
-                            >
-                                <Edit className="w-4 h-4" />
-                                Update
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                onClick={handleDeleteClick}
-                                className="w-full text-center text-destructive transition-colors flex items-center gap-2"
-                            >
-                                <Trash2 className="w-4 h-4" />
-                                Delete
-                            </Button>
-                        </div>
+                        <DropdownMenu
+                            onUpdate={handleUpdate}
+                            onDelete={handleDeleteClick}
+                        />
                     )}
                 </div>
             </div>
@@ -123,7 +110,7 @@ export default function NoteCard({ note, onAccess, onDelete, onUpdate }: NoteCar
                 isOpen={showDeleteDialog}
                 onClose={() => setShowDeleteDialog(false)}
                 onConfirm={handleConfirmDelete}
-                title="Delete Note"
+                title={t('modal.delete')}
                 itemName={`"${note.title}"`}
             />
         </div>

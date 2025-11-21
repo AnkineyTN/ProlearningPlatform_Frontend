@@ -84,7 +84,7 @@ export default function SignUp() {
                 </div>
             </a>
             <div className="w-[50vw] flex items-center justify-center">
-                <Card className="w-110 px-4 py-6">
+                <Card className="w-120 px-4 py-6">
                     <CardHeader className="text-start">
                         <CardTitle className="font-bold text-2xl">{t('signup.title')}</CardTitle>
                         <CardDescription>
@@ -93,51 +93,52 @@ export default function SignUp() {
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 text-start">
-                            <div>
-                                <Label htmlFor="name" className="font-bold text-base mb-2">
-                                    {t('signup.firstName')}
-                                    <span className="text-red-500">*</span>
-                                </Label>
-                                <div className="relative mb-1">
-                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                                        <User size={16} />
-                                    </span>
-                                    <Input
-                                        id="firstName"
-                                        type="text"
-                                        {...register('firstName')}
-                                        placeholder={t('signup.firstNamePlaceholder')}
-                                        className={`ps-9 ${errors.firstName ? 'border-red-500' : ''}`}
-                                    />
+                            <div className='flex gap-4'>
+                                <div>
+                                    <Label htmlFor="name" className="font-bold text-base mb-1">
+                                        {t('signup.firstName')}
+                                        <span className="text-red-500">*</span>
+                                    </Label>
+                                    <div className="relative mb-1">
+                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                            <User size={16} />
+                                        </span>
+                                        <Input
+                                            id="firstName"
+                                            type="text"
+                                            {...register('firstName')}
+                                            placeholder={t('signup.firstNamePlaceholder')}
+                                            className={`ps-9 ${errors.firstName ? 'border-red-500' : ''}`}
+                                        />
+                                    </div>
+                                    {errors.firstName && (
+                                        <p className="text-sm text-red-500">{errors.firstName.message}</p>
+                                    )}
                                 </div>
-                                {errors.firstName && (
-                                    <p className="text-sm text-red-500">{errors.firstName.message}</p>
-                                )}
+                                <div>
+                                    <Label htmlFor="name" className="font-bold text-base mb-1">
+                                        {t('signup.lastName')}
+                                        <span className="text-red-500">*</span>
+                                    </Label>
+                                    <div className="relative mb-1">
+                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                            <User size={16} />
+                                        </span>
+                                        <Input
+                                            id="lastName"
+                                            type="text"
+                                            {...register('lastName')}
+                                            placeholder={t('signup.lastNamePlaceholder')}
+                                            className={`ps-9 ${errors.lastName ? 'border-red-500' : ''}`}
+                                        />
+                                    </div>
+                                    {errors.lastName && (
+                                        <p className="text-sm text-red-500">{errors.lastName.message}</p>
+                                    )}
+                                </div>
                             </div>
                             <div>
-                                <Label htmlFor="name" className="font-bold text-base mb-2">
-                                    {t('signup.lastName')}
-                                    <span className="text-red-500">*</span>
-                                </Label>
-                                <div className="relative mb-1">
-                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                                        <User size={16} />
-                                    </span>
-                                    <Input
-                                        id="lastName"
-                                        type="text"
-                                        {...register('lastName')}
-                                        placeholder={t('signup.lastNamePlaceholder')}
-                                        className={`ps-9 ${errors.lastName ? 'border-red-500' : ''}`}
-                                    />
-                                </div>
-                                {errors.lastName && (
-                                    <p className="text-sm text-red-500">{errors.lastName.message}</p>
-                                )}
-                            </div>
-
-                            <div>
-                                <Label htmlFor="email" className="font-bold text-base mb-2">{t('signup.email')}</Label>
+                                <Label htmlFor="email" className="font-bold text-base mb-1">{t('signup.email')}</Label>
                                 <div className="relative mb-1">
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                         <Mail size={16} />
@@ -156,7 +157,7 @@ export default function SignUp() {
                             </div>
 
                             <div>
-                                <Label htmlFor="password" className="font-bold text-base mb-2">
+                                <Label htmlFor="password" className="font-bold text-base mb-1">
                                     {t('signup.password')}
                                     <span className="text-red-500">*</span>
                                 </Label>
@@ -189,7 +190,7 @@ export default function SignUp() {
                             </div>
 
                             <div>
-                                <Label htmlFor="confirmPassword" className="font-bold text-base mb-2">
+                                <Label htmlFor="confirmPassword" className="font-bold text-base mb-1">
                                     {t('signup.confirmPassword')}
                                     <span className="text-red-500">*</span>
                                 </Label>

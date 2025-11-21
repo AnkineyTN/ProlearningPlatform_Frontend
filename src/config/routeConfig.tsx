@@ -1,4 +1,7 @@
 import { type RouteObject } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import type { RootState } from '@/store'
 import SignIn from '@/components/auth/SignIn'
 import SignUp from '@/components/auth/SignUp'
 import Dashboard from '@/pages/Dashboard'
@@ -14,6 +17,36 @@ import { useParams } from 'react-router-dom';
 import FlashcardApp from '@/pages/flashcard/FlashcardApp'
 import GoogleAuthCallback from '@/pages/GoogleAuthCallback'
 import GoogleAuthFailure from '@/pages/GoogleAuthFailure'
+
+function LandingPageWrapper() {
+    const token = useSelector((state: RootState) => state.auth.token);
+
+    if (token) {
+        return <Navigate to="/dashboard" replace />;
+    }
+
+    return <LandingPage />;
+}
+
+function SignInWrapper() {
+    const token = useSelector((state: RootState) => state.auth.token);
+
+    if (token) {
+        return <Navigate to="/dashboard" replace />;
+    }
+
+    return <SignIn />;
+}
+
+function SignUpWrapper() {
+    const token = useSelector((state: RootState) => state.auth.token);
+
+    if (token) {
+        return <Navigate to="/dashboard" replace />;
+    }
+
+    return <SignUp />;
+}
 
 // Wrapper component to extract setId from params and pass as prop
 function SetSeriesPageWrapper() {
@@ -45,15 +78,15 @@ export const routeConfig: RouteObject[] = [
     // Public routes
     {
         path: '/',
-        element: <LandingPage />
+        element: <LandingPageWrapper />
     },
     {
         path: '/login',
-        element: <SignIn />
+        element: <SignInWrapper />
     },
     {
         path: '/signup',
-        element: <SignUp />
+        element: <SignUpWrapper />
     },
     {
         path: '/onboarding',

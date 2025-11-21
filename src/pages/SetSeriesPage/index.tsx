@@ -15,7 +15,10 @@ import TestListPage from './components/TestListPage';
 import RecordListPage from './components/RecordListPage';
 import type { Note } from '@/components/cards/NoteCard';
 import { useUpdateFlashcard, useDeleteFlashcard } from '@/hooks/useFlashcards';
+import { useDeleteSet } from '@/hooks/useSets';
 import type { Flashcard } from '@/components/cards/FlashCard';
+import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
+import { useTranslation } from 'react-i18next';
 
 interface HeaderProps {
     onSearch?: (query: string) => void;
@@ -23,18 +26,22 @@ interface HeaderProps {
 }
 
 export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('Notes');
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
     const [selectedFlashcard, setSelectedFlashcard] = useState<Flashcard | null>(null);
     const updateFlashcardMutation = useUpdateFlashcard();
     const deleteFlashcardMutation = useDeleteFlashcard();
+    const deleteSetMutation = useDeleteSet();
+    // const updateSetMutation = useUpdateSet();
 
     // Modal states
     const [isMethodModalOpen, setIsMethodModalOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isAISourceModalOpen, setIsAISourceModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     const tabs = ['Notes', 'Flashcards', 'Mindmaps', 'Tests', 'Records'];
 
@@ -186,10 +193,24 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
         }
     };
 
+    const handleDeleteClick = () => {
+        setShowDeleteDialog(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        try {
+            await deleteSetMutation.mutateAsync(Number(setId));
+            setShowDeleteDialog(false);
+            navigate('/sets');
+        } catch (error) {
+            console.error('Error deleting set:', error);
+        }
+    };
+
     return (
         <div className="min-h-screen p-6">
             <div className="max-w-7xl mx-auto">
-                <HeaderSetDetails />
+                <HeaderSetDetails onDelete={handleDeleteClick} />
 
                 {/* Tabs */}
                 <div className="flex gap-2 mb-6 overflow-x-auto">
@@ -300,6 +321,13 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
                         isUpdateMode={true}
                     />
                 )}
+                <DeleteConfirmDialog
+                    isOpen={showDeleteDialog}
+                    onClose={() => setShowDeleteDialog(false)}
+                    onConfirm={handleConfirmDelete}
+                    title={t('modal.deleteConfirmationTitle')}
+                    itemName={`"Software Engineering"`}
+                />
             </div>
         </div>
     );

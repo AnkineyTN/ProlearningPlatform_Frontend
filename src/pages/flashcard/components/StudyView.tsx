@@ -12,6 +12,7 @@ interface StudyViewProps {
     onFlip: () => void;
     onPrevious: () => void;
     onNext: () => void;
+    onShuffle: () => void;
 }
 
 export default function StudyView({
@@ -21,7 +22,8 @@ export default function StudyView({
     onBack,
     onFlip,
     onPrevious,
-    onNext
+    onNext,
+    onShuffle,
 }: StudyViewProps) {
     return (
         <div className="max-w-4xl mx-auto p-6">
@@ -49,6 +51,7 @@ export default function StudyView({
                     onFlip={onFlip}
                     onPrevious={onPrevious}
                     onNext={onNext}
+                    onShuffle={onShuffle}
                 />
             </div>
         </div>

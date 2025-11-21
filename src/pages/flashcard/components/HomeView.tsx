@@ -162,7 +162,7 @@ export default function HomeView({
         });
     };
 
-    const handleDeleteCard = (cardId: number, e: React.MouseEvent) => {
+    const handleDeleteCard = (e: React.MouseEvent) => {
         e.stopPropagation();
         setShowMenu(false);
         setShowDeleteCardDialog(true);
@@ -426,7 +426,7 @@ export default function HomeView({
                                                 variant="ghost"
                                                 size="icon"
                                                 className="h-8 w-8 cursor-pointer text-destructive hover:text-destructive hover:bg-destructive/10"
-                                                onClick={(e) => handleDeleteCard(card.id, e)}
+                                                onClick={(e) => handleDeleteCard(e)}
                                                 title="Delete card"
                                             >
                                                 <Trash2 className="w-4 h-4" />

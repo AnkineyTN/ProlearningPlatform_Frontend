@@ -4,6 +4,7 @@ import LogoFG from '@/assets/logo_fg';
 import { ModeToggle } from "@/components/theme/mode-toggle";
 import { useTranslation } from 'react-i18next';
 import { LanguageToggle } from '@/components/language/language-toggle';
+import { Button } from '@/components/ui/button';
 
 export default function LandingPage() {
   const [activeFeature, setActiveFeature] = useState(0);
@@ -66,7 +67,7 @@ export default function LandingPage() {
       <nav className="fixed top-0 w-full backdrop-blur-md shadow-sm z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => window.location.href = '/'}>
               <div className="w-8 h-8 flex items-center justify-center">
                 <LogoFG />
               </div>
@@ -80,11 +81,18 @@ export default function LandingPage() {
             </div>
 
             <div className="hidden md:flex items-center space-x-4">
-              <button
+              <Button
+                variant="outline"
                 onClick={() => window.location.href = '/signup'}
-                className="cursor-pointer bg-foreground text-background hover:bg-card-hovered px-6 py-2.5 rounded-full transition-all font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
-                {t("landing.createAccount")}
-              </button>
+                className="cursor-pointer px-6 py-2.5 rounded-full transition-all font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
+                {t("landing.login")}
+              </Button>
+              <Button
+                variant="default"
+                onClick={() => window.location.href = '/signup'}
+                className="cursor-pointer px-6 py-2.5 rounded-full transition-all font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
+                {t("landing.signUp")}
+              </Button>
               <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
                 <div className="flex w-full justify-between px-4 gap-4">
                   <ModeToggle />
@@ -157,6 +165,7 @@ export default function LandingPage() {
               <div
                 key={index}
                 onMouseEnter={() => setActiveFeature(index)}
+                onMouseLeave={() => setActiveFeature(-1)}
                 className={`p-8 rounded-2xl cursor-pointer transition-all duration-300 ${activeFeature === index
                   ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-2xl transform scale-105'
                   : 'bg-gray-50 text-gray-900 hover:shadow-lg'
@@ -212,7 +221,9 @@ export default function LandingPage() {
           <p className="text-xl text-blue-100">
             {t("landing.cta.description")}
           </p>
-          <button className="bg-white text-blue-600 px-10 py-4 rounded-full hover:bg-gray-100 transition-all font-bold text-lg shadow-2xl transform hover:scale-105 flex items-center gap-2 mx-auto">
+          <button
+            onClick={() => window.location.href = '/signup'}
+            className="bg-white cursor-pointer text-blue-600 px-10 py-4 rounded-full hover:bg-gray-100 transition-all font-bold text-lg shadow-2xl transform hover:scale-105 flex items-center gap-2 mx-auto">
             {t("landing.cta.buttonText")}
             <CheckCircle className="w-6 h-6" />
           </button>

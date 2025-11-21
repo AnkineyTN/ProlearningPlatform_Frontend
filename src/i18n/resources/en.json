@@ -10,6 +10,12 @@
         "viewAll": "View all",
         "yourSets": "Your Sets"
     },
+    "header": {
+        "notifications": "Notifications",
+        "profile": "Profile",
+        "search": "Search...",
+        "welcome": "Welcome back!"
+    },
     "landing": {
         "createAccount": "Create an account",
         "cta": {
@@ -57,6 +63,8 @@
             "platform": "PLATFORM FOR YOU!",
             "subheader": "THE BEST LEARNING"
         },
+        "login": "Log In",
+        "signUp": "Sign Up",
         "stats": {
             "activeStudents": "Active Students",
             "expertInstructors": "Expert Instructors",
@@ -97,7 +105,12 @@
         "back": "Back",
         "cancel": "Cancel",
         "create": "Create",
+        "delete": "Delete",
+        "deleteConfirmation": "Are you sure you want to delete",
+        "deleteConfirmationTitle": "Confirm Delete",
+        "deleteConfirmationWarning": "This action cannot be undone.",
         "description": "Description",
+        "enterDescription": "Enter description",
         "generateWithAI": "Generate with AI",
         "method": {
             "addImages": "Add images",
@@ -111,14 +124,18 @@
             "quickGeneration": "Quick generation",
             "smartContentExtraction": "Smart content extraction"
         },
-        "update": "Update",
         "new": "New",
+        "noDescription": "No description available...",
         "optional": "Optional",
         "privacy": "Privacy",
+        "privacyRequired": "Privacy is required",
         "private": "Private",
         "public": "Public",
         "title": "Title",
-        "unlisted": "Unlisted"
+        "titleEmpty": "Title is required",
+        "titleTooLong": "Title must be less than 100 characters",
+        "unlisted": "Unlisted",
+        "update": "Update"
     },
     "onboarding": {
         "back": "Back",
@@ -195,6 +212,15 @@
             "teacherDescription": "Creating and sharing study materials"
         }
     },
+    "setlist": {
+        "all": "All",
+        "completed": "Completed",
+        "creating": "Creating...",
+        "in_progress": "In Progress",
+        "new_set": "New Set",
+        "title": "Set List",
+        "your_set": "Your Set"
+    },
     "sidebar": {
         "blog": "Blog",
         "dashboard": "Dashboard",
@@ -212,43 +238,43 @@
         "email": "Email",
         "failedGoogleConnect": "Failed to connect with Google",
         "forgotPassword": "Forgot Password?",
+        "invalidEmail": "Invalid email",
         "noAccount": "Don't have an account?",
         "orContinueWith": "Or continue with",
         "password": "Password",
+        "passwordRequired": "Password is required",
         "subtitle": "Sign in",
         "title": "Sign In to Your Account",
-        "wrongCredentials": "Wrong username or password",
-        "invalidEmail": "Invalid email",
-        "passwordRequired": "Password is required"
+        "wrongCredentials": "Wrong username or password"
     },
     "signup": {
         "confirmPassword": "Confirm Password",
+        "confirmPasswordPlease": "Please confirm your password",
         "createAccount": "Create Account",
         "description": "Please fill in the details to get started.",
         "email": "Email",
+        "emailPlaceholder": "Your email",
         "failed": "Account already exists",
         "firstName": "First Name",
+        "firstNameMax": "First name must not exceed 50 characters",
+        "firstNameMin": "First name must be at least 2 characters",
+        "firstNamePlaceholder": "Your first name",
         "haveAccount": "Already have an account?",
+        "invalidEmail": "Invalid email address",
         "lastName": "Last Name",
+        "lastNameMax": "Last name must not exceed 50 characters",
+        "lastNameMin": "Last name must be at least 2 characters",
+        "lastNamePlaceholder": "Your last name",
         "orContinueWith": "Or continue with",
         "password": "Password",
+        "passwordMax": "Password must not exceed 20 characters",
+        "passwordMin": "Password must be at least 8 characters",
+        "passwordNotMatch": "Passwords don't match",
+        "passwordRequired": "Password is required",
         "passwordRequirement": "8 or more characters",
         "signIn": "Sign in",
         "subtitle": "Sign up",
         "success": "Account created successfully!",
-        "title": "Create Your Account",
-        "firstNameMin": "First name must be at least 2 characters",
-        "firstNameMax": "First name must not exceed 50 characters",
-        "lastNameMin": "Last name must be at least 2 characters",
-        "lastNameMax": "Last name must not exceed 50 characters",
-        "invalidEmail": "Invalid email address",
-        "passwordRequired": "Password is required",
-        "passwordMin": "Password must be at least 8 characters",
-        "passwordMax": "Password must not exceed 20 characters",
-        "confirmPasswordPlease": "Please confirm your password",
-        "passwordNotMatch": "Passwords don't match",
-        "emailPlaceholder": "Your email",
-        "firstNamePlaceholder": "Your first name",
-        "lastNamePlaceholder": "Your last name"
+        "title": "Create Your Account"
     }
 }

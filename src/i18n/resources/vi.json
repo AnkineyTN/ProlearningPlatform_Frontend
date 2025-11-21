@@ -10,6 +10,12 @@
         "viewAll": "Xem tất cả",
         "yourSets": "Bộ sưu tập của bạn"
     },
+    "header": {
+        "notifications": "Thông báo",
+        "profile": "Trang cá nhân",
+        "search": "Tìm kiếm...",
+        "welcome": "Chào mừng trở lại!"
+    },
     "landing": {
         "createAccount": "Tạo tài khoản",
         "cta": {
@@ -57,6 +63,8 @@
             "platform": "DÀNH CHO BẠN!",
             "subheader": "NỀN TẢNG HỌC TẬP TỐT NHẤT"
         },
+        "login": "Đăng nhập",
+        "signUp": "Đăng ký",
         "stats": {
             "activeStudents": "Học viên tích cực",
             "expertInstructors": "Giảng viên chuyên gia",
@@ -97,7 +105,12 @@
         "back": "Quay lại",
         "cancel": "Hủy",
         "create": "Tạo",
+        "delete": "Xóa",
+        "deleteConfirmation": "Bạn có chắc chắn muốn xóa",
+        "deleteConfirmationTitle": "Xác nhận xóa",
+        "deleteConfirmationWarning": "Hành động này không thể hoàn tác.",
         "description": "Mô tả",
+        "enterDescription": "Nhập mô tả",
         "generateWithAI": "Tạo với AI",
         "method": {
             "addImages": "Thêm hình ảnh",
@@ -111,14 +124,18 @@
             "quickGeneration": "Tạo nhanh",
             "smartContentExtraction": "Trích xuất nội dung thông minh"
         },
-        "update": "Chỉnh sửa",
         "new": "Mới",
+        "noDescription": "Không có mô tả sẵn có...",
         "optional": "Tùy chọn",
         "privacy": "Quyền riêng tư",
+        "privacyRequired": "Quyền riêng tư là bắt buộc",
         "private": "Riêng tư",
         "public": "Công khai",
         "title": "Tiêu đề",
-        "unlisted": "Không công khai"
+        "titleEmpty": "Vui lòng nhập tiêu đề",
+        "titleTooLong": "Tiêu đề phải ít hơn 100 ký tự",
+        "unlisted": "Không công khai",
+        "update": "Chỉnh sửa"
     },
     "onboarding": {
         "back": "Quay lại",
@@ -195,6 +212,16 @@
             "teacherDescription": "Tạo và chia sẻ tài liệu học tập"
         }
     },
+    "setlist": {
+        "all": "Tất cả",
+        "completed": "Đã hoàn thành",
+        "creating": "Đang tạo...",
+        "in_progress": "Đang tiến hành",
+        "new_set": "Bộ học tập mới",
+        "set": "Bộ học tập",
+        "title": "Danh sách tài liệu",
+        "your_set": "Bộ học tập của bạn"
+    },
     "sidebar": {
         "blog": "Blog",
         "dashboard": "Trang chủ",
@@ -212,42 +239,42 @@
         "email": "Email",
         "failedGoogleConnect": "Kết nối với Google không thành công",
         "forgotPassword": "Quên mật khẩu?",
+        "invalidEmail": "Email không hợp lệ",
         "noAccount": "Bạn chưa có tài khoản?",
         "orContinueWith": "Hoặc tiếp tục với",
         "password": "Mật khẩu",
+        "passwordRequired": "Mật khẩu là bắt buộc",
         "subtitle": "Đăng nhập",
         "title": "Đăng Nhập Tài Khoản",
-        "wrongCredentials": "Sai tên người dùng hoặc mật khẩu",
-        "invalidEmail": "Email không hợp lệ",
-        "passwordRequired": "Mật khẩu là bắt buộc"
+        "wrongCredentials": "Sai tên người dùng hoặc mật khẩu"
     },
     "signup": {
         "confirmPassword": "Xác nhận mật khẩu",
+        "confirmPasswordPlease": "Vui lòng xác nhận mật khẩu",
         "createAccount": "Tạo tài khoản",
         "description": "Vui lòng điền thông tin để bắt đầu.",
         "email": "Email",
+        "emailPlaceholder": "Email của bạn",
         "failed": "Tài khoản đã tồn tại",
         "firstName": "Họ",
+        "firstNameMax": "Họ không được vượt quá 50 ký tự",
+        "firstNameMin": "Họ phải có ít nhất 2 ký tự",
+        "firstNamePlaceholder": "Tên của bạn",
         "haveAccount": "Bạn đã có tài khoản?",
+        "invalidEmail": "Email không hợp lệ",
         "lastName": "Tên",
+        "lastNameMax": "Tên không được vượt quá 50 ký tự",
+        "lastNameMin": "Tên phải có ít nhất 2 ký tự",
+        "lastNamePlaceholder": "Họ của bạn",
         "orContinueWith": "Hoặc tiếp tục với",
         "password": "Mật khẩu",
+        "passwordMax": "Mật khẩu không được vượt quá 20 ký tự",
+        "passwordMin": "Mật khẩu phải có ít nhất 8 ký tự",
+        "passwordNotMatch": "Mật khẩu không khớp",
         "passwordRequirement": "8 ký tự trở lên",
         "signIn": "Đăng nhập",
         "subtitle": "Đăng ký",
         "success": "Tạo tài khoản thành công!",
-        "title": "Tạo tài khoản của bạn",
-        "firstNameMin": "Họ phải có ít nhất 2 ký tự",
-        "firstNameMax": "Họ không được vượt quá 50 ký tự",
-        "lastNameMin": "Tên phải có ít nhất 2 ký tự",
-        "lastNameMax": "Tên không được vượt quá 50 ký tự",
-        "invalidEmail": "Email không hợp lệ",
-        "passwordMin": "Mật khẩu phải có ít nhất 8 ký tự",
-        "passwordMax": "Mật khẩu không được vượt quá 20 ký tự",
-        "confirmPasswordPlease": "Vui lòng xác nhận mật khẩu",
-        "passwordNotMatch": "Mật khẩu không khớp",
-        "emailPlaceholder": "Email của bạn",
-        "firstNamePlaceholder": "Tên của bạn",
-        "lastNamePlaceholder": "Họ của bạn"
+        "title": "Tạo tài khoản của bạn"
     }
 }

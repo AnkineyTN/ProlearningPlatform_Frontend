@@ -220,7 +220,7 @@ const Dashboard = () => {
                     initialData={{
                         title: selectedSet.title,
                         description: selectedSet.description,
-                        privacy: 'PUBLIC', // hoặc lấy từ set nếu có field này
+                        privacy: 'Public', // hoặc lấy từ set nếu có field này
                     }}
                 />
             )}

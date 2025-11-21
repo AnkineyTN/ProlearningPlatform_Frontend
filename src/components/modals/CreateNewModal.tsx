@@ -118,7 +118,7 @@ export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit
                     <div>
                         <Label className="flex items-center gap-2 font-medium mb-3">
                             <Heading className="w-4 h-4" />
-                            {type} {t('modal.title')}
+                            {t('modal.title')}
                             <span className="text-red-500">*</span>
                         </Label>
                         <Input
@@ -129,13 +129,13 @@ export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit
                                     ? 'border-red-500 focus:ring-red-500'
                                     : 'border-border focus:ring-foreground'
                                 }`}
-                            placeholder={`Enter ${type} title`}
+                            placeholder={t('modal.title')}
                         />
                         {errors.titleEmpty && (
-                            <p className="text-red-500 text-sm mt-1">Title is required</p>
+                            <p className="text-red-500 text-sm mt-1">{t('modal.titleEmpty')}</p>
                         )}
                         {errors.titleTooLong && (
-                            <p className="text-red-500 text-sm mt-1">Title must be less than 100 characters</p>
+                            <p className="text-red-500 text-sm mt-1">{t('modal.titleTooLong')}</p>
                         )}
                     </div>
 
@@ -163,7 +163,7 @@ export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit
                             </SelectContent>
                         </Select>
                         {errors.privacy && (
-                            <p className="text-red-500 text-sm mt-1">Privacy is required</p>
+                            <p className="text-red-500 text-sm mt-1">{t('modal.privacyRequired')}</p>
                         )}
                     </div>
 
@@ -178,7 +178,7 @@ export default function CreateNewModal({ type, isOpen, onClose, onBack, onSubmit
                             onChange={(e) => setDescription(e.target.value)}
                             className="w-full px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-foreground resize-none"
                             rows={4}
-                            placeholder="Enter description"
+                            placeholder={t('modal.enterDescription')}
                         />
                     </div>
                 </div>

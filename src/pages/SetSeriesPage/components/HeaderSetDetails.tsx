@@ -4,7 +4,12 @@ import { Button } from '@/components/ui/button';
 import { ModeToggle } from "@/components/theme/mode-toggle";
 import { LanguageToggle } from "@/components/language/language-toggle";
 
-export default function HeaderSetDetails() {
+interface HeaderSetDetailsProps {
+    onUpdate?: () => void;
+    onDelete: () => void;
+}
+
+export default function HeaderSetDetails({ onUpdate, onDelete }: HeaderSetDetailsProps) {
     const navigate = useNavigate();
     const handleSetList = () => {
         navigate('/sets');
@@ -24,10 +29,10 @@ export default function HeaderSetDetails() {
                         </div>
                     </div>
                     <div className="flex gap-2">
-                        <Button className="p-2 bg-card hover:bg-card-secondary rounded-lg transition-colors cursor-pointer">
+                        <Button className="p-2 bg-card hover:bg-card-secondary rounded-lg transition-colors cursor-pointer" onClick={onUpdate}>
                             <Pencil className="w-5 h-5 text-muted-foreground" />
                         </Button>
-                        <Button className="p-2 bg-card hover:bg-card-secondary rounded-lg transition-colors cursor-pointer">
+                        <Button className="p-2 bg-card hover:bg-card-secondary rounded-lg transition-colors cursor-pointer" onClick={onDelete}>
                             <Trash2 className="w-5 h-5 text-muted-foreground" />
                         </Button>
                     </div>

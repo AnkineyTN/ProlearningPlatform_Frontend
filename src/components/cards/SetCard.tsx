@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { BookOpen, MoreVertical, Clock, FileText, Headphones, Trash2, Edit } from 'lucide-react';
+import { BookOpen, MoreVertical, Clock, FileText, Headphones } from 'lucide-react';
 import { Button } from '../ui/button';
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
+import { useTranslation } from 'react-i18next';
+import DropdownMenu from './DropdownMenu';
+
 export interface Set {
     id: number;
     title: string;
@@ -11,7 +14,7 @@ export interface Set {
     duration: string;
     flashcards: number;
     tests: number;
-    audio: string;
+    audio: number;
     video: string | number;
     progress: number;
     lastUpdated: string;
@@ -26,6 +29,7 @@ interface SetCardProps {
 }
 
 export default function SetCard({ set, onAccess, onDelete, onUpdate }: SetCardProps) {
+    const { t } = useTranslation();
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -83,7 +87,7 @@ export default function SetCard({ set, onAccess, onDelete, onUpdate }: SetCardPr
             className="bg-card rounded-xl p-5 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
             onClick={handleCardClick}
         >
-            <div className="flex justify-between items-start mb-3">
+            <div className="flex justify-between items-start mb-2">
                 <BookOpen className="w-5 h-5" />
 
                 {/* More Options Button with Dropdown */}
@@ -99,53 +103,47 @@ export default function SetCard({ set, onAccess, onDelete, onUpdate }: SetCardPr
 
                     {/* Dropdown Menu */}
                     {showMenu && (
-                        <div className="absolute right-0 mt-1 w-30 bg-card border border-border rounded-lg shadow-lg z-10 overflow-hidden">
-                            <Button
-                                variant="ghost"
-                                onClick={handleUpdate}
-                                className="w-full text-center transition-colors flex items-center gap-2"
-                            >
-                                <Edit className="w-4 h-4" />
-                                Update
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                onClick={handleDeleteClick}
-                                className="w-full text-center text-destructive transition-colors flex items-center gap-2"
-                            >
-                                <Trash2 className="w-4 h-4" />
-                                Delete
-                            </Button>
-                        </div>
+                        <DropdownMenu
+                            onUpdate={handleUpdate}
+                            onDelete={handleDeleteClick}
+                        />
                     )}
                 </div>
             </div>
 
             <h3 className="font-semibold mb-1 overflow-hidden text-ellipsis whitespace-nowrap">{set.title}</h3>
-            <p className="text-sm text-muted-foreground mb-4 line-clamp-2 overflow-hidden text-ellipsis whitespace-nowrap">{set.description}</p>
+            <p className="text-sm text-muted-foreground mb-4 line-clamp-2 overflow-hidden text-ellipsis whitespace-nowrap">{set.description ? set.description : t('modal.noDescription')}</p>
 
-            <div className="flex gap-4 text-xs text-muted-foreground mb-4 flex-wrap">
-                <span className="flex items-center gap-1">
-                    <FileText className="w-3 h-3" /> {set.flashcards} flashcard
-                </span>
-                <span className="flex items-center gap-1">
-                    <FileText className="w-3 h-3" /> {set.numNotes} notes
-                </span>
-                <span className="flex items-center gap-1">
-                    <Headphones className="w-3 h-3" /> {set.audio} audio
-                </span>
-                <span className="flex items-center gap-1">
-                    <FileText className="w-3 h-3" />
-                    {set.tests} tests
-                </span>
+            <div className="flex gap-4 text-xs text-muted-foreground mb-4 flex-wrap min-h-[16px]">
+                {set.flashcards > 0 &&
+                    <span className="flex items-center gap-1">
+                        <FileText className="w-3 h-3" /> {set.flashcards} flashcard
+                    </span>
+                }
+                {set.numNotes > 0 &&
+                    <span className="flex items-center gap-1">
+                        <FileText className="w-3 h-3" /> {set.numNotes} notes
+                    </span>
+                }
+                {set.audio > 0 &&
+                    <span className="flex items-center gap-1">
+                        <Headphones className="w-3 h-3" /> {set.audio} audio
+                    </span>
+                }
+                {set.tests > 0 &&
+                    <span className="flex items-center gap-1">
+                        <FileText className="w-3 h-3" />
+                        {set.tests} tests
+                    </span>
+                }
             </div>
 
             {/* Progress Bar */}
-            <div className="w-full bg-card-secondary rounded-full h-2 mb-3">
+            {/* <div className="w-full bg-card-secondary rounded-full h-2 mb-3">
                 <div
                     className={`bg-foreground h-2 rounded-full transition-all w-[${set.progress}px]`}
                 />
-            </div>
+            </div> */}
 
             <div className="flex justify-between items-center text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
@@ -158,7 +156,7 @@ export default function SetCard({ set, onAccess, onDelete, onUpdate }: SetCardPr
                 isOpen={showDeleteDialog}
                 onClose={() => setShowDeleteDialog(false)}
                 onConfirm={handleConfirmDelete}
-                title="Delete Set"
+                title={t('modal.deleteConfirmationTitle')}
                 itemName={`"${set.title}"`}
             />
         </div>
