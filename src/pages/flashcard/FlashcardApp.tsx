@@ -21,6 +21,8 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
     const [isFlipped, setIsFlipped] = useState(false);
     const [viewMode, setViewMode] = useState<ViewMode>('home');
     const [studiedCards, setStudiedCards] = useState<Set<number>>(new Set());
+    const [shuffledIndices, setShuffledIndices] = useState<number[]>([]);
+    const [isShuffled, setIsShuffled] = useState(false);
     const updateCardMutation = useUpdateCard();
     const deleteCardMutation = useDeleteCard();
     const deleteFlashcardMutation = useDeleteFlashcard();
@@ -61,6 +63,35 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
             setIsFlipped(false);
         }
     };
+
+    const handleShuffle = () => {
+        if (isShuffled) {
+            // Reset to original order
+            setShuffledIndices([]);
+            setIsShuffled(false);
+            setCurrentCardIndex(0);
+            setIsFlipped(false);
+        } else {
+            // Create shuffled indices array
+            const indices = flashcards.map((_, index) => index);
+            const shuffled = [...indices].sort(() => Math.random() - 0.5);
+            setShuffledIndices(shuffled);
+            setIsShuffled(true);
+            setCurrentCardIndex(0);
+            setIsFlipped(false);
+        }
+    };
+
+    const displayedFlashcards: Array<Card> = useMemo(() => {
+        const cards = data?.data.cards || [];
+        const sortedCards = [...cards].sort((a, b) => a.id - b.id);
+
+        if (isShuffled && shuffledIndices.length > 0) {
+            return shuffledIndices.map(index => sortedCards[index]);
+        }
+
+        return sortedCards;
+    }, [data, isShuffled, shuffledIndices]);
 
     const handleCardClick = (index: number) => {
         setCurrentCardIndex(index);
@@ -179,7 +210,7 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
                 <HomeView
                     setId={setId}
                     flashcardId={flashcardId}
-                    flashcards={flashcards}
+                    flashcards={displayedFlashcards}
                     onCardClick={handleCardClick}
                     onStudy={startStudying}
                     onMatching={() => setViewMode('matching')}
@@ -193,6 +224,7 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
                     onDeleteFlashcard={handleDeleteFlashcard}
                     isUpdating={updateCardMutation.isPending}
                     isDeletingFlashcard={deleteFlashcardMutation.isPending}
+                    onShuffle={handleShuffle}
                 />
             )}
 
@@ -220,7 +252,7 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
 
             {viewMode === 'matching' && (
                 <MatchingView
-                    // flashcards={flashcards}
+                    flashcards={flashcards}
                     onBack={() => setViewMode('home')}
                 />
             )}

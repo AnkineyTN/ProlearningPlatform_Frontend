@@ -62,6 +62,14 @@
   --stat-card-4-foreground: oklch(51.8% 0.253 323.949);
   --card-yellow: oklch(98.7% 0.026 102.212);
   --card-yellow-foreground: oklch(94.5% 0.129 101.54);
+  --text-selected: oklch(54.6% 0.245 262.881);
+  --text-warning: oklch(79.5% 0.184 86.047);
+  --text-error: oklch(57.7% 0.245 27.325);
+  --text-info: oklch(62.7% 0.194 149.214);
+  --bg-selected: oklch(93.2% 0.032 255.585);
+  --bg-warning: oklch(97.3% 0.071 103.193);
+  --bg-error: oklch(93.6% 0.032 17.717);
+  --bg-info: oklch(96.2% 0.044 156.743);
 }
 
 @theme inline {
@@ -114,6 +122,14 @@
   --color-stat-card-4-foreground: var(--stat-card-4-foreground);
   --color-card-yellow: var(--card-yellow);
   --color-card-yellow-foreground: var(--card-yellow-foreground);
+  --color-text-selected: var(--text-selected);
+  --color-text-warning: var(--text-warning);
+  --color-text-error: var(--text-error);
+  --color-text-info: var(--text-info);
+  --color-bg-selected: var(--bg-selected);
+  --color-bg-warning: var(--bg-warning);
+  --color-bg-error: var(--bg-error);
+  --color-bg-info: var(--bg-info);
 }
 
 .dark {
@@ -162,6 +178,14 @@
   --stat-card-4-foreground: oklch(90.3% 0.076 319.62);
   --card-yellow: oklch(28.6% 0.066 53.813);
   --card-yellow-foreground: oklch(47.6% 0.114 61.907);
+  --text-selected: oklch(62.3% 0.214 259.815);
+  --text-warning: oklch(85.2% 0.199 91.936);
+  --text-error: oklch(63.7% 0.237 25.331);
+  --text-info: oklch(72.3% 0.219 149.579);
+  --bg-selected: oklch(28.2% 0.091 267.935);
+  --bg-warning: oklch(28.6% 0.066 53.813);
+  --bg-error: oklch(25.8% 0.092 26.042);
+  --bg-info: oklch(26.6% 0.065 152.934);
 }
 
 @layer base {

@@ -33,6 +33,7 @@ interface HomeViewProps {
     isUpdating?: boolean;
     onDeleteFlashcard?: () => void;
     isDeletingFlashcard?: boolean;
+    onShuffle: () => void;
 }
 
 export default function HomeView({
@@ -47,6 +48,7 @@ export default function HomeView({
     onFlip,
     onPrevious,
     onNext,
+    onShuffle,
     onUpdateCard,
     onDeleteCard,
     onDeleteFlashcard,
@@ -287,6 +289,7 @@ export default function HomeView({
                         onFlip={onFlip}
                         onPrevious={onPrevious}
                         onNext={onNext}
+                        onShuffle={onShuffle}
                     />
                 </div>
 
