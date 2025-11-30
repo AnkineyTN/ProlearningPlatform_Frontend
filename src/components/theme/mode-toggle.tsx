@@ -12,13 +12,13 @@ export function ModeToggle() {
 
     return (
         <div className="flex items-center gap-2">
-            <Sun className="h-[1.2rem] w-[1.2rem]" />
+            <Sun className="h-[1.2rem] w-[1.2rem] text-text-warning" />
             <Switch
                 className="cursor-pointer"
                 checked={isDark}
                 onCheckedChange={handleToggle}
             />
-            <Moon className="h-[1.2rem] w-[1.2rem]" />
+            <Moon className="h-[1.2rem] w-[1.2rem] text-text-selected" />
         </div>
     )
 }

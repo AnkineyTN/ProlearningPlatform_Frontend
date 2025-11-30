@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, FolderX } from 'lucide-react';
 import SetCard from '@/components/cards/SetCard';
 import HeaderSet from '@/components/header/HeaderSet';
 import CreateNewModal from '@/components/modals/CreateNewModal';
@@ -136,7 +136,7 @@ export default function SetListPage() {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`px-4 py-2 rounded-full text-sm font-medium cursor-pointer transition-colors ${activeTab === tab.id
-                                    ? 'bg-foreground text-background'
+                                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90'
                                     : 'bg-card text-muted-foreground hover:bg-card-secondary'
                                     }`}
                             >
@@ -148,7 +148,7 @@ export default function SetListPage() {
                     <Button
                         onClick={() => setIsCreateModalOpen(true)}
                         disabled={createSetMutation.isPending}
-                        className="px-4 py-2 bg-card text-foreground rounded-lg font-medium flex items-center gap-2 hover:bg-card-secondary transition-colors disabled:opacity-50"
+                        className="px-4 py-2 bg-card text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg font-medium flex items-center gap-2 hover:bg-card-secondary transition-colors disabled:opacity-50 cursor-pointer"
                     >
                         <Plus className="w-5 h-5" />
                         {createSetMutation.isPending ? t("setlist.creating") : t("setlist.new_set")}
@@ -173,8 +173,8 @@ export default function SetListPage() {
                                 variant="ghost"
                                 onClick={() => handlePageChange('prev')}
                                 disabled={currentPage === 0}
-                                className="p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                            >
+                                className="p-2 rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            > 
                                 <ChevronLeft className="w-5 h-5 text-muted-foreground" />
                             </Button>
 
@@ -186,7 +186,7 @@ export default function SetListPage() {
                                 variant="ghost"
                                 onClick={() => handlePageChange('next')}
                                 disabled={currentPage === totalPages - 1}
-                                className="p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                className="p-2 rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
                                 <ChevronRight className="w-5 h-5 text-muted-foreground" />
                             </Button>
@@ -195,7 +195,7 @@ export default function SetListPage() {
                 ) : (
                     <div className="flex flex-col items-center justify-center py-16 mb-8">
                         <div className="text-center">
-                            <div className="mb-4 text-6xl">📚</div>
+                            <FolderX className="mx-auto mb-4 text-6xl w-20 h-20" />
                             <h3 className="text-xl font-semibold mb-2 text-foreground">
                                 No sets available
                             </h3>

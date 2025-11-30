@@ -4,7 +4,7 @@ import { useFlashcards } from '@/hooks/useFlashcards';
 import FlashCard, { type Flashcard } from '@/components/cards/FlashCard';
 import { Button } from '@/components/ui/button';
 import { getTimeAgo } from '@/lib/utils';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, FileX } from 'lucide-react';
 
 interface FlashcardListPageProps {
     setId: number;
@@ -62,6 +62,7 @@ export default function FlashcardListPage({ setId, onUpdate, onDelete }: Flashca
     if (!data?.data || data.data.length === 0) {
         return (
             <div className="flex justify-center items-center min-h-[400px]">
+                <FileX className="mx-auto mb-4 text-6xl w-20 h-20" />
                 <div className="text-muted-foreground">No flashcards found</div>
             </div>
         );
@@ -103,7 +104,7 @@ export default function FlashcardListPage({ setId, onUpdate, onDelete }: Flashca
                         variant="ghost"
                         onClick={handlePreviousPage}
                         disabled={currentPage === 0}
-                        className="p-2 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="p-2 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         <ChevronLeft className="text-foreground" />
                     </Button>
@@ -116,7 +117,7 @@ export default function FlashcardListPage({ setId, onUpdate, onDelete }: Flashca
                         variant="ghost"
                         onClick={handleNextPage}
                         disabled={currentPage >= totalPages - 1}
-                        className="p-2 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="p-2 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         <ChevronRight className="text-foreground" />
                     </Button>

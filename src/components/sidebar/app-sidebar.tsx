@@ -90,17 +90,14 @@ const AppSidebar: React.FC = ({ ...props }: React.ComponentProps<typeof Sidebar>
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
-                <SidebarMenu>
+                <SidebarMenu className="border-b border-sidebar-border py-2">
                     <SidebarMenuItem className='flex items-center'>
                         <SidebarMenuButton size="lg" asChild>
                             <a href="/dashboard">
-                                <div className="flex aspect-square size-6 items-center justify-center rounded-lg text-sidebar-primary-foreground">
+                                <div className="flex size-6 items-center justify-center rounded-lg text-sidebar-primary-foreground">
                                     <LogoFG />
                                 </div>
-                                <div className="flex flex-col gap-0.5 leading-none">
-                                    <span className="font-semibold">ProLearning</span>
-                                    <span className="text-xs">v1.0.0</span>
-                                </div>
+                                <span className="font-semibold text-lg ml-1">ProLearning</span>
                             </a>
                         </SidebarMenuButton>
                         <SidebarTrigger size="lg" />
@@ -134,7 +131,7 @@ const AppSidebar: React.FC = ({ ...props }: React.ComponentProps<typeof Sidebar>
                                     size="lg"
                                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                                 >
-                                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white">
                                         <User className="size-4" />
                                     </div>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
@@ -154,15 +151,15 @@ const AppSidebar: React.FC = ({ ...props }: React.ComponentProps<typeof Sidebar>
                                 align="end"
                                 sideOffset={4}
                             >
-                                <DropdownMenuItem onClick={handleProfile}>
+                                <DropdownMenuItem className="cursor-pointer hover:bg-card-secondary" onClick={handleProfile}>
                                     <User className="mr-2 size-4" />
                                     <span>{t('sidebar.profile')}</span>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer hover:bg-card-secondary">
                                     <Settings className="mr-2 size-4" />
                                     <span>{t('sidebar.settings')}</span>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={handleLogout}>
+                                <DropdownMenuItem className="cursor-pointer hover:bg-card-secondary" onClick={handleLogout}>
                                     <LogOut className="mr-2 size-4" />
                                     <span>{t('sidebar.logout')}</span>
                                 </DropdownMenuItem>

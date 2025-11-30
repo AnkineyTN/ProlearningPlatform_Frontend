@@ -259,7 +259,7 @@ export default function HomeView({
                                     <Button
                                         variant="ghost"
                                         onClick={handleUpdate}
-                                        className="w-full text-center transition-colors flex items-center gap-2"
+                                        className="w-full text-center transition-colors flex items-center gap-2 cursor-pointer"
                                     >
                                         <Edit className="w-4 h-4" />
                                         Update
@@ -267,7 +267,7 @@ export default function HomeView({
                                     <Button
                                         variant="ghost"
                                         onClick={handleDeleteFlashcard}
-                                        className="w-full text-center text-destructive transition-colors flex items-center gap-2"
+                                        className="w-full text-center text-destructive cursor-pointer transition-colors flex items-center gap-2"
                                     >
                                         <Trash2 className="w-4 h-4" />
                                         Delete

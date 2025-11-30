@@ -43,7 +43,7 @@ export function LanguageToggle() {
                             key={lang.code}
                             onClick={() => changeLanguage(lang.code)}
                             className={`
-                                w-full flex items-center justify-between px-4 py-2 rounded-lg
+                                w-full flex items-center justify-between px-4 py-2 rounded-lg 
                                 transition-all duration-200 hover:bg-accent 
                                 ${i18n.language === lang.code ? 'bg-accent' : ''}
                             `}

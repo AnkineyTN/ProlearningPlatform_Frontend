@@ -1,4 +1,31 @@
 {
+    "calendar": {
+        "days": {
+            "friday": "T6",
+            "monday": "T2",
+            "saturday": "T7",
+            "sunday": "CN",
+            "thursday": "T5",
+            "tuesday": "T3",
+            "wednesday": "T4"
+        },
+        "months": {
+            "april": "Tháng 4",
+            "august": "Tháng 8",
+            "december": "Tháng 12",
+            "february": "Tháng 2",
+            "january": "Tháng 1",
+            "july": "Tháng 7",
+            "june": "Tháng 6",
+            "march": "Tháng 3",
+            "may": "Tháng 5",
+            "november": "Tháng 11",
+            "october": "Tháng 10",
+            "september": "Tháng 9"
+        },
+        "targetStudyTime": "Thời gian học mục tiêu",
+        "yourCalendar": "Lịch của bạn"
+    },
     "card": {
         "checklist": {
             "seeMore": "Xem thêm",

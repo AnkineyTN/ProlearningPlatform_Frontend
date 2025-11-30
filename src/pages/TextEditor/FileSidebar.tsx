@@ -190,7 +190,7 @@ const FileSidebar: React.FC<FileSidebarProps> = ({
                                 AI Summary:
                             </p>
                             <div
-                                className="text-sm text-gray-700"
+                                className="text-sm text-foreground"
                                 dangerouslySetInnerHTML={{ __html: summary }}
                             />
                         </div>

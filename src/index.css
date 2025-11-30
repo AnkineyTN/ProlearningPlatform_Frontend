@@ -66,10 +66,16 @@
   --text-warning: oklch(79.5% 0.184 86.047);
   --text-error: oklch(57.7% 0.245 27.325);
   --text-info: oklch(62.7% 0.194 149.214);
+  --text-pinked: oklch(59.2% 0.249 0.584);
+  --text-indigo: oklch(51.1% 0.262 276.966);
+  --text-purple: oklch(55.8% 0.288 302.321);
   --bg-selected: oklch(93.2% 0.032 255.585);
   --bg-warning: oklch(97.3% 0.071 103.193);
   --bg-error: oklch(93.6% 0.032 17.717);
   --bg-info: oklch(96.2% 0.044 156.743);
+  --bg-pinked: oklch(94.8% 0.028 342.258);
+  --bg-indigo: oklch(93% 0.034 272.788);
+  --bg-purple: oklch(94.6% 0.033 307.174);
 }
 
 @theme inline {
@@ -126,10 +132,16 @@
   --color-text-warning: var(--text-warning);
   --color-text-error: var(--text-error);
   --color-text-info: var(--text-info);
+  --color-text-pinked: var(--text-pinked);
+  --color-text-indigo: var(--text-indigo);
+  --color-text-purple: var(--text-purple);
   --color-bg-selected: var(--bg-selected);
   --color-bg-warning: var(--bg-warning);
   --color-bg-error: var(--bg-error);
   --color-bg-info: var(--bg-info);
+  --color-bg-pinked: var(--bg-pinked);
+  --color-bg-indigo: var(--bg-indigo);
+  --color-bg-purple: var(--bg-purple);
 }
 
 .dark {
@@ -182,10 +194,16 @@
   --text-warning: oklch(85.2% 0.199 91.936);
   --text-error: oklch(63.7% 0.237 25.331);
   --text-info: oklch(72.3% 0.219 149.579);
+  --text-pinked: oklch(71.8% 0.202 349.761);
+  --text-indigo: oklch(67.3% 0.182 276.935);
+  --text-purple: oklch(71.4% 0.203 305.504);
   --bg-selected: oklch(28.2% 0.091 267.935);
   --bg-warning: oklch(28.6% 0.066 53.813);
   --bg-error: oklch(25.8% 0.092 26.042);
   --bg-info: oklch(26.6% 0.065 152.934);
+  --bg-pinked: oklch(28.4% 0.109 3.907);
+  --bg-indigo: oklch(25.7% 0.09 281.288);
+  --bg-purple: oklch(29.1% 0.149 302.717);
 }
 
 @layer base {

@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { useSetData } from '@/hooks/useSets';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import Checklist from '@/components/cards/CheckListCard';
 import SetCard, { type Set } from '@/components/cards/SetCard';
+import CalendarCard from '@/components/cards/CalendarCard';
 import Header from '@/components/header/HeaderDashboard';
 import { useDeleteSet, useUpdateSet } from '@/hooks/useSets';
 import { type UpdateSetPayload } from '@/services/types/set.types';
 import CreateNewModal from '@/components/modals/CreateNewModal';
 import { useTranslation } from 'react-i18next';
-import { useAppSelector } from '@/hooks/redux';
 
 const Dashboard = () => {
     const { t } = useTranslation();
@@ -24,8 +24,6 @@ const Dashboard = () => {
         { label: 'Complete 2 reading exercise', checked: false },
         { label: 'Complete 2 reading exercise', checked: false }
     ]);
-    const { user } = useAppSelector((state) => state.auth);
-
     const page = 0;
     const size = 4;
     const sort = [{ property: 'id', direction: 'ASC' }];
@@ -46,15 +44,6 @@ const Dashboard = () => {
         description: item.description ?? '',
         numNotes: item.numNotes ?? 0,
     }));
-
-    const calendar = [
-        ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-        [1, 2, 3, 4, 5, 6, 7],
-        [8, 9, 10, 11, 12, 13, 14],
-        [15, 16, 17, 18, 19, 20, 21],
-        [22, 23, 24, 25, 26, 27, 28],
-        [29, 30, '', '', '', '', '']
-    ];
 
     const handleDeleteSet = async (id: number) => {
         try {
@@ -117,7 +106,7 @@ const Dashboard = () => {
         <div className="min-h-screen p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <Header onSearch={(val) => console.log('Search:', val)} />
+                <Header onSearch={(val) => console.log('Search:', val)} title={t('header.welcome')} />
 
                 <div className="grid grid-cols-3 gap-12">
                     {/* Left Column */}
@@ -152,57 +141,8 @@ const Dashboard = () => {
 
                     {/* Right Column */}
                     <div className="space-y-6">
-                        {/* Profile Card */}
-                        <div className="rounded-xl p-6 shadow-sm text-center">
-                            <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden bg-orange-100">
-                                <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=300&h=300&fit=crop" alt="Profile" className="w-full h-full object-cover" />
-                            </div>
-                            <h3 className="font-semibold text-lg">{user?.firstName || 'Unknown User'} {user?.lastName || ''}</h3>
-                            <p className="text-sm text-muted-foreground">{user?.email || 'no-email@example.com'}</p>
-                        </div>
-
                         {/* Calendar */}
-                        <div className="rounded-xl p-6 shadow-sm">
-                            <div className="flex justify-between items-center mb-4">
-                                <h3 className="font-semibold">Your Calendar</h3>
-                            </div>
-                            <div className="flex justify-between items-center mb-4">
-                                <button className="p-1 hover:bg-card-secondary rounded" title="Previous month">
-                                    <ChevronLeft className="w-5 h-5" />
-                                </button>
-                                <span className="font-semibold">September</span>
-                                <button className="p-1 hover:bg-card-secondary rounded" title="Next month">
-                                    <ChevronRight className="w-5 h-5" />
-                                </button>
-                            </div>
-                            <div className="grid grid-cols-7 gap-1 text-center text-xs mb-2">
-                                {calendar[0].map((day, idx) => (
-                                    <div key={idx} className="font-semibold text-muted-foreground py-2">
-                                        {day}
-                                    </div>
-                                ))}
-                            </div>
-                            {calendar.slice(1).map((week, weekIdx) => (
-                                <div key={weekIdx} className="grid grid-cols-7 gap-1 text-center">
-                                    {week.map((day, dayIdx) => (
-                                        <div
-                                            key={dayIdx}
-                                            className={`py-2 text-sm rounded-full ${day === 15 ? 'bg-gray-900 text-white font-semibold' :
-                                                day ? 'hover:bg-card-secondary cursor-pointer' : ''
-                                                }`}
-                                        >
-                                            {day}
-                                        </div>
-                                    ))}
-                                </div>
-                            ))}
-                            <div className="mt-6 pt-4 border-t">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm font-semibold">Target study time</span>
-                                    <span className="text-xl font-bold">08h 30m</span>
-                                </div>
-                            </div>
-                        </div>
+                        <CalendarCard />
                     </div>
                 </div>
             </div>

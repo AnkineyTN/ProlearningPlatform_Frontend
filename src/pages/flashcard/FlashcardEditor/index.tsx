@@ -273,7 +273,7 @@ export default function FlashcardEditor({
                     <Button
                         onClick={handleBack}
                         variant="ghost"
-                        className="mb-4 text-muted-foreground hover:text-foreground"
+                        className="mb-4 cursor-pointer text-muted-foreground hover:text-foreground"
                     >
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Back
@@ -288,7 +288,7 @@ export default function FlashcardEditor({
                         <Button
                             onClick={handleSave}
                             disabled={isSaving}
-                            className="bg-foreground text-background px-8"
+                            className="bg-foreground cursor-pointer text-background px-8"
                         >
                             {isSaving ? 'Saving...' : (isUpdateMode ? 'Update' : 'Create')}
                         </Button>
@@ -347,7 +347,7 @@ export default function FlashcardEditor({
                     <Button
                         onClick={addCard}
                         variant="outline"
-                        className="flex items-center gap-2 w-full max-w-md border-dashed border-2"
+                        className="flex items-center gap-2 w-full max-w-md border-dashed border-2 cursor-pointer hover:bg-secondary transition-colors"
                     >
                         <Plus className="w-5 h-5" />
                         Add Card

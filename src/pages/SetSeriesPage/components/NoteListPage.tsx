@@ -2,7 +2,7 @@ import { useState } from 'react';
 import NoteCard, { type Note } from '@/components/cards/NoteCard';
 import { Button } from '@/components/ui/button';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, FileX } from 'lucide-react';
 import { useNotesBySet } from '@/hooks/useNotes';
 import { getTimeAgo } from '@/lib/utils';
 
@@ -76,6 +76,7 @@ export default function NoteListPage({ setId: propSetId, onUpdate, onDelete }: N
     if (notes.length === 0) {
         return (
             <div className="flex flex-col justify-center items-center py-12 gap-4">
+                <FileX className="mx-auto mb-4 text-6xl w-20 h-20" />
                 <div className="text-muted-foreground text-lg">No notes found</div>
                 <div className="text-muted-foreground text-sm">Create your first note to get started!</div>
             </div>
@@ -115,7 +116,7 @@ export default function NoteListPage({ setId: propSetId, onUpdate, onDelete }: N
                         variant={"ghost"}
                         onClick={() => handlePageChange('prev')}
                         disabled={currentPage === 0}
-                        className="p-2 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="p-2 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         <ChevronLeft className="w-5 h-5 text-muted-foreground" />
                     </Button>
@@ -128,7 +129,7 @@ export default function NoteListPage({ setId: propSetId, onUpdate, onDelete }: N
                         variant={"ghost"}
                         onClick={() => handlePageChange('next')}
                         disabled={currentPage === totalPages - 1}
-                        className="p-2 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="p-2 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         <ChevronRight className="w-5 h-5 text-muted-foreground" />
                     </Button>

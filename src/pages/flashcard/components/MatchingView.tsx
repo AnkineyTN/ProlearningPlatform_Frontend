@@ -229,7 +229,7 @@ export default function MatchingView({ flashcards, onBack }: MatchingViewProps) 
                             <Button
                                 variant={"default"}
                                 onClick={initializeGame}
-                                className="px-6 py-3 rounded-lg transition-colors font-semibold"
+                                className="px-6 py-3 rounded-lg transition-colors font-semibold cursor-pointer"
                             >
                                 Start Game
                             </Button>
@@ -237,7 +237,7 @@ export default function MatchingView({ flashcards, onBack }: MatchingViewProps) 
                         <Button
                             variant={"outline"}
                             onClick={onBack}
-                            className="px-6 py-3 rounded-lg transition-colors font-semibold"
+                            className="px-6 py-3 rounded-lg transition-colors font-semibold cursor-pointer"
                         >
                             Back to Home
                         </Button>

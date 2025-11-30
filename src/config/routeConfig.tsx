@@ -17,6 +17,7 @@ import { useParams } from 'react-router-dom';
 import FlashcardApp from '@/pages/flashcard/FlashcardApp'
 import GoogleAuthCallback from '@/pages/GoogleAuthCallback'
 import GoogleAuthFailure from '@/pages/GoogleAuthFailure'
+import TodoDashboard from '@/pages/TodoDashboard';
 
 function LandingPageWrapper() {
     const token = useSelector((state: RootState) => state.auth.token);
@@ -108,6 +109,10 @@ export const routeConfig: RouteObject[] = [
             {
                 path: 'dashboard',
                 element: <Dashboard />
+            },
+            {
+                path: 'todo',
+                element: <TodoDashboard />
             },
             {
                 path: 'sets',

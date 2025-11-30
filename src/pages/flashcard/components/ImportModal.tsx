@@ -177,6 +177,7 @@ export default function ImportModal({ isOpen, onClose, onInsert }: ImportModalPr
                                         onClick={handleBack}
                                         variant="ghost"
                                         size="sm"
+                                        className='cursor-pointer'
                                     >
                                         ← Back to edit
                                     </Button>
@@ -217,20 +218,21 @@ export default function ImportModal({ isOpen, onClose, onInsert }: ImportModalPr
                     <Button
                         onClick={handleClose}
                         variant="outline"
+                        className='cursor-pointer'
                     >
                         Cancel
                     </Button>
                     {!showPreview ? (
                         <Button
                             onClick={handleParse}
-                            className="bg-foreground text-background"
+                            className="bg-foreground text-background cursor-pointer"
                         >
                             Preview
                         </Button>
                     ) : (
                         <Button
                             onClick={handleInsert}
-                            className="bg-foreground text-background"
+                            className="bg-foreground text-background cursor-pointer"
                         >
                             Insert
                         </Button>
