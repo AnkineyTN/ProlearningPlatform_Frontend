@@ -127,7 +127,9 @@
             "selectNotes": "Select notes to create {type} from:",
             "selected": "selected",
             "uploadFiles": "Upload Files",
-            "uploadedFiles": "Uploaded Files"
+            "uploadedFiles": "Uploaded Files",
+            "generating": "Generating...",
+            "generateWithAI": "Generate with AI"
         },
         "back": "Back",
         "cancel": "Cancel",

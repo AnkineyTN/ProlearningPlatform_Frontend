@@ -9,7 +9,9 @@ import type {
     DeleteMultipleCardsRequest,
     DeleteMultipleCardsResponse,
     UpdateMultipleCardsRequest,
-    UpdateMultipleCardsResponse
+    UpdateMultipleCardsResponse,
+    GenerateFlashcardsFromNoteRequest,
+    GenerateFlashcardsFromNoteResponse
 } from '../types/flashcard.types';
 
 export const flashcardAPI = {
@@ -98,4 +100,26 @@ export const flashcardAPI = {
         cards: UpdateMultipleCardsRequest[]
     ): Promise<AxiosResponse<UpdateMultipleCardsResponse>> =>
         api.patch(`/sets/${setId}/flashcards/${flashcardId}/cards`, cards),
+    
+    // Generate flashcards from note
+    generateFlashcardsFromNote: (
+        setId: number,
+        data: GenerateFlashcardsFromNoteRequest
+    ): Promise<AxiosResponse<GenerateFlashcardsFromNoteResponse>> =>
+        api.post(`/sets/${setId}/flashcards/ai-note`, data),
+    
+    generateFlashcardsFromFile: (
+        setId: number,
+        files: File[]
+    ): Promise<AxiosResponse<GenerateFlashcardsFromNoteResponse>> => {
+        const formData = new FormData();
+        files.forEach((file) => {
+            formData.append('files', file);
+        });
+        return api.post(`/sets/${setId}/flashcards/ai-file`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+    }
 };

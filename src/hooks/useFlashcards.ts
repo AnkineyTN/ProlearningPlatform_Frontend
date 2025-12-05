@@ -227,3 +227,48 @@ export const useUpdateMultipleCards = () => {
         },
     });
 };
+
+export const useGenerateFlashcardsFromNotes = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({
+            setId,
+            noteIds,
+        }: {
+            setId: number;
+            noteIds: number[];
+        }) => {
+            const response = await flashcardAPI.generateFlashcardsFromNote(setId, { noteIds });
+            return response.data;
+        },
+        onSuccess: (_, variables) => {
+            // Invalidate the flashcards query to refetch the list
+            queryClient.invalidateQueries({
+                queryKey: ['flashcards', variables.setId],
+            });
+        },
+    });
+};
+
+export const useGenerateFlashcardsFromFiles = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({
+            setId,
+            files,
+        }: {
+            setId: number;
+            files: File[];
+        }) => {
+            const response = await flashcardAPI.generateFlashcardsFromFile(setId, files);
+            return response.data;
+        },
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({
+                queryKey: ['flashcards', variables.setId],
+            });
+        },
+    });
+};

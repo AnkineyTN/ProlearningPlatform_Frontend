@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Plus, Shuffle, MoreHorizontal, Trash2 } from 'lucide-react';
 import {
     useCreateFlashcardManual,
@@ -45,7 +46,7 @@ export default function FlashcardEditor({
         flashcardId || 0,
     );
 
-    const { title: locationTitle, description: locationDescription, privacy } = location.state || {};
+    const { title: locationTitle, description: locationDescription, privacy, generatedFlashcards } = location.state || {};
 
     const [title, setTitle] = useState(locationTitle || '');
     const [description, setDescription] = useState(locationDescription || '');
@@ -83,6 +84,24 @@ export default function FlashcardEditor({
         }
     }, [locationTitle, setId, navigate, isUpdateMode]);
 
+    // If navigation provided generated flashcards (from AI), populate the editor with them
+    useEffect(() => {
+        if (!isUpdateMode && Array.isArray(generatedFlashcards) && generatedFlashcards.length > 0) {
+            setTitle(locationTitle || 'AI Generated Flashcards');
+            setDescription(locationDescription || '');
+
+            const imported = generatedFlashcards.map((card: any) => ({
+                id: crypto.randomUUID(),
+                term: card.frontCard || card.front || '',
+                definition: card.backCard || card.back || '',
+                assetId: undefined,
+                _action: 'CREATE' as 'CREATE'
+            }));
+
+            setCards(imported);
+        }
+    }, [generatedFlashcards, isUpdateMode, locationTitle, locationDescription]);
+
     const addCard = () => {
         setCards([...cards, { id: crypto.randomUUID(), term: '', definition: '', imageUrl: '', assetId: undefined, _action: 'CREATE' as 'CREATE' }]);
     };
@@ -90,7 +109,7 @@ export default function FlashcardEditor({
     const removeCard = (id: number | string) => {
         if (cards.length <= 1) return;
 
-                setCards(prev => prev.map(card => {
+        setCards(prev => prev.map(card => {
             if (card.id === id) {
                 if (typeof id === 'number') {
                     return { ...card, _action: 'DELETE' as 'DELETE' };
@@ -165,6 +184,11 @@ export default function FlashcardEditor({
     };
 
     const handleSave = async () => {
+        if (!title.trim()) {
+            alert('Please enter a title');
+            return;
+        }
+
         const validCards = cards.filter(card => card.term.trim() && card.definition.trim());
 
         if (validCards.length === 0) {
@@ -279,16 +303,39 @@ export default function FlashcardEditor({
                         Back
                     </Button>
 
-                    <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                            <h1 className="text-3xl font-bold mb-2">{title}</h1>
-                            <p className="text-muted-foreground">{description}</p>
+                    <div className="flex items-start justify-between gap-6">
+                        <div className="flex-1 space-y-4">
+                            <div>
+                                <Label htmlFor="title" className="text-sm font-medium mb-2 block">
+                                    Title *
+                                </Label>
+                                <Input
+                                    id="title"
+                                    type="text"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    placeholder="Enter flashcard set title"
+                                    className="text-2xl bg-card font-bold border-2 focus:border-primary"
+                                />
+                            </div>
+                            <div>
+                                <Label htmlFor="description" className="text-sm font-medium mb-2 block">
+                                    Description
+                                </Label>
+                                <Textarea
+                                    id="description"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    placeholder="Add a description (optional)"
+                                    className="min-h-[80px] resize-none bg-card border-2 focus:border-primary"
+                                />
+                            </div>
                         </div>
 
                         <Button
                             onClick={handleSave}
                             disabled={isSaving}
-                            className="bg-foreground cursor-pointer text-background px-8"
+                            className="bg-foreground cursor-pointer text-background px-8 mt-6"
                         >
                             {isSaving ? 'Saving...' : (isUpdateMode ? 'Update' : 'Create')}
                         </Button>

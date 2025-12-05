@@ -127,7 +127,9 @@
             "selectNotes": "Chọn ghi chú để tạo {type} từ:",
             "selected": "đã chọn",
             "uploadFiles": "Tải lên tệp",
-            "uploadedFiles": "Tệp đã tải lên"
+            "uploadedFiles": "Tệp đã tải lên",
+            "generating": "Đang tạo...",
+            "generateWithAI": "Tạo với AI"
         },
         "back": "Quay lại",
         "cancel": "Hủy",

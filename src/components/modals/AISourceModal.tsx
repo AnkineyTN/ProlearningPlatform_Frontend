@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, FileText, Upload, ArrowLeft } from 'lucide-react';
+import { X, FileText, Upload, ArrowLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNotesBySet } from '@/hooks/useNotes';
 import NoteCardSelect from '@/components/cards/NoteCardSelect';
@@ -14,6 +14,7 @@ interface AISourceModalProps {
     onClose: () => void;
     onBack: () => void;
     onSubmit: (data: { source: 'notes' | 'files'; selectedItems: any[] }) => void;
+    isLoading?: boolean;
 }
 
 function getTimeAgo(dateString: string): string {
@@ -33,10 +34,10 @@ function getTimeAgo(dateString: string): string {
     }
 }
 
-export default function AISourceModal({ setId, currentPage, pageSize, type, isOpen, onClose, onBack, onSubmit }: AISourceModalProps) {
+export default function AISourceModal({ setId, currentPage, pageSize, type, isOpen, onClose, onBack, onSubmit, isLoading }: AISourceModalProps) {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<'notes' | 'files'>('notes');
-    const [selectedNotes] = useState<number[]>([]);
+    const [selectedNotes, setSelectedNotes] = useState<number[]>([]);
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
     const { data: notesData } = useNotesBySet(
         setId,
@@ -47,17 +48,26 @@ export default function AISourceModal({ setId, currentPage, pageSize, type, isOp
 
     if (!isOpen) return null;
 
-    // const toggleNoteSelection = (noteId: number) => {
-    //     setSelectedNotes(prev =>
-    //         prev.includes(noteId)
-    //             ? prev.filter(id => id !== noteId)
-    //             : [...prev, noteId]
-    //     );
-    // };
+    const handleNoteSelect = (noteId: number) => {
+        setSelectedNotes(prev => {
+            if (prev.includes(noteId)) {
+                return prev.filter(id => id !== noteId);
+            } else {
+                return [...prev, noteId];
+            }
+        });
+    };
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-            setUploadedFiles(Array.from(e.target.files));
+            const filesArray = Array.from(e.target.files);
+            // Limit to 3 files maximum
+            if (filesArray.length > 3) {
+                alert('Maximum 3 files allowed');
+                setUploadedFiles(filesArray.slice(0, 3));
+            } else {
+                setUploadedFiles(filesArray);
+            }
         }
     };
 
@@ -86,12 +96,15 @@ export default function AISourceModal({ setId, currentPage, pageSize, type, isOp
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold">{t('modal.ai.header', { type: type.toLowerCase() })}</h2>
-                    <button
-                        onClick={onClose}
-                        className="p-1 hover:bg-card rounded transition-colors cursor-pointer"
-                    >
-                        <X className="w-6 h-6" />
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={onClose}
+                            disabled={isLoading}
+                            className={`p-1 rounded transition-colors ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-card cursor-pointer'}`}
+                        >
+                            <X className="w-6 h-6" />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Tabs */}
@@ -146,7 +159,10 @@ export default function AISourceModal({ setId, currentPage, pageSize, type, isOp
                                                     year: 'numeric'
                                                 })
                                             }}
-                                            onSelected={() => null}
+                                            onSelected={() => {
+                                                if (!isLoading) handleNoteSelect(note.id);
+                                            }}
+                                            isSelected={selectedNotes.includes(note.id)}
                                         />
                                     ))}
                                 </div>
@@ -165,17 +181,18 @@ export default function AISourceModal({ setId, currentPage, pageSize, type, isOp
                                 <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                                 <h3 className="font-medium mb-2">{t('modal.uploadFiles')}</h3>
                                 <p className="text-sm text-muted-foreground mb-4">
-                                    PDF, DOCX, TXT
+                                    PDF, DOCX, TXT (Maximum 3 files)
                                 </p>
                                 <label className="inline-block">
                                     <input
                                         type="file"
                                         multiple
-                                        onChange={handleFileUpload}
+                                        onChange={(e) => { if (!isLoading) handleFileUpload(e); }}
                                         className="hidden"
                                         accept=".pdf,.docx,.txt,.doc"
+                                        disabled={isLoading}
                                     />
-                                    <span className="px-4 py-2 bg-foreground text-background rounded-lg cursor-pointer hover:opacity-90 transition-opacity inline-block">
+                                    <span className={`px-4 py-2 bg-foreground text-background rounded-lg inline-block ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:opacity-90 transition-opacity'}`}>
                                         {t('modal.ai.chooseFiles')}
                                     </span>
                                 </label>
@@ -210,17 +227,27 @@ export default function AISourceModal({ setId, currentPage, pageSize, type, isOp
                 <div className="flex justify-end gap-3">
                     <Button
                         onClick={onBack}
-                        className="px-6 py-2 border border-border rounded-lg bg-background text-foreground hover:bg-card transition-colors cursor-pointer flex items-center gap-2"
+                        disabled={isLoading}
+                        className={`px-6 py-2 border border-border rounded-lg bg-background text-foreground transition-colors flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-card cursor-pointer'}`}
                     >
                         <ArrowLeft className="w-4 h-4" />
                         {t('modal.back')}
                     </Button>
                     <Button
                         onClick={handleSubmit}
-                        disabled={!canSubmit}
-                        className="px-6 py-2 bg-foreground text-background rounded-lg cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={!canSubmit || isLoading}
+                        className="px-6 py-2 bg-foreground text-background rounded-lg transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {t('modal.generateWithAI')}
+                        {isLoading ? (
+                            <>
+                            <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                                <span>{t('modal.ai.generating') || 'Generating...'}</span>
+                            </>
+                        ) : (
+                            <>
+                                {t('modal.generateWithAI')}
+                            </>
+                        )}
                     </Button>
                 </div>
             </div>

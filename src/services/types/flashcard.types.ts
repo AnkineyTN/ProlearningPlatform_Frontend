@@ -194,3 +194,19 @@ export interface UpdateMultipleCardsResponse {
     }>;
     metadata: Record<string, never>;
 }
+
+export interface GenerateFlashcardsFromNoteRequest {
+    noteIds: number[];
+}
+
+export interface GenerateFlashcardsFromNoteResponse {
+    status: string,
+    message: string,
+    data: {
+        content: string
+    }
+}
+
+export interface GenerateFlashcardsFromFileRequest {
+    files: File[];
+}

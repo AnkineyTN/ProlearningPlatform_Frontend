@@ -61,7 +61,7 @@ export default function FlashcardListPage({ setId, onUpdate, onDelete }: Flashca
     // Empty state
     if (!data?.data || data.data.length === 0) {
         return (
-            <div className="flex justify-center items-center min-h-[400px]">
+            <div className="flex flex-col justify-center items-center min-h-[400px]">
                 <FileX className="mx-auto mb-4 text-6xl w-20 h-20" />
                 <div className="text-muted-foreground">No flashcards found</div>
             </div>

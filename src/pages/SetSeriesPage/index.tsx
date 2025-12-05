@@ -14,7 +14,7 @@ import NoteListPage from './components/NoteListPage';
 import TestListPage from './components/TestListPage';
 import RecordListPage from './components/RecordListPage';
 import type { Note } from '@/components/cards/NoteCard';
-import { useUpdateFlashcard, useDeleteFlashcard } from '@/hooks/useFlashcards';
+import { useUpdateFlashcard, useDeleteFlashcard, useGenerateFlashcardsFromNotes, useGenerateFlashcardsFromFiles } from '@/hooks/useFlashcards';
 import { useDeleteSet } from '@/hooks/useSets';
 import type { Flashcard } from '@/components/cards/FlashCard';
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
@@ -31,10 +31,16 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
     const [activeTab, setActiveTab] = useState('Notes');
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
     const [selectedFlashcard, setSelectedFlashcard] = useState<Flashcard | null>(null);
+
+    // Mutations
     const updateFlashcardMutation = useUpdateFlashcard();
     const deleteFlashcardMutation = useDeleteFlashcard();
     const deleteSetMutation = useDeleteSet();
-    // const updateSetMutation = useUpdateSet();
+    const createNoteMutation = useCreateNote();
+    const updateNoteMutation = useUpdateNote();
+    const deleteNoteMutation = useDeleteNote();
+    const generateFlashcardsMutation = useGenerateFlashcardsFromNotes();
+    const generateFlashcardsFromFilesMutation = useGenerateFlashcardsFromFiles();
 
     // Modal states
     const [isMethodModalOpen, setIsMethodModalOpen] = useState(false);
@@ -44,10 +50,6 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     const tabs = ['Notes', 'Flashcards', 'Mindmaps', 'Tests', 'Records'];
-
-    const createNoteMutation = useCreateNote();
-    const updateNoteMutation = useUpdateNote();
-    const deleteNoteMutation = useDeleteNote();
 
     const handleTabClick = (tab: string) => {
         setActiveTab(tab);
@@ -82,8 +84,56 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
     };
 
     const handleAISourceSubmit = async (data: { source: 'notes' | 'files'; selectedItems: any[] }) => {
-        console.log('AI Generation with:', data);
-        setIsAISourceModalOpen(false);
+        if (activeTab === 'Flashcards') {
+            try {
+                let result;
+
+                if (data.source === 'notes') {
+                    // Call the API to generate flashcards from notes
+                    result = await generateFlashcardsMutation.mutateAsync({
+                        setId: Number(setId),
+                        noteIds: data.selectedItems as number[]
+                    });
+                } else if (data.source === 'files') {
+                    // Call the API to generate flashcards from files
+                    result = await generateFlashcardsFromFilesMutation.mutateAsync({
+                        setId: Number(setId),
+                        files: data.selectedItems as File[]
+                    });
+                }
+
+                if (result) {
+                    // Parse the content string to extract flashcards
+                    const flashcardsContent = result.data.content;
+                    const flashcards = flashcardsContent.split(';').map(card => {
+                        const [frontCard, backCard] = card.split('|');
+                        return { frontCard: frontCard?.trim(), backCard: backCard?.trim() };
+                    });
+
+                    // Close the modal
+                    setIsAISourceModalOpen(false);
+
+                    // Navigate to editor with generated flashcards
+                    navigate(`/sets/${setId}/flashcards/editor`, {
+                        state: {
+                            title: 'AI Generated Flashcards',
+                            description: data.source === 'notes'
+                                ? `Generated from ${data.selectedItems.length} note(s)`
+                                : `Generated from ${data.selectedItems.length} file(s)`,
+                            privacy: 'PRIVATE',
+                            generatedFlashcards: flashcards
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error generating flashcards:', error);
+                // You might want to show an error toast here
+            }
+        } else {
+            // Handle other types
+            console.log('AI Generation with:', data);
+            setIsAISourceModalOpen(false);
+        }
     };
 
     const handleCreate = async (data: { title: string; description: string; privacy: string }) => {
@@ -233,11 +283,13 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
                     <Button
                         className="bg-foreground text-background px-5 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-colors disabled:opacity-50"
                         onClick={handleCreateButtonClick}
-                        disabled={createNoteMutation.isPending}
+                        disabled={createNoteMutation.isPending || generateFlashcardsMutation.isPending || generateFlashcardsFromFilesMutation.isPending}
                     >
-                        {createNoteMutation.isPending
-                            ? 'Creating...'
-                            : `+ Create a new ${activeTab.slice(0, -1).toLowerCase()}`
+                        {generateFlashcardsMutation.isPending || generateFlashcardsFromFilesMutation.isPending
+                            ? 'Generating with AI...'
+                            : createNoteMutation.isPending
+                                ? 'Creating...'
+                                : `+ Create a new ${activeTab.slice(0, -1).toLowerCase()}`
                         }
                     </Button>
                     <div className="relative">
@@ -290,6 +342,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
                     onClose={() => setIsAISourceModalOpen(false)}
                     onBack={handleBackFromAISource}
                     onSubmit={handleAISourceSubmit}
+                    isLoading={generateFlashcardsMutation.isPending}
                 />
 
                 <CreateNewModal
