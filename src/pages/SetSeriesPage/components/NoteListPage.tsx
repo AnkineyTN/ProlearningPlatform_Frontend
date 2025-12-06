@@ -41,12 +41,14 @@ export default function NoteListPage({ setId: propSetId, onUpdate, onDelete }: N
         onUpdate(note);
     };
 
-    const handlePageChange = (direction: 'prev' | 'next') => {
-        setCurrentPage(prev =>
-            direction === 'prev'
-                ? Math.max(0, prev - 1)
-                : Math.min(totalPages - 1, prev + 1)
-        );
+    const handlePreviousPage = () => {
+      setCurrentPage((prev) => Math.max(0, prev - 1));
+    };
+
+    const handleNextPage = () => {
+      if (notesData?.totalPage) {
+        setCurrentPage((prev) => Math.min(notesData.totalPage - 1, prev + 1));
+      }
     };
 
     if (!setId) {
@@ -84,57 +86,60 @@ export default function NoteListPage({ setId: propSetId, onUpdate, onDelete }: N
     }
 
     return (
-        <div>
-            {/* Notes Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                {notes.map((note) => (
-                    <NoteCard
-                        key={note.id}
-                        note={{
-                            id: note.id,
-                            title: note.title,
-                            description: note.description || 'No description available...',
-                            privacy: note.privacy,
-                            timeAgo: getTimeAgo(note.updated_at),
-                            created_at: new Date(note.created_at).toLocaleDateString('en-GB', {
-                                day: '2-digit',
-                                month: 'short',
-                                year: 'numeric'
-                            })
-                        }}
-                        onAccess={() => handleAccess(note.id)}
-                        onUpdate={() => handleUpdate(note)}
-                        onDelete={() => handleDelete(note.id)}
-                    />
-                ))}
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-4">
-                    <Button
-                        variant={"ghost"}
-                        onClick={() => handlePageChange('prev')}
-                        disabled={currentPage === 0}
-                        className="p-2 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                    >
-                        <ChevronLeft className="w-5 h-5 text-muted-foreground" />
-                    </Button>
-
-                    <span className="text-sm font-medium">
-                        {currentPage + 1}/{totalPages}
-                    </span>
-
-                    <Button
-                        variant={"ghost"}
-                        onClick={() => handlePageChange('next')}
-                        disabled={currentPage === totalPages - 1}
-                        className="p-2 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                    >
-                        <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                    </Button>
-                </div>
-            )}
+      <div>
+        {/* Notes Grid */}
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6'>
+          {notes.map((note) => (
+            <NoteCard
+              key={note.id}
+              note={{
+                id: note.id,
+                title: note.title,
+                description: note.description || "No description available...",
+                privacy: note.privacy,
+                timeAgo: getTimeAgo(note.updated_at),
+                created_at: new Date(note.created_at).toLocaleDateString(
+                  "en-GB",
+                  {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  }
+                ),
+              }}
+              onAccess={() => handleAccess(note.id)}
+              onUpdate={() => handleUpdate(note)}
+              onDelete={() => handleDelete(note.id)}
+            />
+          ))}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className='flex justify-center items-center gap-4'>
+            <Button
+              variant={"ghost"}
+              onClick={handlePreviousPage}
+              disabled={currentPage === 0}
+              className='p-2 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed'
+            >
+              <ChevronLeft className='w-5 h-5 text-muted-foreground' />
+            </Button>
+
+            <span className='text-sm font-medium'>
+              {currentPage + 1}/{totalPages}
+            </span>
+
+            <Button
+              variant={"ghost"}
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages - 1}
+              className='p-2 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed'
+            >
+              <ChevronRight className='w-5 h-5 text-muted-foreground' />
+            </Button>
+          </div>
+        )}
+      </div>
     );
 }

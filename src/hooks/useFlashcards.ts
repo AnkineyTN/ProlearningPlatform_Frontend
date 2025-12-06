@@ -1,12 +1,13 @@
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-import { flashcardAPI } from '@/services/endpoints/flashcard';
+import { flashcardAPI } from "@/services/endpoints/flashcard";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import type {
     CreateFlashcardManualRequest,
     UpdateCardRequest,
     AddCardsRequest,
     DeleteMultipleCardsRequest,
     UpdateMultipleCardsRequest
-} from '../services/types/flashcard.types';
+} from '@/services/types/flashcard.types';
 
 interface UseFlashcardsParams {
     setId: number;

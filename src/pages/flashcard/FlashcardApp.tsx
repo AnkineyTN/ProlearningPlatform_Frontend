@@ -1,13 +1,21 @@
-import { useState, useMemo } from 'react';
-import { useDeleteCard, useFlashcardDetail, useUpdateCard, useDeleteFlashcard } from '@/hooks/useFlashcards';
-import HomeView from './components/HomeView';
-import StudyView from './components/StudyView';
-import ResultsView from './components/ResultsView';
-import MatchingView from './components/MatchingView';
-import FlashcardHeader from './components/FlashcardHeader';
-import type { Card } from '@/services/types/flashcard.types';
-import { useNavigate } from 'react-router-dom';
+import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
+import {
+  useDeleteCard,
+  useDeleteFlashcard,
+  useFlashcardDetail,
+  useUpdateCard,
+} from "@/hooks/useFlashcards";
+
+import FlashcardHeader from "./components/FlashcardHeader";
+import HomeView from "./components/HomeView";
+import MatchingView from "./components/MatchingView";
+import ResultsView from "./components/ResultsView";
+import StudyView from "./components/StudyView";
+
+import type { Card } from '@/services/types/flashcard.types';
 // Types
 type ViewMode = 'home' | 'study' | 'matching' | 'results';
 
@@ -167,9 +175,10 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
                 data
             });
             await refetch();
-            console.log('Card updated successfully');
+            toast.success('Card updated successfully');
         } catch (error) {
             console.error('Failed to update card:', error);
+            toast.error('Failed to update card. Please try again.');
         }
     };
 
@@ -181,9 +190,10 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
                 cardId
             });
             await refetch();
-            console.log('Card deleted successfully');
+            toast.success('Card deleted successfully');
         } catch (error) {
             console.error('Failed to delete card:', error);
+            toast.error('Failed to delete card. Please try again.');
         }
     };
 
@@ -193,12 +203,11 @@ export default function FlashcardDetailPage({ setId, flashcardId }: FlashcardDet
                 setId: Number(setId),
                 flashcardId: Number(flashcardId)
             });
-
-            // Navigate to set page after successful deletion
+            toast.success('Flashcard set deleted successfully');
             navigate(`/sets/${setId}`);
         } catch (error) {
             console.error('Error deleting flashcard:', error);
-            alert('Failed to delete flashcard. Please try again.');
+            toast.error('Failed to delete flashcard. Please try again.');
         }
     };
 

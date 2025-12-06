@@ -1,10 +1,12 @@
-import { Image, Trash2, GripVertical, Loader2 } from 'lucide-react';
-import type { FlashcardItemProps } from './type';
-import { Button } from '@/components/ui/button';
-import { useUploadImageFile } from '@/hooks/useImageUpload';
-import { useRef } from 'react';
-import { Input } from '@/components/ui/input';
+import { GripVertical, Image, Loader2, Trash2 } from "lucide-react";
+import { useRef } from "react";
+import { toast } from "react-toastify";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useUploadImageFile } from "@/hooks/useImageUpload";
+
+import type { FlashcardItemProps } from './type';
 export default function FlashcardItemComponent({
     card,
     index,
@@ -22,11 +24,11 @@ export default function FlashcardItemComponent({
         const file = e.target.files?.[0];
         if (!file) return;
         if (!file.type.startsWith('image/')) {
-            alert('Please select an image file');
+            toast.error('Please select an image file');
             return;
         }
         if (file.size > 5 * 1024 * 1024) {
-            alert('Image size must be less than 5MB');
+            toast.error('Image size must be less than 5MB');
             return;
         }
 
@@ -37,7 +39,7 @@ export default function FlashcardItemComponent({
             fileInputRef.current!.value = '';
         } catch (error) {
             console.error('Upload failed:', error);
-            alert('Failed to upload image. Please try again.');
+            toast.error('Failed to upload image. Please try again.');
         }
     };
 

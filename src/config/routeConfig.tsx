@@ -94,7 +94,7 @@ export const routeConfig: RouteObject[] = [
         element: <OnboardingApp />
     },
     {
-        path: '/auth/google/callback',
+        path: '/dashboard&accessToken=:accessToken',
         element: <GoogleAuthCallback />
     },
     {

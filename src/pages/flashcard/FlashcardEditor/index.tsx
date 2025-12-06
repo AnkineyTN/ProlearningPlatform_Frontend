@@ -1,19 +1,22 @@
-import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Plus, Shuffle, MoreHorizontal, Trash2 } from 'lucide-react';
+import { ArrowLeft, MoreHorizontal, Plus, Shuffle, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
-    useCreateFlashcardManual,
-    useFlashcardDetail,
-    useAddCards,
-    useUpdateMultipleCards,
-    useDeleteMultipleCards
-} from '@/hooks/useFlashcards';
-import FlashcardItemWrapper from './FlashcardItemComponent';
-import ImportModal from '../components/ImportModal';
+  useAddCards,
+  useCreateFlashcardManual,
+  useDeleteMultipleCards,
+  useFlashcardDetail,
+  useUpdateMultipleCards,
+} from "@/hooks/useFlashcards";
+
+import ImportModal from "../components/ImportModal";
+import FlashcardItemWrapper from "./FlashcardItemComponent";
 
 interface FlashcardCard {
     id: number | string;
@@ -185,14 +188,14 @@ export default function FlashcardEditor({
 
     const handleSave = async () => {
         if (!title.trim()) {
-            alert('Please enter a title');
+            toast.error('Please enter a title');
             return;
         }
 
         const validCards = cards.filter(card => card.term.trim() && card.definition.trim());
 
         if (validCards.length === 0) {
-            alert('Please add at least one card with both term and definition');
+            toast.error('Please add at least one card with both term and definition');
             return;
         }
 
@@ -248,7 +251,7 @@ export default function FlashcardEditor({
                     setId: Number(setId),
                     data: {
                         title,
-                        description,
+                        description: description,
                         privacy: privacy as 'PUBLIC' | 'PRIVATE',
                         cards: (cards
                             .filter(c => c._action !== 'DELETE' && c.term.trim() && c.definition.trim())
@@ -264,7 +267,7 @@ export default function FlashcardEditor({
             }
         } catch (error) {
             console.error('Error saving flashcard:', error);
-            alert('Failed to save. Please try again.');
+            toast.error("Flashcard title already exists. Please choose a different title.");
         }
     };
 

@@ -10,6 +10,7 @@ import { useDeleteSet, useUpdateSet } from '@/hooks/useSets';
 import { type UpdateSetPayload } from '@/services/types/set.types';
 import CreateNewModal from '@/components/modals/CreateNewModal';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-hot-toast';
 
 const Dashboard = () => {
     const { t } = useTranslation();
@@ -48,8 +49,10 @@ const Dashboard = () => {
     const handleDeleteSet = async (id: number) => {
         try {
             await deleteSetMutation.mutateAsync(id);
+            toast.success("Set deleted successfully");
         } catch (error) {
             console.error('Error deleting set:', error);
+            toast.error("Failed to delete set");
         }
     };
 

@@ -1,387 +1,442 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Thêm import này
-import { useCreateNote, useDeleteNote, useUpdateNote } from '@/hooks/useNotes';
-import { Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import HeaderSetDetails from './components/HeaderSetDetails';
-import CreateNewModal from '@/components/modals/CreateNewModal';
-import CreateMethodModal from '@/components/modals/CreateMethodModal';
-import AISourceModal from '@/components/modals/AISourceModal';
-import FlashcardListPage from './components/FlashcardListPage';
-import MindmapListPage from './components/MindmapListPage';
-import NoteListPage from './components/NoteListPage';
-import TestListPage from './components/TestListPage';
-import RecordListPage from './components/RecordListPage';
-import type { Note } from '@/components/cards/NoteCard';
-import { useUpdateFlashcard, useDeleteFlashcard, useGenerateFlashcardsFromNotes, useGenerateFlashcardsFromFiles } from '@/hooks/useFlashcards';
-import { useDeleteSet } from '@/hooks/useSets';
-import type { Flashcard } from '@/components/cards/FlashCard';
-import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
-import { useTranslation } from 'react-i18next';
+import { Search } from "lucide-react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
+import AISourceModal from "@/components/modals/AISourceModal";
+import CreateMethodModal from "@/components/modals/CreateMethodModal";
+import CreateNewModal from "@/components/modals/CreateNewModal";
+import DeleteConfirmDialog from "@/components/modals/DeleteConfirmDialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  useDeleteFlashcard,
+  useGenerateFlashcardsFromFiles,
+  useGenerateFlashcardsFromNotes,
+  useUpdateFlashcard,
+} from "@/hooks/useFlashcards";
+import { useCreateNote, useDeleteNote, useUpdateNote } from "@/hooks/useNotes";
+import { useDeleteSet } from "@/hooks/useSets";
+
+import FlashcardListPage from "./components/FlashcardListPage";
+import HeaderSetDetails from "./components/HeaderSetDetails";
+import MindmapListPage from "./components/MindmapListPage";
+import NoteListPage from "./components/NoteListPage";
+import RecordListPage from "./components/RecordListPage";
+import TestListPage from "./components/TestListPage";
+
+import type { Note } from "@/components/cards/NoteCard";
+import type { Flashcard } from "@/components/cards/FlashCard";
 interface HeaderProps {
-    onSearch?: (query: string) => void;
-    setId: string;
+  onSearch?: (query: string) => void;
+  setId: string;
 }
 
 export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
-    const { t } = useTranslation();
-    const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState('Notes');
-    const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-    const [selectedFlashcard, setSelectedFlashcard] = useState<Flashcard | null>(null);
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("Notes");
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [selectedFlashcard, setSelectedFlashcard] = useState<Flashcard | null>(
+    null
+  );
 
-    // Mutations
-    const updateFlashcardMutation = useUpdateFlashcard();
-    const deleteFlashcardMutation = useDeleteFlashcard();
-    const deleteSetMutation = useDeleteSet();
-    const createNoteMutation = useCreateNote();
-    const updateNoteMutation = useUpdateNote();
-    const deleteNoteMutation = useDeleteNote();
-    const generateFlashcardsMutation = useGenerateFlashcardsFromNotes();
-    const generateFlashcardsFromFilesMutation = useGenerateFlashcardsFromFiles();
+  // Mutations
+  const updateFlashcardMutation = useUpdateFlashcard();
+  const deleteFlashcardMutation = useDeleteFlashcard();
+  const deleteSetMutation = useDeleteSet();
+  const createNoteMutation = useCreateNote();
+  const updateNoteMutation = useUpdateNote();
+  const deleteNoteMutation = useDeleteNote();
+  const generateFlashcardsMutation = useGenerateFlashcardsFromNotes();
+  const generateFlashcardsFromFilesMutation = useGenerateFlashcardsFromFiles();
 
-    // Modal states
-    const [isMethodModalOpen, setIsMethodModalOpen] = useState(false);
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [isAISourceModalOpen, setIsAISourceModalOpen] = useState(false);
-    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  // Modal states
+  const [isMethodModalOpen, setIsMethodModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isAISourceModalOpen, setIsAISourceModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-    const tabs = ['Notes', 'Flashcards', 'Mindmaps', 'Tests', 'Records'];
+  const tabs = ["Notes", "Flashcards", "Mindmaps", "Tests", "Records"];
 
-    const handleTabClick = (tab: string) => {
-        setActiveTab(tab);
-    };
+  const handleTabClick = (tab: string) => {
+    setActiveTab(tab);
+  };
 
-    const handleCreateButtonClick = () => {
-        if (activeTab === 'Notes') {
-            setIsCreateModalOpen(true);
-        } else {
-            setIsMethodModalOpen(true);
+  const handleCreateButtonClick = () => {
+    if (activeTab === "Notes") {
+      setIsCreateModalOpen(true);
+    } else {
+      setIsMethodModalOpen(true);
+    }
+  };
+
+  const handleSelectManual = () => {
+    setIsCreateModalOpen(true);
+  };
+
+  const handleSelectAI = () => {
+    setIsAISourceModalOpen(true);
+  };
+
+  const handleBackFromCreate = () => {
+    setIsCreateModalOpen(false);
+    if (activeTab !== "Notes") {
+      setIsMethodModalOpen(true);
+    }
+  };
+
+  const handleBackFromAISource = () => {
+    setIsAISourceModalOpen(false);
+    setIsMethodModalOpen(true);
+  };
+
+  const handleAISourceSubmit = async (data: {
+    source: "notes" | "files";
+    selectedItems: any[];
+  }) => {
+    if (activeTab === "Flashcards") {
+      try {
+        let result;
+
+        if (data.source === "notes") {
+          // Call the API to generate flashcards from notes
+          result = await generateFlashcardsMutation.mutateAsync({
+            setId: Number(setId),
+            noteIds: data.selectedItems as number[],
+          });
+        } else if (data.source === "files") {
+          // Call the API to generate flashcards from files
+          result = await generateFlashcardsFromFilesMutation.mutateAsync({
+            setId: Number(setId),
+            files: data.selectedItems as File[],
+          });
         }
-    };
 
-    const handleSelectManual = () => {
-        setIsCreateModalOpen(true);
-    };
+        if (result) {
+          // Parse the content string to extract flashcards
+          const flashcardsContent = result.data.content;
+          const flashcards = flashcardsContent.split(";").map((card) => {
+            const [frontCard, backCard] = card.split("|");
+            return { frontCard: frontCard?.trim(), backCard: backCard?.trim() };
+          });
 
-    const handleSelectAI = () => {
-        setIsAISourceModalOpen(true);
-    };
+          // Close the modal
+          setIsAISourceModalOpen(false);
 
-    const handleBackFromCreate = () => {
+          // Navigate to editor with generated flashcards
+          navigate(`/sets/${setId}/flashcards/editor`, {
+            state: {
+              title: "AI Generated Flashcards",
+              description:
+                data.source === "notes"
+                  ? `Generated from ${data.selectedItems.length} note(s)`
+                  : `Generated from ${data.selectedItems.length} file(s)`,
+              privacy: "PRIVATE",
+              generatedFlashcards: flashcards,
+            },
+          });
+        }
+      } catch (error) {
+        console.error("Error generating flashcards:", error);
+        toast.error("Failed to generate flashcards. Please try again.");
+        // You might want to show an error toast here
+      }
+    } else {
+      // Handle other types
+      console.log("AI Generation with:", data);
+      setIsAISourceModalOpen(false);
+    }
+  };
+
+  const handleCreate = async (data: {
+    title: string;
+    description: string;
+    privacy: string;
+  }) => {
+    switch (activeTab) {
+      case "Notes":
+        try {
+          await createNoteMutation.mutateAsync({
+            title: data.title,
+            description: data.description,
+            privacy: data.privacy.toUpperCase(),
+            setId: Number(setId),
+          });
+          setIsCreateModalOpen(false);
+        } catch (error) {
+          console.error("Error creating note:", error);
+          toast.error("Failed to create note. Please try again.");
+        }
+        break;
+      case "Flashcards":
+        try {
+          setIsCreateModalOpen(false);
+          navigate(`/sets/${setId}/flashcards/editor`, {
+            state: {
+              title: data.title,
+              description: data.description,
+              privacy: data.privacy.toUpperCase(),
+            },
+          });
+        } catch (error) {
+          console.error("Error navigating to flashcard editor:", error);
+          toast.error("Failed to create flashcard. Please try again.");
+        }
+        break;
+      case "Mindmaps":
+      case "Tests":
+      case "Records":
+        break;
+      default:
+        console.log("New item created:", data);
         setIsCreateModalOpen(false);
-        if (activeTab !== 'Notes') {
-            setIsMethodModalOpen(true);
-        }
-    };
+    }
+  };
 
-    const handleBackFromAISource = () => {
-        setIsAISourceModalOpen(false);
-        setIsMethodModalOpen(true);
-    };
+  const handleUpdateFlashcard = (flashcard: Flashcard) => {
+    setSelectedFlashcard(flashcard);
+    setIsUpdateModalOpen(true);
+    setActiveTab("Flashcards");
+  };
 
-    const handleAISourceSubmit = async (data: { source: 'notes' | 'files'; selectedItems: any[] }) => {
-        if (activeTab === 'Flashcards') {
-            try {
-                let result;
+  const handleUpdate = (note: Note) => {
+    setSelectedNote(note);
+    setIsUpdateModalOpen(true);
+  };
 
-                if (data.source === 'notes') {
-                    // Call the API to generate flashcards from notes
-                    result = await generateFlashcardsMutation.mutateAsync({
-                        setId: Number(setId),
-                        noteIds: data.selectedItems as number[]
-                    });
-                } else if (data.source === 'files') {
-                    // Call the API to generate flashcards from files
-                    result = await generateFlashcardsFromFilesMutation.mutateAsync({
-                        setId: Number(setId),
-                        files: data.selectedItems as File[]
-                    });
-                }
+  const handleUpdateSubmit = async (data: any) => {
+    if (selectedNote) {
+      try {
+        const payload = {
+          title: data.title,
+          privacy: data.privacy === "PUBLIC" ? "PUBLIC" : "PRIVATE",
+          description: data.description,
+        };
 
-                if (result) {
-                    // Parse the content string to extract flashcards
-                    const flashcardsContent = result.data.content;
-                    const flashcards = flashcardsContent.split(';').map(card => {
-                        const [frontCard, backCard] = card.split('|');
-                        return { frontCard: frontCard?.trim(), backCard: backCard?.trim() };
-                    });
+        await updateNoteMutation.mutateAsync({
+          id: selectedNote.id,
+          payload,
+        });
+        toast.success("Note updated successfully");
+        setIsUpdateModalOpen(false);
+        setSelectedNote(null);
+      } catch (error) {
+        console.error("Error updating note:", error);
+        toast.error("Failed to update note. Please try again.");
+      }
+    }
 
-                    // Close the modal
-                    setIsAISourceModalOpen(false);
+    if (selectedFlashcard) {
+      try {
+        const payload = {
+          title: data.title,
+          privacy: data.privacy.toUpperCase() as "PUBLIC" | "PRIVATE",
+          description: data.description,
+        };
 
-                    // Navigate to editor with generated flashcards
-                    navigate(`/sets/${setId}/flashcards/editor`, {
-                        state: {
-                            title: 'AI Generated Flashcards',
-                            description: data.source === 'notes'
-                                ? `Generated from ${data.selectedItems.length} note(s)`
-                                : `Generated from ${data.selectedItems.length} file(s)`,
-                            privacy: 'PRIVATE',
-                            generatedFlashcards: flashcards
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Error generating flashcards:', error);
-                // You might want to show an error toast here
-            }
-        } else {
-            // Handle other types
-            console.log('AI Generation with:', data);
-            setIsAISourceModalOpen(false);
-        }
-    };
+        await updateFlashcardMutation.mutateAsync({
+          setId: Number(setId),
+          flashcardId: selectedFlashcard.id,
+          payload,
+        });
+        toast.success("Flashcard updated successfully");
+        setIsUpdateModalOpen(false);
+        setSelectedFlashcard(null);
+      } catch (error) {
+        console.error("Error updating flashcard:", error);
+        toast.error("Failed to update flashcard. Please try again.");
+      }
+    }
+  };
 
-    const handleCreate = async (data: { title: string; description: string; privacy: string }) => {
-        switch (activeTab) {
-            case 'Notes':
-                try {
-                    await createNoteMutation.mutateAsync({
-                        title: data.title,
-                        description: data.description,
-                        privacy: data.privacy.toUpperCase(),
-                        setId: Number(setId)
-                    });
-                    setIsCreateModalOpen(false);
-                } catch (error) {
-                    console.error('Error creating note:', error);
-                }
-                break;
-            case 'Flashcards':
-                try {
-                    setIsCreateModalOpen(false);
-                    navigate(`/sets/${setId}/flashcards/editor`, {
-                        state: {
-                            title: data.title,
-                            description: data.description,
-                            privacy: data.privacy.toUpperCase(),
-                        }
-                    });
-                } catch (error) {
-                    console.error('Error navigating to flashcard editor:', error);
-                }
-                break;
-            case 'Mindmaps':
-            case 'Tests':
-            case 'Records':
-                break;
-            default:
-                console.log('New item created:', data);
-                setIsCreateModalOpen(false);
-        }
-    };
+  const handleDeleteNote = async (id: number) => {
+    try {
+      await deleteNoteMutation.mutateAsync(id);
+      toast.success("Note deleted successfully");
+    } catch (error) {
+      console.error("Error deleting note:", error);
+      toast.error("Failed to delete note. Please try again.");
+    }
+  };
 
-    const handleUpdateFlashcard = (flashcard: Flashcard) => {
-        setSelectedFlashcard(flashcard);
-        setIsUpdateModalOpen(true);
-        setActiveTab('Flashcards');
-    };
+  const handleDeleteFlashcard = async (id: number | string) => {
+    try {
+      await deleteFlashcardMutation.mutateAsync({
+        setId: Number(setId),
+        flashcardId: id,
+      });
+      toast.success("Flashcard deleted successfully");
+    } catch (error) {
+      console.error("Error deleting flashcard:", error);
+      toast.error("Failed to delete flashcard. Please try again.");
+    }
+  };
 
-    const handleUpdate = (note: Note) => {
-        setSelectedNote(note);
-        setIsUpdateModalOpen(true);
-    };
+  const handleDeleteClick = () => {
+    setShowDeleteDialog(true);
+  };
 
-    const handleUpdateSubmit = async (data: any) => {
-        if (selectedNote) {
-            try {
-                const payload = {
-                    title: data.title,
-                    privacy: data.privacy === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE',
-                    description: data.description,
-                };
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteSetMutation.mutateAsync(Number(setId));
+      setShowDeleteDialog(false);
+      navigate("/sets");
+    } catch (error) {
+      console.error("Error deleting set:", error);
+      toast.error("Failed to delete set. Please try again.");
+    }
+  };
 
-                await updateNoteMutation.mutateAsync({
-                    id: selectedNote.id,
-                    payload
-                });
-                setIsUpdateModalOpen(false);
-                setSelectedNote(null);
-            } catch (error) {
-                console.error('Error updating note:', error);
-            }
-        }
+  return (
+    <div className='min-h-screen p-6'>
+      <div className='max-w-7xl mx-auto'>
+        <HeaderSetDetails onDelete={handleDeleteClick} />
 
-        if (selectedFlashcard) {
-            try {
-                const payload = {
-                    title: data.title,
-                    privacy: data.privacy.toUpperCase() as 'PUBLIC' | 'PRIVATE',
-                    description: data.description,
-                };
-
-                await updateFlashcardMutation.mutateAsync({
-                    setId: Number(setId),
-                    flashcardId: selectedFlashcard.id,
-                    payload
-                });
-                setIsUpdateModalOpen(false);
-                setSelectedFlashcard(null);
-            } catch (error) {
-                console.error('Error updating flashcard:', error);
-            }
-        }
-    };
-
-    const handleDeleteNote = async (id: number) => {
-        try {
-            await deleteNoteMutation.mutateAsync(id);
-        } catch (error) {
-            console.error('Error deleting note:', error);
-        }
-    };
-
-    const handleDeleteFlashcard = async (id: number | string) => {
-        try {
-            await deleteFlashcardMutation.mutateAsync({ setId: Number(setId), flashcardId: id });
-        } catch (error) {
-            console.error('Error deleting flashcard:', error);
-        }
-    };
-
-    const handleDeleteClick = () => {
-        setShowDeleteDialog(true);
-    };
-
-    const handleConfirmDelete = async () => {
-        try {
-            await deleteSetMutation.mutateAsync(Number(setId));
-            setShowDeleteDialog(false);
-            navigate('/sets');
-        } catch (error) {
-            console.error('Error deleting set:', error);
-        }
-    };
-
-    return (
-        <div className="min-h-screen p-6">
-            <div className="max-w-7xl mx-auto">
-                <HeaderSetDetails onDelete={handleDeleteClick} />
-
-                {/* Tabs */}
-                <div className="flex gap-2 mb-6 overflow-x-auto">
-                    {tabs.map((tab) => (
-                        <Button
-                            key={tab}
-                            onClick={() => handleTabClick(tab)}
-                            className={`cursor-pointer px-6 py-2 rounded-full text-foreground text-sm border border-ring font-medium transition-colors whitespace-nowrap ${activeTab === tab
-                                ? 'border-blue-500 bg-card-selected hover:bg-muted'
-                                : 'border-ring bg-card hover:bg-secondary'
-                                }`}
-                        >
-                            {tab}
-                        </Button>
-                    ))}
-                </div>
-
-                {/* Action Bar */}
-                <div className="flex justify-between items-center mb-6">
-                    <Button
-                        className="bg-foreground text-background px-5 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-colors disabled:opacity-50"
-                        onClick={handleCreateButtonClick}
-                        disabled={createNoteMutation.isPending || generateFlashcardsMutation.isPending || generateFlashcardsFromFilesMutation.isPending}
-                    >
-                        {generateFlashcardsMutation.isPending || generateFlashcardsFromFilesMutation.isPending
-                            ? 'Generating with AI...'
-                            : createNoteMutation.isPending
-                                ? 'Creating...'
-                                : `+ Create a new ${activeTab.slice(0, -1).toLowerCase()}`
-                        }
-                    </Button>
-                    <div className="relative">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                            <Input
-                                type="text"
-                                placeholder="Search..."
-                                onChange={(e) => onSearch?.(e.target.value)}
-                                className="bg-card pl-10 pr-4 py-2 w-80 rounded-full border border-muted-foreground"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* Content Grid */}
-                {activeTab === 'Notes' && (
-                    <NoteListPage
-                        setId={Number(setId)}
-                        onUpdate={handleUpdate}
-                        onDelete={(noteId) => handleDeleteNote(noteId)}
-                    />
-                )}
-                {activeTab === 'Flashcards' && (
-                    <FlashcardListPage
-                        setId={Number(setId)}
-                        onUpdate={handleUpdateFlashcard}
-                        onDelete={(flashcardId) => handleDeleteFlashcard(flashcardId)}
-                    />
-                )}
-                {activeTab === 'Mindmaps' && <MindmapListPage />}
-                {activeTab === 'Tests' && <TestListPage />}
-                {activeTab === 'Records' && <RecordListPage />}
-
-                {/* Modals */}
-                <CreateMethodModal
-                    type={activeTab.slice(0, -1)}
-                    isOpen={isMethodModalOpen}
-                    onClose={() => setIsMethodModalOpen(false)}
-                    onSelectManual={handleSelectManual}
-                    onSelectAI={handleSelectAI}
-                />
-
-                <AISourceModal
-                    setId={Number(setId)}
-                    currentPage={0}
-                    pageSize={6}
-                    type={activeTab.slice(0, -1)}
-                    isOpen={isAISourceModalOpen}
-                    onClose={() => setIsAISourceModalOpen(false)}
-                    onBack={handleBackFromAISource}
-                    onSubmit={handleAISourceSubmit}
-                    isLoading={generateFlashcardsMutation.isPending}
-                />
-
-                <CreateNewModal
-                    type={activeTab.slice(0, -1)}
-                    isOpen={isCreateModalOpen}
-                    onClose={() => setIsCreateModalOpen(false)}
-                    onBack={activeTab !== 'Notes' ? handleBackFromCreate : undefined}
-                    onSubmit={handleCreate}
-                />
-
-                {isUpdateModalOpen && (selectedNote || selectedFlashcard) && (
-                    <CreateNewModal
-                        type={activeTab.slice(0, -1)}
-                        isOpen={isUpdateModalOpen}
-                        onClose={() => {
-                            setIsUpdateModalOpen(false);
-                            setSelectedNote(null);
-                            setSelectedFlashcard(null);
-                        }}
-                        onSubmit={handleUpdateSubmit}
-                        initialData={{
-                            title: selectedNote?.title || selectedFlashcard?.title || '',
-                            description: selectedNote?.description || selectedFlashcard?.description || '',
-                            privacy: (selectedNote?.privacy || selectedFlashcard?.privacy || 'PUBLIC')
-                                .charAt(0).toUpperCase() +
-                                (selectedNote?.privacy || selectedFlashcard?.privacy || 'public')
-                                    .slice(1).toLowerCase(),
-                        }}
-                        isUpdateMode={true}
-                    />
-                )}
-                <DeleteConfirmDialog
-                    isOpen={showDeleteDialog}
-                    onClose={() => setShowDeleteDialog(false)}
-                    onConfirm={handleConfirmDelete}
-                    title={t('modal.deleteConfirmationTitle')}
-                    itemName={`"Software Engineering"`}
-                />
-            </div>
+        {/* Tabs */}
+        <div className='flex gap-2 mb-6 overflow-x-auto'>
+          {tabs.map((tab) => (
+            <Button
+              key={tab}
+              onClick={() => handleTabClick(tab)}
+              className={`cursor-pointer px-6 py-2 rounded-full text-foreground text-sm border border-ring font-medium transition-colors whitespace-nowrap ${
+                activeTab === tab
+                  ? "font-semibold text-text-pinked border-pink-500 bg-bg-pinked hover:bg-bg-pinked-selected"
+                  : "border-ring bg-card hover:bg-card-secondary"
+              }`}
+            >
+              {tab}
+            </Button>
+          ))}
         </div>
-    );
+
+        {/* Action Bar */}
+        <div className='flex justify-between items-center mb-6'>
+          <Button
+            className='bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 px-5 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-colors disabled:opacity-50'
+            onClick={handleCreateButtonClick}
+            disabled={
+              createNoteMutation.isPending ||
+              generateFlashcardsMutation.isPending ||
+              generateFlashcardsFromFilesMutation.isPending
+            }
+          >
+            {generateFlashcardsMutation.isPending ||
+            generateFlashcardsFromFilesMutation.isPending
+              ? "Generating with AI..."
+              : createNoteMutation.isPending
+              ? "Creating..."
+              : `+ Create a new ${activeTab.slice(0, -1).toLowerCase()}`}
+          </Button>
+          <div className='relative'>
+            <div className='relative'>
+              <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5' />
+              <Input
+                type='text'
+                placeholder='Search...'
+                onChange={(e) => onSearch?.(e.target.value)}
+                className='bg-card pl-10 pr-4 py-2 w-80 rounded-full border border-muted-foreground'
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Content Grid */}
+        {activeTab === "Notes" && (
+          <NoteListPage
+            setId={Number(setId)}
+            onUpdate={handleUpdate}
+            onDelete={(noteId) => handleDeleteNote(noteId)}
+          />
+        )}
+        {activeTab === "Flashcards" && (
+          <FlashcardListPage
+            setId={Number(setId)}
+            onUpdate={handleUpdateFlashcard}
+            onDelete={(flashcardId) => handleDeleteFlashcard(flashcardId)}
+          />
+        )}
+        {activeTab === "Mindmaps" && <MindmapListPage />}
+        {activeTab === "Tests" && <TestListPage />}
+        {activeTab === "Records" && <RecordListPage />}
+
+        {/* Modals */}
+        <CreateMethodModal
+          type={activeTab.slice(0, -1)}
+          isOpen={isMethodModalOpen}
+          onClose={() => setIsMethodModalOpen(false)}
+          onSelectManual={handleSelectManual}
+          onSelectAI={handleSelectAI}
+        />
+
+        <AISourceModal
+          setId={Number(setId)}
+          currentPage={0}
+          pageSize={6}
+          type={activeTab.slice(0, -1)}
+          isOpen={isAISourceModalOpen}
+          onClose={() => setIsAISourceModalOpen(false)}
+          onBack={handleBackFromAISource}
+          onSubmit={handleAISourceSubmit}
+          isLoading={
+            generateFlashcardsMutation.isPending ||
+            generateFlashcardsFromFilesMutation.isPending
+          }
+        />
+
+        <CreateNewModal
+          type={activeTab.slice(0, -1)}
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onBack={activeTab !== "Notes" ? handleBackFromCreate : undefined}
+          onSubmit={handleCreate}
+        />
+
+        {isUpdateModalOpen && (selectedNote || selectedFlashcard) && (
+          <CreateNewModal
+            type={activeTab.slice(0, -1)}
+            isOpen={isUpdateModalOpen}
+            onClose={() => {
+              setIsUpdateModalOpen(false);
+              setSelectedNote(null);
+              setSelectedFlashcard(null);
+            }}
+            onSubmit={handleUpdateSubmit}
+            initialData={{
+              title: selectedNote?.title || selectedFlashcard?.title || "",
+              description:
+                selectedNote?.description ||
+                selectedFlashcard?.description ||
+                "",
+              privacy:
+                (
+                  selectedNote?.privacy ||
+                  selectedFlashcard?.privacy ||
+                  "PUBLIC"
+                )
+                  .charAt(0)
+                  .toUpperCase() +
+                (
+                  selectedNote?.privacy ||
+                  selectedFlashcard?.privacy ||
+                  "public"
+                )
+                  .slice(1)
+                  .toLowerCase(),
+            }}
+            isUpdateMode={true}
+          />
+        )}
+        <DeleteConfirmDialog
+          isOpen={showDeleteDialog}
+          onClose={() => setShowDeleteDialog(false)}
+          onConfirm={handleConfirmDelete}
+          title={t("modal.deleteConfirmationTitle")}
+          itemName={`"Software Engineering"`}
+        />
+      </div>
+    </div>
+  );
 }

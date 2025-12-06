@@ -1,14 +1,16 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { X } from 'lucide-react';
+import { X } from "lucide-react";
+import { useState } from "react";
+import { toast } from "react-toastify";
+
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ImportedCard {
     term: string;
@@ -52,7 +54,7 @@ export default function ImportModal({ isOpen, onClose, onInsert }: ImportModalPr
 
     const handleParse = () => {
         if (!content.trim()) {
-            alert('Please enter content to import');
+            toast.error('Please enter content to import');
             return;
         }
 
@@ -74,7 +76,7 @@ export default function ImportModal({ isOpen, onClose, onInsert }: ImportModalPr
         });
 
         if (parsed.length === 0) {
-            alert('No valid cards found. Please check the format.');
+            toast.error('No valid cards found. Please check the format.');
             return;
         }
 
@@ -84,7 +86,7 @@ export default function ImportModal({ isOpen, onClose, onInsert }: ImportModalPr
 
     const handleInsert = () => {
         if (preview.length === 0) {
-            alert('Please parse content first');
+            toast.error('Please parse content first');
             return;
         }
         onInsert(preview);

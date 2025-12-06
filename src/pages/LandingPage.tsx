@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { BookOpen, Users, Award, Zap, CheckCircle, Star, ArrowRight } from 'lucide-react';
-import LogoFG from '@/assets/logo_fg';
+import { ArrowRight, Award, BookOpen, CheckCircle, Star, Users, Zap } from "lucide-react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import LogoFG from "@/assets/logo_fg";
+import { LanguageToggle } from "@/components/language/language-toggle";
 import { ModeToggle } from "@/components/theme/mode-toggle";
-import { useTranslation } from 'react-i18next';
-import { LanguageToggle } from '@/components/language/language-toggle';
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 
 export default function LandingPage() {
   const [activeFeature, setActiveFeature] = useState(0);
@@ -83,7 +84,7 @@ export default function LandingPage() {
             <div className="hidden md:flex items-center space-x-4">
               <Button
                 variant="outline"
-                onClick={() => window.location.href = '/signup'}
+                onClick={() => window.location.href = '/login'}
                 className="cursor-pointer px-6 py-2.5 rounded-full transition-all font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
                 {t("landing.login")}
               </Button>

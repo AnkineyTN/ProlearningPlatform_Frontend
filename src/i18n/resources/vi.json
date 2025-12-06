@@ -123,13 +123,13 @@
         "ai": {
             "chooseFiles": "Chọn tệp",
             "fromNotes": "Từ ghi chú",
-            "header": "Tạo {type} với AI",
-            "selectNotes": "Chọn ghi chú để tạo {type} từ:",
+            "generateWithAI": "Tạo với AI",
+            "generating": "Đang tạo...",
+            "header": "Tạo {{type}} với AI",
+            "selectNotes": "Chọn ghi chú để tạo {{type}} từ:",
             "selected": "đã chọn",
             "uploadFiles": "Tải lên tệp",
-            "uploadedFiles": "Tệp đã tải lên",
-            "generating": "Đang tạo...",
-            "generateWithAI": "Tạo với AI"
+            "uploadedFiles": "Tệp đã tải lên"
         },
         "back": "Quay lại",
         "cancel": "Hủy",
@@ -153,18 +153,21 @@
             "quickGeneration": "Tạo nhanh",
             "smartContentExtraction": "Trích xuất nội dung thông minh"
         },
-        "new": "Mới",
+        "new": "Tạo {{type}} mới",
         "noDescription": "Không có mô tả sẵn có...",
         "optional": "Tùy chọn",
         "privacy": "Quyền riêng tư",
         "privacyRequired": "Quyền riêng tư là bắt buộc",
         "private": "Riêng tư",
         "public": "Công khai",
+        "thisCard": "thẻ này",
+        "thisFlashcard": "thẻ ghi nhớ này",
         "title": "Tiêu đề",
         "titleEmpty": "Vui lòng nhập tiêu đề",
         "titleTooLong": "Tiêu đề phải ít hơn 100 ký tự",
         "unlisted": "Không công khai",
-        "update": "Chỉnh sửa"
+        "update": "Chỉnh sửa {{type}}",
+        "updateButton": "Chỉnh sửa"
     },
     "onboarding": {
         "back": "Quay lại",
