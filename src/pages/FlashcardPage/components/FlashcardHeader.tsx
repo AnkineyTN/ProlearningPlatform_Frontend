@@ -6,7 +6,7 @@ import { useNavigate } from "react-router";
 export default function FlashcardHeader({ setId, title, description }: { setId: number, title: string, description: string }) {
     const navigate = useNavigate();
     const handleClick = () => {
-        navigate(`/sets/${setId}`);
+        navigate(`/sets/${setId}/flashcards`);
     }
     return (
         <div className="border-b">

@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import AISourceModal from "@/components/modals/AISourceModal";
@@ -36,7 +36,27 @@ interface HeaderProps {
 export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("Notes");
+  const location = useLocation();
+
+  // Map UI tab labels to route slugs
+  const tabMap: Record<string, string> = {
+    Notes: "notes",
+    Flashcards: "flashcards",
+    Mindmaps: "mindmaps",
+    Tests: "tests",
+    Records: "records",
+  };
+
+  // Determine initial tab from current pathname (so route and UI stay in sync)
+  const path = location.pathname.toLowerCase();
+  let initialTab = "Notes";
+  if (path.includes(`/sets/${setId}/flashcards`)) initialTab = "Flashcards";
+  else if (path.includes(`/sets/${setId}/mindmaps`)) initialTab = "Mindmaps";
+  else if (path.includes(`/sets/${setId}/tests`)) initialTab = "Tests";
+  else if (path.includes(`/sets/${setId}/records`)) initialTab = "Records";
+  else if (path.includes(`/sets/${setId}/notes`)) initialTab = "Notes";
+
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [selectedFlashcard, setSelectedFlashcard] = useState<Flashcard | null>(
     null
@@ -63,6 +83,8 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
+    const slug = tabMap[tab] || tab.toLowerCase();
+    navigate(`/sets/${setId}/${slug}`);
   };
 
   const handleCreateButtonClick = () => {

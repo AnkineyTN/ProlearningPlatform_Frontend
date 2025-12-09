@@ -1,151 +1,188 @@
-import { type RouteObject } from 'react-router-dom'
-import { Navigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import type { RootState } from '@/store'
-import SignIn from '@/components/auth/SignIn'
-import SignUp from '@/components/auth/SignUp'
-import Dashboard from '@/pages/Dashboard'
-import SetListPage from '@/pages/SetListPage'
-import ProtectedLayout from '@/components/ProtectedLayout'
-import ProtectedLayoutNoSidebar from '@/components/ProtectedLayoutNoSidebar'
-import LandingPage from '@/pages/LandingPage'
+import { useSelector } from "react-redux";
+import { Navigate, useParams } from "react-router-dom";
+
+import SignIn from "@/components/auth/SignIn";
+import SignUp from "@/components/auth/SignUp";
+import ProtectedLayout from "@/components/ProtectedLayout";
+import ProtectedLayoutNoSidebar from "@/components/ProtectedLayoutNoSidebar";
+import Dashboard from "@/pages/Dashboard";
+import FlashcardApp from "@/pages/FlashcardPage";
+import FlashcardEditor from "@/pages/FlashcardPage/FlashcardEditor";
+import LandingPage from "@/pages/LandingPage";
+import TextEditor from "@/pages/NotePage";
 import OnboardingApp from "@/pages/OnboardingApp.tsx";
-import SetSeriesPage from '@/pages/SetSeriesPage'
-import TextEditor from '@/pages/TextEditor'
-import FlashcardEditor from '@/pages/flashcard/FlashcardEditor'
-import { useParams } from 'react-router-dom';
-import FlashcardApp from '@/pages/flashcard/FlashcardApp'
-import GoogleAuthCallback from '@/pages/GoogleAuthCallback'
-import GoogleAuthFailure from '@/pages/GoogleAuthFailure'
-import TodoDashboard from '@/pages/TodoDashboard';
+import SetListPage from "@/pages/SetListPage";
+import SetSeriesPage from "@/pages/SetSeriesPage";
+import TodoDashboard from "@/pages/TodoDashboard";
 
+import type { RouteObject } from "react-router-dom";
+
+import type { RootState } from "@/store";
 function LandingPageWrapper() {
-    const token = useSelector((state: RootState) => state.auth.token);
+  const token = useSelector((state: RootState) => state.auth.token);
 
-    if (token) {
-        return <Navigate to="/dashboard" replace />;
-    }
+  if (token) {
+    return <Navigate to='/dashboard' replace />;
+  }
 
-    return <LandingPage />;
+  return <LandingPage />;
 }
 
 function SignInWrapper() {
-    const token = useSelector((state: RootState) => state.auth.token);
+  const token = useSelector((state: RootState) => state.auth.token);
 
-    if (token) {
-        return <Navigate to="/dashboard" replace />;
-    }
+  if (token) {
+    return <Navigate to='/dashboard' replace />;
+  }
 
-    return <SignIn />;
+  return <SignIn />;
 }
 
 function SignUpWrapper() {
-    const token = useSelector((state: RootState) => state.auth.token);
+  const token = useSelector((state: RootState) => state.auth.token);
 
-    if (token) {
-        return <Navigate to="/dashboard" replace />;
-    }
+  if (token) {
+    return <Navigate to='/dashboard' replace />;
+  }
 
-    return <SignUp />;
+  return <SignUp />;
 }
 
 // Wrapper component to extract setId from params and pass as prop
 function SetSeriesPageWrapper() {
-    const { id } = useParams();
-    return <SetSeriesPage setId={id ?? ''} />;
+  const { id } = useParams();
+  return <SetSeriesPage setId={id ?? ""} />;
 }
 
 function TextEditorWrapper() {
-    const { id } = useParams();
-    return <TextEditor initialTitle={id ? `Note ${id}` : 'Untitled Note'} noteId={id ?? ''} />;
+  const { id } = useParams();
+  return (
+    <TextEditor
+      initialTitle={id ? `Note ${id}` : "Untitled Note"}
+      noteId={id ?? ""}
+    />
+  );
 }
 
 function FlashcardAppWrapper() {
-    const { setId, flashcardId } = useParams();
-    return <FlashcardApp flashcardId={flashcardId ?? ''} setId={Number(setId) ?? 0} />;
+  const { setId, flashcardId } = useParams();
+  return (
+    <FlashcardApp flashcardId={flashcardId ?? ""} setId={Number(setId) ?? 0} />
+  );
 }
 
 function FlashcardEditorWrapper() {
-    const { setId } = useParams();
-    return <FlashcardEditor setId={Number(setId) ?? 0} />;
+  const { setId } = useParams();
+  return <FlashcardEditor setId={Number(setId) ?? 0} />;
 }
 
 function FlashcardUpdateWrapper() {
-    const { setId, flashcardId } = useParams();
-    return <FlashcardEditor setId={Number(setId) ?? 0} flashcardId={Number(flashcardId) ?? 0} />;
+  const { setId, flashcardId } = useParams();
+  return (
+    <FlashcardEditor
+      setId={Number(setId) ?? 0}
+      flashcardId={Number(flashcardId) ?? 0}
+    />
+  );
 }
 
 export const routeConfig: RouteObject[] = [
-    // Public routes
-    {
-        path: '/',
-        element: <LandingPageWrapper />
-    },
-    {
-        path: '/login',
-        element: <SignInWrapper />
-    },
-    {
-        path: '/signup',
-        element: <SignUpWrapper />
-    },
-    {
-        path: '/onboarding',
-        element: <OnboardingApp />
-    },
-    {
-        path: '/dashboard&accessToken=:accessToken',
-        element: <GoogleAuthCallback />
-    },
-    {
-        path: '/auth/google/failure',
-        element: <GoogleAuthFailure />
-    },
-    // Protected routes
-    {
-        path: '/',
-        element: <ProtectedLayout />,
-        children: [
-            {
-                path: 'dashboard',
-                element: <Dashboard />
-            },
-            {
-                path: 'todo',
-                element: <TodoDashboard />
-            },
-            {
-                path: 'sets',
-                element: <SetListPage />
-            },
-            {
-                path: 'sets/:id',
-                element: <SetSeriesPageWrapper />
-            },
-            {
-                path: 'sets/:setId/flashcards/editor',
-                element: <FlashcardEditorWrapper />
-            },
-            {
-                // Route để UPDATE flashcard (phải đặt trước route detail)
-                path: 'sets/:setId/flashcards/:flashcardId/update',
-                element: <FlashcardUpdateWrapper />
-            },
-            {
-                // Route để VIEW flashcard detail
-                path: 'sets/:setId/flashcards/:flashcardId',
-                element: <FlashcardAppWrapper />
-            },
-        ]
-    },
-    {
-        path: '/',
-        element: <ProtectedLayoutNoSidebar />,
-        children: [
-            {
-                path: 'note/:id',
-                element: <TextEditorWrapper />
-            }
-        ]
-    }
-]
+  // Public routes
+  {
+    path: "/",
+    element: <LandingPageWrapper />,
+  },
+  {
+    path: "/login",
+    element: <SignInWrapper />,
+  },
+  {
+    path: "/signup",
+    element: <SignUpWrapper />,
+  },
+  {
+    path: "/onboarding",
+    element: <OnboardingApp />,
+  },
+  // Protected routes
+  {
+    path: "/",
+    element: <ProtectedLayout />,
+    children: [
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "todo",
+        element: <TodoDashboard />,
+      },
+      {
+        path: "sets",
+        element: <SetListPage />,
+      },
+      // Explicit routes for set tabs so direct navigation works
+      {
+        path: "sets/:id/notes",
+        element: <SetSeriesPageWrapper />,
+      },
+      {
+        path: "sets/:id/flashcards",
+        element: <SetSeriesPageWrapper />,
+      },
+      {
+        path: "sets/:id/mindmaps",
+        element: <SetSeriesPageWrapper />,
+      },
+      {
+        path: "sets/:id/tests",
+        element: <SetSeriesPageWrapper />,
+      },
+      {
+        path: "sets/:id/records",
+        element: <SetSeriesPageWrapper />,
+      },
+      {
+        path: "sets/:setId/flashcards/editor",
+        element: <FlashcardEditorWrapper />,
+      },
+      {
+        // Route để UPDATE flashcard (phải đặt trước route detail)
+        path: "sets/:setId/flashcards/:flashcardId/update",
+        element: <FlashcardUpdateWrapper />,
+      },
+      {
+        // Route để VIEW flashcard detail
+        path: "sets/:setId/flashcards/:flashcardId",
+        element: <FlashcardAppWrapper />,
+      },
+      {
+        path: "sets/:setId/flashcards/:flashcardId/study",
+        element: <FlashcardAppWrapper />,
+      },
+      {
+        path: "sets/:setId/flashcards/:flashcardId/matching",
+        element: <FlashcardAppWrapper />,
+      },
+      {
+        path: "sets/:setId/flashcards/:flashcardId/results",
+        element: <FlashcardAppWrapper />,
+      },
+      // Generic set page (kept after more specific set subroutes)
+      {
+        path: "sets/:id",
+        element: <SetSeriesPageWrapper />,
+      },
+    ],
+  },
+  {
+    path: "/",
+    element: <ProtectedLayoutNoSidebar />,
+    children: [
+      {
+        path: "note/:id",
+        element: <TextEditorWrapper />,
+      },
+    ],
+  },
+];

@@ -31,7 +31,7 @@ interface EditorProps {
   onSave?: (title: string, content: any) => void;
 }
 
-const NotionEditor: React.FC<EditorProps> = ({
+const NotePage: React.FC<EditorProps> = ({
   initialTitle = "Untitled Note",
   noteId,
   onSave,
@@ -431,4 +431,4 @@ const NotionEditor: React.FC<EditorProps> = ({
   );
 };
 
-export default NotionEditor;
+export default NotePage;

@@ -51,6 +51,11 @@ interface HomeViewProps {
   onDeleteFlashcard?: () => void;
   isDeletingFlashcard?: boolean;
   onShuffle: () => void;
+  onCardAnswer: (isCorrect: boolean) => void;
+  sessionProgress?: {
+    completedCount: number;
+    progressPercent: number;
+  };
 }
 
 export default function HomeView({
@@ -70,6 +75,7 @@ export default function HomeView({
   onDeleteCard,
   onDeleteFlashcard,
   isUpdating = false,
+  onCardAnswer,
 }: HomeViewProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -313,6 +319,7 @@ export default function HomeView({
             onPrevious={onPrevious}
             onNext={onNext}
             onShuffle={onShuffle}
+            onCardAnswer={onCardAnswer}
           />
         </div>
 

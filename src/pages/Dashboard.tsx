@@ -11,6 +11,7 @@ import { type UpdateSetPayload } from '@/services/types/set.types';
 import CreateNewModal from '@/components/modals/CreateNewModal';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
+import { getTimeAgo } from "@/lib/utils";
 
 const Dashboard = () => {
     const { t } = useTranslation();
@@ -31,7 +32,7 @@ const Dashboard = () => {
 
     const { data: setData } = useSetData({ page, size, sort });
     const sets: Set[] = (setData?.data.data || []).map((item: any) => ({
-        id: item.id ?? '',
+        id: item.id,
         title: item.title,
         code: item.code,
         progress: item.progress,
@@ -44,6 +45,12 @@ const Dashboard = () => {
         date: item.date,
         description: item.description ?? '',
         numNotes: item.numNotes ?? 0,
+        updated_at: getTimeAgo(item.updatedAt),
+        created_at: new Date(item.createdAt).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        }),
     }));
 
     const handleDeleteSet = async (id: number) => {

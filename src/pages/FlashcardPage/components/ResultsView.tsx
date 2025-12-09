@@ -1,12 +1,21 @@
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+
+import type { ReviewLog } from "@/services/types/flashcard-session.types";
 
 interface ResultsViewProps {
-    studiedCards: number;
-    totalCards: number;
-    onHome: () => void;
-    onContinue: () => void;
-    onReset: () => void;
+  studiedCards: number;
+  totalCards: number;
+  onHome: () => void;
+  onContinue: () => void;
+  onReset: () => void;
+  sessionResult?: {
+    sessionId: number;
+    correctCount: number;
+    incorrectCount: number;
+    finishedAt: string;
+    logs: ReviewLog[];
+  };
 }
 
 export default function ResultsView({ studiedCards, totalCards, onHome, onContinue, onReset }: ResultsViewProps) {
