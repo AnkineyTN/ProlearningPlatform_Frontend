@@ -36,7 +36,7 @@ export interface Card {
     id: number;
     frontCard: string;
     backCard: string;
-    imageUrl?: string;
+    imageUrl?: string | null;
     imageAssetId?: number;
     cardStatus?: 'NEW' | 'LEARNING' | 'KNOWN';
 }

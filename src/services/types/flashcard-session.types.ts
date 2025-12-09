@@ -6,7 +6,7 @@ export interface SessionCard {
     id: number;
     frontCard: string;
     backCard: string;
-    imageUrl: string | null;
+    imageUrl?: string | null;
     cardStatus: CardStatus;
     nextReviewAt: string;
 }

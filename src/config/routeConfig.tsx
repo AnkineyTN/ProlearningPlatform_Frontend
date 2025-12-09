@@ -6,7 +6,7 @@ import SignUp from "@/components/auth/SignUp";
 import ProtectedLayout from "@/components/ProtectedLayout";
 import ProtectedLayoutNoSidebar from "@/components/ProtectedLayoutNoSidebar";
 import Dashboard from "@/pages/Dashboard";
-import FlashcardApp from "@/pages/FlashcardPage";
+import FlashcardPage from "@/pages/FlashcardPage";
 import FlashcardEditor from "@/pages/FlashcardPage/FlashcardEditor";
 import LandingPage from "@/pages/LandingPage";
 import TextEditor from "@/pages/NotePage";
@@ -67,7 +67,7 @@ function TextEditorWrapper() {
 function FlashcardAppWrapper() {
   const { setId, flashcardId } = useParams();
   return (
-    <FlashcardApp flashcardId={flashcardId ?? ""} setId={Number(setId) ?? 0} />
+    <FlashcardPage flashcardId={flashcardId ?? ""} setId={Number(setId) ?? 0} />
   );
 }
 

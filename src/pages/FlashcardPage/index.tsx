@@ -16,6 +16,7 @@ import {
   useSyncProgress,
 } from "@/hooks/useFlashcardSession";
 
+import ContinueSessionDialog from "./components/ContinueSessionDialog";
 import FlashcardHeader from "./components/FlashcardHeader";
 import HomeView from "./components/HomeView";
 import MatchingView from "./components/MatchingView";
@@ -41,6 +42,13 @@ export default function FlashcardPage({
   const [studiedCards, setStudiedCards] = useState<Set<number>>(new Set());
   const [shuffledIndices, setShuffledIndices] = useState<number[]>([]);
   const [isShuffled, setIsShuffled] = useState(false);
+  const [showContinueDialog, setShowContinueDialog] = useState(false);
+  const [pendingSessionData, setPendingSessionData] = useState<any>(null);
+  const [unsyncedReviews, setUnsyncedReviews] = useState<
+    Array<{ cardId: number; known: boolean }>
+  >([]);
+  const SYNC_BATCH_SIZE = 1;
+
   const updateCardMutation = useUpdateCard();
   const deleteCardMutation = useDeleteCard();
   const deleteFlashcardMutation = useDeleteFlashcard();
@@ -50,8 +58,7 @@ export default function FlashcardPage({
   const [cardReviews, setCardReviews] = useState<
     Array<{ cardId: number; known: boolean }>
   >([]);
-  const [hasFetchedSessionFromHome, setHasFetchedSessionFromHome] =
-    useState(false);
+  const [sessionCards, setSessionCards] = useState<Card[]>([]);
   const startSessionMutation = useStartSession();
   const syncProgressMutation = useSyncProgress();
   const cancelSessionMutation = useCancelSession();
@@ -60,7 +67,6 @@ export default function FlashcardPage({
     Number(flashcardId),
     viewMode === "study" || viewMode === "home"
   );
-  console.log("🚀 ~ FlashcardPage ~ data:", sessionStatus);
 
   const { data: sessionResult } = useSessionResult(
     Number(setId),
@@ -86,12 +92,12 @@ export default function FlashcardPage({
   const description = useMemo(() => data?.data.description || "", [data]);
   const flashcards: Array<Card> = useMemo(() => {
     const cards = data?.data.cards || [];
-    console.log("🚀 ~ FlashcardPage ~ cards:", cards);
     return [...cards].sort((a, b) => a.id - b.id);
   }, [data]);
 
   const handleNext = () => {
-    if (currentCardIndex < flashcards.length - 1) {
+    const cardsToUse = sessionCards.length > 0 ? sessionCards : flashcards;
+    if (currentCardIndex < cardsToUse.length - 1) {
       setCurrentCardIndex(currentCardIndex + 1);
       setIsFlipped(false);
     } else {
@@ -106,22 +112,11 @@ export default function FlashcardPage({
     }
   };
   const handleBackFromStudy = async () => {
-    if (sessionId) {
-      try {
-        await cancelSessionMutation.mutateAsync({
-          setId: Number(setId),
-          flashcardId: Number(flashcardId),
-          sessionId,
-        });
-        setSessionId(null);
-      } catch (error) {
-        console.error("Failed to cancel session:", error);
-      }
-    }
     navigate(`/sets/${setId}/flashcards/${flashcardId}`);
   };
 
   const handleShuffle = () => {
+    const cardsToUse = sessionCards.length > 0 ? sessionCards : flashcards;
     if (isShuffled) {
       // Reset to original order
       setShuffledIndices([]);
@@ -130,7 +125,7 @@ export default function FlashcardPage({
       setIsFlipped(false);
     } else {
       // Create shuffled indices array
-      const indices = flashcards.map((_, index) => index);
+      const indices = cardsToUse.map((_, index) => index);
       const shuffled = [...indices].sort(() => Math.random() - 0.5);
       setShuffledIndices(shuffled);
       setIsShuffled(true);
@@ -149,7 +144,6 @@ export default function FlashcardPage({
 
     return sortedCards;
   }, [data, isShuffled, shuffledIndices]);
-  console.log("🚀 ~ FlashcardPage ~ displayedFlashcards:", displayedFlashcards);
 
   const handleCardClick = (index: number) => {
     setCurrentCardIndex(index);
@@ -157,131 +151,146 @@ export default function FlashcardPage({
   };
 
   const startStudying = async () => {
+    // Check session status trước
+    const statusData = sessionStatus?.data || [];
+
+    if (statusData.length > 0 && statusData[0].status === "IN_PROGRESS") {
+      // Có session đang dở
+      setPendingSessionData(statusData[0]);
+      setShowContinueDialog(true);
+      return;
+    }
+
+    // Không có session dở -> start mới
+    await startNewSession();
+  };
+
+  const startNewSession = async () => {
     try {
       const response = await startSessionMutation.mutateAsync({
         setId: Number(setId),
         flashcardId: Number(flashcardId),
       });
-      console.log("🚀 ~ startStudying ~ response:", response.data.data);
 
       const sessionData = response.data.data;
       setSessionId(sessionData.id);
 
-      // Try to determine which card to start from based on session response.
-      try {
-        const respCards =
-          (sessionData as any).cards ?? (sessionData as any).cardItems ?? [];
-        let firstCardId: number | null = null;
-        if (Array.isArray(respCards)) {
-          firstCardId = respCards.length > 0 ? respCards[0].id : null;
-        } else if (
-          respCards &&
-          typeof respCards === "object" &&
-          "id" in respCards
-        ) {
-          firstCardId = (respCards as any).id;
-        }
+      // Sử dụng danh sách cards từ API response
+      const respCards = sessionData.cards ?? [];
+      setSessionCards(respCards);
 
-        if (firstCardId != null) {
-          const idx = displayedFlashcards.findIndex(
-            (c) => c.id === firstCardId
-          );
-          setCurrentCardIndex(idx >= 0 ? idx : 0);
-        } else {
-          setCurrentCardIndex(0);
-        }
-      } catch (e) {
-        setCurrentCardIndex(0);
-      }
-
+      // Bắt đầu từ card đầu tiên trong danh sách
+      setCurrentCardIndex(0);
       setIsFlipped(false);
-      setCardReviews([]); // Reset reviews
+      setCardReviews([]);
       navigate(`/sets/${setId}/flashcards/${flashcardId}/study`);
     } catch (error) {
       console.error("Failed to start session:", error);
-      // Có thể show toast error ở đây
+      toast.error("Không thể bắt đầu phiên học");
     }
   };
 
-  // While on the Home view, try to fetch/resume the session once so we can
-  // display where the user left off (and start from that card when they go
-  // to study). We guard with `hasFetchedSessionFromHome` to avoid repeated
-  // calls / creating duplicate sessions.
-  useEffect(() => {
-    if (viewMode !== "home") return;
-    if (hasFetchedSessionFromHome) return;
-    if (!displayedFlashcards || displayedFlashcards.length === 0) return;
-
-    let mounted = true;
-
-    (async () => {
+  const handleContinueSession = async () => {
+    if (pendingSessionData) {
       try {
+        // Gọi lại startSession để lấy danh sách cards còn lại từ BE
         const response = await startSessionMutation.mutateAsync({
           setId: Number(setId),
           flashcardId: Number(flashcardId),
         });
 
-        if (!mounted) return;
-
         const sessionData = response.data.data;
         setSessionId(sessionData.id);
 
-        const respCards =
-          (sessionData as any).cards ?? (sessionData as any).cardItems ?? [];
-        let firstCardId: number | null = null;
-        if (Array.isArray(respCards)) {
-          firstCardId = respCards.length > 0 ? respCards[0].id : null;
-        } else if (
-          respCards &&
-          typeof respCards === "object" &&
-          "id" in respCards
-        ) {
-          firstCardId = (respCards as any).id;
-        }
+        // Sử dụng danh sách cards từ API response
+        const respCards = sessionData.cards ?? [];
+        setSessionCards(respCards);
 
-        if (firstCardId != null) {
-          const idx = displayedFlashcards.findIndex(
-            (c) => c.id === firstCardId
-          );
-          if (idx >= 0) setCurrentCardIndex(idx);
-        }
-      } catch (err) {
-        console.error("Failed to fetch/resume session from Home:", err);
-      } finally {
-        if (mounted) setHasFetchedSessionFromHome(true);
+        // Bắt đầu từ card đầu tiên trong danh sách
+        setCurrentCardIndex(0);
+        setIsFlipped(false);
+        setShowContinueDialog(false);
+        navigate(`/sets/${setId}/flashcards/${flashcardId}/study`);
+      } catch (error) {
+        console.error("Failed to continue session:", error);
+        toast.error("Không thể tiếp tục phiên học");
       }
-    })();
+    }
+  };
 
-    return () => {
-      mounted = false;
-    };
-  }, [viewMode, displayedFlashcards, hasFetchedSessionFromHome, setSessionId]);
+  const handleResetSession = async () => {
+    if (pendingSessionData?.id) {
+      try {
+        await cancelSessionMutation.mutateAsync({
+          setId: Number(setId),
+          flashcardId: Number(flashcardId),
+          sessionId: pendingSessionData.id,
+        });
+        setShowContinueDialog(false);
+        await startNewSession();
+      } catch (error) {
+        console.error("Failed to cancel session:", error);
+        toast.error("Không thể hủy phiên học cũ");
+      }
+    }
+  };
 
   const handleCardAnswer = async (known: boolean) => {
     if (!sessionId) return;
 
-    const currentCard = displayedFlashcards[currentCardIndex];
+    const currentCard = sessionCards[currentCardIndex];
     const review = { cardId: currentCard.id, known };
 
-    // Lưu review vào state
-    const updatedReviews = [...cardReviews, review];
-    setCardReviews(updatedReviews);
+    // Thêm vào unsynced reviews
+    const newUnsyncedReviews = [...unsyncedReviews, review];
+    setUnsyncedReviews(newUnsyncedReviews);
+    setCardReviews([...cardReviews, review]);
 
-    // Sync progress lên server
+    // Sync nếu đủ batch size
+    if (newUnsyncedReviews.length >= SYNC_BATCH_SIZE) {
+      await syncProgress(newUnsyncedReviews);
+    }
+
+    // Tự động next
+    handleNext();
+  };
+
+  const syncProgress = async (
+    reviews: Array<{ cardId: number; known: boolean }>
+  ) => {
+    if (!sessionId || reviews.length === 0) return;
+
     try {
-      await syncProgressMutation.mutateAsync({
+      const response = await syncProgressMutation.mutateAsync({
         setId: Number(setId),
         flashcardId: Number(flashcardId),
         sessionId,
-        data: { cardItemReviews: [review] },
+        data: { cardItemReviews: reviews },
       });
 
-      // Tự động chuyển card tiếp theo
-      handleNext();
+      // Clear unsynced sau khi sync thành công
+      setUnsyncedReviews([]);
+
+      // Check nếu completed
+      if (response.data.data.status === "COMPLETED") {
+        navigate(`/sets/${setId}/flashcards/${flashcardId}/results`);
+      }
     } catch (error) {
       console.error("Failed to sync progress:", error);
     }
   };
+
+  useEffect(() => {
+    const handleBeforeUnload = async (e: BeforeUnloadEvent) => {
+      if (unsyncedReviews.length > 0 && sessionId) {
+        e.preventDefault();
+        await syncProgress(unsyncedReviews);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [unsyncedReviews, sessionId]);
 
   const resetFlashcards = () => {
     setStudiedCards(new Set());
@@ -400,7 +409,12 @@ export default function FlashcardPage({
         title={title}
         description={description}
       />
-
+      <ContinueSessionDialog
+        open={showContinueDialog}
+        onContinue={handleContinueSession}
+        onReset={handleResetSession}
+        onOpenChange={setShowContinueDialog}
+      />
       {viewMode === "home" && (
         <HomeView
           setId={setId}
@@ -428,7 +442,9 @@ export default function FlashcardPage({
 
       {viewMode === "study" && (
         <StudyView
-          flashcards={displayedFlashcards}
+          flashcards={
+            sessionCards.length > 0 ? sessionCards : displayedFlashcards
+          }
           currentCardIndex={currentCardIndex}
           isFlipped={isFlipped}
           onBack={handleBackFromStudy}
@@ -445,6 +461,7 @@ export default function FlashcardPage({
         <ResultsView
           studiedCards={studiedCards.size}
           totalCards={flashcards.length}
+          flashcards={sessionCards.length > 0 ? sessionCards : flashcards}
           onHome={() => navigate(`/sets/${setId}/flashcards/${flashcardId}`)}
           onContinue={() =>
             navigate(`/sets/${setId}/flashcards/${flashcardId}/study`)
