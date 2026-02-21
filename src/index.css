@@ -77,6 +77,19 @@
   --bg-pinked-selected: oklch(89.9% 0.061 343.231);
   --bg-indigo: oklch(93% 0.034 272.788);
   --bg-purple: oklch(94.6% 0.033 307.174);
+  --auth-bg: oklch(0.13 0.028 261.692);
+  --auth-card-bg: oklch(21% 0.034 264.665);
+  --auth-text: oklch(0.985 0.002 247.839);
+  --auth-text-muted: oklch(0.707 0.022 261.325);
+  --auth-border: oklch(1 0 0 / 10%);
+}
+
+.dark {
+  --auth-bg: oklch(0.13 0.028 261.692);
+  --auth-card-bg: oklch(21% 0.034 264.665);
+  --auth-text: oklch(0.985 0.002 247.839);
+  --auth-text-muted: oklch(0.707 0.022 261.325);
+  --auth-border: oklch(1 0 0 / 10%);
 }
 
 @theme inline {
@@ -207,6 +220,19 @@
   --bg-pinked-selected: oklch(40.8% 0.153 2.432);
   --bg-indigo: oklch(25.7% 0.09 281.288);
   --bg-purple: oklch(29.1% 0.149 302.717);
+  --auth-bg: oklch(0.13 0.028 261.692);
+  --auth-card-bg: oklch(21% 0.034 264.665);
+  --auth-text: oklch(0.985 0.002 247.839);
+  --auth-text-muted: oklch(0.707 0.022 261.325);
+  --auth-border: oklch(1 0 0 / 10%);
+}
+
+.light {
+  --auth-bg: oklch(96.7% 0.003 264.542);
+  --auth-card-bg: oklch(1 0 0);
+  --auth-text: oklch(0.13 0.028 261.692);
+  --auth-text-muted: oklch(0.551 0.027 264.364);
+  --auth-border: oklch(0.928 0.006 264.531);
 }
 
 @layer base {
