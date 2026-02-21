@@ -1,6 +1,6 @@
 import { FileAudio, MoreVertical, Clock } from 'lucide-react';
 
-export interface Record {
+export type Record = {
     title: string;
     category: string;
     preview: string;
@@ -8,7 +8,7 @@ export interface Record {
     date: string;
 }
 
-export default function RecordCard({ record, onAccess }: { record: Record, onAccess: (id: string) => void }) {
+const RecordCard = ({ record, onAccess }: { record: Record, onAccess: (id: string) => void }) => {
     const handleClick = () => {
         onAccess(record.title); // Giả sử 'title' là ID của record
     }
@@ -33,3 +33,5 @@ export default function RecordCard({ record, onAccess }: { record: Record, onAcc
         </div>
     );
 };
+
+export default RecordCard;

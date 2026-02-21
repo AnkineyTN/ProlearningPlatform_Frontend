@@ -7,19 +7,19 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-interface ContinueSessionDialogProps {
+type Props = {
   open: boolean;
   onContinue: () => void;
   onReset: () => void;
   onOpenChange?: (open: boolean) => void;
-}
+};
 
-export default function ContinueSessionDialog({
+const ContinueSessionDialog = ({
   open,
   onContinue,
   onReset,
   onOpenChange,
-}: ContinueSessionDialogProps) {
+}: Props) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange ?? (() => {})}>
       <DialogContent>
@@ -36,4 +36,6 @@ export default function ContinueSessionDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default ContinueSessionDialog;

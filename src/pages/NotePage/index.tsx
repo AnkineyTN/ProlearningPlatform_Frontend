@@ -25,17 +25,17 @@ import ExplainPopup from "./ExplainPopup";
 import FileSidebar from "./FileSidebar";
 import FileTabs from "./FileTabs";
 
-interface EditorProps {
+type Props = {
   initialTitle?: string;
   noteId: string;
   onSave?: (title: string, content: any) => void;
-}
+};
 
-const NotePage: React.FC<EditorProps> = ({
+const NotePage = ({
   initialTitle = "Untitled Note",
   noteId,
   onSave,
-}) => {
+}: Props) => {
   const navigate = useNavigate();
   const [title, setTitle] = useState<string>(initialTitle);
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
@@ -126,7 +126,7 @@ const NotePage: React.FC<EditorProps> = ({
 
       const clampedPercent = Math.max(
         MIN_EDITOR_WIDTH_PERCENT,
-        Math.min(MAX_EDITOR_WIDTH_PERCENT, newWidthPercent)
+        Math.min(MAX_EDITOR_WIDTH_PERCENT, newWidthPercent),
       );
 
       setEditorWidthPercent(clampedPercent);
@@ -330,7 +330,7 @@ const NotePage: React.FC<EditorProps> = ({
   }
 
   const docFiles = uploadedFilesList.filter(
-    (f: { fileUrl: string }) => !f.fileUrl.match(/\.(jpe?g|png|gif|webp)$/i)
+    (f: { fileUrl: string }) => !f.fileUrl.match(/\.(jpe?g|png|gif|webp)$/i),
   );
 
   const sidebarWidthPercent = 100 - editorWidthPercent;

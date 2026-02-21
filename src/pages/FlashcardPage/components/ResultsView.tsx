@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { ReviewLog } from "@/services/types/flashcard-session.types";
 import type { Card as Flashcard } from "@/services/types/flashcard.types";
 
-interface ResultsViewProps {
+type Props = {
   studiedCards: number;
   totalCards: number;
   flashcards?: Flashcard[];
@@ -20,7 +20,7 @@ interface ResultsViewProps {
   };
 }
 
-export default function ResultsView({
+const ResultsView = ({
   studiedCards,
   totalCards,
   flashcards = [],
@@ -157,3 +157,5 @@ export default function ResultsView({
     </div>
   );
 }
+
+export default ResultsView;

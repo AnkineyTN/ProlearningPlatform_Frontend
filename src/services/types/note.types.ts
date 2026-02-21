@@ -1,4 +1,4 @@
-export interface NoteDetail {
+export type NoteDetail = {
     id: number;
     title: string;
     description: string;
@@ -7,7 +7,7 @@ export interface NoteDetail {
     noteDocs: any[];
 }
 
-export interface NoteListItem {
+export type NoteListItem = {
     id: number;
     title: string;
     description: string;
@@ -17,7 +17,7 @@ export interface NoteListItem {
     updated_at: string;
 }
 
-export interface NoteListResponse {
+export type NoteListResponse = {
     pageNo: number;
     pageSize: number;
     totalPage: number;
@@ -25,24 +25,24 @@ export interface NoteListResponse {
     items: NoteListItem[];
 }
 
-export interface CreateNotePayload {
+export type CreateNotePayload = {
     title: string;
     privacy: string;
     description: string;
     setId: number;
 }
 
-export interface AutoSaveNoteRequest {
+export type AutoSaveNoteRequest = {
     title: string;
     content: string;
 }
 
-export interface ExplainTextRequest {
+export type ExplainTextRequest = {
     noteId: number;
     queryText: string;
 }
 
-export interface ExplainTextResponse {
+export type ExplainTextResponse = {
     data: {
         status: number;
         message: string;
@@ -53,7 +53,7 @@ export interface ExplainTextResponse {
     };
 }
 
-export interface NoteDetailResponse {
+export type NoteDetailResponse = {
     id: number;
     title: string;
     content: any;
@@ -61,7 +61,7 @@ export interface NoteDetailResponse {
     updatedAt: string;
 }
 
-export interface UploadFileResponse {
+export type UploadFileResponse = {
     status: number;
     message: string;
     data: {
@@ -73,13 +73,13 @@ export interface UploadFileResponse {
     };
 }
 
-export interface SummarizeFileRequest {
+export type SummarizeFileRequest = {
     noteDocsId: number;
     fileUrl: string;
     extension: string;
 }
 
-export interface SummarizeFileResponse {
+export type SummarizeFileResponse = {
     status: number;
     message: string;
     data: {
@@ -88,7 +88,7 @@ export interface SummarizeFileResponse {
     };
 }
 
-export interface ConvertToVectorDBRequest {
+export type ConvertToVectorDBRequest = {
     noteDocsId: number;
     fileName: string;
     fileUrl: string;
@@ -96,12 +96,12 @@ export interface ConvertToVectorDBRequest {
     noteId: number;
 }
 
-export interface ConvertToVectorDBResponse {
+export type ConvertToVectorDBResponse = {
     status: number;
     message: string;
 }
 
-export interface DeleteNoteDocRequest {
+export type DeleteNoteDocRequest = {
     publicId: string;
     extension: string;
 }

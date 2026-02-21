@@ -40,14 +40,14 @@ export const useStartSession = () => {
 export const useSessionStatus = (
   setId: number,
   flashcardId: number,
-  enabled = true
+  enabled = true,
 ) => {
   return useQuery({
     queryKey: ["session-status", setId, flashcardId],
     queryFn: async () => {
       const response = await flashcardSessionAPI.getSessionStatus(
         setId,
-        flashcardId
+        flashcardId,
       );
       return response.data;
     },
@@ -85,7 +85,7 @@ export const useSyncProgress = () => {
             ...oldData,
             data: [response.data.data],
           };
-        }
+        },
       );
     },
     onError: (error: any) => {
@@ -101,7 +101,7 @@ export const useSessionResult = (
   setId: number,
   flashcardId: number,
   sessionId: number,
-  enabled = false
+  enabled = false,
 ) => {
   return useQuery({
     queryKey: ["session-result", setId, flashcardId, sessionId],
@@ -109,7 +109,7 @@ export const useSessionResult = (
       const response = await flashcardSessionAPI.getSessionResult(
         setId,
         flashcardId,
-        sessionId
+        sessionId,
       );
       return response.data;
     },

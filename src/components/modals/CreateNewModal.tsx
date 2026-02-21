@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface CreateNewModalProps {
+type Props = {
   type: string;
   isOpen: boolean;
   onClose: () => void;
@@ -36,9 +36,9 @@ interface CreateNewModalProps {
   }) => void | Promise<void>;
   initialData?: { title: string; description: string; privacy: string };
   isUpdateMode?: boolean;
-}
+};
 
-export default function CreateNewModal({
+const CreateNewModal = ({
   type,
   isOpen,
   onClose,
@@ -46,10 +46,10 @@ export default function CreateNewModal({
   onSubmit,
   initialData,
   isUpdateMode,
-}: CreateNewModalProps) {
+}: Props) => {
   const [title, setTitle] = useState(initialData?.title || "");
   const [description, setDescription] = useState(
-    initialData?.description || ""
+    initialData?.description || "",
   );
   const [privacy, setPrivacy] = useState(initialData?.privacy || "Public");
   const [errors, setErrors] = useState<{
@@ -265,4 +265,6 @@ export default function CreateNewModal({
       </div>
     </div>
   );
-}
+};
+
+export default CreateNewModal;

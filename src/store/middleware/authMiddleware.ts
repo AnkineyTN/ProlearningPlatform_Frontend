@@ -1,20 +1,20 @@
-import { createListenerMiddleware } from '@reduxjs/toolkit'
-import { loginSuccess, setUser } from '../authSlice'
+import { createListenerMiddleware } from "@reduxjs/toolkit";
+import { loginSuccess, setUser } from "../authSlice";
 
-const authMiddleware = createListenerMiddleware()
-
-authMiddleware.startListening({
-    actionCreator: loginSuccess,
-    effect: (action) => {
-        localStorage.setItem('user', JSON.stringify(action.payload.user))
-    }
-})
+const authMiddleware = createListenerMiddleware();
 
 authMiddleware.startListening({
-    actionCreator: setUser,
-    effect: (action) => {
-        localStorage.setItem('user', JSON.stringify(action.payload))
-    }
-})
+  actionCreator: loginSuccess,
+  effect: (action) => {
+    localStorage.setItem("user", JSON.stringify(action.payload.user));
+  },
+});
 
-export { authMiddleware }
+authMiddleware.startListening({
+  actionCreator: setUser,
+  effect: (action) => {
+    localStorage.setItem("user", JSON.stringify(action.payload));
+  },
+});
+
+export { authMiddleware };

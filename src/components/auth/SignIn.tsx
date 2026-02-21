@@ -21,7 +21,7 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
-export default function SignIn() {
+const SignIn = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -212,3 +212,5 @@ export default function SignIn() {
     </div>
   );
 }
+
+export default SignIn;

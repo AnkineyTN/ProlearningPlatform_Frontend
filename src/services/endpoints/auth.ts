@@ -1,17 +1,22 @@
-import type { AxiosResponse } from 'axios'
-import api from '../client'
-import type { AuthResponse, SignupData, LoginData, MeResponse, GoogleAuthResponse } from '../types/auth.types'
+import type { AxiosResponse } from "axios";
+import api from "../client";
+import type {
+  AuthResponse,
+  SignupData,
+  LoginData,
+  MeResponse,
+  GoogleAuthResponse,
+} from "../types/auth.types";
 
 export const authAPI = {
-    signup: (userData: SignupData): Promise<AxiosResponse<AuthResponse>> =>
-        api.post('/auth/register', userData),
+  signup: (userData: SignupData): Promise<AxiosResponse<AuthResponse>> =>
+    api.post("/auth/register", userData),
 
-    login: (userData: LoginData): Promise<AxiosResponse<AuthResponse>> =>
-        api.post('/auth/login', userData),
+  login: (userData: LoginData): Promise<AxiosResponse<AuthResponse>> =>
+    api.post("/auth/login", userData),
 
-    getMe: (): Promise<AxiosResponse<MeResponse>> =>
-        api.get('/users/me'),
+  getMe: (): Promise<AxiosResponse<MeResponse>> => api.get("/users/me"),
 
-    googleAuth: (): Promise<AxiosResponse<GoogleAuthResponse>> =>
-        api.get('/auth/google/login')
-}
+  googleAuth: (): Promise<AxiosResponse<GoogleAuthResponse>> =>
+    api.get("/auth/google/login"),
+};

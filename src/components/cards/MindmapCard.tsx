@@ -1,6 +1,6 @@
 import { Network, MoreVertical, Clock } from 'lucide-react';
 
-export interface Mindmap {
+export type Mindmap = {
     title: string;
     category: string;
     preview: string;
@@ -8,7 +8,7 @@ export interface Mindmap {
     date: string;
 }
 
-export default function MindmapCard({ mindmap, onAccess }: { mindmap: Mindmap, onAccess: (id: string) => void }) {
+const MindmapCard = ({ mindmap, onAccess }: { mindmap: Mindmap, onAccess: (id: string) => void }) => {
     const handleClick = () => {
         onAccess(mindmap.title); // Giả sử 'title' là ID của mindmap
     }
@@ -32,3 +32,5 @@ export default function MindmapCard({ mindmap, onAccess }: { mindmap: Mindmap, o
         </div>
     );
 };
+
+export default MindmapCard;

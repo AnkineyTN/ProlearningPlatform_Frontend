@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 
 import FlipFlashcard from "./FlipFlashcard";
 
-interface StudyViewProps {
+type Props = {
   flashcards: Array<{
     frontCard: string;
     backCard: string;
@@ -21,7 +21,7 @@ interface StudyViewProps {
   };
 }
 
-export default function StudyView({
+const StudyView = ({
   flashcards,
   currentCardIndex,
   isFlipped,
@@ -55,3 +55,5 @@ export default function StudyView({
     </div>
   );
 }
+
+export default StudyView;

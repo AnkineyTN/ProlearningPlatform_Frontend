@@ -1,13 +1,26 @@
-import { Check, ChevronLeft, ChevronRight, Fullscreen, Settings, Shuffle, X } from "lucide-react";
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Fullscreen,
+  Settings,
+  Shuffle,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
-interface FlipFlashcardProps {
+type Props = {
   isFlipped: boolean;
   flashcards: Array<{
     frontCard: string;
@@ -20,9 +33,9 @@ interface FlipFlashcardProps {
   onNext: () => void;
   onShuffle: () => void;
   onCardAnswer: (isCorrect: boolean) => void;
-}
+};
 
-export default function FlipFlashcard({
+const FlipFlashcard = ({
   isFlipped,
   flashcards,
   currentCardIndex,
@@ -31,7 +44,7 @@ export default function FlipFlashcard({
   onNext,
   onShuffle,
   onCardAnswer,
-}: FlipFlashcardProps) {
+}: Props) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [trackProgress, setTrackProgress] = useState(true);
@@ -47,7 +60,7 @@ export default function FlipFlashcard({
 
   return (
     <>
-      <div className="flex items-center justify-center perspective-1000">
+      <div className='flex items-center justify-center perspective-1000'>
         <div
           className={`relative w-full ${
             isFullscreen ? "h-screen" : "max-w-4xl h-[400px]"
@@ -56,7 +69,7 @@ export default function FlipFlashcard({
           onClick={onFlip}
         >
           <div
-            className="relative w-full h-full transition-transform duration-600 preserve-3d"
+            className='relative w-full h-full transition-transform duration-600 preserve-3d'
             style={{
               transformStyle: "preserve-3d",
               transform: isFlipped ? "rotateX(180deg)" : "rotateX(0deg)",
@@ -65,137 +78,137 @@ export default function FlipFlashcard({
           >
             {/* Front Side - Question */}
             <div
-              className="absolute w-full h-full bg-card rounded-2xl shadow-2xl p-16 flex items-center justify-center backface-hidden"
+              className='absolute w-full h-full bg-card rounded-2xl shadow-2xl p-16 flex items-center justify-center backface-hidden'
               style={{
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
               }}
             >
-              <div className="text-center">
-                <div className="text-sm text-muted-foreground mb-4 uppercase tracking-wide">
+              <div className='text-center'>
+                <div className='text-sm text-muted-foreground mb-4 uppercase tracking-wide'>
                   Question
                 </div>
                 {flashcards[currentCardIndex].imageUrl && (
                   <img
                     src={flashcards[currentCardIndex].imageUrl}
-                    alt="Flashcard Image"
-                    className="max-w-full max-h-50 object-contain rounded"
+                    alt='Flashcard Image'
+                    className='max-w-full max-h-50 object-contain rounded'
                   />
                 )}
-                <p className="text-3xl font-medium leading-relaxed">
+                <p className='text-3xl font-medium leading-relaxed'>
                   {flashcards[currentCardIndex].frontCard}
                 </p>
               </div>
-              <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground">
+              <div className='absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground'>
                 Click to flip
               </div>
             </div>
 
             {/* Back Side - Answer */}
             <div
-              className="absolute w-full h-full bg-card rounded-2xl shadow-2xl p-16 flex items-center justify-center backface-hidden"
+              className='absolute w-full h-full bg-card rounded-2xl shadow-2xl p-16 flex items-center justify-center backface-hidden'
               style={{
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
                 transform: "rotateX(180deg)",
               }}
             >
-              <div className="text-center">
-                <div className="text-sm text-muted-foreground mb-4 uppercase tracking-wide">
+              <div className='text-center'>
+                <div className='text-sm text-muted-foreground mb-4 uppercase tracking-wide'>
                   Answer
                 </div>
-                <p className="text-3xl font-medium leading-relaxed">
+                <p className='text-3xl font-medium leading-relaxed'>
                   {flashcards[currentCardIndex].backCard}
                 </p>
               </div>
-              <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground">
+              <div className='absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground'>
                 Click to flip back
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-8 mt-8">
-        <div className="flex-1" />
-        <div className="flex items-center justify-center gap-8">
+      <div className='flex items-center gap-8 mt-8'>
+        <div className='flex-1' />
+        <div className='flex items-center justify-center gap-8'>
           <Button
-            variant="outline"
-            size="lg"
-            className="cursor-pointer text-red-600 border-red-600 hover:bg-red-50"
+            variant='outline'
+            size='lg'
+            className='cursor-pointer text-red-600 border-red-600 hover:bg-red-50'
             onClick={() => onCardAnswer(false)}
           >
-            <X className="w-5 h-5 mr-2" />
+            <X className='w-5 h-5 mr-2' />
             Chưa thuộc
           </Button>
           <Button
-            variant="default"
-            className="cursor-pointer"
+            variant='default'
+            className='cursor-pointer'
             onClick={onPrevious}
             disabled={currentCardIndex === 0}
           >
-            <ChevronLeft className="w-8 h-8" />
+            <ChevronLeft className='w-8 h-8' />
           </Button>
 
-          <div className="text-foreground">
+          <div className='text-foreground'>
             {currentCardIndex + 1} / {flashcards.length}
           </div>
 
-          <Button variant="default" className="cursor-pointer" onClick={onNext}>
-            <ChevronRight className="w-8 h-8" />
+          <Button variant='default' className='cursor-pointer' onClick={onNext}>
+            <ChevronRight className='w-8 h-8' />
           </Button>
           <Button
-            variant="outline"
-            size="lg"
-            className="cursor-pointer text-green-600 border-green-600 hover:bg-green-50"
+            variant='outline'
+            size='lg'
+            className='cursor-pointer text-green-600 border-green-600 hover:bg-green-50'
             onClick={() => onCardAnswer(true)}
           >
-            <Check className="w-5 h-5 mr-2" />
+            <Check className='w-5 h-5 mr-2' />
             Đã thuộc
           </Button>
         </div>
-        <div className="flex-1 justify-end flex items-center gap-2">
+        <div className='flex-1 justify-end flex items-center gap-2'>
           <Button
-            variant="ghost"
-            className="cursor-pointer"
+            variant='ghost'
+            className='cursor-pointer'
             onClick={onShuffle}
           >
-            <Shuffle className="w-8 h-8" />
+            <Shuffle className='w-8 h-8' />
           </Button>
           <Button
-            variant="ghost"
-            className="cursor-pointer"
+            variant='ghost'
+            className='cursor-pointer'
             onClick={() => setIsSettingsOpen(true)}
           >
-            <Settings className="w-8 h-8" />
+            <Settings className='w-8 h-8' />
           </Button>
           <Button
-            variant="ghost"
-            className="cursor-pointer"
+            variant='ghost'
+            className='cursor-pointer'
             onClick={handleFullscreen}
           >
-            <Fullscreen className="w-8 h-8" />
+            <Fullscreen className='w-8 h-8' />
           </Button>
         </div>
       </div>
 
       {/* Settings Dialog */}
       <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className='sm:max-w-md'>
           <DialogHeader>
             <DialogTitle>Settings</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-6 py-4">
+          <div className='space-y-6 py-4'>
             {/* Track Progress */}
-            <div className="flex items-center justify-between">
+            <div className='flex items-center justify-between'>
               <div>
-                <div className="font-medium">Track Progress</div>
-                <div className="text-sm text-muted-foreground">
+                <div className='font-medium'>Track Progress</div>
+                <div className='text-sm text-muted-foreground'>
                   Monitor your learning progress
                 </div>
               </div>
               <Switch
-                className="cursor-pointer"
+                className='cursor-pointer'
                 checked={trackProgress}
                 onCheckedChange={setTrackProgress}
               />
@@ -203,25 +216,25 @@ export default function FlipFlashcard({
 
             {/* Card Side Selection */}
             <div>
-              <div className="font-medium mb-3">Front Side</div>
-              <div className="space-x-10 flex items-center">
-                <Label className="flex items-center gap-3 cursor-pointer">
+              <div className='font-medium mb-3'>Front Side</div>
+              <div className='space-x-10 flex items-center'>
+                <Label className='flex items-center gap-3 cursor-pointer'>
                   <Input
-                    type="radio"
-                    name="cardSide"
+                    type='radio'
+                    name='cardSide'
                     checked={cardSide === "term"}
                     onChange={() => setCardSide("term")}
-                    className="w-4 h-4"
+                    className='w-4 h-4'
                   />
                   <span>Term</span>
                 </Label>
-                <Label className="flex items-center gap-3 cursor-pointer">
+                <Label className='flex items-center gap-3 cursor-pointer'>
                   <Input
-                    type="radio"
-                    name="cardSide"
+                    type='radio'
+                    name='cardSide'
                     checked={cardSide === "definition"}
                     onChange={() => setCardSide("definition")}
-                    className="w-4 h-4"
+                    className='w-4 h-4'
                   />
                   <span>Definition</span>
                 </Label>
@@ -231,8 +244,8 @@ export default function FlipFlashcard({
             {/* Reset Cards */}
             <div>
               <Button
-                variant="outline"
-                className="w-full cursor-pointer mt-2"
+                variant='outline'
+                className='w-full cursor-pointer mt-2'
                 onClick={handleReset}
               >
                 Reset Flashcards
@@ -244,16 +257,16 @@ export default function FlipFlashcard({
 
       {/* Fullscreen Overlay */}
       {isFullscreen && (
-        <div className="fixed inset-0 bg-background z-40 flex flex-col">
-          <div className="flex-1 flex items-center justify-center p-8">
-            <div className="w-full max-w-5xl">
+        <div className='fixed inset-0 bg-background z-40 flex flex-col'>
+          <div className='flex-1 flex items-center justify-center p-8'>
+            <div className='w-full max-w-5xl'>
               <div
-                className="relative w-full h-[600px] cursor-pointer"
+                className='relative w-full h-[600px] cursor-pointer'
                 style={{ perspective: "1000px" }}
                 onClick={onFlip}
               >
                 <div
-                  className="relative w-full h-full transition-transform duration-600 preserve-3d"
+                  className='relative w-full h-full transition-transform duration-600 preserve-3d'
                   style={{
                     transformStyle: "preserve-3d",
                     transform: isFlipped ? "rotateX(180deg)" : "rotateX(0deg)",
@@ -262,50 +275,50 @@ export default function FlipFlashcard({
                 >
                   {/* Front Side - Question */}
                   <div
-                    className="absolute w-full h-full bg-card rounded-2xl shadow-2xl p-16 flex items-center justify-center backface-hidden"
+                    className='absolute w-full h-full bg-card rounded-2xl shadow-2xl p-16 flex items-center justify-center backface-hidden'
                     style={{
                       backfaceVisibility: "hidden",
                       WebkitBackfaceVisibility: "hidden",
                     }}
                   >
-                    <div className="text-center">
-                      <div className="text-sm text-muted-foreground mb-4 uppercase tracking-wide">
+                    <div className='text-center'>
+                      <div className='text-sm text-muted-foreground mb-4 uppercase tracking-wide'>
                         Question
                       </div>
                       {flashcards[currentCardIndex].imageUrl && (
                         <img
                           src={flashcards[currentCardIndex].imageUrl}
-                          alt="Flashcard Image"
-                          className="max-w-full max-h-50 object-contain rounded mb-4"
+                          alt='Flashcard Image'
+                          className='max-w-full max-h-50 object-contain rounded mb-4'
                         />
                       )}
-                      <p className="text-4xl font-medium leading-relaxed">
+                      <p className='text-4xl font-medium leading-relaxed'>
                         {flashcards[currentCardIndex].frontCard}
                       </p>
                     </div>
-                    <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground">
+                    <div className='absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground'>
                       Click to flip
                     </div>
                   </div>
 
                   {/* Back Side - Answer */}
                   <div
-                    className="absolute w-full h-full bg-card rounded-2xl shadow-2xl p-16 flex items-center justify-center backface-hidden"
+                    className='absolute w-full h-full bg-card rounded-2xl shadow-2xl p-16 flex items-center justify-center backface-hidden'
                     style={{
                       backfaceVisibility: "hidden",
                       WebkitBackfaceVisibility: "hidden",
                       transform: "rotateX(180deg)",
                     }}
                   >
-                    <div className="text-center">
-                      <div className="text-sm text-muted-foreground mb-4 uppercase tracking-wide">
+                    <div className='text-center'>
+                      <div className='text-sm text-muted-foreground mb-4 uppercase tracking-wide'>
                         Answer
                       </div>
-                      <p className="text-4xl font-medium leading-relaxed">
+                      <p className='text-4xl font-medium leading-relaxed'>
                         {flashcards[currentCardIndex].backCard}
                       </p>
                     </div>
-                    <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground">
+                    <div className='absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground'>
                       Click to flip back
                     </div>
                   </div>
@@ -314,60 +327,60 @@ export default function FlipFlashcard({
             </div>
           </div>
           {isFlipped && (
-            <div className="flex items-center justify-center gap-4 px-8 pb-4">
+            <div className='flex items-center justify-center gap-4 px-8 pb-4'>
               <Button
-                variant="outline"
-                size="lg"
-                className="cursor-pointer text-red-600 border-red-600 hover:bg-red-50"
+                variant='outline'
+                size='lg'
+                className='cursor-pointer text-red-600 border-red-600 hover:bg-red-50'
                 onClick={() => onCardAnswer(false)}
               >
-                <X className="w-5 h-5 mr-2" />
+                <X className='w-5 h-5 mr-2' />
                 Chưa thuộc
               </Button>
               <Button
-                variant="outline"
-                size="lg"
-                className="cursor-pointer text-green-600 border-green-600 hover:bg-green-50"
+                variant='outline'
+                size='lg'
+                className='cursor-pointer text-green-600 border-green-600 hover:bg-green-50'
                 onClick={() => onCardAnswer(true)}
               >
-                <Check className="w-5 h-5 mr-2" />
+                <Check className='w-5 h-5 mr-2' />
                 Đã thuộc
               </Button>
             </div>
           )}
 
           {/* Fullscreen Controls */}
-          <div className="flex items-center gap-8 p-8 border-t">
-            <div className="flex-1" />
-            <div className="flex items-center justify-center gap-8">
+          <div className='flex items-center gap-8 p-8 border-t'>
+            <div className='flex-1' />
+            <div className='flex items-center justify-center gap-8'>
               <Button
-                variant="default"
-                className="cursor-pointer"
+                variant='default'
+                className='cursor-pointer'
                 onClick={onPrevious}
                 disabled={currentCardIndex === 0}
               >
-                <ChevronLeft className="w-8 h-8" />
+                <ChevronLeft className='w-8 h-8' />
               </Button>
 
-              <div className="text-foreground text-lg">
+              <div className='text-foreground text-lg'>
                 {currentCardIndex + 1} / {flashcards.length}
               </div>
 
               <Button
-                variant="default"
-                className="cursor-pointer"
+                variant='default'
+                className='cursor-pointer'
                 onClick={onNext}
               >
-                <ChevronRight className="w-8 h-8" />
+                <ChevronRight className='w-8 h-8' />
               </Button>
             </div>
-            <div className="flex-1 justify-end flex items-center gap-2">
+            <div className='flex-1 justify-end flex items-center gap-2'>
               <Button
-                variant="ghost"
-                className="cursor-pointer"
+                variant='ghost'
+                className='cursor-pointer'
                 onClick={handleFullscreen}
               >
-                <X className="w-8 h-8" />
+                <X className='w-8 h-8' />
               </Button>
             </div>
           </div>
@@ -375,4 +388,6 @@ export default function FlipFlashcard({
       )}
     </>
   );
-}
+};
+
+export default FlipFlashcard;

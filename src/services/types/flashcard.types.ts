@@ -1,4 +1,4 @@
-export interface Flashcard {
+export type Flashcard = {
     id: number | string;
     title: string;
     description: string;
@@ -11,28 +11,28 @@ export interface Flashcard {
     createMethod: 'MANUAL' | 'AI';
 }
 
-export interface FlashcardMetadata {
+export type FlashcardMetadata = {
     currentPage: number;
     totalPages: number;
     totalItems: number;
     pageSize: number;
 }
 
-export interface FlashcardResponse {
+export type FlashcardResponse = {
     status: string;
     message: string;
     data: Flashcard[];
     metadata: FlashcardMetadata;
 }
 
-export interface GetFlashcardsParams {
+export type GetFlashcardsParams = {
     setId: number;
     page: number;
     size: number;
     sort?: string;
 }
 
-export interface Card {
+export type Card = {
     id: number;
     frontCard: string;
     backCard: string;
@@ -41,7 +41,7 @@ export interface Card {
     cardStatus?: 'NEW' | 'LEARNING' | 'KNOWN';
 }
 
-export interface FlashcardDetail {
+export type FlashcardDetail = {
     id: string;
     title: string;
     description: string;
@@ -55,34 +55,34 @@ export interface FlashcardDetail {
     cards: Card[];
 }
 
-export interface FlashcardDetailResponse {
+export type FlashcardDetailResponse = {
     status: string;
     message: string;
     data: FlashcardDetail;
     metadata: null;
 }
 
-export interface CreateFlashcardManualRequest {
+export type CreateFlashcardManualRequest = {
     title: string;
     description: string;
     privacy: 'PUBLIC' | 'PRIVATE';
     cards: Card[];
 }
 
-export interface CreateFlashcardResponse {
+export type CreateFlashcardResponse = {
     status: string;
     message: string;
     data: Flashcard;
     metadata: null;
 }
 
-export interface UpdateFlashcardRequest {
+export type UpdateFlashcardRequest = {
     title: string;
     description: string;
     privacy: 'PUBLIC' | 'PRIVATE';
 }
 
-export interface UpdateFlashcardResponse {
+export type UpdateFlashcardResponse = {
     status: string;
     message: string;
     data: Flashcard & {
@@ -93,19 +93,19 @@ export interface UpdateFlashcardResponse {
     metadata: Record<string, never>;
 }
 
-export interface DeleteFlashcardResponse {
+export type DeleteFlashcardResponse = {
     status: string;
     message: string;
     data: null;
     metadata: Record<string, never>;
 }
 
-export interface DeleteFlashcardRequest {
+export type DeleteFlashcardRequest = {
     setId: number;
     flashcardId: number;
 }
 
-export interface UpdateCardRequest {
+export type UpdateCardRequest = {
     id: number;
     frontCard: string;
     backCard: string;
@@ -113,7 +113,7 @@ export interface UpdateCardRequest {
     cardStatus?: 'NEW' | 'LEARNING' | 'KNOWN';
 }
 
-export interface UpdateCardResponse {
+export type UpdateCardResponse = {
     status: string;
     message: string;
     data: {
@@ -126,21 +126,21 @@ export interface UpdateCardResponse {
     metadata: Record<string, never>;
 }
 
-export interface DeleteCardResponse {
+export type DeleteCardResponse = {
     status: string;
     message: string;
     data: null;
     metadata: Record<string, never>;
 }
 
-export interface AddCardsRequest {
+export type AddCardsRequest = {
     frontCard: string;
     backCard: string;
     imageAssetId?: number;
     imageUrl?: string;
 }
 
-export interface AddCardsResponse {
+export type AddCardsResponse = {
     status: string;
     message: string;
     data: {
@@ -162,18 +162,18 @@ export interface AddCardsResponse {
     metadata: Record<string, never>;
 }
 
-export interface DeleteMultipleCardsRequest {
+export type DeleteMultipleCardsRequest = {
     cardIds: number[];
 }
 
-export interface DeleteMultipleCardsResponse {
+export type DeleteMultipleCardsResponse = {
     status: string;
     message: string;
     data: string;
     metadata: Record<string, never>;
 }
 
-export interface UpdateMultipleCardsRequest {
+export type UpdateMultipleCardsRequest = {
     id: number;
     frontCard: string;
     backCard: string;
@@ -182,7 +182,7 @@ export interface UpdateMultipleCardsRequest {
     cardStatus?: 'NEW' | 'LEARNING' | 'KNOWN';
 }
 
-export interface UpdateMultipleCardsResponse {
+export type UpdateMultipleCardsResponse = {
     status: string;
     message: string;
     data: Array<{
@@ -195,11 +195,11 @@ export interface UpdateMultipleCardsResponse {
     metadata: Record<string, never>;
 }
 
-export interface GenerateFlashcardsFromNoteRequest {
+export type GenerateFlashcardsFromNoteRequest = {
     noteIds: number[];
 }
 
-export interface GenerateFlashcardsFromNoteResponse {
+export type GenerateFlashcardsFromNoteResponse = {
     status: string,
     message: string,
     data: {
@@ -207,6 +207,6 @@ export interface GenerateFlashcardsFromNoteResponse {
     }
 }
 
-export interface GenerateFlashcardsFromFileRequest {
+export type GenerateFlashcardsFromFileRequest =  {
     files: File[];
 }

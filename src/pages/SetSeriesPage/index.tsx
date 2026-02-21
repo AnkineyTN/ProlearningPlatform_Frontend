@@ -59,7 +59,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [selectedFlashcard, setSelectedFlashcard] = useState<Flashcard | null>(
-    null
+    null,
   );
 
   // Mutations
@@ -349,8 +349,8 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
             generateFlashcardsFromFilesMutation.isPending
               ? "Generating with AI..."
               : createNoteMutation.isPending
-              ? "Creating..."
-              : `+ Create a new ${activeTab.slice(0, -1).toLowerCase()}`}
+                ? "Creating..."
+                : `+ Create a new ${activeTab.slice(0, -1).toLowerCase()}`}
           </Button>
           <div className='relative'>
             <div className='relative'>

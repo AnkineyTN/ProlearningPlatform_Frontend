@@ -2,7 +2,7 @@ export type StudyMode = 'SPACED_REPETITION';
 export type CardStatus = 'NEW' | 'LEARNING' | 'KNOWN';
 export type SessionStatus = 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
 
-export interface SessionCard {
+export type SessionCard = {
     id: number;
     frontCard: string;
     backCard: string;
@@ -11,14 +11,14 @@ export interface SessionCard {
     nextReviewAt: string;
 }
 
-export interface StudySession {
+export type StudySession = {
     id: number;
     studyMode: StudyMode;
     message: string;
     cards: SessionCard[];
 }
 
-export interface SessionProgress {
+export type SessionProgress = {
     id: number;
     status: SessionStatus;
     studyMode: StudyMode;
@@ -28,7 +28,7 @@ export interface SessionProgress {
     progressPercent: number;
 }
 
-export interface CardReview {
+export type CardReview = {
     cardId: number;
     known: boolean;
 }
@@ -39,7 +39,7 @@ export type ReviewLog = {
     reviewedAt: string;
 }
 
-export interface SessionResult {
+export type SessionResult = {
     sessionId: number;
     correctCount: number;
     incorrectCount: number;
@@ -48,45 +48,45 @@ export interface SessionResult {
 }
 
 // Request Types
-export interface StartSessionRequest {
+export type StartSessionRequest = {
     status?: string;
     message?: string;
 }
 
-export interface SyncProgressRequest {
+export type SyncProgressRequest = {
     cardItemReviews: CardReview[];
 }
 
 // Response Types
-export interface StartSessionResponse {
+export type StartSessionResponse = {
     status: string;
     message: string;
     data: StudySession;
     metadata: null;
 }
 
-export interface SessionStatusResponse {
+export type SessionStatusResponse = {
     status: string;
     message: string;
     data: SessionProgress[];
     metadata: null;
 }
 
-export interface SyncProgressResponse {
+export type SyncProgressResponse = {
     status: string;
     message: string;
     data: SessionProgress;
     metadata: null;
 }
 
-export interface SessionResultResponse {
+export type SessionResultResponse = {
     status: string;
     message: string;
     data: SessionResult;
     metadata: null;
 }
 
-export interface CancelSessionResponse {
+export type CancelSessionResponse = {
     status: string;
     message: string;
     data: null;

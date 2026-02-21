@@ -27,15 +27,12 @@ import type { Card } from "@/services/types/flashcard.types";
 // Types
 type ViewMode = "home" | "study" | "matching" | "results";
 
-interface FlashcardDetailProps {
+type Props = {
   setId: number;
   flashcardId: number | string;
-}
+};
 
-export default function FlashcardPage({
-  setId,
-  flashcardId,
-}: FlashcardDetailProps) {
+const FlashcardPage = ({ setId, flashcardId }: Props) => {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("home");
@@ -65,20 +62,20 @@ export default function FlashcardPage({
   const { data: sessionStatus } = useSessionStatus(
     Number(setId),
     Number(flashcardId),
-    viewMode === "study" || viewMode === "home"
+    viewMode === "study" || viewMode === "home",
   );
 
   const { data: sessionResult } = useSessionResult(
     Number(setId),
     Number(flashcardId),
     sessionId || 0,
-    viewMode === "results"
+    viewMode === "results",
   );
 
   // Fetch flashcard data from API
   const { data, isLoading, isError, error, refetch } = useFlashcardDetail(
     Number(setId),
-    Number(flashcardId)
+    Number(flashcardId),
   );
 
   const handleFlip = () => {
@@ -256,7 +253,7 @@ export default function FlashcardPage({
   };
 
   const syncProgress = async (
-    reviews: Array<{ cardId: number; known: boolean }>
+    reviews: Array<{ cardId: number; known: boolean }>,
   ) => {
     if (!sessionId || reviews.length === 0) return;
 
@@ -479,4 +476,4 @@ export default function FlashcardPage({
       )}
     </div>
   );
-}
+};

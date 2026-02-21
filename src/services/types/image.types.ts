@@ -1,4 +1,4 @@
-export interface ImageSignatureResponse {
+export type ImageSignatureResponse = {
     status: string;
     message: string;
     data: {
@@ -12,11 +12,11 @@ export interface ImageSignatureResponse {
     metadata: Record<string, any>;
 }
 
-export interface ImageUploadFromUrlRequest {
+export type ImageUploadFromUrlRequest = {
     sourceUrl: string;
 }
 
-export interface ImageUploadFromUrlResponse {
+export type ImageUploadFromUrlResponse = {
     status: string;
     message: string;
     data: {
@@ -26,13 +26,13 @@ export interface ImageUploadFromUrlResponse {
     metadata: Record<string, any>;
 }
 
-export interface ImageUploadCallbackRequest {
+export type ImageUploadCallbackRequest = {
     assetId: number;
     publicId: string;
     url: string;
 }
 
-export interface ImageUploadCallbackResponse {
+export type ImageUploadCallbackResponse = {
     status: string;
     message: string;
     data: string;

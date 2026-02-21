@@ -1,20 +1,20 @@
-import type { User } from '@/store/authSlice'
+import type { User } from "@/store/authSlice";
 
-export interface ChangePasswordData {
-    currentPassword: string
-    newPassword: string
-}
+export type ChangePasswordData = {
+  currentPassword: string;
+  newPassword: string;
+};
 
-export interface UpdateProfileData {
-    name: string
-    email: string
-}
+export type UpdateProfileData = {
+  name: string;
+  email: string;
+};
 
-export interface ChangePasswordResponse {
-    message: string
-}
+export type ChangePasswordResponse = {
+  message: string;
+};
 
-export interface UpdateProfileResponse {
-    message: string
-    user: User
-}
+export type UpdateProfileResponse = {
+  message: string;
+  user: User;
+};

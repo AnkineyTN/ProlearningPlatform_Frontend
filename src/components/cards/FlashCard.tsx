@@ -12,19 +12,14 @@ export interface Flashcard {
   privacy: "PUBLIC" | "PRIVATE";
 }
 
-interface FlashCardProps {
+type Props = {
   flashcard: Flashcard;
   onAccess: (id: number | string) => void;
   onUpdate: (flashcard: Flashcard) => void;
   onDelete: (flashcardId: number | string) => void;
-}
+};
 
-export default function FlashCard({
-  flashcard,
-  onAccess,
-  onUpdate,
-  onDelete,
-}: FlashCardProps) {
+const FlashCard = ({ flashcard, onAccess, onUpdate, onDelete }: Props) => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -117,4 +112,6 @@ export default function FlashCard({
       />
     </div>
   );
-}
+};
+
+export default FlashCard;

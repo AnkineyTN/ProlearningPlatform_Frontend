@@ -27,7 +27,8 @@ import { useUploadImageFile } from "@/hooks/useImageUpload";
 import FlipFlashcard from "./FlipFlashcard";
 
 import type { Card as CardData } from "@/services/types/flashcard.types";
-interface HomeViewProps {
+
+type Props = {
   setId: number;
   flashcardId: number | string;
   flashcards: CardData[];
@@ -58,7 +59,7 @@ interface HomeViewProps {
   };
 }
 
-export default function HomeView({
+const HomeView = ({
   setId,
   flashcards,
   flashcardId,
@@ -515,3 +516,5 @@ export default function HomeView({
     </>
   );
 }
+
+export default HomeView;

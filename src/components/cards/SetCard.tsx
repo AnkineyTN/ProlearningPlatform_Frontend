@@ -13,7 +13,7 @@ import DeleteConfirmDialog from "@/components/modals/DeleteConfirmDialog";
 import { Button } from "../ui/button";
 import DropdownMenu from "./DropdownMenu";
 
-export interface Set {
+export type Set = {
   id: number;
   title: string;
   description: string;
@@ -29,19 +29,14 @@ export interface Set {
   created_at: string;
 }
 
-interface SetCardProps {
+type Props = {
   set: Set;
   onAccess: (id: number) => void;
   onDelete?: (id: number) => void;
   onUpdate?: (set: Set) => void;
-}
+};
 
-export default function SetCard({
-  set,
-  onAccess,
-  onDelete,
-  onUpdate,
-}: SetCardProps) {
+const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
   const { t } = useTranslation();
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -178,4 +173,6 @@ export default function SetCard({
       />
     </div>
   );
-}
+};
+
+export default SetCard;

@@ -7,7 +7,7 @@ import NoteCardSelect from "@/components/cards/NoteCardSelect";
 import { Button } from "@/components/ui/button";
 import { useNotesBySet } from "@/hooks/useNotes";
 
-interface AISourceModalProps {
+type Props = {
   setId: number;
   currentPage: number;
   pageSize: number;
@@ -17,7 +17,7 @@ interface AISourceModalProps {
   onBack: () => void;
   onSubmit: (data: { source: "notes" | "files"; selectedItems: any[] }) => void;
   isLoading?: boolean;
-}
+};
 
 function getTimeAgo(dateString: string): string {
   const date = new Date(dateString);
@@ -36,7 +36,7 @@ function getTimeAgo(dateString: string): string {
   }
 }
 
-export default function AISourceModal({
+const AISourceModal({
   setId,
   currentPage,
   pageSize,
@@ -177,7 +177,7 @@ export default function AISourceModal({
                             privacy: note.privacy,
                             timeAgo: getTimeAgo(note.updated_at),
                             created_at: new Date(
-                              note.created_at
+                              note.created_at,
                             ).toLocaleDateString("en-GB", {
                               day: "2-digit",
                               month: "short",
@@ -251,7 +251,7 @@ export default function AISourceModal({
                         <button
                           onClick={() =>
                             setUploadedFiles((prev) =>
-                              prev.filter((_, i) => i !== index)
+                              prev.filter((_, i) => i !== index),
                             )
                           }
                           className='text-muted-foreground hover:text-foreground cursor-pointer'
@@ -300,3 +300,5 @@ export default function AISourceModal({
     </div>
   );
 }
+
+export default AISourceModal;

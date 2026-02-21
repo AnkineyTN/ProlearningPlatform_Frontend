@@ -23,7 +23,7 @@ import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
-export default function SignUp() {
+const SignUp = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -306,3 +306,5 @@ export default function SignUp() {
     </div>
   );
 }
+
+export default SignUp;

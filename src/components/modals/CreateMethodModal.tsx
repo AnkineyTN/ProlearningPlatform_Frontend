@@ -1,21 +1,21 @@
 import { X, Pencil, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-interface CreateMethodModalProps {
+type Props = {
   type: string;
   isOpen: boolean;
   onClose: () => void;
   onSelectManual: () => void;
   onSelectAI: () => void;
-}
+};
 
-export default function CreateMethodModal({
+const CreateMethodModal = ({
   type,
   isOpen,
   onClose,
   onSelectManual,
   onSelectAI,
-}: CreateMethodModalProps) {
+}: Props) => {
   const { t } = useTranslation();
   if (!isOpen) return null;
 
@@ -88,4 +88,6 @@ export default function CreateMethodModal({
       </div>
     </div>
   );
-}
+};
+
+export default CreateMethodModal;

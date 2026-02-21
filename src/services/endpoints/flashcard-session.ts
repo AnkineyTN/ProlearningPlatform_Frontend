@@ -17,7 +17,7 @@ export const flashcardSessionAPI = {
   startSession: (
     setId: number,
     flashcardId: number,
-    data?: StartSessionRequest
+    data?: StartSessionRequest,
   ): Promise<AxiosResponse<StartSessionResponse>> =>
     api.post(`/sets/${setId}/flashcards/${flashcardId}/session/start`, data),
 
@@ -26,7 +26,7 @@ export const flashcardSessionAPI = {
    */
   getSessionStatus: (
     setId: number,
-    flashcardId: number
+    flashcardId: number,
   ): Promise<AxiosResponse<SessionStatusResponse>> =>
     api.get(`/sets/${setId}/flashcards/${flashcardId}/session/status`),
 
@@ -37,11 +37,11 @@ export const flashcardSessionAPI = {
     setId: number,
     flashcardId: number,
     sessionId: number,
-    data: SyncProgressRequest
+    data: SyncProgressRequest,
   ): Promise<AxiosResponse<SyncProgressResponse>> =>
     api.put(
       `/sets/${setId}/flashcards/${flashcardId}/session/${sessionId}/progress`,
-      data
+      data,
     ),
 
   /**
@@ -50,10 +50,10 @@ export const flashcardSessionAPI = {
   getSessionResult: (
     setId: number,
     flashcardId: number,
-    sessionId: number
+    sessionId: number,
   ): Promise<AxiosResponse<SessionResultResponse>> =>
     api.get(
-      `/sets/${setId}/flashcards/${flashcardId}/session/${sessionId}/result`
+      `/sets/${setId}/flashcards/${flashcardId}/session/${sessionId}/result`,
     ),
 
   /**
@@ -62,7 +62,7 @@ export const flashcardSessionAPI = {
   cancelSession: (
     setId: number,
     flashcardId: number,
-    sessionId: number
+    sessionId: number,
   ): Promise<AxiosResponse<CancelSessionResponse>> =>
     api.delete(`/sets/${setId}/flashcards/${flashcardId}/session/${sessionId}`),
 };

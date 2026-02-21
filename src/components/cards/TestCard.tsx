@@ -1,6 +1,6 @@
 import { FilePen, MoreVertical, Clock } from 'lucide-react';
 
-export interface Test {
+export type Test = {
     title: string;
     category: string;
     preview: string;
@@ -8,7 +8,7 @@ export interface Test {
     date: string;
 }
 
-export default function TestCard({ test, onAccess }: { test: Test, onAccess: (id: string) => void }) {
+const TestCard = ({ test, onAccess }: { test: Test, onAccess: (id: string) => void }) => {
     const handleClick = () => {
         onAccess(test.title); // Giả sử 'title' là ID của test
     }
@@ -32,3 +32,5 @@ export default function TestCard({ test, onAccess }: { test: Test, onAccess: (id
         </div>
     );
 };
+
+export default TestCard;

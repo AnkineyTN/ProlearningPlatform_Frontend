@@ -15,19 +15,14 @@ export interface Note {
   created_at: string;
 }
 
-interface NoteCardProps {
+type Props = {
   note: Note;
   onAccess: (id: number) => void;
   onDelete?: (id: number) => void;
   onUpdate?: (note: Note) => void;
-}
+};
 
-export default function NoteCard({
-  note,
-  onAccess,
-  onDelete,
-  onUpdate,
-}: NoteCardProps) {
+const NoteCard = ({ note, onAccess, onDelete, onUpdate }: Props) => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -129,4 +124,6 @@ export default function NoteCard({
       />
     </div>
   );
-}
+};
+
+export default NoteCard;
