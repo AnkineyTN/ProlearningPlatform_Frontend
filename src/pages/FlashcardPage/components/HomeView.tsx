@@ -28,7 +28,7 @@ import FlipFlashcard from "./FlipFlashcard";
 
 import type { Card as CardData } from "@/services/types/flashcard.types";
 
-type Props = {
+type HomeViewProps = {
   setId: number;
   flashcardId: number | string;
   flashcards: CardData[];
@@ -57,7 +57,7 @@ type Props = {
     completedCount: number;
     progressPercent: number;
   };
-}
+};
 
 const HomeView = ({
   setId,
@@ -77,7 +77,7 @@ const HomeView = ({
   onDeleteFlashcard,
   isUpdating = false,
   onCardAnswer,
-}: HomeViewProps) {
+}: HomeViewProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [showMenu, setShowMenu] = useState(false);

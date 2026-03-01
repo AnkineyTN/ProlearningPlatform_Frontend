@@ -477,3 +477,5 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     </div>
   );
 };
+
+export default FlashcardPage;

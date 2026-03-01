@@ -19,7 +19,7 @@ type Props = {
   onBack: () => void;
 };
 
-const SourceSelection({
+const SourceSelection = ({
   selectedSource,
   onSourceSelect,
   onNext,

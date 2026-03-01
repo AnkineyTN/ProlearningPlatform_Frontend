@@ -1,6 +1,6 @@
 import { BookOpen, SwatchBook } from "lucide-react";
-import { ModeToggle } from "@/components/theme/mode-toggle";
-import { LanguageToggle } from "@/components/language/language-toggle";
+import ModeToggle from "@/components/theme/mode-toggle";
+import LanguageToggle  from "@/components/language/language-toggle";
 import { useNavigate } from "react-router";
 
 export default function FlashcardHeader({ setId, title, description }: { setId: number, title: string, description: string }) {

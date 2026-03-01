@@ -7,7 +7,7 @@ type Props = {
   disablePre?: boolean;
 };
 
-const SwitchButton({
+const SwitchButton = ({
   onPre,
   onNext,
   disablePre,

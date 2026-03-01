@@ -33,5 +33,3 @@ const DropdownMenu = ({ onUpdate, onDelete }: Props) => {
 };
 
 export default DropdownMenu;
-
-export default DropdownMenu;

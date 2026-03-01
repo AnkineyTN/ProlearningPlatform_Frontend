@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 
-const DynamicCalendar() {
+const DynamicCalendar = () => {
     const { t } = useTranslation();
     const [currentDate, setCurrentDate] = useState(new Date());
     const today = new Date();

@@ -1,0 +1,185 @@
+import { useEffect, useRef, useState, useCallback } from "react";
+import {
+  BlockNoteEditor as BlockNoteEditorClass,
+  type PartialBlock,
+} from "@blocknote/core";
+import { useCreateBlockNote } from "@blocknote/react";
+import { BlockNoteView } from "@blocknote/mantine";
+import "@blocknote/mantine/style.css";
+import "@blocknote/react/style.css";
+import { Button } from "@/components/ui/button";
+import { Sparkles, LoaderCircle } from "lucide-react";
+import { useExplainText } from "@/hooks/useNotes";
+import toast from "react-hot-toast";
+
+interface NoteEditorProps {
+  content: string;
+  onContentChange: (content: string) => void;
+  onAISummarize: (selectedText: string, response: string) => void;
+  noteId: number;
+}
+
+export const NoteEditor = ({
+  content,
+  onContentChange,
+  onAISummarize,
+  noteId,
+}: NoteEditorProps) => {
+  const [selectedText, setSelectedText] = useState("");
+  const [showSummarizeBtn, setShowSummarizeBtn] = useState(false);
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+  const editorRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  const [editor, setEditor] = useState<BlockNoteEditorClass | null>(null);
+  const explainTextMutation = useExplainText();
+
+  // Initialize BlockNote editor
+  const blockNoteEditor = useCreateBlockNote({
+    initialContent: content
+      ? (() => {
+          try {
+            return JSON.parse(content) as PartialBlock[];
+          } catch {
+            return undefined;
+          }
+        })()
+      : undefined,
+  });
+
+  useEffect(() => {
+    setEditor(blockNoteEditor);
+  }, [blockNoteEditor]);
+
+  // Handle content change from editor
+  const handleEditorChange = useCallback(async () => {
+    if (editor) {
+      const html = await editor.blocksToHTMLLossy(editor.document);
+      onContentChange(html);
+    }
+  }, [editor, onContentChange]);
+
+  // Track text selection
+  useEffect(() => {
+    const handleMouseUp = () => {
+      const selection = window.getSelection();
+      const selectedText = selection?.toString().trim() || "";
+
+      console.log("🚀 ~ Text selected:", selectedText); // Debug log
+
+      if (selectedText.length > 0) {
+        setSelectedText(selectedText);
+
+        // Get selection position for tooltip
+        const range = selection?.getRangeAt(0);
+        if (range && editorRef.current) {
+          const rect = range.getBoundingClientRect();
+          const editorRect = editorRef.current.getBoundingClientRect();
+
+          console.log("🚀 ~ Tooltip position set"); // Debug log
+
+          setTooltipPos({
+            x: rect.left - editorRect.left,
+            y: rect.top - editorRect.top - 40,
+          });
+          setShowSummarizeBtn(true);
+        }
+      } else {
+        setShowSummarizeBtn(false);
+        setSelectedText("");
+      }
+    };
+
+    document.addEventListener("mouseup", handleMouseUp);
+    return () => document.removeEventListener("mouseup", handleMouseUp);
+  }, []);
+
+  // Handle click outside to close tooltip
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        tooltipRef.current &&
+        !tooltipRef.current.contains(e.target as Node) &&
+        !editorRef.current?.contains(e.target as Node)
+      ) {
+        setShowSummarizeBtn(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleAISummarize = useCallback(async () => {
+    console.log("🚀 ~ NoteEditor ~ selectedText:", selectedText);
+    console.log("🚀 ~ NoteEditor ~ noteId:", noteId);
+    console.log("🚀 ~ NoteEditor ~ explainTextMutation:", explainTextMutation);
+
+    if (!selectedText) {
+      console.log("❌ Early return - selectedText or noteId is missing");
+      return;
+    }
+
+    try {
+        console.log("🚀 Calling API with:", { noteId, queryText: selectedText, lang: "english" });
+      const response = await explainTextMutation.mutateAsync({
+        noteId: 149, // Hardcoded for testing - replace with noteId when API is ready
+        queryText: selectedText,
+        lang: "english",
+      });
+      console.log("🚀 ~ NoteEditor ~ response:", response);
+
+      const aiResponse = response.data.data.answer;
+      console.log("🚀 ~ NoteEditor ~ aiResponse:", aiResponse);
+      onAISummarize(selectedText, aiResponse);
+      setShowSummarizeBtn(false);
+      toast.success("Text summarized successfully");
+    } catch (error) {
+      toast.error("Failed to summarize text");
+      console.error("❌ Error:", error);
+    }
+  }, [selectedText, noteId, onAISummarize, explainTextMutation]);
+
+  return (
+    <div className='relative w-full h-full overflow-hidden flex flex-col'>
+      {/* Floating AI Summarize Button */}
+      {showSummarizeBtn && selectedText && (
+        <div
+          ref={tooltipRef}
+          className='fixed rounded-lg shadow-lg border border-gray-200 p-2 z-50 flex items-center gap-2'
+          style={{
+            left: `${editorRef.current?.getBoundingClientRect().left || 0 + tooltipPos.x}px`,
+            top: `${editorRef.current?.getBoundingClientRect().top || 0 + tooltipPos.y}px`,
+          }}
+        >
+          <Button
+            size='sm'
+            onClick={handleAISummarize}
+            disabled={explainTextMutation.isPending}
+            className='gap-2'
+          >
+            {explainTextMutation.isPending ? (
+              <LoaderCircle className='w-4 h-4 animate-spin' />
+            ) : (
+              <Sparkles className='w-4 h-4' />
+            )}
+            AI Summarize
+          </Button>
+        </div>
+      )}
+
+      {/* Editor Container */}
+      <div
+        ref={editorRef}
+        className='flex-1 overflow-auto focus-within:outline-none'
+      >
+        {editor && (
+          <BlockNoteView
+            editor={editor}
+            onChange={handleEditorChange}
+            className='block-note-editor'
+          />
+        )}
+      </div>
+    </div>
+  );
+};

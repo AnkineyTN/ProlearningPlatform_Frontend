@@ -55,13 +55,7 @@ function SetSeriesPageWrapper() {
 }
 
 function TextEditorWrapper() {
-  const { id } = useParams();
-  return (
-    <TextEditor
-      initialTitle={id ? `Note ${id}` : "Untitled Note"}
-      noteId={id ?? ""}
-    />
-  );
+  return <TextEditor />;
 }
 
 function FlashcardAppWrapper() {

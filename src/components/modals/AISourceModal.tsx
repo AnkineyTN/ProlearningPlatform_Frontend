@@ -7,7 +7,7 @@ import NoteCardSelect from "@/components/cards/NoteCardSelect";
 import { Button } from "@/components/ui/button";
 import { useNotesBySet } from "@/hooks/useNotes";
 
-type Props = {
+type AISourceModalProps = {
   setId: number;
   currentPage: number;
   pageSize: number;
@@ -15,7 +15,7 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   onBack: () => void;
-  onSubmit: (data: { source: "notes" | "files"; selectedItems: any[] }) => void;
+  onSubmit: (data: { source: "notes" | "files"; selectedItems: unknown[] }) => void;
   isLoading?: boolean;
 };
 
@@ -36,7 +36,7 @@ function getTimeAgo(dateString: string): string {
   }
 }
 
-const AISourceModal({
+const AISourceModal = ({
   setId,
   currentPage,
   pageSize,
@@ -46,7 +46,7 @@ const AISourceModal({
   onBack,
   onSubmit,
   isLoading,
-}: AISourceModalProps) {
+}: AISourceModalProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<"notes" | "files">("notes");
   const [selectedNotes, setSelectedNotes] = useState<number[]>([]);

@@ -3,8 +3,8 @@ export type NoteDetail = {
     title: string;
     description: string;
     privacy: string;
-    content: any;
-    noteDocs: any[];
+    content: string;
+    noteDocs: string[];
 }
 
 export type NoteListItem = {
@@ -40,6 +40,7 @@ export type AutoSaveNoteRequest = {
 export type ExplainTextRequest = {
     noteId: number;
     queryText: string;
+    lang: string;
 }
 
 export type ExplainTextResponse = {
@@ -56,7 +57,7 @@ export type ExplainTextResponse = {
 export type NoteDetailResponse = {
     id: number;
     title: string;
-    content: any;
+    content: string;
     createdAt: string;
     updatedAt: string;
 }

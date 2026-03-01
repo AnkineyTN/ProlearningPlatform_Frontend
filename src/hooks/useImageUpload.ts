@@ -44,7 +44,7 @@ export const useUploadImageFile = () => {
         publicId: public_id,
       };
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error("Error uploading image file:", error);
     },
   });
@@ -57,7 +57,7 @@ export const useUploadImageFromUrl = () => {
       const response = await imageAPI.uploadFromUrl({ sourceUrl });
       return response.data.data;
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error("Error uploading image from URL:", error);
     },
   });

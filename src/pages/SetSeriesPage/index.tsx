@@ -117,7 +117,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
 
   const handleAISourceSubmit = async (data: {
     source: "notes" | "files";
-    selectedItems: any[];
+    selectedItems: unknown[];
   }) => {
     if (activeTab === "Flashcards") {
       try {

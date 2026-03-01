@@ -28,7 +28,7 @@ export const useStartSession = () => {
         queryKey: ["session-status", variables.setId, variables.flashcardId],
       });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error("Error starting session:", error);
     },
   });
@@ -79,7 +79,7 @@ export const useSyncProgress = () => {
       // Cập nhật cache của session status
       queryClient.setQueryData(
         ["session-status", variables.setId, variables.flashcardId],
-        (oldData: any) => {
+        (oldData: unknown) => {
           if (!oldData) return oldData;
           return {
             ...oldData,
@@ -88,7 +88,7 @@ export const useSyncProgress = () => {
         },
       );
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error("Error syncing progress:", error);
     },
   });
@@ -150,7 +150,7 @@ export const useCancelSession = () => {
         ],
       });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error("Error cancelling session:", error);
     },
   });

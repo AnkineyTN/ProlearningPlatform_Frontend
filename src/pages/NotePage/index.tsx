@@ -1,432 +1,249 @@
-import "@blocknote/core/fonts/inter.css";
-import "@blocknote/mantine/style.css";
-import "./style.scss";
+import "@/components/notes/notes.css";
 
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useParams } from "react-router-dom";
 
-import { useExplainFeature } from "@/hooks/useExplainFeature";
-import { useFileManagement } from "@/hooks/useFileManagement";
+import { AISummarizePanel } from "@/pages/NotePage/AISummarizePanel";
+import { FilePreview } from "@/pages/NotePage/FilePreview";
+import { NoteEditor } from "@/pages/NotePage/NoteEditor";
+import { NoteHeader } from "@/pages/NotePage/NoteHeader";
 import {
-  useAutoSaveNote,
-  useConvertToVectorDB,
-  useDeleteNoteDoc,
-  useExplainText,
-  useNoteDetail,
-  useSummarizeFile,
-  useUploadFile,
-} from "@/hooks/useNotes";
-import { BlockNoteView } from "@blocknote/mantine";
-import { useCreateBlockNote } from "@blocknote/react";
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
+import { useAutoSaveNote, useNoteDetail } from "@/hooks/useNotes";
 
-import EditorHeader from "./EditorHeader";
-import ExplainPopup from "./ExplainPopup";
-import FileSidebar from "./FileSidebar";
-import FileTabs from "./FileTabs";
+interface UploadedFile {
+  id: number;
+  fileName: string;
+  fileUrl: string;
+  extension: string;
+  publicId: string;
+}
 
-type Props = {
-  initialTitle?: string;
-  noteId: string;
-  onSave?: (title: string, content: any) => void;
-};
+interface AISummary {
+  id: string;
+  query: string;
+  response: string;
+  type: "text" | "file";
+}
 
-const NotePage = ({
-  initialTitle = "Untitled Note",
-  noteId,
-  onSave,
-}: Props) => {
-  const navigate = useNavigate();
-  const [title, setTitle] = useState<string>(initialTitle);
-  const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
-  const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+export const NotePage = () => {
+  const { noteId } = useParams<{ noteId: string }>();
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
+  const [summaries, setSummaries] = useState<AISummary[]>([]);
 
-  const [editorWidthPercent, setEditorWidthPercent] = useState(60); // 60% cho editor, 40% cho sidebar
-  const [isResizing, setIsResizing] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const MIN_EDITOR_WIDTH_PERCENT = 30;
-  const MAX_EDITOR_WIDTH_PERCENT = 85;
-
-  // Ref để track timeout cho debounce
-  const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const hasUnsavedChanges = useRef<boolean>(false);
-
-  const { data: noteData, isLoading, error } = useNoteDetail(Number(noteId));
+  const { data: noteDetail, isLoading: isLoadingNote } = useNoteDetail(
+    noteId ? parseInt(noteId) : 0,
+  );
   const autoSaveMutation = useAutoSaveNote();
 
-  // Parse note content
-  const parseNoteContent = (content: any) => {
-    if (!content) {
-      return [
-        { type: "heading", content: "Heading 1...", props: { level: 1 } },
-        { type: "paragraph", content: "" },
-      ];
-    }
-    try {
-      return typeof content === "string" ? JSON.parse(content) : content;
-    } catch (error) {
-      console.error("Error parsing content:", error);
-      return [{ type: "paragraph", content: "Error loading content" }];
-    }
-  };
-
-  // Initialize BlockNote editor
-  const editor = useCreateBlockNote({
-    initialContent: parseNoteContent(noteData?.content),
-  });
-
-  // Custom hooks
-  const {
-    uploadedFilesList,
-    setUploadedFilesList,
-    selectedFileId,
-    setSelectedFileId,
-    showFileSidebar,
-    setShowFileSidebar,
-    fileSummary,
-    setFileSummary,
-    isSummarizing,
-    selectedFile,
-    handleFileUpload,
-    handleSummarizeFile,
-    handleApplySummary,
-    handleRemoveFile,
-    isUploading,
-    setIsUploading,
-  } = useFileManagement({
-    noteId: Number(noteId),
-    editor,
-    uploadFileMutation: useUploadFile(),
-    summarizeFileMutation: useSummarizeFile(),
-    convertToVectorDBMutation: useConvertToVectorDB(),
-    deleteNoteDocMutation: useDeleteNoteDoc(),
-  });
-
-  const {
-    explainPopup,
-    handleExplainClick,
-    handleApplyExplanation,
-    handleCancelExplanation,
-  } = useExplainFeature({
-    noteId: Number(noteId),
-    editor,
-    explainMutation: useExplainText(),
-  });
-
-  // Resize effect
+  // Load note detail on mount
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isResizing || !containerRef.current) return;
-
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const newWidthPercent =
-        ((e.clientX - containerRect.left) / containerRect.width) * 100;
-
-      const clampedPercent = Math.max(
-        MIN_EDITOR_WIDTH_PERCENT,
-        Math.min(MAX_EDITOR_WIDTH_PERCENT, newWidthPercent),
-      );
-
-      setEditorWidthPercent(clampedPercent);
-    };
-
-    const handleMouseUp = () => {
-      setIsResizing(false);
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
-    };
-
-    if (isResizing) {
-      document.body.style.cursor = "col-resize";
-      document.body.style.userSelect = "none";
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isResizing]);
-
-  // Load note data
-  useEffect(() => {
-    if (noteData) {
-      setTitle(noteData.title);
-      if (noteData.content) {
-        const parsedContent = parseNoteContent(noteData.content);
-        editor.replaceBlocks(editor.document, parsedContent);
-      }
-      if (noteData.noteDocs && Array.isArray(noteData.noteDocs)) {
-        setUploadedFilesList(noteData.noteDocs);
+    if (noteDetail) {
+      setTitle(noteDetail.title);
+      setContent(noteDetail.content);
+      // Load uploaded docs if any
+      if (noteDetail.noteDocs && noteDetail.noteDocs.length > 0) {
+        // Parse the first doc (structure depends on your API)
+        // This is a placeholder - adjust based on your actual API response
       }
     }
-  }, [noteData]);
+  }, [noteDetail]);
 
-  // Hàm thực hiện auto-save
-  const performAutoSave = async () => {
-    if (!hasUnsavedChanges.current) return;
-
-    try {
-      setIsSaving(true);
-      const blocks = editor.document;
-      // Convert blocks to HTML before saving to the API
-      const html = await editor.blocksToHTMLLossy(blocks);
-      const contentString = html;
-      await autoSaveMutation.mutateAsync({
-        noteId: Number(noteId),
-        title,
-        content: contentString,
-      });
-      setLastSaved(new Date());
-      hasUnsavedChanges.current = false;
-    } catch (error) {
-      console.error("Auto-save failed:", error);
-      toast.error("Auto-save failed. Please try again.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  // Debounced auto-save
-  const triggerAutoSave = () => {
-    hasUnsavedChanges.current = true;
-
-    if (autoSaveTimeoutRef.current) {
-      clearTimeout(autoSaveTimeoutRef.current);
-    }
-
-    autoSaveTimeoutRef.current = setTimeout(() => {
-      performAutoSave();
-    }, 20000);
-  };
-
-  // Listen to editor changes
+  // Auto-save on content change
   useEffect(() => {
-    const unsubscribe = editor.onChange(() => {
-      triggerAutoSave();
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [editor, title]);
-
-  // Listen to title changes
-  useEffect(() => {
-    if (noteData && title !== noteData.title) {
-      triggerAutoSave();
-    }
-  }, [title]);
-
-  // Cleanup timeout khi unmount
-  useEffect(() => {
-    return () => {
-      if (autoSaveTimeoutRef.current) {
-        clearTimeout(autoSaveTimeoutRef.current);
-      }
-      if (hasUnsavedChanges.current) {
-        performAutoSave();
-      }
-    };
-  }, []);
-
-  // Handlers
-  const handleBack = () => navigate(-1);
-
-  const handleTitleClick = () => setIsEditingTitle(true);
-
-  const handleTitleBlur = () => setIsEditingTitle(false);
-
-  const handleTitleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") setIsEditingTitle(false);
-  };
-
-  const handleSave = async () => {
-    if (autoSaveTimeoutRef.current) {
-      clearTimeout(autoSaveTimeoutRef.current);
-    }
-
-    const blocks = editor.document;
-    setIsSaving(true);
-    try {
-      if (onSave) {
-        // If parent provided onSave, keep previous behavior and pass raw blocks (so parent can decide)
-        await onSave(title, blocks);
-      } else {
-        // Convert blocks to HTML before saving to the API
-        const html = await editor.blocksToHTMLLossy(blocks);
-        const contentString = html;
-        await autoSaveMutation.mutateAsync({
-          noteId: Number(noteId),
+    const timer = setTimeout(() => {
+      if (noteId && (title || content)) {
+        autoSaveMutation.mutate({
+          noteId: parseInt(noteId),
           title,
-          content: contentString,
+          content,
         });
-        setLastSaved(new Date());
-        hasUnsavedChanges.current = false;
       }
-    } catch (error) {
-      console.error("Error saving note:", error);
-      toast.error("Failed to save document!");
-    } finally {
-      setIsSaving(false);
+    }, 3000); // Auto-save after 3 seconds of inactivity
+
+    return () => clearTimeout(timer);
+  }, [title, content, noteId, autoSaveMutation]);
+
+  const handleTitleChange = (newTitle: string) => {
+    setTitle(newTitle);
+  };
+
+  const handleContentChange = (newContent: string) => {
+    setContent(newContent);
+  };
+
+  const handleSave = () => {
+    if (noteId) {
+      autoSaveMutation.mutate({
+        noteId: parseInt(noteId),
+        title,
+        content,
+      });
     }
   };
 
-  const handleDownload = async () => {
-    const blocks = editor.document;
-    const html = await editor.blocksToHTMLLossy(blocks);
+  const handleAISummarize = async (selectedText: string, response: string) => {
+    const newSummary: AISummary = {
+      id: Date.now().toString(),
+      query: selectedText,
+      response,
+      type: "text",
+    };
+
+    setSummaries((prev) => [newSummary, ...prev]);
+  };
+
+  const handleFileSummarize = (summary: string, fileName: string) => {
+    const newSummary: AISummary = {
+      id: Date.now().toString(),
+      query: `Summarize content of ${fileName}`,
+      response: summary,
+      type: "file",
+    };
+
+    setSummaries((prev) => [newSummary, ...prev]);
+  };
+
+  const handleRemoveSummary = (id: string) => {
+    setSummaries((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  const handleDownloadHTML = useCallback(() => {
     const htmlContent = `
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <title>${title}</title>
-            </head>
-            <body>
-                ${html}
-            </body>
-            </html>
-        `;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #333;
+        }
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>${title}</h1>
+    <div class="content">
+        <pre>${escapeHtml(content)}</pre>
+    </div>
+    <p style="text-align: center; color: #999; font-size: 12px; margin-top: 40px;">
+        Generated from Prolearning Platform
+    </p>
+</body>
+</html>
+    `;
+
     const blob = new Blob([htmlContent], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
+    const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${title}.html`;
+    a.download = `${title || "note"}.html`;
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(url);
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+
+    toast.success("Note downloaded successfully");
+  }, [title, content]);
+
+  const escapeHtml = (text: string) => {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
   };
 
-  const handleSelectFile = (fileId: number) => {
-    setSelectedFileId(fileId);
-    setShowFileSidebar(true);
-    setFileSummary("");
-  };
-
-  const getTheme = () => {
-    const theme = document.documentElement.getAttribute("data-theme");
-    return theme === "dark" ? "dark" : "light";
-  };
-
-  // Loading & Error states
-  if (isLoading) {
+  if (isLoadingNote) {
     return (
-      <div className='min-h-screen bg-card flex items-center justify-center'>
-        <div className='text-muted-foreground'>Loading note...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className='min-h-screen bg-card flex items-center justify-center'>
-        <div className='text-destructive'>
-          Error loading note. Please try again.
+      <div className='w-full h-screen flex items-center justify-center'>
+        <div className='text-center'>
+          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4'></div>
+          <p className='text-muted-foreground'>Loading note...</p>
         </div>
       </div>
     );
   }
-
-  const docFiles = uploadedFilesList.filter(
-    (f: { fileUrl: string }) => !f.fileUrl.match(/\.(jpe?g|png|gif|webp)$/i),
-  );
-
-  const sidebarWidthPercent = 100 - editorWidthPercent;
 
   return (
-    <div ref={containerRef} className='min-h-screen bg-card flex relative'>
-      {/* Main Editor Area */}
-      <div
-        className='flex flex-col transition-all duration-200'
-        style={{
-          width:
-            showFileSidebar && selectedFile ? `${editorWidthPercent}%` : "100%",
-        }}
-      >
-        <EditorHeader
-          title={title}
-          isEditingTitle={isEditingTitle}
-          lastSaved={lastSaved}
-          isSaving={isSaving}
-          isUploading={isUploading}
-          showFileSidebar={showFileSidebar}
-          hasDocFiles={docFiles.length > 0}
-          onBack={handleBack}
-          onTitleClick={handleTitleClick}
-          onTitleChange={setTitle}
-          onTitleBlur={handleTitleBlur}
-          onTitleKeyDown={handleTitleKeyDown}
-          onUpload={(file) => {
-            setIsUploading(true);
-            handleFileUpload(file)
-              .then(() => setIsUploading(false))
-              .catch(() => setIsUploading(false));
-          }}
-          onDownload={handleDownload}
-          onSave={handleSave}
-          onToggleSidebar={() => setShowFileSidebar((prev: any) => !prev)}
-        />
+    <div className='flex flex-col w-full h-screen'>
+      {/* Header */}
+      <NoteHeader
+        title={title}
+        onTitleChange={handleTitleChange}
+        onSave={handleSave}
+        isSaving={autoSaveMutation.isPending}
+        noteId={noteId ? parseInt(noteId) : 0}
+        onFileUploaded={setUploadedFile}
+        onDownloadHTML={handleDownloadHTML}
+      />
 
-        <FileTabs
-          files={docFiles}
-          selectedFileId={selectedFileId}
-          showSidebar={showFileSidebar}
-          onSelectFile={handleSelectFile}
-          onRemoveFile={handleRemoveFile}
-        />
+      {/* Main Content Area with Resizable Panels */}
+      <div className='flex-1 overflow-hidden'>
+        <ResizablePanelGroup className='w-full h-full'>
+          {/* Editor Panel */}
+          <ResizablePanel defaultSize={uploadedFile ? 40 : 70} minSize={30}>
+            <NoteEditor
+              content={content}
+              onContentChange={handleContentChange}
+              onAISummarize={handleAISummarize}
+              noteId={noteId ? parseInt(noteId) : 0}
+            />
+          </ResizablePanel>
 
-        <ExplainPopup
-          show={explainPopup.show}
-          selectedText={explainPopup.selectedText}
-          answer={explainPopup.answer}
-          loading={explainPopup.loading}
-          position={explainPopup.position}
-          onExplain={handleExplainClick}
-          onApply={handleApplyExplanation}
-          onCancel={handleCancelExplanation}
-        />
+          {/* File Preview Panel */}
+          {uploadedFile && (
+            <>
+              <ResizableHandle />
+              <ResizablePanel defaultSize={30} minSize={20}>
+                <FilePreview
+                  fileId={uploadedFile.id}
+                  fileName={uploadedFile.fileName}
+                  fileUrl={uploadedFile.fileUrl}
+                  extension={uploadedFile.extension}
+                  publicId={uploadedFile.publicId}
+                  onFileSummarize={handleFileSummarize}
+                  onFileDeleted={() => setUploadedFile(null)}
+                />
+              </ResizablePanel>
+            </>
+          )}
 
-        {/* Editor Content */}
-        <main className='w-full px-8 py-12 flex-1 overflow-auto'>
-          <div className='max-w-4xl mx-auto'>
-            <BlockNoteView editor={editor} theme={getTheme()} />
-          </div>
-        </main>
+          {/* AI Summarize Panel */}
+          {summaries.length > 0 ? (
+            <>
+              <ResizableHandle />
+              <ResizablePanel defaultSize={uploadedFile ? 30 : 30} minSize={20}>
+                <AISummarizePanel
+                  summaries={summaries}
+                  onRemoveSummary={handleRemoveSummary}
+                />
+              </ResizablePanel>
+            </>
+          ) : null}
+        </ResizablePanelGroup>
       </div>
-
-      {/* Resize Handle */}
-      {showFileSidebar && selectedFile && (
-        <div
-          onMouseDown={() => setIsResizing(true)}
-          className={`w-1 hover:bg-purple-500 cursor-col-resize flex-shrink-0 transition-colors relative ${
-            isResizing ? "bg-purple-500" : ""
-          }`}
-        ></div>
-      )}
-
-      {/* File Sidebar */}
-      {showFileSidebar && selectedFile && (
-        <div
-          className='flex flex-col transition-all duration-200'
-          style={{ width: `${sidebarWidthPercent}%` }}
-        >
-          <FileSidebar
-            show={true}
-            file={selectedFile}
-            summary={fileSummary}
-            isSummarizing={isSummarizing}
-            onClose={() => setShowFileSidebar(false)}
-            onSummarize={handleSummarizeFile}
-            onApplySummary={handleApplySummary}
-            onRegenerateSummary={() => setFileSummary("")}
-            onTextSelected={(selectedText) => {
-              console.log("Text được chọn:", selectedText);
-            }}
-          />
-        </div>
-      )}
     </div>
   );
 };

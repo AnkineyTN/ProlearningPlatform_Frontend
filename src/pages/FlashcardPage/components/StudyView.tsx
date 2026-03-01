@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 
 import FlipFlashcard from "./FlipFlashcard";
 
-type Props = {
+type StudyViewProps = {
   flashcards: Array<{
     frontCard: string;
     backCard: string;
@@ -19,7 +19,7 @@ type Props = {
     completedCount: number;
     progressPercent: number;
   };
-}
+};
 
 const StudyView = ({
   flashcards,
@@ -31,7 +31,7 @@ const StudyView = ({
   onNext,
   onShuffle,
   onCardAnswer,
-}: StudyViewProps) {
+}: StudyViewProps) => {
   return (
     <div className='max-w-4xl mx-auto p-6'>
       <div className='flex flex-col'>
@@ -54,6 +54,6 @@ const StudyView = ({
       </div>
     </div>
   );
-}
+};
 
 export default StudyView;

@@ -9,17 +9,12 @@ type Props = {
   onBack: () => void;
 };
 
-const RoleSelection({
+const RoleSelection = ({
   selectedRole,
   onRoleSelect,
   onNext,
   onBack,
-}: Props) {
-  selectedRole: string;
-  onRoleSelect: (role: string) => void;
-  onNext: () => void;
-  onBack: () => void;
-}) {
+}: Props) => {
   const { t } = useTranslation();
   return (
     <div className='min-h-screen flex items-center justify-center p-6'>

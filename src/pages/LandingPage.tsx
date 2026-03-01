@@ -11,8 +11,8 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import LogoFG from "@/assets/logo_fg";
-import { LanguageToggle } from "@/components/language/language-toggle";
-import { ModeToggle } from "@/components/theme/mode-toggle";
+import LanguageToggle from "@/components/language/language-toggle";
+import ModeToggle from "@/components/theme/mode-toggle";
 import { Button } from "@/components/ui/button";
 
 export default function LandingPage() {

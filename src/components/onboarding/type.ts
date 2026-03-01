@@ -11,4 +11,4 @@ type OnboardingData = {
   };
 };
 
-export { OnboardingData };
+export type { OnboardingData };
