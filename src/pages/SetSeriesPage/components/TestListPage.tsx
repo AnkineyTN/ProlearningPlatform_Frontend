@@ -3,10 +3,17 @@ import { useNavigate } from "react-router-dom";
 import TestCard from "@/components/cards/TestCard";
 import { Button } from "@/components/ui/button";
 
-export default function TestListPage() {
+interface TestListPageProps {
+  setId: number;
+  onUpdate?: (test: unknown) => void;
+  onDelete?: (testId: number) => void;
+}
+
+export default function TestListPage({ setId }: TestListPageProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
+  // Mock data - replace with actual API call
   const notes = [
     {
       id: 1,
@@ -67,7 +74,7 @@ export default function TestListPage() {
   const totalPages = 5;
 
   const handleAccess = (id: string) => {
-    navigate(`/test/${id}`);
+    navigate(`/sets/${setId}/tests/${id}`);
   };
 
   return (

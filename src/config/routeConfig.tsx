@@ -14,7 +14,9 @@ import OnboardingApp from "@/pages/OnboardingApp.tsx";
 import SetListPage from "@/pages/SetListPage";
 import SetSeriesPage from "@/pages/SetSeriesPage";
 import TodoDashboard from "@/pages/TodoDashboard";
-
+import PDFAnnotator from "@/pages/PDF";
+import TestPage from "@/pages/TestPage";
+import TestEditor from "@/pages/TestPage/TestEditor";
 import type { RouteObject } from "react-router-dom";
 
 import type { RootState } from "@/store";
@@ -80,6 +82,21 @@ function FlashcardUpdateWrapper() {
   );
 }
 
+function TestPageWrapper() {
+  const { setId, testId } = useParams();
+  return <TestPage setId={Number(setId) ?? 0} testId={testId ?? ""} />;
+}
+
+function TestEditorWrapper() {
+  const { setId } = useParams();
+  return <TestEditor setId={Number(setId) ?? 0} />;
+}
+
+function TestUpdateWrapper() {
+  const { setId, testId } = useParams();
+  return <TestEditor setId={Number(setId) ?? 0} testId={Number(testId) ?? 0} />;
+}
+
 export const routeConfig: RouteObject[] = [
   // Public routes
   {
@@ -97,6 +114,10 @@ export const routeConfig: RouteObject[] = [
   {
     path: "/onboarding",
     element: <OnboardingApp />,
+  },
+  {
+    path: "/test",
+    element: <PDFAnnotator />,
   },
   // Protected routes
   {
@@ -161,6 +182,20 @@ export const routeConfig: RouteObject[] = [
       {
         path: "sets/:setId/flashcards/:flashcardId/results",
         element: <FlashcardAppWrapper />,
+      },
+      {
+        path: "sets/:setId/tests/editor",
+        element: <TestEditorWrapper />,
+      },
+      {
+        // Route để UPDATE test (phải đặt trước route detail)
+        path: "sets/:setId/tests/:testId/edit",
+        element: <TestUpdateWrapper />,
+      },
+      {
+        // Route để VIEW test detail
+        path: "sets/:setId/tests/:testId",
+        element: <TestPageWrapper />,
       },
       // Generic set page (kept after more specific set subroutes)
       {

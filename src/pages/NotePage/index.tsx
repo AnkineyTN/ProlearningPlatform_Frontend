@@ -1,4 +1,4 @@
-import "@/components/notes/notes.css";
+import "./notes.css";
 
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";

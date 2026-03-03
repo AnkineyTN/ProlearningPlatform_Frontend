@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -210,6 +211,20 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
         break;
       case "Mindmaps":
       case "Tests":
+        try {
+          setIsCreateModalOpen(false);
+          navigate(`/sets/${setId}/tests/editor`, {
+            state: {
+              title: data.title,
+              description: data.description,
+              privacy: data.privacy.toUpperCase(),
+            },
+          });
+        } catch (error) {
+          console.error("Error navigating to test editor:", error);
+          toast.error("Failed to create test. Please try again.");
+        }
+        break;
       case "Records":
         break;
       default:
@@ -381,7 +396,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
           />
         )}
         {activeTab === "Mindmaps" && <MindmapListPage />}
-        {activeTab === "Tests" && <TestListPage />}
+        {activeTab === "Tests" && <TestListPage setId={Number(setId)} />}
         {activeTab === "Records" && <RecordListPage />}
 
         {/* Modals */}
