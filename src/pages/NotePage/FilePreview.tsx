@@ -82,12 +82,12 @@ export const FilePreview = ({
       </div>
 
       <div className='flex-1 p-4'>
-        <Card className='p-4 bg-white'>
+        <Card className='p-4'>
           <div className='flex items-start gap-3 mb-4'>
             <FileText className='w-8 h-8 text-blue-500 flex-shrink-0 mt-1' />
             <div className='flex-1 min-w-0'>
               <p className='font-medium text-sm truncate'>{fileName}</p>
-              <p className='text-xs text-gray-500'>{extension.toUpperCase()}</p>
+              <p className='text-xs text-muted-foreground'>{extension.toUpperCase()}</p>
             </div>
           </div>
 
@@ -108,12 +108,12 @@ export const FilePreview = ({
           {/* File Info */}
           <div className='mt-4 pt-4 border-t space-y-2'>
             <div>
-              <p className='text-xs font-medium text-gray-600'>File Name</p>
-              <p className='text-sm text-gray-900 break-all'>{fileName}</p>
+              <p className='text-xs font-medium text-muted-foreground'>File Name</p>
+              <p className='text-sm text-foreground break-all'>{fileName}</p>
             </div>
             <div>
-              <p className='text-xs font-medium text-gray-600'>Format</p>
-              <p className='text-sm text-gray-900'>{extension}</p>
+              <p className='text-xs font-medium text-muted-foreground'>Format</p>
+              <p className='text-sm text-foreground'>{extension}</p>
             </div>
           </div>
         </Card>

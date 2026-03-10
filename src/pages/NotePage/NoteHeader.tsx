@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useUploadFile } from "@/hooks/useNotes";
+import { useUploadDocumentFile } from "@/hooks/useImageUpload";
 
 interface NoteHeaderProps {
   title: string;
@@ -32,7 +32,7 @@ export const NoteHeader = ({
   onDownloadHTML,
 }: NoteHeaderProps) => {
   const [isUploading, setIsUploading] = useState(false);
-  const uploadFileMutation = useUploadFile();
+  const uploadFileMutation = useUploadDocumentFile();
 
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -40,16 +40,35 @@ export const NoteHeader = ({
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // Validate file type
+    const validTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "text/plain",
+    ];
+
+    if (!validTypes.includes(file.type)) {
+      toast.error(
+        "Invalid file type. Please upload PDF, DOC, DOCX, or TXT files.",
+      );
+      return;
+    }
+
     setIsUploading(true);
     try {
-      const response = await uploadFileMutation.mutateAsync({
-        file,
-        noteId,
-      });
-      console.log("🚀 ~ handleFileUpload ~ response:", response)
+      const result = await uploadFileMutation.mutateAsync(file);
 
-      const uploadedFile = response.data.data;
-      console.log("🚀 ~ handleFileUpload ~ uploadedFile:", uploadedFile)
+      // Create the uploaded file object with the result from Cloudinary
+      const uploadedFile = {
+        id: result.assetId,
+        fileName: result.fileName,
+        fileUrl: result.url,
+        extension: result.extension,
+        publicId: result.publicId,
+      };
+
+      console.log("🚀 ~ handleFileUpload ~ uploadedFile:", uploadedFile);
       onFileUploaded(uploadedFile);
       toast.success("File uploaded successfully");
     } catch (error) {
