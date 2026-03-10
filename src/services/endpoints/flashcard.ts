@@ -1,5 +1,6 @@
-import type { AxiosResponse } from "axios";
-import api from "../client";
+import type { AxiosResponse } from 'axios';
+import api from '../client';
+
 import type {
   FlashcardResponse,
   FlashcardDetailResponse,
@@ -12,14 +13,23 @@ import type {
   UpdateMultipleCardsResponse,
   GenerateFlashcardsFromNoteRequest,
   GenerateFlashcardsFromNoteResponse,
-} from "../types/flashcard.types";
+  CreateFlashcardResponse,
+  UpdateFlashcardRequest,
+  UpdateFlashcardResponse,
+  UpdateCardRequest,
+  UpdateCardResponse,
+  DeleteCardResponse,
+  CardReviewResponse,
+  FlashcardLearnResponse,
+  FlashcardStudySessionSyncRequest,
+} from '../types/flashcard.types';
 
 export const flashcardAPI = {
   getAllFlashcardsBySet: (
     setId: number,
     page: number,
     size: number,
-    sort: string = "id,ASC",
+    sort: string = 'id,ASC',
   ): Promise<AxiosResponse<FlashcardResponse>> =>
     api.get(`/sets/${setId}/flashcards`, {
       params: {
@@ -46,15 +56,15 @@ export const flashcardAPI = {
         imageUrl?: string | null;
       }>;
     },
-  ): Promise<AxiosResponse<any>> => {
+  ): Promise<AxiosResponse<CreateFlashcardResponse>> => {
     return api.post(`/sets/${setId}/flashcards/manual`, data);
   },
 
   updateFlashcard: (
     setId: number,
     flashcardId: number | string,
-    data: { title: string; description: string; privacy: "PUBLIC" | "PRIVATE" },
-  ): Promise<AxiosResponse<any>> => {
+    data: UpdateFlashcardRequest,
+  ): Promise<AxiosResponse<UpdateFlashcardResponse>> => {
     return api.patch(`/sets/${setId}/flashcards/${flashcardId}`, data);
   },
 
@@ -68,21 +78,15 @@ export const flashcardAPI = {
     setId: number,
     flashcardId: number | string,
     cardId: number,
-    data: {
-      id: number;
-      frontCard: string;
-      backCard: string;
-      imageAssetId?: number;
-      cardStatus?: "NEW" | "LEARNING" | "KNOWN";
-    },
-  ): Promise<AxiosResponse<any>> =>
+    data: UpdateCardRequest,
+  ): Promise<AxiosResponse<UpdateCardResponse>> =>
     api.patch(`/sets/${setId}/flashcards/${flashcardId}/cards/${cardId}`, data),
 
   deleteCard: (
     setId: number,
     flashcardId: number | string,
     cardId: number,
-  ): Promise<AxiosResponse<any>> =>
+  ): Promise<AxiosResponse<DeleteCardResponse>> =>
     api.delete(`/sets/${setId}/flashcards/${flashcardId}/cards/${cardId}`),
 
   // Add one or many cards to existing flashcard
@@ -122,12 +126,34 @@ export const flashcardAPI = {
   ): Promise<AxiosResponse<GenerateFlashcardsFromNoteResponse>> => {
     const formData = new FormData();
     files.forEach((file) => {
-      formData.append("files", file);
+      formData.append('files', file);
     });
     return api.post(`/sets/${setId}/flashcards/ai-file`, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
       },
     });
   },
+
+  /**
+   * Get cards for flashcard review/learning
+   */
+  getCardsForReview: (
+    setId: number,
+    flashcardId: number,
+    limit: number = 20,
+  ): Promise<AxiosResponse<FlashcardLearnResponse>> =>
+    api.get(`/sets/${setId}/flashcards/review/${flashcardId}/learn`, {
+      params: { limit },
+    }),
+
+  /**
+   * Submit review for a card
+   */
+  submitCardReview: (
+    setId: number,
+    flashcardId: number,
+    data: FlashcardStudySessionSyncRequest,
+  ): Promise<AxiosResponse<CardReviewResponse>> =>
+    api.post(`/sets/${setId}/flashcards/review/${flashcardId}/reviews`, data),
 };

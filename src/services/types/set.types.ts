@@ -32,7 +32,7 @@ export type SetQueryParams = {
 export type CreateSetPayload = {
   title: string;
   description: string;
-  privacy: "PUBLIC" | "PRIVATE";
+  privacy: 'PUBLIC' | 'PRIVATE';
 };
 
 export type CreateSetResponse = {
@@ -46,5 +46,27 @@ export type CreateSetResponse = {
 export type UpdateSetPayload = {
   title: string;
   description: string;
-  privacy: "PUBLIC" | "PRIVATE";
+  privacy: 'PUBLIC' | 'PRIVATE';
+};
+
+export type UpdateSetResponse = {
+  status: string;
+  message: string;
+  data: {
+    id: string;
+    title: string;
+    description: string;
+    privacy: 'PUBLIC' | 'PRIVATE';
+    numNotes: number;
+    createdAt: string;
+    updatedAt: string;
+  };
+  metadata: Record<string, never>;
+};
+
+export type DeleteSetResponse = {
+  status: string;
+  message: string;
+  data: null;
+  metadata: Record<string, never>;
 };

@@ -1,7 +1,7 @@
-import type { AxiosResponse } from "axios";
-import api from "../client";
+import type { AxiosResponse } from 'axios';
+import api from '../client';
+
 import type {
-  NoteDetail,
   CreateNotePayload,
   NoteListResponse,
   AutoSaveNoteRequest,
@@ -13,26 +13,28 @@ import type {
   ConvertToVectorDBRequest,
   ConvertToVectorDBResponse,
   DeleteNoteDocRequest,
-} from "../types/note.types";
+  DeleteNoteResponse,
+  AutoSaveNoteResponse,
+  DeleteNoteDocResponse,
+  UpdateNoteResponse,
+  ApiResponseNoteDetail,
+} from '../types/note.types';
 
 export const noteAPI = {
   getNoteDetail: (
     noteId: number,
-  ): Promise<
-    AxiosResponse<{ status: number; message: string; data: NoteDetail }>
-  > => api.get(`/note/${noteId}`),
+  ): Promise<AxiosResponse<ApiResponseNoteDetail>> =>
+    api.get(`/note/${noteId}`),
   createNote: (
     payload: CreateNotePayload,
-  ): Promise<
-    AxiosResponse<{ status: number; message: string; data: NoteDetail }>
-  > => api.post("/note/create", payload),
+  ): Promise<AxiosResponse<ApiResponseNoteDetail>> =>
+    api.post('/note/create', payload),
   updateNote: (
     noteId: number,
     payload: Partial<CreateNotePayload>,
-  ): Promise<
-    AxiosResponse<{ status: number; message: string; data: NoteDetail }>
-  > => api.patch(`/note/update/${noteId}`, payload),
-  deleteNote: (noteId: number): Promise<AxiosResponse> =>
+  ): Promise<AxiosResponse<UpdateNoteResponse>> =>
+    api.patch(`/note/update/${noteId}`, payload),
+  deleteNote: (noteId: number): Promise<AxiosResponse<DeleteNoteResponse>> =>
     api.delete(`/note/delete/${noteId}`),
   getAllNotesBySet: (
     setId: number,
@@ -44,21 +46,22 @@ export const noteAPI = {
   autoSaveNote: (
     noteId: number,
     data: AutoSaveNoteRequest,
-  ): Promise<AxiosResponse> => api.patch(`/note/save/${noteId}`, data),
+  ): Promise<AxiosResponse<AutoSaveNoteResponse>> =>
+    api.patch(`/note/save/${noteId}`, data),
   explainText: (data: ExplainTextRequest): Promise<ExplainTextResponse> =>
-    api.post("/note/explain", data),
+    api.post('/note/explain', data),
   uploadFile: (
     file: File,
     noteId: number,
   ): Promise<AxiosResponse<UploadFileResponse>> => {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append('file', file);
     return api.post(
       `/upload-file?subject=note-document&id=${noteId}`,
       formData,
       {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       },
     );
@@ -66,14 +69,14 @@ export const noteAPI = {
   summarizeFile: (
     data: SummarizeFileRequest,
   ): Promise<AxiosResponse<SummarizeFileResponse>> =>
-    api.post("/note/summarize", data),
+    api.post('/note/summarize', data),
   convertToVectorDB: (
     data: ConvertToVectorDBRequest,
   ): Promise<AxiosResponse<ConvertToVectorDBResponse>> =>
-    api.post("/note/convert-to-vectordb", data),
+    api.post('/note/convert-to-vectordb', data),
   deleteNoteDoc: (
     noteDocsId: number,
     data: DeleteNoteDocRequest,
-  ): Promise<AxiosResponse> =>
+  ): Promise<AxiosResponse<DeleteNoteDocResponse>> =>
     api.delete(`/note/delete-doc/${noteDocsId}`, { data }),
 };

@@ -1,12 +1,15 @@
-import type { AxiosResponse } from "axios";
-import api from "../client";
+import type { AxiosResponse } from 'axios';
+import api from '../client';
+
 import type {
   SetData,
   SetQueryParams,
   CreateSetPayload,
   CreateSetResponse,
   UpdateSetPayload,
-} from "../types/set.types";
+  UpdateSetResponse,
+  DeleteSetResponse,
+} from '../types/set.types';
 
 export const setAPI = {
   getSetData: ({
@@ -19,11 +22,12 @@ export const setAPI = {
     ),
   createSet: (
     payload: CreateSetPayload,
-  ): Promise<AxiosResponse<CreateSetResponse>> => api.post("/sets", payload),
-  deleteSet: (id: number): Promise<AxiosResponse<void>> =>
+  ): Promise<AxiosResponse<CreateSetResponse>> => api.post('/sets', payload),
+  deleteSet: (id: number): Promise<AxiosResponse<DeleteSetResponse>> =>
     api.delete(`/sets/${id}`),
   updateSet: (
     id: number,
     payload: UpdateSetPayload,
-  ): Promise<AxiosResponse<any>> => api.patch(`/sets/${id}`, payload),
+  ): Promise<AxiosResponse<UpdateSetResponse>> =>
+    api.patch(`/sets/${id}`, payload),
 };
