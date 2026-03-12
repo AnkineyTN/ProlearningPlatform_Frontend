@@ -8,8 +8,8 @@ import type {
   CreateQuizRequest,
   UpdateQuizRequest,
   QuestionResponse,
-  QuestionListResponse,
-  CreateQuestionRequest,
+  QuestionsListApiResponse,
+  CreateQuestionApiPayload,
   UpdateQuestionRequest,
   VoidResponse,
 } from '../types/exam.types';
@@ -39,13 +39,22 @@ export const examAPI = {
     api.post(`/set/${setId}/exams`, data),
 
   /**
-   * Get quiz details with questions
+   * Get quiz metadata by id
+   */
+  getQuizById: (
+    setId: number,
+    quizId: number,
+  ): Promise<AxiosResponse<QuizResponse>> =>
+    api.get(`/set/${setId}/exams/${quizId}`),
+
+  /**
+   * Get questions for a quiz (returns data.questions)
    */
   getQuizDetail: (
     setId: number,
     quizId: number,
   ): Promise<AxiosResponse<QuizDetailResponse>> =>
-    api.get(`/set/${setId}/exams/${quizId}`),
+    api.get(`/set/${setId}/exams/${quizId}/questions`),
 
   /**
    * Update quiz
@@ -68,7 +77,7 @@ export const examAPI = {
 
   // Question endpoints
   /**
-   * Get all questions for a quiz with pagination
+   * Get all questions for a quiz with pagination (returns data.questions)
    */
   getQuestions: (
     setId: number,
@@ -76,19 +85,19 @@ export const examAPI = {
     page: number = 0,
     size: number = 10,
     sort: string = 'id,ASC',
-  ): Promise<AxiosResponse<QuestionListResponse>> =>
+  ): Promise<AxiosResponse<QuestionsListApiResponse>> =>
     api.get(`/set/${setId}/exams/${quizId}/questions`, {
       params: { page, size, sort },
     }),
 
   /**
-   * Create a new question in a quiz
+   * Create questions in a quiz (batch - backend expects array, uses "content" not "questionText")
    */
-  createQuestion: (
+  createQuestions: (
     setId: number,
     quizId: number,
-    data: CreateQuestionRequest,
-  ): Promise<AxiosResponse<QuestionResponse>> =>
+    data: CreateQuestionApiPayload[],
+  ): Promise<AxiosResponse<unknown>> =>
     api.post(`/set/${setId}/exams/${quizId}/questions`, data),
 
   /**

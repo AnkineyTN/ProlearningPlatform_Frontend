@@ -2,17 +2,14 @@
 export type QuestionType =
   | 'MULTIPLE_CHOICE'
   | 'TRUE_FALSE'
-  | 'SHORT_ANSWER'
   | 'ESSAY';
 export type QuizStatus = 'ONGOING' | 'COMPLETED' | 'NOT_STARTED';
 export type PrivacyType = 'PUBLIC' | 'PRIVATE';
 
 // Question Option
 export type QuestionOption = {
-  id?: number | string;
   optionText: string;
   isCorrect: boolean;
-  order?: number;
 };
 
 // Question related
@@ -36,12 +33,17 @@ export type CreateQuestionRequest = {
   order?: number;
 };
 
-export type UpdateQuestionRequest = {
-  questionText: string;
-  questionType: QuestionType;
+/** Backend API payload - uses "content" instead of "questionText" */
+export type CreateQuestionApiPayload = {
+  content: string;
+  type: QuestionType;
   options: QuestionOption[];
-  correctAnswer?: string;
-  order?: number;
+};
+
+export type UpdateQuestionRequest = {
+  content: string;
+  type: QuestionType;
+  options: QuestionOption[];
 };
 
 export type QuestionResponse = {
@@ -63,6 +65,26 @@ export type QuestionListResponse = {
   };
 };
 
+/** Backend returns data.questions (paginated) */
+export type QuestionsListApiResponse = {
+  status: string;
+  message: string;
+  data: {
+    questions: Array<{
+      id: number;
+      content: string;
+      type: QuestionType;
+      options: QuestionOption[];
+    }>;
+  };
+  metadata: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    pageSize: number;
+  };
+};
+
 // Quiz related
 export type Quiz = {
   id: number | string;
@@ -70,7 +92,7 @@ export type Quiz = {
   title: string;
   description: string;
   privacy: PrivacyType;
-  totalQuestions?: number;
+  numQuestions?: number;
   duration?: number;
   passingScore?: number;
   status?: QuizStatus;

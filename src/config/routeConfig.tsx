@@ -1,3 +1,5 @@
+/* eslint-disable no-constant-binary-expression */
+/* eslint-disable react-refresh/only-export-components */
 import { useSelector } from "react-redux";
 import { Navigate, useParams } from "react-router-dom";
 
@@ -15,8 +17,8 @@ import SetListPage from "@/pages/SetListPage";
 import SetSeriesPage from "@/pages/SetSeriesPage";
 import TodoDashboard from "@/pages/TodoDashboard";
 import PDFAnnotator from "@/pages/PDF";
-import TestPage from "@/pages/TestPage";
-import TestEditor from "@/pages/TestPage/TestEditor";
+import ExamPage from "@/pages/ExamPage";
+import ExamEditor from "@/pages/ExamPage/ExamEditor";
 import type { RouteObject } from "react-router-dom";
 
 import type { RootState } from "@/store";
@@ -82,19 +84,17 @@ function FlashcardUpdateWrapper() {
   );
 }
 
-function TestPageWrapper() {
-  const { setId, testId } = useParams();
-  return <TestPage setId={Number(setId) ?? 0} testId={testId ?? ""} />;
+function ExamPageWrapper() {
+  const { setId, examId } = useParams();
+  return <ExamPage setId={Number(setId) ?? 0} examId={examId ?? ""} />;
 }
 
-function TestEditorWrapper() {
-  const { setId } = useParams();
-  return <TestEditor setId={Number(setId) ?? 0} />;
+function ExamEditorWrapper() {
+  return <ExamEditor />;
 }
 
-function TestUpdateWrapper() {
-  const { setId, testId } = useParams();
-  return <TestEditor setId={Number(setId) ?? 0} testId={Number(testId) ?? 0} />;
+function ExamUpdateWrapper() {
+  return <ExamEditor />;
 }
 
 export const routeConfig: RouteObject[] = [
@@ -150,7 +150,7 @@ export const routeConfig: RouteObject[] = [
         element: <SetSeriesPageWrapper />,
       },
       {
-        path: "sets/:id/tests",
+        path: "sets/:id/exams",
         element: <SetSeriesPageWrapper />,
       },
       {
@@ -184,18 +184,16 @@ export const routeConfig: RouteObject[] = [
         element: <FlashcardAppWrapper />,
       },
       {
-        path: "sets/:setId/tests/editor",
-        element: <TestEditorWrapper />,
+        path: "sets/:setId/exams/editor",
+        element: <ExamEditorWrapper />,
       },
       {
-        // Route để UPDATE test (phải đặt trước route detail)
-        path: "sets/:setId/tests/:testId/edit",
-        element: <TestUpdateWrapper />,
+        path: "sets/:setId/exams/:examId/edit",
+        element: <ExamUpdateWrapper />,
       },
       {
-        // Route để VIEW test detail
-        path: "sets/:setId/tests/:testId",
-        element: <TestPageWrapper />,
+        path: "sets/:setId/exams/:examId",
+        element: <ExamPageWrapper />,
       },
       // Generic set page (kept after more specific set subroutes)
       {

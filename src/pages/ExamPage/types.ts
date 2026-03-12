@@ -1,4 +1,4 @@
-export type QuestionType = "multiple-choice" | "true-false" | "essay";
+export type QuestionType = 'MULTIPLE_CHOICE' | 'TRUE_FALSE' | 'ESSAY';
 
 export interface Answer {
   id: string;
@@ -6,7 +6,7 @@ export interface Answer {
   isCorrect: boolean;
 }
 
-export interface Question {
+export interface ExamQuestion {
   id: string | number;
   type: QuestionType;
   questionText: string;
@@ -16,27 +16,27 @@ export interface Question {
   _action?: "CREATE" | "UPDATE" | "DELETE" | null;
 }
 
-export interface Test {
-  id?: number;
+export interface Exam {
+  id?: number | string;
   title: string;
   description: string;
   privacy: string;
   totalScore: number;
-  timeLimit: number; // in minutes
-  questions: Question[];
+  timeLimit: number;
+  questions: ExamQuestion[];
 }
 
-export interface TestSubmission {
+export interface ExamSubmission {
   questionId: string | number;
-  selectedAnswers: string[]; // IDs of selected answers
+  selectedAnswers: string[];
   essayAnswer?: string;
 }
 
-export interface TestResult {
+export interface ExamResult {
   totalScore: number;
   earnedScore: number;
   percentage: number;
   passed: boolean;
-  timeTaken: number; // in seconds
-  submissions: TestSubmission[];
+  timeTaken: number;
+  submissions: ExamSubmission[];
 }

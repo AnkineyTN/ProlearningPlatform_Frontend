@@ -17,6 +17,7 @@ import {
   useGenerateFlashcardsFromNotes,
   useUpdateFlashcard,
 } from "@/hooks/useFlashcards";
+import { useDeleteExam, useUpdateExam } from "@/hooks/useExams";
 import { useCreateNote, useDeleteNote, useUpdateNote } from "@/hooks/useNotes";
 import { useDeleteSet } from "@/hooks/useSets";
 
@@ -25,10 +26,11 @@ import HeaderSetDetails from "./components/HeaderSetDetails";
 import MindmapListPage from "./components/MindmapListPage";
 import NoteListPage from "./components/NoteListPage";
 import RecordListPage from "./components/RecordListPage";
-import TestListPage from "./components/TestListPage";
+import ExamListPage from "./components/ExamListPage";
 
 import type { Note } from "@/components/cards/NoteCard";
 import type { Flashcard } from "@/components/cards/FlashCard";
+import type { ExamCardData } from "@/components/cards/ExamCard";
 interface HeaderProps {
   onSearch?: (query: string) => void;
   setId: string;
@@ -44,7 +46,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
     Notes: "notes",
     Flashcards: "flashcards",
     Mindmaps: "mindmaps",
-    Tests: "tests",
+    Exams: "exams",
     Records: "records",
   };
 
@@ -53,7 +55,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
   let initialTab = "Notes";
   if (path.includes(`/sets/${setId}/flashcards`)) initialTab = "Flashcards";
   else if (path.includes(`/sets/${setId}/mindmaps`)) initialTab = "Mindmaps";
-  else if (path.includes(`/sets/${setId}/tests`)) initialTab = "Tests";
+  else if (path.includes(`/sets/${setId}/exams`)) initialTab = "Exams";
   else if (path.includes(`/sets/${setId}/records`)) initialTab = "Records";
   else if (path.includes(`/sets/${setId}/notes`)) initialTab = "Notes";
 
@@ -62,10 +64,13 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
   const [selectedFlashcard, setSelectedFlashcard] = useState<Flashcard | null>(
     null,
   );
+  const [selectedExam, setSelectedExam] = useState<ExamCardData | null>(null);
 
   // Mutations
   const updateFlashcardMutation = useUpdateFlashcard();
   const deleteFlashcardMutation = useDeleteFlashcard();
+  const deleteExamMutation = useDeleteExam();
+  const updateExamMutation = useUpdateExam();
   const deleteSetMutation = useDeleteSet();
   const createNoteMutation = useCreateNote();
   const updateNoteMutation = useUpdateNote();
@@ -80,7 +85,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const tabs = ["Notes", "Flashcards", "Mindmaps", "Tests", "Records"];
+  const tabs = ["Notes", "Flashcards", "Mindmaps", "Exams", "Records"];
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
@@ -210,10 +215,10 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
         }
         break;
       case "Mindmaps":
-      case "Tests":
+      case "Exams":
         try {
           setIsCreateModalOpen(false);
-          navigate(`/sets/${setId}/tests/editor`, {
+          navigate(`/sets/${setId}/exams/editor`, {
             state: {
               title: data.title,
               description: data.description,
@@ -221,8 +226,8 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
             },
           });
         } catch (error) {
-          console.error("Error navigating to test editor:", error);
-          toast.error("Failed to create test. Please try again.");
+          console.error("Error navigating to exam editor:", error);
+          toast.error("Failed to create exam. Please try again.");
         }
         break;
       case "Records":
@@ -287,6 +292,28 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
         toast.error("Failed to update flashcard. Please try again.");
       }
     }
+
+    if (selectedExam) {
+      try {
+        const payload = {
+          title: data.title,
+          description: data.description,
+          privacy: data.privacy.toUpperCase() as "PUBLIC" | "PRIVATE",
+        };
+
+        await updateExamMutation.mutateAsync({
+          setId: Number(setId),
+          examId: selectedExam.id,
+          data: payload,
+        });
+        toast.success("Exam updated successfully");
+        setIsUpdateModalOpen(false);
+        setSelectedExam(null);
+      } catch (error) {
+        console.error("Error updating exam:", error);
+        toast.error("Failed to update exam. Please try again.");
+      }
+    }
   };
 
   const handleDeleteNote = async (id: number) => {
@@ -309,6 +336,25 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
     } catch (error) {
       console.error("Error deleting flashcard:", error);
       toast.error("Failed to delete flashcard. Please try again.");
+    }
+  };
+
+  const handleUpdateExam = (exam: ExamCardData) => {
+    setSelectedExam(exam);
+    setIsUpdateModalOpen(true);
+    setActiveTab("Exams");
+  };
+
+  const handleDeleteExam = async (id: number | string) => {
+    try {
+      await deleteExamMutation.mutateAsync({
+        setId: Number(setId),
+        examId: id,
+      });
+      toast.success("Exam deleted successfully");
+    } catch (error) {
+      console.error("Error deleting exam:", error);
+      toast.error("Failed to delete exam. Please try again.");
     }
   };
 
@@ -396,7 +442,13 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
           />
         )}
         {activeTab === "Mindmaps" && <MindmapListPage />}
-        {activeTab === "Tests" && <TestListPage setId={Number(setId)} />}
+        {activeTab === "Exams" && (
+          <ExamListPage
+            setId={Number(setId)}
+            onUpdate={handleUpdateExam}
+            onDelete={handleDeleteExam}
+          />
+        )}
         {activeTab === "Records" && <RecordListPage />}
 
         {/* Modals */}
@@ -431,41 +483,56 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
           onSubmit={handleCreate}
         />
 
-        {isUpdateModalOpen && (selectedNote || selectedFlashcard) && (
-          <CreateNewModal
-            type={activeTab.slice(0, -1)}
-            isOpen={isUpdateModalOpen}
-            onClose={() => {
-              setIsUpdateModalOpen(false);
-              setSelectedNote(null);
-              setSelectedFlashcard(null);
-            }}
-            onSubmit={handleUpdateSubmit}
-            initialData={{
-              title: selectedNote?.title || selectedFlashcard?.title || "",
-              description:
-                selectedNote?.description ||
-                selectedFlashcard?.description ||
-                "",
-              privacy:
-                (
-                  selectedNote?.privacy ||
-                  selectedFlashcard?.privacy ||
-                  "PUBLIC"
-                )
-                  .charAt(0)
-                  .toUpperCase() +
-                (
-                  selectedNote?.privacy ||
-                  selectedFlashcard?.privacy ||
-                  "public"
-                )
-                  .slice(1)
-                  .toLowerCase(),
-            }}
-            isUpdateMode={true}
-          />
-        )}
+        {isUpdateModalOpen &&
+          (selectedNote || selectedFlashcard || selectedExam) && (
+            <CreateNewModal
+              type={
+                selectedExam
+                  ? "Exam"
+                  : selectedFlashcard
+                    ? "Flashcard"
+                    : activeTab.slice(0, -1)
+              }
+              isOpen={isUpdateModalOpen}
+              onClose={() => {
+                setIsUpdateModalOpen(false);
+                setSelectedNote(null);
+                setSelectedFlashcard(null);
+                setSelectedExam(null);
+              }}
+              onSubmit={handleUpdateSubmit}
+              initialData={{
+                title:
+                  selectedNote?.title ||
+                  selectedFlashcard?.title ||
+                  selectedExam?.title ||
+                  "",
+                description:
+                  selectedNote?.description ||
+                  selectedFlashcard?.description ||
+                  selectedExam?.description ||
+                  "",
+                privacy:
+                  (
+                    selectedNote?.privacy ||
+                    selectedFlashcard?.privacy ||
+                    selectedExam?.privacy ||
+                    "PUBLIC"
+                  )
+                    .charAt(0)
+                    .toUpperCase() +
+                  (
+                    selectedNote?.privacy ||
+                    selectedFlashcard?.privacy ||
+                    selectedExam?.privacy ||
+                    "public"
+                  )
+                    .slice(1)
+                    .toLowerCase(),
+              }}
+              isUpdateMode={true}
+            />
+          )}
         <DeleteConfirmDialog
           isOpen={showDeleteDialog}
           onClose={() => setShowDeleteDialog(false)}
