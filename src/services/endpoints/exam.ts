@@ -12,6 +12,8 @@ import type {
   CreateQuestionApiPayload,
   UpdateQuestionRequest,
   VoidResponse,
+  GenerateExamAIResponse,
+  GenerateExamFromNotesRequest,
 } from '../types/exam.types';
 
 export const examAPI = {
@@ -130,4 +132,29 @@ export const examAPI = {
     questionId: number,
   ): Promise<AxiosResponse<VoidResponse>> =>
     api.delete(`/set/${setId}/exams/${quizId}/questions/${questionId}`),
+
+  /**
+   * Generate exam from files with AI
+   * POST /set/{setId}/exams/ai-file (multipart/form-data)
+   */
+  generateExamFromFiles: (
+    setId: number,
+    files: File[],
+    questionCounts: { MCQ: number; TF: number; ESS: number },
+    language: string,
+  ): Promise<AxiosResponse<GenerateExamAIResponse>> => {
+    const formData = new FormData();
+    files.forEach((file) => formData.append('files', file));
+    formData.append('questions', JSON.stringify(questionCounts));
+    formData.append('language', language);
+    return api.post(`/set/${setId}/exams/ai-file`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+
+  generateExamFromNotes: (
+    setId: number,
+    data: GenerateExamFromNotesRequest,
+  ): Promise<AxiosResponse<GenerateExamAIResponse>> =>
+    api.post(`/set/${setId}/exams/ai-note`, data),
 };

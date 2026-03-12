@@ -165,3 +165,17 @@ export type VoidResponse = {
   data: null;
   metadata: Record<string, never>;
 };
+
+// AI Generation
+export type GenerateExamAIResponse = {
+  status: string;
+  message: string;
+  data: { content: string };
+  metadata: Record<string, unknown>;
+};
+
+export type GenerateExamFromNotesRequest = {
+  noteIds: number[];
+  questions: Record<string, number>;
+  language: string;
+};

@@ -259,6 +259,57 @@ export const useUpdateQuestion = () => {
   });
 };
 
+export const useGenerateExamFromFiles = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      setId,
+      files,
+      questionCounts,
+      language,
+    }: {
+      setId: number;
+      files: File[];
+      questionCounts: { MCQ: number; TF: number; ESS: number };
+      language: string;
+    }) => examAPI.generateExamFromFiles(setId, files, questionCounts, language),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["exams", variables.setId],
+      });
+    },
+  });
+};
+
+export const useGenerateExamFromNotes = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      setId,
+      noteIds,
+      questionCounts,
+      language,
+    }: {
+      setId: number;
+      noteIds: number[];
+      questionCounts: { MCQ: number; TF: number; ESS: number };
+      language: string;
+    }) =>
+      examAPI.generateExamFromNotes(setId, {
+        noteIds,
+        questions: questionCounts,
+        language,
+      }),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["exams", variables.setId],
+      });
+    },
+  });
+};
+
 export const useDeleteQuestion = () => {
   const queryClient = useQueryClient();
 

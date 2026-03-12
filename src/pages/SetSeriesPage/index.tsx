@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import AISourceModal from "@/components/modals/AISourceModal";
+import ExamAISourceModal from "@/components/modals/ExamAISourceModal";
 import CreateMethodModal from "@/components/modals/CreateMethodModal";
 import CreateNewModal from "@/components/modals/CreateNewModal";
 import DeleteConfirmDialog from "@/components/modals/DeleteConfirmDialog";
@@ -17,7 +18,7 @@ import {
   useGenerateFlashcardsFromNotes,
   useUpdateFlashcard,
 } from "@/hooks/useFlashcards";
-import { useDeleteExam, useUpdateExam } from "@/hooks/useExams";
+import { useDeleteExam, useUpdateExam, useGenerateExamFromFiles, useGenerateExamFromNotes } from "@/hooks/useExams";
 import { useCreateNote, useDeleteNote, useUpdateNote } from "@/hooks/useNotes";
 import { useDeleteSet } from "@/hooks/useSets";
 
@@ -77,11 +78,14 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
   const deleteNoteMutation = useDeleteNote();
   const generateFlashcardsMutation = useGenerateFlashcardsFromNotes();
   const generateFlashcardsFromFilesMutation = useGenerateFlashcardsFromFiles();
+  const generateExamFromFilesMutation = useGenerateExamFromFiles();
+  const generateExamFromNotesMutation = useGenerateExamFromNotes();
 
   // Modal states
   const [isMethodModalOpen, setIsMethodModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isAISourceModalOpen, setIsAISourceModalOpen] = useState(false);
+  const [isExamAISourceModalOpen, setIsExamAISourceModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -106,7 +110,11 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
   };
 
   const handleSelectAI = () => {
-    setIsAISourceModalOpen(true);
+    if (activeTab === "Exams") {
+      setIsExamAISourceModalOpen(true);
+    } else {
+      setIsAISourceModalOpen(true);
+    }
   };
 
   const handleBackFromCreate = () => {
@@ -118,6 +126,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
 
   const handleBackFromAISource = () => {
     setIsAISourceModalOpen(false);
+    setIsExamAISourceModalOpen(false);
     setIsMethodModalOpen(true);
   };
 
@@ -172,10 +181,56 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
         toast.error("Failed to generate flashcards. Please try again.");
         // You might want to show an error toast here
       }
-    } else {
-      // Handle other types
-      console.log("AI Generation with:", data);
-      setIsAISourceModalOpen(false);
+    }
+  };
+
+  const handleExamAISubmit = async (data: {
+    source: "notes" | "files";
+    noteIds?: number[];
+    files?: File[];
+    questionCounts: { MCQ: number; TF: number; ESS: number };
+    language: string;
+  }) => {
+    try {
+      let result;
+
+      if (data.source === "notes" && data.noteIds) {
+        result = await generateExamFromNotesMutation.mutateAsync({
+          setId: Number(setId),
+          noteIds: data.noteIds,
+          questionCounts: data.questionCounts,
+          language: data.language,
+        });
+      } else if (data.source === "files" && data.files) {
+        result = await generateExamFromFilesMutation.mutateAsync({
+          setId: Number(setId),
+          files: data.files,
+          questionCounts: data.questionCounts,
+          language: data.language,
+        });
+      }
+
+      if (!result) return;
+
+      setIsExamAISourceModalOpen(false);
+
+      const content = result.data?.data?.content ?? "";
+      const sourceDesc =
+        data.source === "notes"
+          ? `${data.noteIds?.length ?? 0} note(s)`
+          : `${data.files?.length ?? 0} file(s)`;
+
+      navigate(`/sets/${setId}/exams/editor`, {
+        state: {
+          title: "",
+          description: `Generated from ${sourceDesc}`,
+          privacy: "PRIVATE",
+          aiContent: content,
+        },
+      });
+    } catch (error) {
+      console.error("Error generating exam with AI:", error);
+      toast.error("Failed to generate exam. Please try again.");
     }
   };
 
@@ -403,11 +458,15 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
             disabled={
               createNoteMutation.isPending ||
               generateFlashcardsMutation.isPending ||
-              generateFlashcardsFromFilesMutation.isPending
+              generateFlashcardsFromFilesMutation.isPending ||
+              generateExamFromFilesMutation.isPending ||
+              generateExamFromNotesMutation.isPending
             }
           >
             {generateFlashcardsMutation.isPending ||
-            generateFlashcardsFromFilesMutation.isPending
+            generateFlashcardsFromFilesMutation.isPending ||
+            generateExamFromFilesMutation.isPending ||
+            generateExamFromNotesMutation.isPending
               ? "Generating with AI..."
               : createNoteMutation.isPending
                 ? "Creating..."
@@ -472,6 +531,18 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
           isLoading={
             generateFlashcardsMutation.isPending ||
             generateFlashcardsFromFilesMutation.isPending
+          }
+        />
+
+        <ExamAISourceModal
+          setId={Number(setId)}
+          isOpen={isExamAISourceModalOpen}
+          onClose={() => setIsExamAISourceModalOpen(false)}
+          onBack={handleBackFromAISource}
+          onSubmit={handleExamAISubmit}
+          isLoading={
+            generateExamFromFilesMutation.isPending ||
+            generateExamFromNotesMutation.isPending
           }
         />
 

@@ -98,6 +98,75 @@ export function uiQuestionToCreateRequest(
   };
 }
 
+/**
+ * Parse AI-generated exam content string into ExamQuestion[].
+ *
+ * Format: questions separated by ";"
+ *   MCQ|questionText|opt1|opt2|opt3|opt4|correctIndex
+ *   TF|questionText|True/False
+ *   ESS|questionText|sampleAnswer
+ */
+export function parseAIGeneratedContent(content: string): ExamQuestion[] {
+  const raw = content.trim();
+  if (!raw) return [];
+
+  const parts = raw.split(";").map((s) => s.trim()).filter(Boolean);
+  const questions: ExamQuestion[] = [];
+
+  for (const part of parts) {
+    const segments = part.split("|");
+    if (segments.length < 2) continue;
+
+    const qType = segments[0].trim();
+
+    if (qType === "MCQ" && segments.length >= 7) {
+      const questionText = segments[1].trim();
+      const options = segments.slice(2, -1);
+      const correctIdx = parseInt(segments[segments.length - 1].trim(), 10);
+
+      questions.push({
+        id: crypto.randomUUID(),
+        type: "MULTIPLE_CHOICE",
+        questionText,
+        answers: options.map((opt, i) => ({
+          id: crypto.randomUUID(),
+          text: opt.trim(),
+          isCorrect: i + 1 === correctIdx,
+        })),
+        score: 10,
+        _action: "CREATE",
+      });
+    } else if (qType === "TF" && segments.length >= 3) {
+      const questionText = segments[1].trim();
+      const correctAnswer = segments[2].trim().toLowerCase();
+
+      questions.push({
+        id: crypto.randomUUID(),
+        type: "TRUE_FALSE",
+        questionText,
+        answers: [
+          { id: "true", text: "True", isCorrect: correctAnswer === "true" },
+          { id: "false", text: "False", isCorrect: correctAnswer === "false" },
+        ],
+        score: 10,
+        _action: "CREATE",
+      });
+    } else if (qType === "ESS" && segments.length >= 2) {
+      questions.push({
+        id: crypto.randomUUID(),
+        type: "ESSAY",
+        questionText: segments[1].trim(),
+        explanation: segments.length >= 3 ? segments[2].trim() : undefined,
+        answers: [],
+        score: 10,
+        _action: "CREATE",
+      });
+    }
+  }
+
+  return questions;
+}
+
 // Quiz + questions -> Exam (UI)
 export function apiQuizDetailToExam(
   quiz: Quiz & { questions?: ApiQuestion[] },

@@ -12,10 +12,13 @@ import {
 } from "@/components/ui/select";
 import type { Answer, ExamQuestion, QuestionType } from "../types";
 import { Checkbox } from "@/components/ui/checkbox";
+import type { QuestionErrors } from "./index";
 
 interface QuestionItemProps {
   question: ExamQuestion;
   index: number;
+  errors?: QuestionErrors;
+  onClearError: (field: keyof QuestionErrors, answerId?: string) => void;
   onUpdate: (id: string | number, updates: Partial<ExamQuestion>) => void;
   onDelete: (id: string | number) => void;
   onDragStart: (id: string | number) => void;
@@ -27,6 +30,8 @@ interface QuestionItemProps {
 export default function QuestionItem({
   question,
   index,
+  errors,
+  onClearError,
   onUpdate,
   onDelete,
   onDragStart,
@@ -36,14 +41,14 @@ export default function QuestionItem({
 }: QuestionItemProps) {
   const handleTypeChange = (type: QuestionType) => {
     let newAnswers: Answer[] = [];
-    if (type === "multiple-choice") {
+    if (type === "MULTIPLE_CHOICE") {
       newAnswers = [
         { id: crypto.randomUUID(), text: "", isCorrect: false },
         { id: crypto.randomUUID(), text: "", isCorrect: false },
         { id: crypto.randomUUID(), text: "", isCorrect: false },
         { id: crypto.randomUUID(), text: "", isCorrect: false },
       ];
-    } else if (type === "true-false") {
+    } else if (type === "TRUE_FALSE") {
       newAnswers = [
         { id: "true", text: "True", isCorrect: false },
         { id: "false", text: "False", isCorrect: false },
@@ -55,7 +60,7 @@ export default function QuestionItem({
   };
 
   const handleAddAnswer = () => {
-    if (question.type === "multiple-choice") {
+    if (question.type === "MULTIPLE_CHOICE") {
       const newAnswer: Answer = {
         id: crypto.randomUUID(),
         text: "",
@@ -70,17 +75,21 @@ export default function QuestionItem({
       ans.id === answerId ? { ...ans, text } : ans,
     );
     onUpdate(question.id, { answers: updatedAnswers });
+    if (text.trim()) {
+      onClearError("emptyAnswers", answerId);
+    }
   };
 
   const handleCorrectAnswerChange = (answerId: string) => {
     const updatedAnswers = question.answers.map((ans) =>
       ans.id === answerId
         ? { ...ans, isCorrect: !ans.isCorrect }
-        : question.type === "true-false"
+        : question.type === "TRUE_FALSE"
           ? { ...ans, isCorrect: false }
           : ans,
     );
     onUpdate(question.id, { answers: updatedAnswers });
+    onClearError("noCorrectAnswer");
   };
 
   const handleDeleteAnswer = (answerId: string) => {
@@ -92,6 +101,8 @@ export default function QuestionItem({
     }
   };
 
+  const hasError = !!errors && Object.keys(errors).length > 0;
+
   return (
     <div
       draggable
@@ -99,7 +110,9 @@ export default function QuestionItem({
       onDragEnd={onDragEnd}
       onDragOver={(e) => onDragOver(e, question.id)}
       onDrop={(e) => onDrop(e, question.id)}
-      className="bg-card border border-border rounded-lg p-6 mb-4 hover:shadow-md transition-shadow"
+      className={`bg-card border rounded-lg p-6 mb-4 hover:shadow-md transition-shadow ${
+        hasError ? "border-red-400" : "border-border"
+      }`}
     >
       <div className="flex items-start gap-4">
         <div className="cursor-move pt-2">
@@ -129,22 +142,29 @@ export default function QuestionItem({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
-                <SelectItem value="true-false">True/False</SelectItem>
-                <SelectItem value="essay">Essay</SelectItem>
+                <SelectItem value="MULTIPLE_CHOICE">Multiple Choice</SelectItem>
+                <SelectItem value="TRUE_FALSE">True/False</SelectItem>
+                <SelectItem value="ESSAY">Essay</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Label className="text-sm font-medium mb-2 block">Question</Label>
+            <Label className="text-sm font-medium mb-2 block">
+              Question <span className="text-red-500">*</span>
+            </Label>
             <Textarea
               value={question.questionText}
               onChange={(e) =>
                 onUpdate(question.id, { questionText: e.target.value })
               }
               placeholder="Enter your question here..."
-              className="w-full min-h-[80px] resize-none"
+              className={`w-full min-h-[80px] resize-none ${
+                errors?.questionText ? "border-red-500 focus-visible:ring-red-500" : ""
+              }`}
             />
+            {errors?.questionText && (
+              <p className="text-red-500 text-xs mt-1">Question text is required</p>
+            )}
           </div>
           <div className="flex items-center gap-4">
             <div className="flex-1">
@@ -160,53 +180,69 @@ export default function QuestionItem({
               />
             </div>
           </div>
-          {question.type !== "essay" && (
+          {question.type !== "ESSAY" && (
             <div>
               <Label className="text-sm font-medium mb-2 block">
                 Answers{" "}
-                {question.type === "multiple-choice" &&
+                {question.type === "MULTIPLE_CHOICE" &&
                   "(Select correct answer(s))"}
+                {" "}<span className="text-red-500">*</span>
               </Label>
+              {errors?.noCorrectAnswer && (
+                <p className="text-red-500 text-xs mb-2">Please select at least one correct answer</p>
+              )}
               <div className="space-y-2">
-                {question.answers.map((answer, idx) => (
-                  <div
-                    key={answer.id}
-                    className="flex items-center gap-2 bg-background p-3 rounded border border-border"
-                  >
-                    <Checkbox
-                      checked={answer.isCorrect}
-                      onCheckedChange={() =>
-                        handleCorrectAnswerChange(answer.id)
-                      }
-                      className="flex-shrink-0"
-                    />
-                    {question.type === "true-false" ? (
-                      <span className="flex-1 font-medium">{answer.text}</span>
-                    ) : (
-                      <>
-                        <Input
-                          value={answer.text}
-                          onChange={(e) =>
-                            handleAnswerChange(answer.id, e.target.value)
-                          }
-                          placeholder={`Answer ${idx + 1}`}
-                          className="flex-1"
-                        />
-                        {question.answers.length > 2 && (
-                          <Button
-                            onClick={() => handleDeleteAnswer(answer.id)}
-                            variant="ghost"
-                            size="sm"
-                            className="flex-shrink-0 text-red-500 hover:text-red-700"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        )}
-                      </>
-                    )}
-                  </div>
-                ))}
-                {question.type === "multiple-choice" &&
+                {question.answers.map((answer, idx) => {
+                  const answerHasError = errors?.emptyAnswers?.has(answer.id);
+                  return (
+                    <div
+                      key={answer.id}
+                      className={`flex items-center gap-2 bg-background p-3 rounded border ${
+                        answerHasError ? "border-red-500" : "border-border"
+                      }`}
+                    >
+                      <Checkbox
+                        checked={answer.isCorrect}
+                        onCheckedChange={() =>
+                          handleCorrectAnswerChange(answer.id)
+                        }
+                        className="flex-shrink-0"
+                      />
+                      {question.type === "TRUE_FALSE" ? (
+                        <span className="flex-1 font-medium">{answer.text}</span>
+                      ) : (
+                        <>
+                          <div className="flex-1">
+                            <Input
+                              value={answer.text}
+                              onChange={(e) =>
+                                handleAnswerChange(answer.id, e.target.value)
+                              }
+                              placeholder={`Answer ${idx + 1}`}
+                              className={
+                                answerHasError ? "border-red-500 focus-visible:ring-red-500" : ""
+                              }
+                            />
+                            {answerHasError && (
+                              <p className="text-red-500 text-xs mt-1">Answer text is required</p>
+                            )}
+                          </div>
+                          {question.answers.length > 2 && (
+                            <Button
+                              onClick={() => handleDeleteAnswer(answer.id)}
+                              variant="ghost"
+                              size="sm"
+                              className="flex-shrink-0 text-red-500 hover:text-red-700"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
+                {question.type === "MULTIPLE_CHOICE" &&
                   question.answers.length < 6 && (
                     <Button
                       onClick={handleAddAnswer}
@@ -221,7 +257,7 @@ export default function QuestionItem({
               </div>
             </div>
           )}
-          {question.type === "essay" && (
+          {question.type === "ESSAY" && (
             <div className="bg-muted/50 p-3 rounded text-sm text-muted-foreground">
               Essay questions will be graded by AI in the future.
             </div>

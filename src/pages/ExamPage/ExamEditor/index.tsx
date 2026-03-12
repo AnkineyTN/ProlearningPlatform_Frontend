@@ -18,8 +18,14 @@ import {
   useDeleteQuestion,
   useExamDetail,
 } from "@/hooks/useExams";
-import { apiQuizDetailToExam, uiQuestionToCreateRequest } from "../utils/examMapper";
+import { apiQuizDetailToExam, uiQuestionToCreateRequest, parseAIGeneratedContent } from "../utils/examMapper";
 import type { PrivacyType } from "@/services/types/exam.types";
+
+export type QuestionErrors = {
+  questionText?: boolean;
+  noCorrectAnswer?: boolean;
+  emptyAnswers?: Set<string>;
+};
 
 const emptyQuestion = (): ExamQuestion => ({
   id: crypto.randomUUID(),
@@ -45,6 +51,7 @@ export default function ExamEditor() {
     title: locationTitle,
     description: locationDescription,
     privacy: locationPrivacy,
+    aiContent: locationAIContent,
   } = (location.state as Record<string, unknown>) || {};
 
   const [title, setTitle] = useState(locationTitle as string || "");
@@ -56,6 +63,11 @@ export default function ExamEditor() {
   const [draggedQuestionId, setDraggedQuestionId] = useState<
     string | number | null
   >(null);
+
+  const [titleError, setTitleError] = useState(false);
+  const [questionErrors, setQuestionErrors] = useState<
+    Map<string | number, QuestionErrors>
+  >(new Map());
 
   const { data: examDetailData, isLoading: isLoadingDetail } = useExamDetail(
     Number(setId),
@@ -72,8 +84,15 @@ export default function ExamEditor() {
     if (!isUpdateMode) {
       setTitle((locationTitle as string) || "");
       setDescription((locationDescription as string) || "");
+
+      if (locationAIContent && typeof locationAIContent === "string") {
+        const parsed = parseAIGeneratedContent(locationAIContent);
+        if (parsed.length > 0) {
+          setQuestions(parsed);
+        }
+      }
     }
-  }, [isUpdateMode, locationTitle, locationDescription]);
+  }, [isUpdateMode, locationTitle, locationDescription, locationAIContent]);
 
   const loadedExamIdRef = useRef<string | number | null>(null);
 
@@ -101,6 +120,41 @@ export default function ExamEditor() {
     if (!isUpdateMode) loadedExamIdRef.current = null;
   }, [isUpdateMode, examId]);
 
+  const handleTitleChange = (value: string) => {
+    setTitle(value);
+    if (value.trim()) setTitleError(false);
+  };
+
+  const clearQuestionError = (
+    qId: string | number,
+    field: keyof QuestionErrors,
+    answerId?: string,
+  ) => {
+    setQuestionErrors((prev) => {
+      const errs = prev.get(qId);
+      if (!errs) return prev;
+      const next = new Map(prev);
+      if (field === "emptyAnswers" && answerId) {
+        const newSet = new Set(errs.emptyAnswers);
+        newSet.delete(answerId);
+        if (newSet.size === 0) {
+          const { emptyAnswers: _, ...rest } = errs;
+          void _;
+          next.set(qId, rest);
+        } else {
+          next.set(qId, { ...errs, emptyAnswers: newSet });
+        }
+      } else {
+        const { [field]: _, ...rest } = errs;
+        void _;
+        next.set(qId, rest);
+      }
+      const updated = next.get(qId);
+      if (updated && Object.keys(updated).length === 0) next.delete(qId);
+      return next;
+    });
+  };
+
   const handleAddQuestion = () => {
     setQuestions([...questions, emptyQuestion()]);
   };
@@ -121,6 +175,14 @@ export default function ExamEditor() {
         return q;
       }),
     );
+
+    if (updates.questionText !== undefined && updates.questionText.trim()) {
+      clearQuestionError(id, "questionText");
+    }
+    if (updates.answers !== undefined) {
+      const hasCorrect = updates.answers.some((a) => a.isCorrect);
+      if (hasCorrect) clearQuestionError(id, "noCorrectAnswer");
+    }
   };
 
   const handleDeleteQuestion = (id: string | number) => {
@@ -135,6 +197,11 @@ export default function ExamEditor() {
         );
       }
       return prev.filter((q) => q.id !== id);
+    });
+    setQuestionErrors((prev) => {
+      const next = new Map(prev);
+      next.delete(id);
+      return next;
     });
   };
 
@@ -158,39 +225,66 @@ export default function ExamEditor() {
       .filter((q) => q._action !== "DELETE")
       .reduce((sum, q) => sum + q.score, 0);
 
-  const handleSave = async () => {
+  const validate = (): boolean => {
+    let valid = true;
+    const errors = new Map<string | number, QuestionErrors>();
+
     if (!title.trim()) {
-      toast.error("Please enter an exam title");
-      return;
+      setTitleError(true);
+      valid = false;
+    } else {
+      setTitleError(false);
     }
 
     const activeQuestions = questions.filter((q) => q._action !== "DELETE");
     if (activeQuestions.length === 0) {
       toast.error("Exam must have at least one question");
-      return;
+      return false;
     }
 
-    for (const question of activeQuestions) {
-      if (!question.questionText.trim()) {
-        toast.error("All questions must have text");
-        return;
+    for (const q of activeQuestions) {
+      const qErrs: QuestionErrors = {};
+
+      if (!q.questionText.trim()) {
+        qErrs.questionText = true;
+        valid = false;
       }
-      if (question.type !== "ESSAY") {
-        const hasCorrectAnswer = question.answers.some((a) => a.isCorrect);
-        if (!hasCorrectAnswer) {
-          toast.error("All questions must have at least one correct answer");
-          return;
+
+      if (q.type !== "ESSAY") {
+        if (!q.answers.some((a) => a.isCorrect)) {
+          qErrs.noCorrectAnswer = true;
+          valid = false;
         }
-        if (question.type === "MULTIPLE_CHOICE") {
-          const hasEmptyAnswer = question.answers.some((a) => !a.text.trim());
-          if (hasEmptyAnswer) {
-            toast.error("All answer options must have text");
-            return;
+        if (q.type === "MULTIPLE_CHOICE") {
+          const empty = new Set<string>();
+          for (const a of q.answers) {
+            if (!a.text.trim()) empty.add(a.id);
+          }
+          if (empty.size > 0) {
+            qErrs.emptyAnswers = empty;
+            valid = false;
           }
         }
       }
+
+      if (Object.keys(qErrs).length > 0) {
+        errors.set(q.id, qErrs);
+      }
     }
 
+    setQuestionErrors(errors);
+
+    if (!valid) {
+      toast.error("Please fix the highlighted fields before saving");
+    }
+
+    return valid;
+  };
+
+  const handleSave = async () => {
+    if (!validate()) return;
+
+    const activeQuestions = questions.filter((q) => q._action !== "DELETE");
     const privacy: PrivacyType =
       (locationPrivacy as string)?.toUpperCase() === "PRIVATE"
         ? "PRIVATE"
@@ -235,7 +329,7 @@ export default function ExamEditor() {
             setId: setIdNum,
             examId,
             data: toCreate.map((q) =>
-              uiQuestionToCreateRequest(q, activeQuestions.indexOf(q)),
+              uiQuestionToCreateRequest(q),
             ),
           });
         }
@@ -245,7 +339,7 @@ export default function ExamEditor() {
             setId: setIdNum,
             examId,
             questionId: q.id,
-            data: uiQuestionToCreateRequest(q, activeQuestions.indexOf(q)),
+            data: uiQuestionToCreateRequest(q),
           });
         }
 
@@ -271,7 +365,7 @@ export default function ExamEditor() {
         await createQuestionsMutation.mutateAsync({
           setId: setIdNum,
           examId: newExamId,
-          data: activeQuestions.map((q, i) => uiQuestionToCreateRequest(q, i)),
+          data: activeQuestions.map((q) => uiQuestionToCreateRequest(q)),
         });
 
         toast.success("Exam created successfully");
@@ -336,13 +430,18 @@ export default function ExamEditor() {
           <h2 className="text-xl font-semibold mb-4">Exam Information</h2>
           <div className="space-y-4">
             <div>
-              <Label className="text-sm font-medium mb-2 block">Title</Label>
+              <Label className="text-sm font-medium mb-2 block">
+                Title <span className="text-red-500">*</span>
+              </Label>
               <Input
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => handleTitleChange(e.target.value)}
                 placeholder="Enter exam title"
-                className="w-full"
+                className={`w-full ${titleError ? "border-red-500 focus-visible:ring-red-500" : ""}`}
               />
+              {titleError && (
+                <p className="text-red-500 text-xs mt-1">Title is required</p>
+              )}
             </div>
             <div>
               <Label className="text-sm font-medium mb-2 block">
@@ -403,6 +502,10 @@ export default function ExamEditor() {
               key={question.id}
               question={question}
               index={index}
+              errors={questionErrors.get(question.id)}
+              onClearError={(field, answerId) =>
+                clearQuestionError(question.id, field, answerId)
+              }
               onUpdate={handleUpdateQuestion}
               onDelete={handleDeleteQuestion}
               onDragStart={handleDragStart}
