@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, forwardRef, useImperativeHandle } from "react";
 import {
   BlockNoteEditor as BlockNoteEditorClass,
   type PartialBlock,
@@ -12,6 +12,10 @@ import { Sparkles, LoaderCircle } from "lucide-react";
 import { useExplainText } from "@/hooks/useNotes";
 import toast from "react-hot-toast";
 
+export interface NoteEditorHandle {
+  getHTML: () => Promise<string>;
+}
+
 interface NoteEditorProps {
   content: string;
   onContentChange: (content: string) => void;
@@ -19,12 +23,12 @@ interface NoteEditorProps {
   noteId: number;
 }
 
-export const NoteEditor = ({
+export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
   content,
   onContentChange,
   onAISummarize,
   noteId,
-}: NoteEditorProps) => {
+}, ref) => {
   const [selectedText, setSelectedText] = useState("");
   const [showSummarizeBtn, setShowSummarizeBtn] = useState(false);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
@@ -50,11 +54,20 @@ export const NoteEditor = ({
     setEditor(blockNoteEditor);
   }, [blockNoteEditor]);
 
-  // Handle content change from editor
-  const handleEditorChange = useCallback(async () => {
+  useImperativeHandle(ref, () => ({
+    getHTML: async () => {
+      if (editor) {
+        return await editor.blocksToHTMLLossy(editor.document);
+      }
+      return "";
+    },
+  }), [editor]);
+
+  // Handle content change from editor - save as JSON blocks
+  const handleEditorChange = useCallback(() => {
     if (editor) {
-      const html = await editor.blocksToHTMLLossy(editor.document);
-      onContentChange(html);
+      const jsonContent = JSON.stringify(editor.document);
+      onContentChange(jsonContent);
     }
   }, [editor, onContentChange]);
 
@@ -182,4 +195,4 @@ export const NoteEditor = ({
       </div>
     </div>
   );
-};
+});

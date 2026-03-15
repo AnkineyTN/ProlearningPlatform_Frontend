@@ -1,12 +1,12 @@
 import "./notes.css";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 
 import { AISummarizePanel } from "@/pages/NotePage/AISummarizePanel";
 import { FilePreview } from "@/pages/NotePage/FilePreview";
-import { NoteEditor } from "@/pages/NotePage/NoteEditor";
+import { NoteEditor, type NoteEditorHandle } from "@/pages/NotePage/NoteEditor";
 import { NoteHeader } from "@/pages/NotePage/NoteHeader";
 import {
   ResizableHandle,
@@ -31,44 +31,54 @@ interface AISummary {
 }
 
 export const NotePage = () => {
-  const { noteId } = useParams<{ noteId: string }>();
+  const { id: noteId } = useParams<{ id: string }>();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [isEditorReady, setIsEditorReady] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
   const [summaries, setSummaries] = useState<AISummary[]>([]);
+  const editorRef = useRef<NoteEditorHandle>(null);
 
   const { data: noteDetail, isLoading: isLoadingNote } = useNoteDetail(
     noteId ? parseInt(noteId) : 0,
   );
   const autoSaveMutation = useAutoSaveNote();
+  const autoSaveMutationRef = useRef(autoSaveMutation);
+  autoSaveMutationRef.current = autoSaveMutation;
+
+  // Track whether initial load has completed to avoid auto-saving on mount
+  const isInitialLoadRef = useRef(true);
 
   // Load note detail on mount
   useEffect(() => {
     if (noteDetail) {
       setTitle(noteDetail.title);
       setContent(noteDetail.content);
-      // Load uploaded docs if any
-      if (noteDetail.noteDocs && noteDetail.noteDocs.length > 0) {
-        // Parse the first doc (structure depends on your API)
-        // This is a placeholder - adjust based on your actual API response
-      }
     }
-  }, [noteDetail]);
+    if (!isLoadingNote) {
+      setIsEditorReady(true);
+      setTimeout(() => {
+        isInitialLoadRef.current = false;
+      }, 0);
+    }
+  }, [noteDetail, isLoadingNote]);
 
   // Auto-save on content change
   useEffect(() => {
+    if (isInitialLoadRef.current) return;
+
     const timer = setTimeout(() => {
       if (noteId && (title || content)) {
-        autoSaveMutation.mutate({
+        autoSaveMutationRef.current.mutate({
           noteId: parseInt(noteId),
           title,
           content,
         });
       }
-    }, 3000); // Auto-save after 3 seconds of inactivity
+    }, 3000);
 
     return () => clearTimeout(timer);
-  }, [title, content, noteId, autoSaveMutation]);
+  }, [title, content, noteId]);
 
   const handleTitleChange = (newTitle: string) => {
     setTitle(newTitle);
@@ -79,12 +89,23 @@ export const NotePage = () => {
   };
 
   const handleSave = () => {
+    console.log('🚀 ~ handleSave ~ noteId:', noteId)
     if (noteId) {
-      autoSaveMutation.mutate({
-        noteId: parseInt(noteId),
-        title,
-        content,
-      });
+      autoSaveMutation.mutate(
+        {
+          noteId: parseInt(noteId),
+          title,
+          content,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Note saved successfully");
+          },
+          onError: () => {
+            toast.error("Failed to save note");
+          },
+        },
+      );
     }
   };
 
@@ -114,7 +135,9 @@ export const NotePage = () => {
     setSummaries((prev) => prev.filter((s) => s.id !== id));
   };
 
-  const handleDownloadHTML = useCallback(() => {
+  const handleDownloadHTML = useCallback(async () => {
+    const editorHtml = await editorRef.current?.getHTML() || "";
+
     const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -147,7 +170,7 @@ export const NotePage = () => {
 <body>
     <h1>${title}</h1>
     <div class="content">
-        <pre>${escapeHtml(content)}</pre>
+        ${editorHtml}
     </div>
     <p style="text-align: center; color: #999; font-size: 12px; margin-top: 40px;">
         Generated from Prolearning Platform
@@ -167,13 +190,7 @@ export const NotePage = () => {
     document.body.removeChild(a);
 
     toast.success("Note downloaded successfully");
-  }, [title, content]);
-
-  const escapeHtml = (text: string) => {
-    const div = document.createElement("div");
-    div.textContent = text;
-    return div.innerHTML;
-  };
+  }, [title]);
 
   if (isLoadingNote) {
     return (
@@ -204,12 +221,19 @@ export const NotePage = () => {
         <ResizablePanelGroup className='w-full h-full'>
           {/* Editor Panel */}
           <ResizablePanel defaultSize={uploadedFile ? 40 : 70} minSize={30}>
-            <NoteEditor
-              content={content}
-              onContentChange={handleContentChange}
-              onAISummarize={handleAISummarize}
-              noteId={noteId ? parseInt(noteId) : 0}
-            />
+            {isEditorReady ? (
+              <NoteEditor
+                ref={editorRef}
+                content={content}
+                onContentChange={handleContentChange}
+                onAISummarize={handleAISummarize}
+                noteId={noteId ? parseInt(noteId) : 0}
+              />
+            ) : (
+              <div className='flex items-center justify-center h-full'>
+                <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500' />
+              </div>
+            )}
           </ResizablePanel>
 
           {/* File Preview Panel */}

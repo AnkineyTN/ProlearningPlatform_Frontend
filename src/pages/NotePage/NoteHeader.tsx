@@ -1,10 +1,11 @@
-import { Download, LoaderCircle, Save, Upload } from "lucide-react";
+import { ArrowLeft, Download, LoaderCircle, Save, Upload } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUploadDocumentFile } from "@/hooks/useImageUpload";
+import { useNavigate } from "react-router-dom";
 
 interface NoteHeaderProps {
   title: string;
@@ -27,10 +28,10 @@ export const NoteHeader = ({
   onTitleChange,
   onSave,
   isSaving,
-  noteId,
   onFileUploaded,
   onDownloadHTML,
 }: NoteHeaderProps) => {
+  const navigate = useNavigate();
   const [isUploading, setIsUploading] = useState(false);
   const uploadFileMutation = useUploadDocumentFile();
 
@@ -87,6 +88,10 @@ export const NoteHeader = ({
 
   return (
     <div className='flex items-center justify-between gap-4 border-b p-4 shadow-sm'>
+      <Button variant='outline' size='sm' className='gap-2' onClick={() => navigate(-1)}>
+        <ArrowLeft className='w-4 h-4' />
+        Back
+      </Button>
       <div className='flex-1'>
         <Input
           value={title}
