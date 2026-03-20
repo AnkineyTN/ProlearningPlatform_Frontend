@@ -1,10 +1,19 @@
 import { FileText, LoaderCircle, Sparkles, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Document, Page, pdfjs } from "react-pdf";
 import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useDeleteNoteDoc, useSummarizeFile } from "@/hooks/useNotes";
+
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  "pdfjs-dist/build/pdf.worker.min.mjs",
+  import.meta.url,
+).toString();
 
 interface FilePreviewProps {
   fileId: number;
@@ -26,8 +35,29 @@ export const FilePreview = ({
   onFileDeleted,
 }: FilePreviewProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [numPages, setNumPages] = useState<number | null>(null);
+  const [pageWidth, setPageWidth] = useState(520);
+  const pdfWrapRef = useRef<HTMLDivElement>(null);
   const summarizeFileMutation = useSummarizeFile();
   const deleteNoteDocMutation = useDeleteNoteDoc();
+
+  const isPdf = extension.toLowerCase() === "pdf";
+
+  useEffect(() => {
+    setNumPages(null);
+  }, [fileUrl]);
+
+  useEffect(() => {
+    if (!isPdf) return;
+    const el = pdfWrapRef.current;
+    if (!el) return;
+    const update = () =>
+      setPageWidth(Math.max(240, Math.floor(el.getBoundingClientRect().width)));
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [isPdf, fileUrl]);
 
   const handleSummarize = async () => {
     try {
@@ -83,13 +113,45 @@ export const FilePreview = ({
 
       <div className='flex-1 p-4'>
         <Card className='p-4'>
-          <div className='flex items-start gap-3 mb-4'>
+          <div className='flex items-start gap-3'>
             <FileText className='w-8 h-8 text-blue-500 flex-shrink-0 mt-1' />
             <div className='flex-1 min-w-0'>
               <p className='font-medium text-sm truncate'>{fileName}</p>
               <p className='text-xs text-muted-foreground'>{extension.toUpperCase()}</p>
             </div>
           </div>
+
+          {isPdf && (
+            <div
+              ref={pdfWrapRef}
+              className='rounded-md border bg-muted/20 overflow-y-auto max-h-[calc(100vh-350px)] overflow-x-hidden'
+            >
+              <Document
+                file={fileUrl}
+                loading={
+                  <div className='flex justify-center py-12'>
+                    <LoaderCircle className='w-8 h-8 animate-spin text-muted-foreground' />
+                  </div>
+                }
+                onLoadSuccess={({ numPages: n }) => setNumPages(n)}
+                onLoadError={() => {
+                  toast.error("Could not load PDF preview");
+                }}
+              >
+                {numPages !== null &&
+                  Array.from({ length: numPages }, (_, i) => (
+                    <div key={i + 1} className='flex justify-center py-2 first:pt-3 last:pb-3'>
+                      <Page
+                        pageNumber={i + 1}
+                        width={pageWidth}
+                        renderTextLayer
+                        renderAnnotationLayer
+                      />
+                    </div>
+                  ))}
+              </Document>
+            </div>
+          )}
 
           <Button
             onClick={handleSummarize}
@@ -104,18 +166,6 @@ export const FilePreview = ({
             )}
             Summarize File with AI
           </Button>
-
-          {/* File Info */}
-          <div className='mt-4 pt-4 border-t space-y-2'>
-            <div>
-              <p className='text-xs font-medium text-muted-foreground'>File Name</p>
-              <p className='text-sm text-foreground break-all'>{fileName}</p>
-            </div>
-            <div>
-              <p className='text-xs font-medium text-muted-foreground'>Format</p>
-              <p className='text-sm text-foreground'>{extension}</p>
-            </div>
-          </div>
         </Card>
       </div>
     </div>

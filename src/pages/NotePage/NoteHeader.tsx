@@ -97,7 +97,7 @@ export const NoteHeader = ({
           value={title}
           onChange={(e) => onTitleChange(e.target.value)}
           placeholder='Untitled Note'
-          className='text-2xl font-bold border-none focus-visible:ring-0 p-0 h-auto'
+          className='text-2xl font-bold border-none focus-visible:ring-0 px-4 py-2 h-auto w-100'
         />
       </div>
 

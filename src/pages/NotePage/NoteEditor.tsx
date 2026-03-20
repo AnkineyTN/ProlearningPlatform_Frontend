@@ -20,14 +20,12 @@ interface NoteEditorProps {
   content: string;
   onContentChange: (content: string) => void;
   onAISummarize: (selectedText: string, response: string) => void;
-  noteId: number;
 }
 
 export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
   content,
   onContentChange,
   onAISummarize,
-  noteId,
 }, ref) => {
   const [selectedText, setSelectedText] = useState("");
   const [showSummarizeBtn, setShowSummarizeBtn] = useState(false);
@@ -77,8 +75,6 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
       const selection = window.getSelection();
       const selectedText = selection?.toString().trim() || "";
 
-      console.log("🚀 ~ Text selected:", selectedText); // Debug log
-
       if (selectedText.length > 0) {
         setSelectedText(selectedText);
 
@@ -87,8 +83,6 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
         if (range && editorRef.current) {
           const rect = range.getBoundingClientRect();
           const editorRect = editorRef.current.getBoundingClientRect();
-
-          console.log("🚀 ~ Tooltip position set"); // Debug log
 
           setTooltipPos({
             x: rect.left - editorRect.left,
@@ -123,34 +117,25 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
   }, []);
 
   const handleAISummarize = useCallback(async () => {
-    console.log("🚀 ~ NoteEditor ~ selectedText:", selectedText);
-    console.log("🚀 ~ NoteEditor ~ noteId:", noteId);
-    console.log("🚀 ~ NoteEditor ~ explainTextMutation:", explainTextMutation);
-
     if (!selectedText) {
-      console.log("❌ Early return - selectedText or noteId is missing");
       return;
     }
 
     try {
-        console.log("🚀 Calling API with:", { noteId, queryText: selectedText, lang: "english" });
       const response = await explainTextMutation.mutateAsync({
         noteId: 149, // Hardcoded for testing - replace with noteId when API is ready
         queryText: selectedText,
         lang: "english",
       });
-      console.log("🚀 ~ NoteEditor ~ response:", response);
 
       const aiResponse = response.data.data.answer;
-      console.log("🚀 ~ NoteEditor ~ aiResponse:", aiResponse);
       onAISummarize(selectedText, aiResponse);
       setShowSummarizeBtn(false);
       toast.success("Text summarized successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to summarize text");
-      console.error("❌ Error:", error);
     }
-  }, [selectedText, noteId, onAISummarize, explainTextMutation]);
+  }, [selectedText, explainTextMutation, onAISummarize]);
 
   return (
     <div className='relative w-full h-full overflow-hidden flex flex-col'>
@@ -158,7 +143,7 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
       {showSummarizeBtn && selectedText && (
         <div
           ref={tooltipRef}
-          className='fixed rounded-lg shadow-lg border border-gray-200 p-2 z-50 flex items-center gap-2'
+          className='fixed rounded-lg shadow-lg  z-50 flex items-center gap-2'
           style={{
             left: `${editorRef.current?.getBoundingClientRect().left || 0 + tooltipPos.x}px`,
             top: `${editorRef.current?.getBoundingClientRect().top || 0 + tooltipPos.y}px`,
@@ -183,7 +168,7 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
       {/* Editor Container */}
       <div
         ref={editorRef}
-        className='flex-1 overflow-auto focus-within:outline-none'
+        className='flex-1 overflow-auto focus-within:outline-none px-8'
       >
         {editor && (
           <BlockNoteView
