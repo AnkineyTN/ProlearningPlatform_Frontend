@@ -1,10 +1,17 @@
+export type NoteDocItem = {
+  assetId: number;
+  fileName: string;
+  fileUrl: string;
+  publicId: string;
+};
+
 export type NoteDetail = {
   id: number;
   title: string;
   description: string;
   privacy: string;
   content: string;
-  noteDocs: string[];
+  noteDocs: NoteDocItem[];
 };
 
 export type NoteListItem = {
@@ -38,19 +45,18 @@ export type AutoSaveNoteRequest = {
 };
 
 export type ExplainTextRequest = {
-  noteId: number;
-  queryText: string;
   lang: string;
+  limit: string;
+  note_id: number;
+  query_text: string;
 };
 
-export type ExplainTextResponse = {
+export type ExplainTextResponseBody = {
+  status: number;
+  message: string;
   data: {
-    status: number;
-    message: string;
-    data: {
-      queryText: string;
-      answer: string;
-    };
+    queryText: string;
+    answer: string;
   };
 };
 
@@ -75,16 +81,16 @@ export type UploadFileResponse = {
 };
 
 export type SummarizeFileRequest = {
-  noteDocsId: number;
-  fileUrl: string;
-  extension: string;
+  lang: string;
+  limit: number;
+  asset_id: number;
+  file_url: string;
 };
 
 export type SummarizeFileResponse = {
   status: number;
   message: string;
   data: {
-    noteDocsId: number;
     summary: string;
   };
 };
@@ -103,6 +109,8 @@ export type ConvertToVectorDBResponse = {
 };
 
 export type DeleteNoteDocRequest = {
+  noteId: number;
+  assetId: number;
   publicId: string;
   extension: string;
 };
@@ -121,13 +129,6 @@ export type AutoSaveNoteResponse = {
   metadata: Record<string, never>;
 };
 
-export type DeleteNoteDocResponse = {
-  status: string;
-  message: string;
-  data: null;
-  metadata: Record<string, never>;
-};
-
 export type UpdateNoteResponse = {
   status: string;
   message: string;
@@ -139,4 +140,32 @@ export type ApiResponseNoteDetail = {
   status: number;
   message: string;
   data: NoteDetail;
+};
+
+export type SaveImgInNoteRequest = {
+  noteId: number;
+  assetId: number;
+  publicId: string;
+  extension: string;
+};
+
+export type SaveDocInNoteRequest = {
+  noteId: number;
+  assetId: number;
+  publicId: string;
+  extension: string;
+  fileName?: string;
+};
+
+export type DeleteNoteImgRequest = {
+  noteId: number;
+  publicId: string;
+  extension: string;
+};
+
+export type ResponseDataVoid = {
+  status: string;
+  message: string;
+  data: null;
+  metadata: Record<string, never>;
 };

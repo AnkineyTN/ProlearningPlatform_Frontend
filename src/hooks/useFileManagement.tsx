@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface UploadedFile {
   id: number;
@@ -17,6 +18,7 @@ export const useFileManagement = ({
   convertToVectorDBMutation,
   deleteNoteDocMutation,
 }: any) => {
+  const { i18n } = useTranslation();
   const [uploadedFilesList, setUploadedFilesList] = useState<UploadedFile[]>(
     [],
   );
@@ -100,9 +102,10 @@ export const useFileManagement = ({
     setIsSummarizing(true);
     try {
       const response = await summarizeFileMutation.mutateAsync({
-        noteDocsId: selectedFile.id,
-        fileUrl: selectedFile.fileUrl,
-        extension: selectedFile.extension,
+        lang: i18n.language || "vi",
+        limit: 0,
+        asset_id: selectedFile.id,
+        file_url: selectedFile.fileUrl,
       });
       setFileSummary(response.data.data.summary);
     } catch (error) {
@@ -211,11 +214,10 @@ export const useFileManagement = ({
 
     try {
       await deleteNoteDocMutation.mutateAsync({
-        noteDocsId: fileId,
-        data: {
-          publicId: fileToRemove.publicId,
-          extension: fileToRemove.extension,
-        },
+        noteId,
+        assetId: fileId,
+        publicId: fileToRemove.publicId,
+        extension: fileToRemove.extension,
       });
 
       setUploadedFilesList((prev) => prev.filter((f) => f.id !== fileId));

@@ -11,22 +11,26 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, LoaderCircle } from "lucide-react";
 import { useExplainText } from "@/hooks/useNotes";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 export interface NoteEditorHandle {
   getHTML: () => Promise<string>;
 }
 
 interface NoteEditorProps {
+  noteId: number;
   content: string;
   onContentChange: (content: string) => void;
   onAISummarize: (selectedText: string, response: string) => void;
 }
 
 export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
+  noteId,
   content,
   onContentChange,
   onAISummarize,
 }, ref) => {
+  const { i18n } = useTranslation();
   const [selectedText, setSelectedText] = useState("");
   const [showSummarizeBtn, setShowSummarizeBtn] = useState(false);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
@@ -121,21 +125,27 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
       return;
     }
 
+    if (!noteId) {
+      toast.error("Invalid note");
+      return;
+    }
+
     try {
       const response = await explainTextMutation.mutateAsync({
-        noteId: 149, // Hardcoded for testing - replace with noteId when API is ready
-        queryText: selectedText,
-        lang: "english",
+        lang: i18n.language || "vi",
+        limit: "0",
+        note_id: noteId,
+        query_text: selectedText,
       });
 
       const aiResponse = response.data.data.answer;
       onAISummarize(selectedText, aiResponse);
       setShowSummarizeBtn(false);
-      toast.success("Text summarized successfully");
+      toast.success("Explained successfully");
     } catch {
-      toast.error("Failed to summarize text");
+      toast.error("Failed to explain text");
     }
-  }, [selectedText, explainTextMutation, onAISummarize]);
+  }, [selectedText, noteId, i18n.language, explainTextMutation, onAISummarize]);
 
   return (
     <div className='relative w-full h-full overflow-hidden flex flex-col'>
@@ -160,7 +170,7 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
             ) : (
               <Sparkles className='w-4 h-4' />
             )}
-            AI Summarize
+            AI Explain
           </Button>
         </div>
       )}

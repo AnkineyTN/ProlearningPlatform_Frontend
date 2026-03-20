@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 
 import { AISummarizePanel } from "@/pages/NotePage/AISummarizePanel";
-import { FilePreview } from "@/pages/NotePage/FilePreview";
+import { NoteFilesPanel } from "@/pages/NotePage/NoteFilesPanel";
 import { NoteEditor, type NoteEditorHandle } from "@/pages/NotePage/NoteEditor";
 import { NoteHeader } from "@/pages/NotePage/NoteHeader";
 import {
@@ -14,6 +14,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { useAutoSaveNote, useNoteDetail } from "@/hooks/useNotes";
+import type { NoteDocItem } from "@/services/types/note.types";
 
 interface UploadedFile {
   id: number;
@@ -21,6 +22,19 @@ interface UploadedFile {
   fileUrl: string;
   extension: string;
   publicId: string;
+}
+
+function noteDocToUploadedFile(doc: NoteDocItem): UploadedFile {
+  const ext = doc.fileName.includes(".")
+    ? doc.fileName.split(".").pop() || ""
+    : "";
+  return {
+    id: doc.assetId,
+    fileName: doc.fileName,
+    fileUrl: doc.fileUrl,
+    extension: ext,
+    publicId: doc.publicId,
+  };
 }
 
 interface AISummary {
@@ -35,7 +49,9 @@ export const NotePage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isEditorReady, setIsEditorReady] = useState(false);
-  const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
+  const [noteFiles, setNoteFiles] = useState<UploadedFile[]>([]);
+  const [showFilesPanel, setShowFilesPanel] = useState(true);
+  const [showAiPanel, setShowAiPanel] = useState(true);
   const [summaries, setSummaries] = useState<AISummary[]>([]);
   const editorRef = useRef<NoteEditorHandle>(null);
 
@@ -46,10 +62,8 @@ export const NotePage = () => {
   const autoSaveMutationRef = useRef(autoSaveMutation);
   autoSaveMutationRef.current = autoSaveMutation;
 
-  // Track whether initial load has completed to avoid auto-saving on mount
   const isInitialLoadRef = useRef(true);
 
-  // Load note detail on mount
   useEffect(() => {
     if (noteDetail) {
       setTitle(noteDetail.title);
@@ -63,7 +77,12 @@ export const NotePage = () => {
     }
   }, [noteDetail, isLoadingNote]);
 
-  // Auto-save on content change
+  useEffect(() => {
+    if (!noteDetail) return;
+    const docs = noteDetail.noteDocs ?? [];
+    setNoteFiles(docs.map(noteDocToUploadedFile));
+  }, [noteDetail]);
+
   useEffect(() => {
     if (isInitialLoadRef.current) return;
 
@@ -109,6 +128,18 @@ export const NotePage = () => {
     }
   };
 
+  const handleFileUploaded = useCallback((file: UploadedFile) => {
+    setNoteFiles((prev) => {
+      if (prev.some((f) => f.id === file.id)) return prev;
+      return [...prev, file];
+    });
+    setShowFilesPanel(true);
+  }, []);
+
+  const handleFileDeleted = useCallback((fileId: number) => {
+    setNoteFiles((prev) => prev.filter((f) => f.id !== fileId));
+  }, []);
+
   const handleAISummarize = async (selectedText: string, response: string) => {
     const newSummary: AISummary = {
       id: Date.now().toString(),
@@ -118,6 +149,7 @@ export const NotePage = () => {
     };
 
     setSummaries((prev) => [newSummary, ...prev]);
+    setShowAiPanel(true);
   };
 
   const handleFileSummarize = (summary: string, fileName: string) => {
@@ -129,6 +161,7 @@ export const NotePage = () => {
     };
 
     setSummaries((prev) => [newSummary, ...prev]);
+    setShowAiPanel(true);
   };
 
   const handleRemoveSummary = (id: string) => {
@@ -192,6 +225,23 @@ export const NotePage = () => {
     toast.success("Note downloaded successfully");
   }, [title]);
 
+  const numericNoteId = noteId ? parseInt(noteId, 10) : 0;
+  const hasFilesPanel = showFilesPanel && noteFiles.length > 0;
+  const hasAiPanel = showAiPanel && summaries.length > 0;
+
+  let editorDefaultSize = 100;
+  let filesDefaultSize = 30;
+  let aiDefaultSize = 30;
+  if (hasFilesPanel && hasAiPanel) {
+    editorDefaultSize = 40;
+    filesDefaultSize = 30;
+    aiDefaultSize = 30;
+  } else if (hasFilesPanel || hasAiPanel) {
+    editorDefaultSize = 65;
+    filesDefaultSize = 35;
+    aiDefaultSize = 35;
+  }
+
   if (isLoadingNote) {
     return (
       <div className='w-full h-screen flex items-center justify-center'>
@@ -205,25 +255,29 @@ export const NotePage = () => {
 
   return (
     <div className='flex flex-col w-full h-screen'>
-      {/* Header */}
       <NoteHeader
         title={title}
         onTitleChange={handleTitleChange}
         onSave={handleSave}
         isSaving={autoSaveMutation.isPending}
-        noteId={noteId ? parseInt(noteId) : 0}
-        onFileUploaded={setUploadedFile}
+        noteId={numericNoteId}
+        onFileUploaded={handleFileUploaded}
         onDownloadHTML={handleDownloadHTML}
+        attachedFileCount={noteFiles.length}
+        showFilesPanel={showFilesPanel}
+        onToggleFilesPanel={() => setShowFilesPanel((v) => !v)}
+        aiSummaryCount={summaries.length}
+        showAiPanel={showAiPanel}
+        onToggleAiPanel={() => setShowAiPanel((v) => !v)}
       />
 
-      {/* Main Content Area with Resizable Panels */}
       <div className='flex-1 overflow-hidden'>
-        <ResizablePanelGroup className='w-full h-full'>
-          {/* Editor Panel */}
-          <ResizablePanel defaultSize={uploadedFile ? 40 : 70} minSize={30}>
+        <ResizablePanelGroup className='w-full h-full' key={`${hasFilesPanel}-${hasAiPanel}`}>
+          <ResizablePanel defaultSize={editorDefaultSize} minSize={30}>
             {isEditorReady ? (
               <NoteEditor
                 ref={editorRef}
+                noteId={numericNoteId}
                 content={content}
                 onContentChange={handleContentChange}
                 onAISummarize={handleAISummarize}
@@ -235,32 +289,29 @@ export const NotePage = () => {
             )}
           </ResizablePanel>
 
-          {/* File Preview Panel */}
-          {uploadedFile && (
+          {hasFilesPanel ? (
             <>
               <ResizableHandle />
-              <ResizablePanel defaultSize={30} minSize={20}>
-                <FilePreview
-                  fileId={uploadedFile.id}
-                  fileName={uploadedFile.fileName}
-                  fileUrl={uploadedFile.fileUrl}
-                  extension={uploadedFile.extension}
-                  publicId={uploadedFile.publicId}
+              <ResizablePanel defaultSize={filesDefaultSize} minSize={18}>
+                <NoteFilesPanel
+                  noteId={numericNoteId}
+                  files={noteFiles}
                   onFileSummarize={handleFileSummarize}
-                  onFileDeleted={() => setUploadedFile(null)}
+                  onFileDeleted={handleFileDeleted}
+                  onClosePanel={() => setShowFilesPanel(false)}
                 />
               </ResizablePanel>
             </>
-          )}
+          ) : null}
 
-          {/* AI Summarize Panel */}
-          {summaries.length > 0 ? (
+          {hasAiPanel ? (
             <>
               <ResizableHandle />
-              <ResizablePanel defaultSize={uploadedFile ? 30 : 30} minSize={20}>
+              <ResizablePanel defaultSize={aiDefaultSize} minSize={18}>
                 <AISummarizePanel
                   summaries={summaries}
                   onRemoveSummary={handleRemoveSummary}
+                  onClosePanel={() => setShowAiPanel(false)}
                 />
               </ResizablePanel>
             </>

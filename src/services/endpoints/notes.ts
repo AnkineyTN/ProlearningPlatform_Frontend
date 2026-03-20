@@ -6,7 +6,7 @@ import type {
   NoteListResponse,
   AutoSaveNoteRequest,
   ExplainTextRequest,
-  ExplainTextResponse,
+  ExplainTextResponseBody,
   UploadFileResponse,
   SummarizeFileRequest,
   SummarizeFileResponse,
@@ -15,9 +15,12 @@ import type {
   DeleteNoteDocRequest,
   DeleteNoteResponse,
   AutoSaveNoteResponse,
-  DeleteNoteDocResponse,
   UpdateNoteResponse,
   ApiResponseNoteDetail,
+  SaveImgInNoteRequest,
+  SaveDocInNoteRequest,
+  DeleteNoteImgRequest,
+  ResponseDataVoid,
 } from '../types/note.types';
 
 export const noteAPI = {
@@ -48,7 +51,9 @@ export const noteAPI = {
     data: AutoSaveNoteRequest,
   ): Promise<AxiosResponse<AutoSaveNoteResponse>> =>
     api.patch(`/note/save/${noteId}`, data),
-  explainText: (data: ExplainTextRequest): Promise<ExplainTextResponse> =>
+  explainText: (
+    data: ExplainTextRequest,
+  ): Promise<AxiosResponse<ExplainTextResponseBody>> =>
     api.post('/note/explain', data),
   uploadFile: (
     file: File,
@@ -75,8 +80,22 @@ export const noteAPI = {
   ): Promise<AxiosResponse<ConvertToVectorDBResponse>> =>
     api.post('/note/convert-to-vectordb', data),
   deleteNoteDoc: (
-    noteDocsId: number,
     data: DeleteNoteDocRequest,
-  ): Promise<AxiosResponse<DeleteNoteDocResponse>> =>
-    api.delete(`/note/delete-doc/${noteDocsId}`, { data }),
+  ): Promise<AxiosResponse<ResponseDataVoid>> =>
+    api.delete('/note/delete-doc', { data }),
+
+  saveImageInNote: (
+    data: SaveImgInNoteRequest,
+  ): Promise<AxiosResponse<ResponseDataVoid>> =>
+    api.post('/note/save-img', data),
+
+  saveDocumentInNote: (
+    data: SaveDocInNoteRequest,
+  ): Promise<AxiosResponse<ResponseDataVoid>> =>
+    api.post('/note/save-doc', data),
+
+  deleteImgInNote: (
+    data: DeleteNoteImgRequest,
+  ): Promise<AxiosResponse<ResponseDataVoid>> =>
+    api.delete('/note/delete-img', { data }),
 };

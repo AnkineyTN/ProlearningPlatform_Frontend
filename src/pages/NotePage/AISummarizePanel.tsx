@@ -1,4 +1,4 @@
-import { Copy, Sparkles, X } from "lucide-react";
+import { Copy, PanelRightClose, Sparkles, X } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
@@ -14,11 +14,13 @@ interface AISummary {
 interface AISummarizePanelProps {
   summaries: AISummary[];
   onRemoveSummary: (id: string) => void;
+  onClosePanel?: () => void;
 }
 
 export const AISummarizePanel = ({
   summaries,
   onRemoveSummary,
+  onClosePanel,
 }: AISummarizePanelProps) => {
   const handleCopyResponse = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -29,10 +31,10 @@ export const AISummarizePanel = ({
     return (
       <div className='w-full h-full bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col items-center justify-center p-6'>
         <Sparkles className='w-12 h-12 text-blue-300 mb-4' />
-        <p className='text-center text-gray-600 font-medium'>
+        <p className='text-center text-muted-foreground font-medium'>
           AI Summarize Panel
         </p>
-        <p className='text-center text-sm text-gray-500 mt-2'>
+        <p className='text-center text-sm text-muted-foreground mt-2'>
           Highlight text to summarize or upload a file to get AI insights
         </p>
       </div>
@@ -41,9 +43,24 @@ export const AISummarizePanel = ({
 
   return (
     <div className='w-full h-full overflow-auto flex flex-col'>
-      <div className='p-4 border-b sticky top-0 flex items-center gap-2'>
-        <Sparkles className='w-5 h-5 text-blue-500' />
-        <h3 className='font-semibold text-sm'>AI Insights</h3>
+      <div className='p-4 border-b sticky top-0 flex items-center justify-between gap-2 bg-background z-10'>
+        <div className='flex items-center gap-2 min-w-0'>
+          <Sparkles className='w-5 h-5 text-blue-500 shrink-0' />
+          <h3 className='font-semibold text-sm truncate'>AI Insights</h3>
+        </div>
+        {onClosePanel ? (
+          <Button
+            type='button'
+            size='sm'
+            variant='ghost'
+            className='shrink-0 gap-1 h-8'
+            onClick={onClosePanel}
+            aria-label='Hide AI panel'
+          >
+            <PanelRightClose className='w-4 h-4' />
+            <span className='hidden sm:inline text-xs'>Hide</span>
+          </Button>
+        ) : null}
       </div>
 
       <div className='flex-1 overflow-auto p-4 space-y-4'>

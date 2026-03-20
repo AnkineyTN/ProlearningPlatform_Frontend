@@ -6,6 +6,7 @@ import {
   type SummarizeFileRequest,
   type ConvertToVectorDBRequest,
   type DeleteNoteDocRequest,
+  type SaveDocInNoteRequest,
 } from "@/services/types/note.types";
 
 // Hook to get note detail
@@ -142,6 +143,21 @@ export const useUploadFile = () => {
   });
 };
 
+export const useSaveDocumentInNote = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: SaveDocInNoteRequest) =>
+      noteAPI.saveDocumentInNote(data),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["note", variables.noteId] });
+    },
+    onError: (error) => {
+      console.error("Save document in note failed:", error);
+    },
+  });
+};
+
 // Hook for summarize file
 export const useSummarizeFile = () => {
   return useMutation({
@@ -163,14 +179,18 @@ export const useConvertToVectorDB = () => {
 };
 
 export const useDeleteNoteDoc = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: ({
-      noteDocsId,
-      data,
-    }: {
-      noteDocsId: number;
-      data: DeleteNoteDocRequest;
-    }) => noteAPI.deleteNoteDoc(noteDocsId, data),
+    mutationFn: (data: DeleteNoteDocRequest) =>
+      noteAPI.deleteNoteDoc(data),
+    onSuccess: (_data, variables) => {
+      if (variables.noteId > 0) {
+        queryClient.invalidateQueries({
+          queryKey: ["note", variables.noteId],
+        });
+      }
+    },
     onError: (error) => {
       console.error("Delete note document failed:", error);
     },

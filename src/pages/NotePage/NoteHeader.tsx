@@ -1,9 +1,18 @@
-import { ArrowLeft, Download, LoaderCircle, Save, Upload } from "lucide-react";
+import {
+  ArrowLeft,
+  Download,
+  FileText,
+  LoaderCircle,
+  Save,
+  Sparkles,
+  Upload,
+} from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSaveDocumentInNote } from "@/hooks/useNotes";
 import { useUploadDocumentFile } from "@/hooks/useImageUpload";
 import { useNavigate } from "react-router-dom";
 
@@ -21,6 +30,12 @@ interface NoteHeaderProps {
     publicId: string;
   }) => void;
   onDownloadHTML: () => void;
+  attachedFileCount?: number;
+  showFilesPanel?: boolean;
+  onToggleFilesPanel?: () => void;
+  aiSummaryCount?: number;
+  showAiPanel?: boolean;
+  onToggleAiPanel?: () => void;
 }
 
 export const NoteHeader = ({
@@ -28,12 +43,20 @@ export const NoteHeader = ({
   onTitleChange,
   onSave,
   isSaving,
+  noteId,
   onFileUploaded,
   onDownloadHTML,
+  attachedFileCount = 0,
+  showFilesPanel = true,
+  onToggleFilesPanel,
+  aiSummaryCount = 0,
+  showAiPanel = true,
+  onToggleAiPanel,
 }: NoteHeaderProps) => {
   const navigate = useNavigate();
   const [isUploading, setIsUploading] = useState(false);
   const uploadFileMutation = useUploadDocumentFile();
+  const saveDocumentMutation = useSaveDocumentInNote();
 
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -56,20 +79,35 @@ export const NoteHeader = ({
       return;
     }
 
+    if (!noteId) {
+      toast.error("Invalid note");
+      return;
+    }
+
     setIsUploading(true);
     try {
       const result = await uploadFileMutation.mutateAsync(file);
 
-      // Create the uploaded file object with the result from Cloudinary
+      const ext =
+        result.extension ||
+        (file.name.includes(".") ? file.name.split(".").pop() || "" : "");
+
+      await saveDocumentMutation.mutateAsync({
+        noteId,
+        assetId: result.assetId,
+        publicId: result.publicId,
+        extension: ext,
+        fileName: result.fileName,
+      });
+
       const uploadedFile = {
         id: result.assetId,
         fileName: result.fileName,
         fileUrl: result.url,
-        extension: result.extension,
+        extension: ext,
         publicId: result.publicId,
       };
 
-      console.log("🚀 ~ handleFileUpload ~ uploadedFile:", uploadedFile);
       onFileUploaded(uploadedFile);
       toast.success("File uploaded successfully");
     } catch (error) {
@@ -154,6 +192,32 @@ export const NoteHeader = ({
             </Button>
           </label>
         </div>
+
+        {attachedFileCount > 0 && onToggleFilesPanel ? (
+          <Button
+            type='button'
+            variant={showFilesPanel ? "secondary" : "outline"}
+            size='sm'
+            className='gap-2'
+            onClick={onToggleFilesPanel}
+          >
+            <FileText className='w-4 h-4' />
+            Files ({attachedFileCount})
+          </Button>
+        ) : null}
+
+        {aiSummaryCount > 0 && onToggleAiPanel ? (
+          <Button
+            type='button'
+            variant={showAiPanel ? "secondary" : "outline"}
+            size='sm'
+            className='gap-2'
+            onClick={onToggleAiPanel}
+          >
+            <Sparkles className='w-4 h-4' />
+            AI ({aiSummaryCount})
+          </Button>
+        ) : null}
       </div>
     </div>
   );
