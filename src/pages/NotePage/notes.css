@@ -166,6 +166,30 @@
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+/*
+ * BlockNote sets editor colors via --bn-colors-* on .bn-container, not --foreground.
+ * [data-color-scheme="dark"] overrides those vars with high specificity, so mapping
+ * only .bn-inline-content often looks "stuck" (e.g. always light gray/white).
+ * Bridge BlockNote tokens to your theme variables here.
+ */
+.block-note-editor {
+  --bn-colors-editor-text: var(--foreground) !important;
+  --bn-colors-editor-background: transparent !important;
+  --bn-colors-side-menu: var(--muted-foreground) !important;
+  --bn-colors-menu-text: var(--foreground) !important;
+  --bn-colors-menu-background: var(--card) !important;
+  --bn-colors-tooltip-text: var(--foreground) !important;
+  --bn-colors-tooltip-background: var(--muted) !important;
+  --bn-colors-hovered-text: var(--foreground) !important;
+  --bn-colors-hovered-background: var(--accent) !important;
+  --bn-colors-selected-text: var(--primary-foreground) !important;
+  --bn-colors-selected-background: var(--primary) !important;
+  --bn-colors-disabled-text: var(--muted-foreground) !important;
+  --bn-colors-disabled-background: var(--muted) !important;
+  --bn-colors-border: var(--border) !important;
+  --bn-colors-shadow: var(--border) !important;
+}
+
 .block-note-editor .bn-editor {
-    background-color: transparent !important;
+  background-color: transparent !important;
 }

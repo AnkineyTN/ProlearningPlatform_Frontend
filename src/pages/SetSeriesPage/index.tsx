@@ -44,19 +44,19 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
 
   // Map UI tab labels to route slugs
   const tabMap: Record<string, string> = {
-    Notes: "notes",
-    Flashcards: "flashcards",
-    Mindmaps: "mindmaps",
-    Exams: "exams",
-    Records: "records",
+    Notes: 'notes',
+    Flashcards: 'flashcards',
+    Exams: 'exams',
+    Mindmaps: 'mindmaps',
+    Records: 'records',
   };
 
   // Determine initial tab from current pathname (so route and UI stay in sync)
   const path = location.pathname.toLowerCase();
   let initialTab = "Notes";
   if (path.includes(`/sets/${setId}/flashcards`)) initialTab = "Flashcards";
-  else if (path.includes(`/sets/${setId}/mindmaps`)) initialTab = "Mindmaps";
   else if (path.includes(`/sets/${setId}/exams`)) initialTab = "Exams";
+  else if (path.includes(`/sets/${setId}/mindmaps`)) initialTab = "Mindmaps";
   else if (path.includes(`/sets/${setId}/records`)) initialTab = "Records";
   else if (path.includes(`/sets/${setId}/notes`)) initialTab = "Notes";
 
@@ -89,7 +89,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const tabs = ["Notes", "Flashcards", "Mindmaps", "Exams", "Records"];
+  const tabs = ['Notes', 'Flashcards', 'Exams', 'Mindmaps', 'Records'];
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
@@ -240,7 +240,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
     privacy: string;
   }) => {
     switch (activeTab) {
-      case "Notes":
+      case 'Notes':
         try {
           await createNoteMutation.mutateAsync({
             title: data.title,
@@ -250,11 +250,11 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
           });
           setIsCreateModalOpen(false);
         } catch (error) {
-          console.error("Error creating note:", error);
-          toast.error("Failed to create note. Please try again.");
+          console.error('Error creating note:', error);
+          toast.error('Failed to create note. Please try again.');
         }
         break;
-      case "Flashcards":
+      case 'Flashcards':
         try {
           setIsCreateModalOpen(false);
           navigate(`/sets/${setId}/flashcards/editor`, {
@@ -265,12 +265,11 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
             },
           });
         } catch (error) {
-          console.error("Error navigating to flashcard editor:", error);
-          toast.error("Failed to create flashcard. Please try again.");
+          console.error('Error navigating to flashcard editor:', error);
+          toast.error('Failed to create flashcard. Please try again.');
         }
         break;
-      case "Mindmaps":
-      case "Exams":
+      case 'Exams':
         try {
           setIsCreateModalOpen(false);
           navigate(`/sets/${setId}/exams/editor`, {
@@ -281,14 +280,15 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
             },
           });
         } catch (error) {
-          console.error("Error navigating to exam editor:", error);
-          toast.error("Failed to create exam. Please try again.");
+          console.error('Error navigating to exam editor:', error);
+          toast.error('Failed to create exam. Please try again.');
         }
         break;
-      case "Records":
+      case 'Mindmaps':
+      case 'Records':
         break;
       default:
-        console.log("New item created:", data);
+        console.log('New item created:', data);
         setIsCreateModalOpen(false);
     }
   };

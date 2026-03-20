@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback, forwardRef, useImperativeHandle } from "react";
+import { useTheme } from "@/components/theme/theme-provider";
 import {
   BlockNoteEditor as BlockNoteEditorClass,
   type PartialBlock,
@@ -12,6 +13,7 @@ import { Sparkles, LoaderCircle } from "lucide-react";
 import { useExplainText } from "@/hooks/useNotes";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import "./notes.css";
 
 export interface NoteEditorHandle {
   getHTML: () => Promise<string>;
@@ -31,6 +33,14 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
   onAISummarize,
 }, ref) => {
   const { i18n } = useTranslation();
+  const { theme: appTheme } = useTheme();
+  const [blockNoteScheme, setBlockNoteScheme] = useState<"light" | "dark">(
+    () =>
+      typeof document !== "undefined" &&
+      document.documentElement.classList.contains("dark")
+        ? "dark"
+        : "light",
+  );
   const [selectedText, setSelectedText] = useState("");
   const [showSummarizeBtn, setShowSummarizeBtn] = useState(false);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
@@ -55,6 +65,17 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
   useEffect(() => {
     setEditor(blockNoteEditor);
   }, [blockNoteEditor]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const sync = () => {
+      setBlockNoteScheme(root.classList.contains("dark") ? "dark" : "light");
+    };
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, [appTheme]);
 
   useImperativeHandle(ref, () => ({
     getHTML: async () => {
@@ -153,7 +174,7 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
       {showSummarizeBtn && selectedText && (
         <div
           ref={tooltipRef}
-          className='fixed rounded-lg shadow-lg  z-50 flex items-center gap-2'
+          className='fixed rounded-lg shadow-lg bg-card z-50 flex items-center gap-2'
           style={{
             left: `${editorRef.current?.getBoundingClientRect().left || 0 + tooltipPos.x}px`,
             top: `${editorRef.current?.getBoundingClientRect().top || 0 + tooltipPos.y}px`,
@@ -178,11 +199,12 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
       {/* Editor Container */}
       <div
         ref={editorRef}
-        className='flex-1 overflow-auto focus-within:outline-none px-8'
+        className='flex-1 overflow-auto focus-within:outline-none px-8 text-foreground'
       >
         {editor && (
           <BlockNoteView
             editor={editor}
+            theme={blockNoteScheme}
             onChange={handleEditorChange}
             className='block-note-editor'
           />
