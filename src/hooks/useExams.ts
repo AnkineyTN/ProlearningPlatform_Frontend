@@ -268,12 +268,20 @@ export const useGenerateExamFromFiles = () => {
       files,
       questionCounts,
       language,
+      difficulty,
+      specialRequirements,
     }: {
       setId: number;
       files: File[];
       questionCounts: { MCQ: number; TF: number; ESS: number };
       language: string;
-    }) => examAPI.generateExamFromFiles(setId, files, questionCounts, language),
+      difficulty?: string;
+      specialRequirements?: string;
+    }) =>
+      examAPI.generateExamFromFiles(setId, files, questionCounts, language, {
+        difficulty,
+        specialRequirements,
+      }),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["exams", variables.setId],
@@ -291,16 +299,24 @@ export const useGenerateExamFromNotes = () => {
       noteIds,
       questionCounts,
       language,
+      difficulty,
+      specialRequirements,
     }: {
       setId: number;
       noteIds: number[];
       questionCounts: { MCQ: number; TF: number; ESS: number };
       language: string;
+      difficulty?: string;
+      specialRequirements?: string;
     }) =>
       examAPI.generateExamFromNotes(setId, {
         noteIds,
         questions: questionCounts,
         language,
+        ...(difficulty ? { difficulty } : {}),
+        ...(specialRequirements?.trim()
+          ? { specialRequirements: specialRequirements.trim() }
+          : {}),
       }),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({

@@ -142,11 +142,19 @@ export const examAPI = {
     files: File[],
     questionCounts: { MCQ: number; TF: number; ESS: number },
     language: string,
+    options?: { difficulty?: string; specialRequirements?: string },
   ): Promise<AxiosResponse<GenerateExamAIResponse>> => {
     const formData = new FormData();
     files.forEach((file) => formData.append('files', file));
     formData.append('questions', JSON.stringify(questionCounts));
     formData.append('language', language);
+    if (options?.difficulty) {
+      formData.append('difficulty', options.difficulty);
+    }
+    const extra = options?.specialRequirements?.trim();
+    if (extra) {
+      formData.append('specialRequirements', extra);
+    }
     return api.post(`/set/${setId}/exams/ai-file`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });

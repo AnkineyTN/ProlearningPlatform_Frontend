@@ -190,6 +190,8 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
     files?: File[];
     questionCounts: { MCQ: number; TF: number; ESS: number };
     language: string;
+    difficulty: "easy" | "medium" | "hard";
+    specialRequirements?: string;
   }) => {
     try {
       let result;
@@ -200,6 +202,8 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
           noteIds: data.noteIds,
           questionCounts: data.questionCounts,
           language: data.language,
+          difficulty: data.difficulty,
+          specialRequirements: data.specialRequirements,
         });
       } else if (data.source === "files" && data.files) {
         result = await generateExamFromFilesMutation.mutateAsync({
@@ -207,6 +211,8 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
           files: data.files,
           questionCounts: data.questionCounts,
           language: data.language,
+          difficulty: data.difficulty,
+          specialRequirements: data.specialRequirements,
         });
       }
 

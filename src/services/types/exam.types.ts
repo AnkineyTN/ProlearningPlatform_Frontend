@@ -178,4 +178,8 @@ export type GenerateExamFromNotesRequest = {
   noteIds: number[];
   questions: Record<string, number>;
   language: string;
+  /** easy | medium | hard — backend may use for prompt tuning */
+  difficulty?: string;
+  /** Optional user instructions for the AI */
+  specialRequirements?: string;
 };
