@@ -1,5 +1,6 @@
 import { AlertCircle, ArrowLeft, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -31,6 +32,7 @@ export default function ExamTaking({
   exam,
   onSubmit,
 }: ExamTakingProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [submissions, setSubmissions] = useState<
@@ -120,7 +122,7 @@ export default function ExamTaking({
 
   const handleSubmit = (timeExpired = false) => {
     if (timeExpired) {
-      toast.warning("Time's up! Submitting your exam...");
+      toast.warning(t("exam.taking.timeUp"));
     }
     const submissionsArray = Array.from(submissions.values());
     const timeTaken = exam.timeLimit * 60 - timeRemaining;
@@ -141,7 +143,7 @@ export default function ExamTaking({
                 onClick={() => navigate(`/sets/${setId}/exams/${examId}`)}
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
+                {t("exam.taking.back")}
               </Button>
               <h1 className="text-2xl font-bold">{exam.title}</h1>
             </div>
@@ -173,18 +175,21 @@ export default function ExamTaking({
               <div className="flex items-center justify-between mb-4 pb-4 border-b border-border">
                 <div>
                   <span className="text-sm text-muted-foreground">
-                    Question {currentQuestionIndex + 1} of {totalQuestions}
+                    {t("exam.taking.questionNofM", {
+                      current: currentQuestionIndex + 1,
+                      total: totalQuestions,
+                    })}
                   </span>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
                       {currentQuestion.type === "MULTIPLE_CHOICE"
-                        ? "Multiple Choice"
+                        ? t("exam.common.multipleChoice")
                         : currentQuestion.type === "TRUE_FALSE"
-                          ? "True/False"
-                          : "Essay"}
+                          ? t("exam.common.trueFalse")
+                          : t("exam.common.essay")}
                     </span>
                     <span className="text-xs bg-secondary/10 text-secondary-foreground px-2 py-1 rounded">
-                      {currentQuestion.score} points
+                      {t("exam.taking.points", { n: currentQuestion.score })}
                     </span>
                   </div>
                 </div>
@@ -227,7 +232,7 @@ export default function ExamTaking({
                   onChange={(e) =>
                     handleEssayChange(currentQuestion.id, e.target.value)
                   }
-                  placeholder="Type your answer here..."
+                  placeholder={t("exam.taking.essayPlaceholder")}
                   className="w-full min-h-[200px] resize-none"
                 />
               )}
@@ -240,7 +245,7 @@ export default function ExamTaking({
                   disabled={currentQuestionIndex === 0}
                   variant="outline"
                 >
-                  Previous
+                  {t("exam.taking.previous")}
                 </Button>
                 <Button
                   onClick={() =>
@@ -250,7 +255,7 @@ export default function ExamTaking({
                   }
                   disabled={currentQuestionIndex === totalQuestions - 1}
                 >
-                  Next
+                  {t("exam.taking.next")}
                 </Button>
               </div>
             </div>
@@ -258,7 +263,9 @@ export default function ExamTaking({
 
           <div className="col-span-4">
             <div className="bg-card border border-border rounded-lg p-4 sticky top-24">
-              <h3 className="font-semibold mb-4">Questions</h3>
+              <h3 className="font-semibold mb-4">
+                {t("exam.taking.questionsSidebar")}
+              </h3>
               <div className="grid grid-cols-5 gap-2">
                 {exam.questions.map((question, index) => (
                   <button
@@ -293,13 +300,17 @@ export default function ExamTaking({
               <div className="mt-6 pt-4 border-t border-border">
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Answered:</span>
+                    <span className="text-muted-foreground">
+                      {t("exam.taking.answeredCount")}
+                    </span>
                     <span className="font-semibold">
                       {answeredQuestions.size}/{totalQuestions}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Total Score:</span>
+                    <span className="text-muted-foreground">
+                      {t("exam.taking.totalScore")}
+                    </span>
                     <span className="font-semibold">{exam.totalScore}</span>
                   </div>
                 </div>
@@ -307,7 +318,7 @@ export default function ExamTaking({
               {answeredQuestions.size < totalQuestions && (
                 <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800 rounded-lg text-xs text-yellow-800 dark:text-yellow-200">
                   <AlertCircle className="w-4 h-4 inline mr-1" />
-                  You have unanswered questions
+                  {t("exam.taking.notAnsweredWarning")}
                 </div>
               )}
             </div>
@@ -318,26 +329,28 @@ export default function ExamTaking({
       <AlertDialog open={showSubmitDialog} onOpenChange={setShowSubmitDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Submit Exam?</AlertDialogTitle>
+            <AlertDialogTitle>{t("exam.taking.submitTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to submit your exam? You have answered{" "}
-              {answeredQuestions.size} out of {totalQuestions} questions.
+              {t("exam.taking.submitConfirm", {
+                answered: answeredQuestions.size,
+                total: totalQuestions,
+              })}
               {answeredQuestions.size < totalQuestions && (
                 <span className="block mt-2 text-yellow-600">
-                  Warning: You still have unanswered questions.
+                  {t("exam.taking.unansweredWarning")}
                 </span>
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Continue Exam</AlertDialogCancel>
+            <AlertDialogCancel>{t("exam.taking.continueExam")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 setShowSubmitDialog(false);
                 handleSubmit();
               }}
             >
-              Submit Exam
+              {t("exam.taking.submitExam")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

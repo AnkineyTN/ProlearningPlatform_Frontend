@@ -1,4 +1,5 @@
 import { GripVertical, Trash2, Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,6 +40,8 @@ export default function QuestionItem({
   onDragOver,
   onDrop,
 }: QuestionItemProps) {
+  const { t } = useTranslation();
+
   const handleTypeChange = (type: QuestionType) => {
     let newAnswers: Answer[] = [];
     if (type === "MULTIPLE_CHOICE") {
@@ -120,7 +123,9 @@ export default function QuestionItem({
         </div>
         <div className="flex-1 space-y-4">
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-lg">Question {index + 1}</span>
+            <span className="font-semibold text-lg">
+              {t("exam.editor.questionLabel")} {index + 1}
+            </span>
             <Button
               onClick={() => onDelete(question.id)}
               variant="ghost"
@@ -132,7 +137,7 @@ export default function QuestionItem({
           </div>
           <div>
             <Label className="text-sm font-medium mb-2 block">
-              Question Type
+              {t("exam.editor.questionType")}
             </Label>
             <Select
               value={question.type}
@@ -142,22 +147,27 @@ export default function QuestionItem({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="MULTIPLE_CHOICE">Multiple Choice</SelectItem>
-                <SelectItem value="TRUE_FALSE">True/False</SelectItem>
-                <SelectItem value="ESSAY">Essay</SelectItem>
+                <SelectItem value="MULTIPLE_CHOICE">
+                  {t("exam.common.multipleChoice")}
+                </SelectItem>
+                <SelectItem value="TRUE_FALSE">
+                  {t("exam.common.trueFalse")}
+                </SelectItem>
+                <SelectItem value="ESSAY">{t("exam.common.essay")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
             <Label className="text-sm font-medium mb-2 block">
-              Question <span className="text-red-500">*</span>
+              {t("exam.editor.questionLabel")}{" "}
+              <span className="text-red-500">*</span>
             </Label>
             <Textarea
               value={question.questionText}
               onChange={(e) =>
                 onUpdate(question.id, { questionText: e.target.value })
               }
-              placeholder="Enter your question here..."
+              placeholder={t("exam.editor.questionPlaceholder")}
               className={`w-full min-h-[80px] resize-none ${
                 errors?.questionText ? "border-red-500 focus-visible:ring-red-500" : ""
               }`}
@@ -168,7 +178,9 @@ export default function QuestionItem({
           </div>
           <div className="flex items-center gap-4">
             <div className="flex-1">
-              <Label className="text-sm font-medium mb-2 block">Points</Label>
+              <Label className="text-sm font-medium mb-2 block">
+                {t("exam.editor.pointsLabel")}
+              </Label>
               <Input
                 type="number"
                 min="0"
@@ -183,13 +195,16 @@ export default function QuestionItem({
           {question.type !== "ESSAY" && (
             <div>
               <Label className="text-sm font-medium mb-2 block">
-                Answers{" "}
+                {t("exam.editor.answersLabel")}{" "}
                 {question.type === "MULTIPLE_CHOICE" &&
-                  "(Select correct answer(s))"}
-                {" "}<span className="text-red-500">*</span>
+                  t("exam.editor.answersHintMcq")}
+                {" "}
+                <span className="text-red-500">*</span>
               </Label>
               {errors?.noCorrectAnswer && (
-                <p className="text-red-500 text-xs mb-2">Please select at least one correct answer</p>
+                <p className="text-red-500 text-xs mb-2">
+                  {t("exam.editor.selectCorrect")}
+                </p>
               )}
               <div className="space-y-2">
                 {question.answers.map((answer, idx) => {
@@ -218,13 +233,17 @@ export default function QuestionItem({
                               onChange={(e) =>
                                 handleAnswerChange(answer.id, e.target.value)
                               }
-                              placeholder={`Answer ${idx + 1}`}
+                              placeholder={t("exam.editor.answerN", {
+                                n: idx + 1,
+                              })}
                               className={
                                 answerHasError ? "border-red-500 focus-visible:ring-red-500" : ""
                               }
                             />
                             {answerHasError && (
-                              <p className="text-red-500 text-xs mt-1">Answer text is required</p>
+                              <p className="text-red-500 text-xs mt-1">
+                                {t("exam.editor.answerRequired")}
+                              </p>
                             )}
                           </div>
                           {question.answers.length > 2 && (
@@ -251,7 +270,7 @@ export default function QuestionItem({
                       className="w-full mt-2"
                     >
                       <Plus className="w-4 h-4 mr-2" />
-                      Add Answer
+                      {t("exam.editor.addAnswer")}
                     </Button>
                   )}
               </div>
@@ -259,7 +278,7 @@ export default function QuestionItem({
           )}
           {question.type === "ESSAY" && (
             <div className="bg-muted/50 p-3 rounded text-sm text-muted-foreground">
-              Essay questions will be graded by AI in the future.
+              {t("exam.editor.essayGradingNote")}
             </div>
           )}
         </div>

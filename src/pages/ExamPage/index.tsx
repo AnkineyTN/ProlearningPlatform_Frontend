@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import ExamHomeView from "./components/ExamHomeView";
 import ExamTaking from "./components/ExamTaking";
 import ExamResults from "./components/ExamResults";
@@ -15,6 +16,7 @@ type Props = {
 };
 
 export default function ExamPage({ setId, examId }: Props) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<ViewMode>("home");
   const [examResult, setExamResult] = useState<ExamResult | null>(null);
@@ -88,7 +90,7 @@ export default function ExamPage({ setId, examId }: Props) {
     return (
       <div className="min-h-[calc(100vh-200px)] flex items-center justify-center">
         <div className="animate-pulse text-muted-foreground">
-          Loading exam...
+          {t("exam.page.loading")}
         </div>
       </div>
     );
@@ -99,13 +101,13 @@ export default function ExamPage({ setId, examId }: Props) {
       <div className="min-h-[calc(100vh-200px)] flex items-center justify-center">
         <div className="text-center">
           <p className="text-muted-foreground mb-4">
-            Failed to load exam. It may not exist or you may not have access.
+            {t("exam.page.loadError")}
           </p>
           <button
             onClick={() => navigate(`/sets/${setId}/exams`)}
             className="text-primary hover:underline"
           >
-            Back to exams
+            {t("exam.backToExams")}
           </button>
         </div>
       </div>
@@ -117,7 +119,7 @@ export default function ExamPage({ setId, examId }: Props) {
       <div className="min-h-[calc(100vh-200px)] flex items-center justify-center p-8">
         <div className="max-w-md w-full text-center bg-card border border-border rounded-xl p-8 shadow-lg">
           <p className="text-muted-foreground mb-6">
-            Exam này chưa có question, hãy tạo question
+            {t("exam.page.emptyDescription")}
           </p>
           <div className="flex flex-col gap-3">
             <button
@@ -132,13 +134,13 @@ export default function ExamPage({ setId, examId }: Props) {
               }
               className="text-primary hover:underline font-medium"
             >
-              Chuyển sang trang Editor
+              {t("exam.page.goToEditor")}
             </button>
             <button
               onClick={() => navigate(`/sets/${setId}/exams`)}
               className="text-muted-foreground hover:text-foreground text-sm"
             >
-              Quay lại danh sách
+              {t("exam.page.backToList")}
             </button>
           </div>
         </div>

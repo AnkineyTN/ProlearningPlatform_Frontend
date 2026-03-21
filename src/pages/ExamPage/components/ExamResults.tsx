@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
   Collapsible,
@@ -49,6 +50,7 @@ export default function ExamResults({
   exam,
   result,
 }: ExamResultsProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [openQuestions, setOpenQuestions] = useState<
@@ -86,7 +88,7 @@ export default function ExamResults({
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}m ${secs}s`;
+    return t('exam.results.timeFormatted', { mins, secs });
   };
 
   const getSubmissionForQuestion = (questionId: string | number) =>
@@ -161,7 +163,7 @@ export default function ExamResults({
       const text =
         data.content
           ?.map((c: { type: string; text?: string }) => c.text ?? '')
-          .join('') ?? 'No explanation available.';
+          .join('') ?? t('exam.results.noExplanation');
       setAiDialog({
         open: true,
         questionId,
@@ -173,7 +175,7 @@ export default function ExamResults({
         open: true,
         questionId,
         loading: false,
-        explanation: 'Failed to load explanation. Please try again.',
+        explanation: t('exam.results.failedExplanation'),
       });
     }
   };
@@ -207,7 +209,7 @@ export default function ExamResults({
                   size='sm'
                   onClick={() => navigate(`/sets/${setId}/exams/${examId}`)}
                 >
-                  View Exam
+                  {t('exam.results.viewExam')}
                 </Button>
                 <ModeToggle />
               </div>
@@ -218,9 +220,14 @@ export default function ExamResults({
         <div className='flex min-h-0 min-w-0 flex-1'>
           <aside className='flex w-64 shrink-0 flex-col overflow-hidden border-r border-border bg-background'>
             <div className='shrink-0 border-b border-border p-4'>
-              <h2 className='font-semibold text-sm mb-1'>Question Navigator</h2>
+              <h2 className='font-semibold text-sm mb-1'>
+                {t('exam.results.navigatorTitle')}
+              </h2>
               <p className='text-xs text-muted-foreground'>
-                {reviewedCount}/{exam.questions.length} reviewed
+                {t('exam.results.reviewedCount', {
+                  done: reviewedCount,
+                  total: exam.questions.length,
+                })}
               </p>
               {/* Mini progress bar */}
               <div className='mt-2 h-1.5 rounded-full bg-muted overflow-hidden'>
@@ -244,25 +251,25 @@ export default function ExamResults({
                 let icon = null;
 
                 if (isReviewed) {
-                  tooltipText = 'Reviewed';
+                  tooltipText = t('exam.results.navReviewed');
                   bgColor =
                     'bg-yellow-400/20 border-yellow-400/60 hover:bg-yellow-400/30';
                   textColor = 'text-yellow-700 dark:text-yellow-300';
                   icon = <Eye className='w-3 h-3' />;
                 } else if (correct === true) {
-                  tooltipText = 'Correct';
+                  tooltipText = t('exam.results.navCorrect');
                   bgColor =
                     'bg-green-500/10 border-green-500/40 hover:bg-green-500/20';
                   textColor = 'text-green-700 dark:text-green-400';
                   icon = <CheckCircle className='w-3 h-3' />;
                 } else if (correct === false) {
-                  tooltipText = 'Incorrect';
+                  tooltipText = t('exam.results.navIncorrect');
                   bgColor =
                     'bg-red-500/10 border-red-500/40 hover:bg-red-500/20';
                   textColor = 'text-red-700 dark:text-red-400';
                   icon = <XCircle className='w-3 h-3' />;
                 } else {
-                  tooltipText = 'Essay – pending grading';
+                  tooltipText = t('exam.results.navEssayPending');
                   bgColor =
                     'bg-yellow-500/10 border-yellow-500/40 hover:bg-yellow-500/20';
                   textColor = 'text-yellow-700 dark:text-yellow-400';
@@ -317,32 +324,34 @@ export default function ExamResults({
                     )}
                   </div>
                   <h2 className='text-2xl font-bold mb-1'>
-                    {result.passed ? 'Congratulations!' : 'Exam Completed'}
+                    {result.passed
+                      ? t('exam.results.congrats')
+                      : t('exam.results.examCompleted')}
                   </h2>
                   <p className='text-sm text-muted-foreground'>
                     {result.passed
-                      ? 'You passed the exam!'
-                      : 'Keep practicing to improve your score'}
+                      ? t('exam.results.passed')
+                      : t('exam.results.keepPracticing')}
                   </p>
                 </div>
                 <div className='grid grid-cols-4 gap-3'>
                   {[
                     {
                       value: `${result.percentage.toFixed(1)}%`,
-                      label: 'Percentage',
+                      label: t('exam.results.percentage'),
                       colored: true,
                     },
                     {
                       value: `${result.earnedScore}/${result.totalScore}`,
-                      label: 'Score',
+                      label: t('exam.results.score'),
                     },
                     {
                       value: `${correctCount}/${totalNonEssay}`,
-                      label: 'Correct',
+                      label: t('exam.results.correctLabel'),
                     },
                     {
                       value: formatTime(result.timeTaken),
-                      label: 'Time Taken',
+                      label: t('exam.results.timeTaken'),
                     },
                   ].map(({ value, label, colored }) => (
                     <div
@@ -366,9 +375,14 @@ export default function ExamResults({
               <div className='bg-card border border-border rounded-lg p-5'>
                 <div className='flex items-center gap-2 mb-5'>
                   <BarChart3 className='w-5 h-5' />
-                  <h3 className='text-lg font-semibold'>Question Review</h3>
+                  <h3 className='text-lg font-semibold'>
+                    {t('exam.results.questionReview')}
+                  </h3>
                   <Badge variant='outline' className='ml-auto text-xs'>
-                    {correctCount}/{exam.questions.length} correct
+                    {t('exam.results.correctBadge', {
+                      correct: correctCount,
+                      total: exam.questions.length,
+                    })}
                   </Badge>
                 </div>
 
@@ -436,14 +450,14 @@ export default function ExamResults({
                                 </span>
                                 <Badge variant='secondary' className='text-xs'>
                                   {question.type === 'MULTIPLE_CHOICE'
-                                    ? 'Multiple Choice'
+                                    ? t('exam.common.multipleChoice')
                                     : question.type === 'TRUE_FALSE'
-                                      ? 'True / False'
-                                      : 'Essay'}
+                                      ? t('exam.common.trueFalse')
+                                      : t('exam.common.essay')}
                                 </Badge>
                                 {isReviewed && (
                                   <Badge className='text-xs bg-yellow-400 text-yellow-950 hover:bg-yellow-400'>
-                                    Reviewed
+                                    {t('exam.results.navReviewed')}
                                   </Badge>
                                 )}
                                 {correct === null && !isReviewed && (
@@ -451,7 +465,7 @@ export default function ExamResults({
                                     variant='outline'
                                     className='text-xs text-yellow-600 border-yellow-500'
                                   >
-                                    Pending Grading
+                                    {t('exam.results.pendingGrading')}
                                   </Badge>
                                 )}
                               </div>
@@ -462,7 +476,7 @@ export default function ExamResults({
 
                             <div className='flex items-center gap-2 flex-shrink-0'>
                               <span className='text-sm font-semibold whitespace-nowrap'>
-                                {score}/{question.score} pts
+                                {score}/{question.score} {t('exam.common.points')}
                               </span>
                               <CollapsibleTrigger asChild>
                                 <Button
@@ -527,12 +541,12 @@ export default function ExamResults({
                                           </span>
                                           {isCorrectAnswer && (
                                             <span className='ml-auto text-xs bg-green-600 text-white px-2 py-0.5 rounded'>
-                                              Correct
+                                              {t('exam.common.correct')}
                                             </span>
                                           )}
                                           {!isCorrectAnswer && isSelected && (
                                             <span className='ml-auto text-xs bg-red-600 text-white px-2 py-0.5 rounded'>
-                                              Your Answer
+                                              {t('exam.common.yourAnswer')}
                                             </span>
                                           )}
                                         </div>
@@ -547,7 +561,7 @@ export default function ExamResults({
                                 submission?.essayAnswer && (
                                   <div className='bg-background border border-border rounded-lg p-4'>
                                     <p className='text-xs font-medium text-muted-foreground mb-2'>
-                                      Your Answer:
+                                      {t('exam.results.yourAnswerLabel')}
                                     </p>
                                     <p className='text-sm whitespace-pre-wrap'>
                                       {submission.essayAnswer}
@@ -566,7 +580,7 @@ export default function ExamResults({
                                   }
                                 >
                                   <Sparkles className='w-3.5 h-3.5 text-purple-500' />
-                                  Explain with AI
+                                  {t('exam.results.explainAI')}
                                 </Button>
                                 <Button
                                   variant={isReviewed ? 'default' : 'outline'}
@@ -580,8 +594,8 @@ export default function ExamResults({
                                 >
                                   <BookOpen className='w-3.5 h-3.5' />
                                   {isReviewed
-                                    ? 'Reviewed ✓'
-                                    : 'Mark as Reviewed'}
+                                    ? t('exam.results.reviewed')
+                                    : t('exam.results.markReviewed')}
                                 </Button>
                               </div>
                             </div>
@@ -598,12 +612,12 @@ export default function ExamResults({
                   variant='outline'
                   onClick={() => navigate(`/sets/${setId}`)}
                 >
-                  Back to Set
+                  {t('exam.results.backToSet')}
                 </Button>
                 <Button
                   onClick={() => navigate(`/sets/${setId}/exams/${examId}`)}
                 >
-                  Review Exam
+                  {t('exam.results.reviewExam')}
                 </Button>
               </div>
             </div>
@@ -620,14 +634,16 @@ export default function ExamResults({
           <DialogHeader>
             <DialogTitle className='flex items-center gap-2'>
               <Sparkles className='w-5 h-5 text-purple-500' />
-              AI Explanation
+              {t('exam.results.aiExplanation')}
             </DialogTitle>
           </DialogHeader>
           <div className='mt-2'>
             {aiDialog.loading ? (
               <div className='flex flex-col items-center gap-3 py-8 text-muted-foreground'>
                 <div className='w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin' />
-                <p className='text-sm'>Generating explanation…</p>
+                <p className='text-sm'>
+                  {t('exam.results.generatingExplanation')}
+                </p>
               </div>
             ) : (
               <p className='text-sm whitespace-pre-wrap leading-relaxed'>

@@ -1,5 +1,6 @@
 import { ArrowLeft, Plus, Save } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -42,6 +43,7 @@ const emptyQuestion = (): ExamQuestion => ({
 });
 
 export default function ExamEditor() {
+  const { t } = useTranslation();
   const { setId, examId } = useParams<{ setId: string; examId?: string }>();
   const location = useLocation();
   const navigate = useNavigate();
@@ -187,7 +189,7 @@ export default function ExamEditor() {
 
   const handleDeleteQuestion = (id: string | number) => {
     if (questions.length === 1) {
-      toast.error("Exam must have at least one question");
+      toast.error(t("exam.editor.minOneQuestion"));
       return;
     }
     setQuestions((prev) => {
@@ -238,7 +240,7 @@ export default function ExamEditor() {
 
     const activeQuestions = questions.filter((q) => q._action !== "DELETE");
     if (activeQuestions.length === 0) {
-      toast.error("Exam must have at least one question");
+      toast.error(t("exam.editor.minOneQuestion"));
       return false;
     }
 
@@ -275,7 +277,7 @@ export default function ExamEditor() {
     setQuestionErrors(errors);
 
     if (!valid) {
-      toast.error("Please fix the highlighted fields before saving");
+      toast.error(t("exam.editor.fixBeforeSave"));
     }
 
     return valid;
@@ -343,7 +345,7 @@ export default function ExamEditor() {
           });
         }
 
-        toast.success("Exam updated successfully");
+        toast.success(t("exam.editor.successUpdated"));
         navigate(`/sets/${setId}/exams/${examId}`);
       } else {
         const { data } = await createExamMutation.mutateAsync({
@@ -358,7 +360,7 @@ export default function ExamEditor() {
 
         const newExamId = data?.data?.id;
         if (!newExamId) {
-          toast.error("Failed to create exam");
+          toast.error(t("exam.editor.failedCreate"));
           return;
         }
 
@@ -373,7 +375,7 @@ export default function ExamEditor() {
       }
     } catch (error) {
       console.error("Error saving exam:", error);
-      toast.error("Failed to save exam. Please try again.");
+      toast.error(t("exam.editor.failedSave"));
     }
   };
 
@@ -383,7 +385,7 @@ export default function ExamEditor() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-pulse text-muted-foreground">
-          Loading exam...
+          {t("exam.editor.loading")}
         </div>
       </div>
     );
@@ -401,10 +403,12 @@ export default function ExamEditor() {
                 onClick={() => navigate(`/sets/${setId}/exams`)}
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
+                {t("exam.back")}
               </Button>
               <h1 className="text-2xl font-bold">
-                {isUpdateMode ? "Edit Exam" : "Create Exam"}
+                {isUpdateMode
+                  ? t("exam.editor.editExam")
+                  : t("exam.editor.createExam")}
               </h1>
             </div>
             <Button
@@ -419,7 +423,9 @@ export default function ExamEditor() {
               }
             >
               <Save className="w-4 h-4" />
-              {isUpdateMode ? "Update Exam" : "Create Exam"}
+              {isUpdateMode
+                ? t("exam.editor.updateExam")
+                : t("exam.editor.createExam")}
             </Button>
           </div>
         </div>
@@ -427,37 +433,42 @@ export default function ExamEditor() {
 
       <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="bg-card border border-border rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">Exam Information</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            {t("exam.editor.examInfo")}
+          </h2>
           <div className="space-y-4">
             <div>
               <Label className="text-sm font-medium mb-2 block">
-                Title <span className="text-red-500">*</span>
+                {t("exam.editor.titleLabel")}{" "}
+                <span className="text-red-500">*</span>
               </Label>
               <Input
                 value={title}
                 onChange={(e) => handleTitleChange(e.target.value)}
-                placeholder="Enter exam title"
+                placeholder={t("exam.editor.titlePlaceholder")}
                 className={`w-full ${titleError ? "border-red-500 focus-visible:ring-red-500" : ""}`}
               />
               {titleError && (
-                <p className="text-red-500 text-xs mt-1">Title is required</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {t("exam.editor.titleRequired")}
+                </p>
               )}
             </div>
             <div>
               <Label className="text-sm font-medium mb-2 block">
-                Description (Optional)
+                {t("exam.editor.descriptionLabel")}
               </Label>
               <Textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Enter exam description"
+                placeholder={t("exam.editor.descriptionPlaceholder")}
                 className="w-full min-h-[80px] resize-none"
               />
             </div>
             <div className="flex gap-4">
               <div className="flex-1">
                 <Label className="text-sm font-medium mb-2 block">
-                  Time Limit (minutes)
+                  {t("exam.editor.timeLimitMinutes")}
                 </Label>
                 <Input
                   type="number"
@@ -469,7 +480,7 @@ export default function ExamEditor() {
               </div>
               <div className="flex-1">
                 <Label className="text-sm font-medium mb-2 block">
-                  Total Score
+                  {t("exam.editor.totalScore")}
                 </Label>
                 <Input
                   type="text"
@@ -485,7 +496,9 @@ export default function ExamEditor() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold">
-              Questions ({visibleQuestions.length})
+              {t("exam.editor.questionsHeading", {
+                count: visibleQuestions.length,
+              })}
             </h2>
             <Button
               onClick={handleAddQuestion}
@@ -493,7 +506,7 @@ export default function ExamEditor() {
               className="gap-2"
             >
               <Plus className="w-4 h-4" />
-              Add Question
+              {t("exam.editor.addQuestion")}
             </Button>
           </div>
 
@@ -517,10 +530,12 @@ export default function ExamEditor() {
 
           {visibleQuestions.length === 0 && (
             <div className="text-center py-12 bg-card border border-dashed border-border rounded-lg">
-              <p className="text-muted-foreground mb-4">No questions yet</p>
+              <p className="text-muted-foreground mb-4">
+                {t("exam.editor.noQuestionsYet")}
+              </p>
               <Button onClick={handleAddQuestion} variant="outline">
                 <Plus className="w-4 h-4 mr-2" />
-                Add Your First Question
+                {t("exam.editor.addFirstQuestion")}
               </Button>
             </div>
           )}

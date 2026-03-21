@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import ExamCard, { type ExamCardData } from "@/components/cards/ExamCard";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ export default function ExamListPage({
   onUpdate,
   onDelete,
 }: ExamListPageProps) {
+  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 9;
   const navigate = useNavigate();
@@ -78,7 +80,7 @@ export default function ExamListPage({
 
       {exams.length === 0 && (
         <div className='text-center py-12 text-muted-foreground'>
-          No exams yet. Create your first exam to get started.
+          {t("exam.list.empty")}
         </div>
       )}
 
