@@ -166,20 +166,33 @@ export type VoidResponse = {
   metadata: Record<string, never>;
 };
 
-// AI Generation
+// AI Generation — ai-note, ai-file, ai-web return this shape
 export type GenerateExamAIResponse = {
-  status: string;
+  status: number | string;
   message: string;
   data: { content: string };
-  metadata: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
+};
+
+/** Backend expects these exact keys (Easy / Medium / Hard), typically summing to 100. */
+export type ExamAIDifficultyDistribution = {
+  Easy: number;
+  Medium: number;
+  Hard: number;
 };
 
 export type GenerateExamFromNotesRequest = {
   noteIds: number[];
   questions: Record<string, number>;
+  difficulty: ExamAIDifficultyDistribution;
+  freeText: string;
   language: string;
-  /** easy | medium | hard — backend may use for prompt tuning */
-  difficulty?: string;
-  /** Optional user instructions for the AI */
-  specialRequirements?: string;
+};
+
+export type GenerateExamFromWebRequest = {
+  urls: string[];
+  questions: Record<string, number>;
+  difficulty: ExamAIDifficultyDistribution;
+  free_text: string;
+  language: string;
 };

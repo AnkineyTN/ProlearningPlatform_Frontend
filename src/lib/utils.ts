@@ -5,6 +5,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+/** Values accepted by AI note/file APIs (explain, summarize, flashcards). */
+export type AiApiLanguage = "English" | "Vietnamese";
+
+export function mapI18nToAiApiLanguage(
+  i18nLanguage: string | undefined,
+): AiApiLanguage {
+  const lang = (i18nLanguage ?? "en").toLowerCase();
+  return lang.startsWith("vi") ? "Vietnamese" : "English";
+}
+
 export function getTimeAgo(dateString: string): string {
   const date = new Date(dateString);
   const now = new Date();

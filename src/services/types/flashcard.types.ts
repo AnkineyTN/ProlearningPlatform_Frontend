@@ -197,6 +197,15 @@ export type UpdateMultipleCardsResponse = {
 
 export type GenerateFlashcardsFromNoteRequest = {
   noteIds: number[];
+  language: string;
+  freeText?: string;
+};
+
+/** POST /sets/{setId}/flashcards/ai-web */
+export type GenerateFlashcardsFromWebRequest = {
+  urls: string[];
+  language: string;
+  free_text: string;
 };
 
 export type GenerateFlashcardsFromNoteResponse = {

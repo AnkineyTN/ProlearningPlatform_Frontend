@@ -20,6 +20,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useDeleteNoteDoc, useSummarizeFile } from "@/hooks/useNotes";
+import { mapI18nToAiApiLanguage } from "@/lib/utils";
 
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
@@ -87,9 +88,8 @@ function NoteFileRow({
   const handleSummarize = async () => {
     try {
       const response = await summarizeFileMutation.mutateAsync({
-        lang: i18n.language || "vi",
+        language: mapI18nToAiApiLanguage(i18n.language),
         limit: 0,
-        asset_id: fileId,
         file_url: fileUrl,
       });
 

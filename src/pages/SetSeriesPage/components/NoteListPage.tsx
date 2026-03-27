@@ -1,5 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NoteCard, { type Note } from "@/components/cards/NoteCard";
+import {
+  ResourceFiltersBar,
+  type ListPrivacyFilter,
+} from "@/components/lists/ResourceFiltersBar";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import { ChevronLeft, ChevronRight, FileX } from "lucide-react";
@@ -14,17 +18,34 @@ type Props = {
 
 const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
   const [currentPage, setCurrentPage] = useState(0);
+  const [listSearch, setListSearch] = useState("");
+  const [debouncedQ, setDebouncedQ] = useState("");
+  const [privacyFilter, setPrivacyFilter] = useState<ListPrivacyFilter>("");
   const navigate = useNavigate();
   const { setId: paramSetId } = useParams<{ setId: string }>();
   const pageSize = 6;
 
   const setId = propSetId || Number(paramSetId);
 
+  useEffect(() => {
+    const t = window.setTimeout(() => setDebouncedQ(listSearch.trim()), 350);
+    return () => window.clearTimeout(t);
+  }, [listSearch]);
+
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [debouncedQ, privacyFilter]);
+
   const {
     data: notesData,
     isLoading,
     error,
-  } = useNotesBySet(setId, currentPage, pageSize);
+  } = useNotesBySet(setId, {
+    page: currentPage,
+    size: pageSize,
+    q: debouncedQ || undefined,
+    privacy: privacyFilter || undefined,
+  });
 
   const notes = notesData?.items || [];
   const totalPages = notesData?.totalPage || 1;
@@ -59,19 +80,35 @@ const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
     );
   }
 
+  const filters = (
+    <ResourceFiltersBar
+      className='mb-4'
+      searchValue={listSearch}
+      onSearchChange={setListSearch}
+      privacy={privacyFilter}
+      onPrivacyChange={setPrivacyFilter}
+    />
+  );
+
   if (isLoading) {
     return (
-      <div className='flex justify-center items-center py-8'>
-        <div className='text-muted-foreground'>Loading notes...</div>
+      <div>
+        {filters}
+        <div className='flex justify-center items-center py-8'>
+          <div className='text-muted-foreground'>Loading notes...</div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className='flex justify-center items-center py-8'>
-        <div className='text-destructive'>
-          Error loading notes. Please try again.
+      <div>
+        {filters}
+        <div className='flex justify-center items-center py-8'>
+          <div className='text-destructive'>
+            Error loading notes. Please try again.
+          </div>
         </div>
       </div>
     );
@@ -79,11 +116,14 @@ const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
 
   if (notes.length === 0) {
     return (
-      <div className='flex flex-col justify-center items-center py-12 gap-4'>
-        <FileX className='mx-auto mb-4 text-6xl w-20 h-20' />
-        <div className='text-muted-foreground text-lg'>No notes found</div>
-        <div className='text-muted-foreground text-sm'>
-          Create your first note to get started!
+      <div>
+        {filters}
+        <div className='flex flex-col justify-center items-center py-12 gap-4'>
+          <FileX className='mx-auto mb-4 text-6xl w-20 h-20' />
+          <div className='text-muted-foreground text-lg'>No notes found</div>
+          <div className='text-muted-foreground text-sm'>
+            Create your first note to get started!
+          </div>
         </div>
       </div>
     );
@@ -91,6 +131,7 @@ const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
 
   return (
     <div>
+      {filters}
       {/* Notes Grid */}
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6'>
         {notes.map((note) => (

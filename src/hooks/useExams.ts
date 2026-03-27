@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import type {
   CreateQuizRequest,
   CreateQuestionApiPayload,
+  ExamAIDifficultyDistribution,
   Question,
   Quiz,
   UpdateQuizRequest,
@@ -16,6 +17,8 @@ interface UseExamsParams {
   page?: number;
   size?: number;
   sort?: string;
+  q?: string;
+  privacy?: "PUBLIC" | "PRIVATE";
 }
 
 export const useExams = ({
@@ -23,11 +26,19 @@ export const useExams = ({
   page = 0,
   size = 10,
   sort = "id,ASC",
+  q,
+  privacy,
 }: UseExamsParams) => {
   return useQuery({
-    queryKey: ["exams", setId, page, size, sort],
+    queryKey: ["exams", setId, page, size, sort, q ?? "", privacy ?? ""],
     queryFn: async () => {
-      const response = await examAPI.getQuizzes(setId, page, size, sort);
+      const response = await examAPI.getQuizzes(setId, {
+        page,
+        size,
+        sort,
+        q,
+        privacy,
+      });
       return response.data;
     },
     staleTime: 5 * 60 * 1000,
@@ -70,7 +81,11 @@ export const useExamDetail = (setId: number, examId: number | string) => {
       {
         queryKey: ["exams", setId, 0, 100, "id,ASC"],
         queryFn: async () => {
-          const response = await examAPI.getQuizzes(setId, 0, 100, "id,ASC");
+          const response = await examAPI.getQuizzes(setId, {
+            page: 0,
+            size: 100,
+            sort: "id,ASC",
+          });
           return response.data;
         },
         staleTime: 5 * 60 * 1000,
@@ -263,25 +278,31 @@ export const useGenerateExamFromFiles = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       setId,
       files,
       questionCounts,
       language,
       difficulty,
-      specialRequirements,
+      freeText,
     }: {
       setId: number;
       files: File[];
       questionCounts: { MCQ: number; TF: number; ESS: number };
       language: string;
-      difficulty?: string;
-      specialRequirements?: string;
-    }) =>
-      examAPI.generateExamFromFiles(setId, files, questionCounts, language, {
+      difficulty: ExamAIDifficultyDistribution;
+      freeText: string;
+    }) => {
+      const response = await examAPI.generateExamFromFiles(
+        setId,
+        files,
+        questionCounts,
         difficulty,
-        specialRequirements,
-      }),
+        freeText,
+        language,
+      );
+      return response.data;
+    },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["exams", variables.setId],
@@ -294,30 +315,66 @@ export const useGenerateExamFromNotes = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       setId,
       noteIds,
       questionCounts,
       language,
       difficulty,
-      specialRequirements,
+      freeText,
     }: {
       setId: number;
       noteIds: number[];
       questionCounts: { MCQ: number; TF: number; ESS: number };
       language: string;
-      difficulty?: string;
-      specialRequirements?: string;
-    }) =>
-      examAPI.generateExamFromNotes(setId, {
+      difficulty: ExamAIDifficultyDistribution;
+      freeText: string;
+    }) => {
+      const response = await examAPI.generateExamFromNotes(setId, {
         noteIds,
         questions: questionCounts,
+        difficulty,
+        freeText: freeText.trim(),
         language,
-        ...(difficulty ? { difficulty } : {}),
-        ...(specialRequirements?.trim()
-          ? { specialRequirements: specialRequirements.trim() }
-          : {}),
-      }),
+      });
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["exams", variables.setId],
+      });
+    },
+  });
+};
+
+export const useGenerateExamFromWeb = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      setId,
+      urls,
+      questionCounts,
+      language,
+      difficulty,
+      freeText,
+    }: {
+      setId: number;
+      urls: string[];
+      questionCounts: { MCQ: number; TF: number; ESS: number };
+      language: string;
+      difficulty: ExamAIDifficultyDistribution;
+      freeText: string;
+    }) => {
+      const response = await examAPI.generateExamFromWeb(setId, {
+        urls,
+        questions: questionCounts,
+        difficulty,
+        language,
+        free_text: freeText.trim(),
+      });
+      return response.data;
+    },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["exams", variables.setId],

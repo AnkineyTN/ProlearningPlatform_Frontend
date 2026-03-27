@@ -6,10 +6,21 @@ import {
   type UpdateSetPayload,
 } from "@/services/types/set.types";
 
-export const useSetData = ({ page, size, sort }: SetQueryParams) => {
+export const useSetData = (params: SetQueryParams) => {
   return useQuery({
-    queryKey: ["setData", { page, size, sort }],
-    queryFn: () => setAPI.getSetData({ page, size, sort }),
+    queryKey: ["setData", params],
+    queryFn: () => setAPI.getSetData(params),
+  });
+};
+
+export const useSet = (setId: number) => {
+  return useQuery({
+    queryKey: ["set", setId],
+    queryFn: async () => {
+      const res = await setAPI.getSetById(setId);
+      return res.data.data;
+    },
+    enabled: Number.isFinite(setId) && setId > 0,
   });
 };
 
@@ -31,9 +42,9 @@ export const useDeleteSet = () => {
 
   return useMutation({
     mutationFn: (id: number) => setAPI.deleteSet(id),
-    onSuccess: () => {
-      // Refresh danh sách sets sau khi xóa
+    onSuccess: (_, deletedId) => {
       queryClient.invalidateQueries({ queryKey: ["setData"] });
+      queryClient.removeQueries({ queryKey: ["set", deletedId] });
     },
     onError: (error) => {
       console.error("Error deleting set:", error);
@@ -48,9 +59,9 @@ export const useUpdateSet = () => {
   return useMutation({
     mutationFn: ({ id, payload }: { id: number; payload: UpdateSetPayload }) =>
       setAPI.updateSet(id, payload),
-    onSuccess: () => {
-      // Refresh danh sách sets sau khi update
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["setData"] });
+      queryClient.invalidateQueries({ queryKey: ["set", variables.id] });
     },
     onError: (error) => {
       console.error("Error updating set:", error);

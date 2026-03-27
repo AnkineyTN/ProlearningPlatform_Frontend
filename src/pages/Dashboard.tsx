@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSetData } from "@/hooks/useSets";
-import { ChevronRight } from "lucide-react";
+import { useGlobalSearch } from "@/hooks/useGlobalSearch";
+import { ChevronRight, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Checklist from "@/components/cards/CheckListCard";
 import SetCard, { type Set } from "@/components/cards/SetCard";
@@ -12,6 +13,40 @@ import CreateNewModal from "@/components/modals/CreateNewModal";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { getTimeAgo } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+
+function parseGlobalSearchItems(data: unknown): Record<string, unknown>[] {
+  if (data == null) return [];
+  if (Array.isArray(data)) return data as Record<string, unknown>[];
+  if (typeof data === "object") {
+    const o = data as Record<string, unknown>;
+    if (Array.isArray(o.content)) return o.content as Record<string, unknown>[];
+    if (Array.isArray(o.items)) return o.items as Record<string, unknown>[];
+    if (Array.isArray(o.data)) return o.data as Record<string, unknown>[];
+  }
+  return [];
+}
+
+function searchResultTitle(item: Record<string, unknown>): string {
+  const raw = item.title ?? item.name ?? item.code ?? item.id;
+  return raw != null ? String(raw) : "—";
+}
+
+function searchResultHref(item: Record<string, unknown>): string | null {
+  const id = item.id ?? item.resourceId;
+  if (id == null) return null;
+  const typeRaw = item.type ?? item.resourceType ?? item.searchType ?? "";
+  const type = String(typeRaw).toUpperCase();
+  const setId = item.setId ?? item.set_id;
+  if (type.includes("SET")) return `/sets/${id}`;
+  if (type.includes("NOTE")) return `/note/${id}`;
+  if (type.includes("FLASH") && setId != null)
+    return `/sets/${setId}/flashcards/${id}`;
+  if (type.includes("EXAM") && setId != null)
+    return `/sets/${setId}/exams/${id}`;
+  return null;
+}
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -30,7 +65,26 @@ const Dashboard = () => {
   const size = 4;
   const sort = [{ property: "id", direction: "ASC" }];
 
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const t = window.setTimeout(
+      () => setDebouncedSearch(searchKeyword.trim()),
+      400,
+    );
+    return () => window.clearTimeout(t);
+  }, [searchKeyword]);
+
+  const {
+    data: searchPayload,
+    isFetching: searchLoading,
+    isError: searchError,
+  } = useGlobalSearch(debouncedSearch, { size: 15 });
+  const searchItems = parseGlobalSearchItems(searchPayload?.data);
+
   const { data: setData } = useSetData({ page, size, sort });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sets: Set[] = (setData?.data.data || []).map((item: any) => ({
     id: item.id,
     title: item.title,
@@ -68,6 +122,7 @@ const Dashboard = () => {
     setIsUpdateModalOpen(true);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleUpdateSubmit = async (data: any) => {
     if (!selectedSet) return;
 
@@ -119,9 +174,63 @@ const Dashboard = () => {
       <div className='max-w-7xl mx-auto'>
         {/* Header */}
         <Header
-          onSearch={(val) => console.log("Search:", val)}
+          onSearch={(val) => setSearchKeyword(val)}
           title={t("header.welcome")}
         />
+
+        {debouncedSearch.length > 0 && (
+          <Card className='mb-8 p-4 border-border'>
+            <h3 className='text-lg font-semibold mb-3'>
+              {t("dashboard.searchResults", { defaultValue: "Search results" })}
+            </h3>
+            {searchLoading && (
+              <p className='text-sm text-muted-foreground'>
+                {t("dashboard.searchLoading", { defaultValue: "Searching…" })}
+              </p>
+            )}
+            {searchError && (
+              <p className='text-sm text-destructive'>
+                {t("dashboard.searchError", {
+                  defaultValue: "Search failed. Try again.",
+                })}
+              </p>
+            )}
+            {!searchLoading && !searchError && searchItems.length === 0 && (
+              <p className='text-sm text-muted-foreground'>
+                {t("dashboard.searchEmpty", { defaultValue: "No matches." })}
+              </p>
+            )}
+            {!searchLoading && searchItems.length > 0 && (
+              <ul className='divide-y divide-border rounded-md border border-border overflow-hidden'>
+                {searchItems.map((item, idx) => {
+                  const href = searchResultHref(item);
+                  const title = searchResultTitle(item);
+                  const key = `${title}-${idx}`;
+                  return (
+                    <li
+                      key={key}
+                      className='flex items-center justify-between gap-2 bg-card px-3 py-2 text-sm'
+                    >
+                      <span className='truncate font-medium'>{title}</span>
+                      {href ? (
+                        <Button
+                          type='button'
+                          variant='ghost'
+                          size='sm'
+                          className='shrink-0 gap-1'
+                          onClick={() => navigate(href)}
+                        >
+                          <ExternalLink className='h-3.5 w-3.5' />
+                          {t("dashboard.open", { defaultValue: "Open" })}
+                        </Button>
+                      ) : null}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </Card>
+        )}
 
         <div className='grid grid-cols-3 gap-12'>
           {/* Left Column */}

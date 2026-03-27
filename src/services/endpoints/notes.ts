@@ -3,7 +3,8 @@ import api from '../client';
 
 import type {
   CreateNotePayload,
-  NoteListResponse,
+  GetAllNotesBySetApiResponse,
+  GetAllNotesBySetQuery,
   AutoSaveNoteRequest,
   ExplainTextRequest,
   ExplainTextResponseBody,
@@ -41,11 +42,20 @@ export const noteAPI = {
     api.delete(`/note/delete/${noteId}`),
   getAllNotesBySet: (
     setId: number,
-    pageNo: number,
-    pageSize: number,
-  ): Promise<
-    AxiosResponse<{ status: number; message: string; data: NoteListResponse }>
-  > => api.get(`/note/all/${setId}?pageNo=${pageNo}&pageSize=${pageSize}`),
+    query: GetAllNotesBySetQuery,
+  ): Promise<AxiosResponse<GetAllNotesBySetApiResponse>> => {
+    const sp = new URLSearchParams();
+    sp.set('page', String(query.page));
+    sp.set('size', String(query.size));
+    const q = query.q?.trim();
+    if (q) {
+      sp.set('q', q);
+    }
+    if (query.privacy) {
+      sp.set('privacy', query.privacy);
+    }
+    return api.get(`/note/all/${setId}?${sp.toString()}`);
+  },
   autoSaveNote: (
     noteId: number,
     data: AutoSaveNoteRequest,

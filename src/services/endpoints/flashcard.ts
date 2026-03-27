@@ -12,6 +12,7 @@ import type {
   UpdateMultipleCardsRequest,
   UpdateMultipleCardsResponse,
   GenerateFlashcardsFromNoteRequest,
+  GenerateFlashcardsFromWebRequest,
   GenerateFlashcardsFromNoteResponse,
   CreateFlashcardResponse,
   UpdateFlashcardRequest,
@@ -24,20 +25,34 @@ import type {
   FlashcardStudySessionSyncRequest,
 } from '../types/flashcard.types';
 
+export type GetFlashcardsBySetQuery = {
+  page: number;
+  size: number;
+  sort?: string;
+  q?: string;
+  privacy?: 'PUBLIC' | 'PRIVATE';
+};
+
 export const flashcardAPI = {
   getAllFlashcardsBySet: (
     setId: number,
-    page: number,
-    size: number,
-    sort: string = 'id,ASC',
-  ): Promise<AxiosResponse<FlashcardResponse>> =>
-    api.get(`/sets/${setId}/flashcards`, {
-      params: {
-        page,
-        size,
-        sort,
-      },
-    }),
+    query: GetFlashcardsBySetQuery,
+  ): Promise<AxiosResponse<FlashcardResponse>> => {
+    const sort = query.sort ?? 'id,ASC';
+    const params: Record<string, string | number> = {
+      page: query.page,
+      size: query.size,
+      sort,
+    };
+    const q = query.q?.trim();
+    if (q) {
+      params.q = q;
+    }
+    if (query.privacy) {
+      params.privacy = query.privacy;
+    }
+    return api.get(`/sets/${setId}/flashcards`, { params });
+  },
 
   getFlashcardDetail: (
     setId: number,
@@ -120,14 +135,26 @@ export const flashcardAPI = {
   ): Promise<AxiosResponse<GenerateFlashcardsFromNoteResponse>> =>
     api.post(`/sets/${setId}/flashcards/ai-note`, data),
 
+  generateFlashcardsFromWeb: (
+    setId: number,
+    data: GenerateFlashcardsFromWebRequest,
+  ): Promise<AxiosResponse<GenerateFlashcardsFromNoteResponse>> =>
+    api.post(`/sets/${setId}/flashcards/ai-web`, data),
+
   generateFlashcardsFromFile: (
     setId: number,
-    files: File[],
+    payload: {
+      files: File[];
+      language: string;
+      freeText?: string;
+    },
   ): Promise<AxiosResponse<GenerateFlashcardsFromNoteResponse>> => {
     const formData = new FormData();
-    files.forEach((file) => {
+    payload.files.forEach((file) => {
       formData.append('files', file);
     });
+    formData.append('language', payload.language);
+    formData.append('freeText', payload.freeText?.trim() ?? '');
     return api.post(`/sets/${setId}/flashcards/ai-file`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',

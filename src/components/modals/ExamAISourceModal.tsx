@@ -1,4 +1,4 @@
-import { ArrowLeft, FileText, Loader2, Upload, X, FileX } from 'lucide-react';
+import { ArrowLeft, FileText, Link2, Loader2, Upload, X, FileX } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
@@ -17,7 +17,16 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { useNotesBySet } from '@/hooks/useNotes';
 
-export type ExamAIDifficulty = 'easy' | 'medium' | 'hard';
+import type { ExamAIDifficultyDistribution } from '@/services/types/exam.types';
+
+const DEFAULT_DIFFICULTY: ExamAIDifficultyDistribution = {
+  Easy: 50,
+  Medium: 30,
+  Hard: 20,
+};
+
+const EXAM_AI_LANGUAGES = ['English', 'Vietnamese'] as const;
+export type ExamAILanguage = (typeof EXAM_AI_LANGUAGES)[number];
 
 function getTimeAgo(dateString: string): string {
   const date = new Date(dateString);
@@ -42,13 +51,14 @@ type ExamAISourceModalProps = {
   onClose: () => void;
   onBack: () => void;
   onSubmit: (data: {
-    source: 'notes' | 'files';
+    source: 'notes' | 'files' | 'web';
     noteIds?: number[];
     files?: File[];
+    urls?: string[];
     questionCounts: { MCQ: number; TF: number; ESS: number };
-    language: string;
-    difficulty: ExamAIDifficulty;
-    specialRequirements?: string;
+    difficulty: ExamAIDifficultyDistribution;
+    language: ExamAILanguage;
+    freeText: string;
   }) => void;
   isLoading?: boolean;
 };
@@ -62,18 +72,23 @@ const ExamAISourceModal = ({
   isLoading,
 }: ExamAISourceModalProps) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<'notes' | 'files'>('notes');
+  const [activeTab, setActiveTab] = useState<'notes' | 'files' | 'web'>(
+    'notes',
+  );
   const [selectedNotes, setSelectedNotes] = useState<number[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [webUrlsText, setWebUrlsText] = useState('');
 
   const [mcqCount, setMcqCount] = useState(5);
   const [tfCount, setTfCount] = useState(3);
   const [essCount, setEssCount] = useState(2);
-  const [language, setLanguage] = useState('English');
-  const [difficulty, setDifficulty] = useState<ExamAIDifficulty>('medium');
-  const [specialRequirements, setSpecialRequirements] = useState('');
+  const [language, setLanguage] = useState<ExamAILanguage>('English');
+  const [diffEasy, setDiffEasy] = useState(DEFAULT_DIFFICULTY.Easy);
+  const [diffMedium, setDiffMedium] = useState(DEFAULT_DIFFICULTY.Medium);
+  const [diffHard, setDiffHard] = useState(DEFAULT_DIFFICULTY.Hard);
+  const [freeText, setFreeText] = useState('');
 
-  const { data: notesData } = useNotesBySet(setId, 0, 20);
+  const { data: notesData } = useNotesBySet(setId, { page: 0, size: 20 });
   const notes = notesData?.items || [];
 
   if (!isOpen) return null;
@@ -98,26 +113,44 @@ const ExamAISourceModal = ({
     }
   };
 
+  const webUrls = webUrlsText
+    .split(/\n/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
   const totalQuestions = mcqCount + tfCount + essCount;
+  const difficultySum = diffEasy + diffMedium + diffHard;
+  const difficultyValid = difficultySum === 100;
   const hasSource =
     (activeTab === 'notes' && selectedNotes.length > 0) ||
-    (activeTab === 'files' && uploadedFiles.length > 0);
-  const canSubmit = hasSource && totalQuestions > 0;
+    (activeTab === 'files' && uploadedFiles.length > 0) ||
+    (activeTab === 'web' && webUrls.length > 0);
+  const canSubmit =
+    hasSource && totalQuestions > 0 && difficultyValid;
+
+  const clampPct = (n: number) =>
+    Number.isFinite(n) ? Math.min(100, Math.max(0, Math.round(n))) : 0;
 
   const handleSubmit = () => {
     if (!canSubmit) return;
     const questionCounts = { MCQ: mcqCount, TF: tfCount, ESS: essCount };
-    const trimmedSpecial = specialRequirements.trim();
+    const difficulty: ExamAIDifficultyDistribution = {
+      Easy: clampPct(diffEasy),
+      Medium: clampPct(diffMedium),
+      Hard: clampPct(diffHard),
+    };
     const payload = {
       questionCounts,
       language,
       difficulty,
-      ...(trimmedSpecial ? { specialRequirements: trimmedSpecial } : {}),
+      freeText: freeText.trim(),
     };
     if (activeTab === 'notes') {
       onSubmit({ source: 'notes', noteIds: selectedNotes, ...payload });
-    } else {
+    } else if (activeTab === 'files') {
       onSubmit({ source: 'files', files: uploadedFiles, ...payload });
+    } else {
+      onSubmit({ source: 'web', urls: webUrls, ...payload });
     }
   };
 
@@ -168,6 +201,19 @@ const ExamAISourceModal = ({
             <div className='flex items-center gap-2'>
               <Upload className='w-4 h-4' />
               {t('modal.ai.uploadFiles')}
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab('web')}
+            className={`px-4 py-2 font-medium transition-colors cursor-pointer ${
+              activeTab === 'web'
+                ? 'text-foreground border-b-2 border-foreground'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <div className='flex items-center gap-2'>
+              <Link2 className='w-4 h-4' />
+              {t('modal.ai.fromWeb', { defaultValue: 'Web URL' })}
             </div>
           </button>
         </div>
@@ -280,6 +326,30 @@ const ExamAISourceModal = ({
               )}
             </div>
           )}
+
+          {activeTab === 'web' && (
+            <div className='w-full'>
+              <p className='text-sm text-muted-foreground mb-2'>
+                {t('modal.ai.webUrlsHint', {
+                  defaultValue: 'Enter one URL per line (https://…)',
+                })}
+              </p>
+              <Textarea
+                value={webUrlsText}
+                onChange={(e) => setWebUrlsText(e.target.value)}
+                placeholder='https://example.com/article'
+                disabled={isLoading}
+                rows={5}
+                className='resize-y min-h-[100px] font-mono text-sm'
+              />
+              {webUrls.length > 0 && (
+                <p className='text-sm text-muted-foreground mt-2'>
+                  {webUrls.length} URL{webUrls.length !== 1 ? 's' : ''}{' '}
+                  {t('modal.ai.selected')}
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Question Counts */}
@@ -338,60 +408,117 @@ const ExamAISourceModal = ({
             Total: {totalQuestions} question{totalQuestions !== 1 ? 's' : ''}
           </p>
         </div>
-        <div className='flex gap-2'>
-          {/* Difficulty */}
-          <div className='mb-6 w-full'>
-            <Label className='text-sm font-medium mb-2 block'>
-              {t('modal.ai.difficulty', { defaultValue: 'Difficulty' })}
+        {/* Difficulty distribution (must total 100%) */}
+        <div className='mb-6'>
+          <div className='flex flex-wrap items-end justify-between gap-2 mb-2'>
+            <Label className='text-sm font-medium block mb-0'>
+              {t('modal.ai.difficultyMix', {
+                defaultValue: 'Difficulty mix (% — Easy + Medium + Hard = 100)',
+              })}
             </Label>
-            <Select
-              value={difficulty}
-              onValueChange={(v) => setDifficulty(v as ExamAIDifficulty)}
+            <button
+              type='button'
+              onClick={() => {
+                setDiffEasy(DEFAULT_DIFFICULTY.Easy);
+                setDiffMedium(DEFAULT_DIFFICULTY.Medium);
+                setDiffHard(DEFAULT_DIFFICULTY.Hard);
+              }}
               disabled={isLoading}
+              className='text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground disabled:opacity-50'
             >
-              <SelectTrigger className='w-full'>
-                <SelectValue
-                  placeholder={t('modal.ai.difficultyPlaceholder', {
-                    defaultValue: 'Select difficulty',
-                  })}
-                />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='easy'>
-                  {t('modal.ai.difficultyEasy', { defaultValue: 'Easy' })}
-                </SelectItem>
-                <SelectItem value='medium'>
-                  {t('modal.ai.difficultyMedium', { defaultValue: 'Medium' })}
-                </SelectItem>
-                <SelectItem value='hard'>
-                  {t('modal.ai.difficultyHard', { defaultValue: 'Hard' })}
-                </SelectItem>
-              </SelectContent>
-            </Select>
+              {t('modal.ai.difficultyReset', { defaultValue: 'Reset to 50 / 30 / 20' })}
+            </button>
           </div>
-          {/* Language */}
-          <div className='mb-6 w-full'>
-            <Label className='text-sm font-medium mb-2 block'>Language</Label>
-            <Input
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              placeholder='e.g. English, Vietnamese'
-              disabled={isLoading}
-            />
-          </div>{' '}
+          <div className='grid grid-cols-3 gap-4'>
+            <div>
+              <label className='text-xs text-muted-foreground mb-1 block'>
+                {t('modal.ai.difficultyEasy', { defaultValue: 'Easy' })}
+              </label>
+              <Input
+                type='number'
+                min={0}
+                max={100}
+                value={diffEasy}
+                onChange={(e) =>
+                  setDiffEasy(Math.max(0, Number(e.target.value)))
+                }
+                disabled={isLoading}
+              />
+            </div>
+            <div>
+              <label className='text-xs text-muted-foreground mb-1 block'>
+                {t('modal.ai.difficultyMedium', { defaultValue: 'Medium' })}
+              </label>
+              <Input
+                type='number'
+                min={0}
+                max={100}
+                value={diffMedium}
+                onChange={(e) =>
+                  setDiffMedium(Math.max(0, Number(e.target.value)))
+                }
+                disabled={isLoading}
+              />
+            </div>
+            <div>
+              <label className='text-xs text-muted-foreground mb-1 block'>
+                {t('modal.ai.difficultyHard', { defaultValue: 'Hard' })}
+              </label>
+              <Input
+                type='number'
+                min={0}
+                max={100}
+                value={diffHard}
+                onChange={(e) =>
+                  setDiffHard(Math.max(0, Number(e.target.value)))
+                }
+                disabled={isLoading}
+              />
+            </div>
+          </div>
+          <p
+            className={`text-xs mt-2 ${
+              difficultyValid ? 'text-muted-foreground' : 'text-destructive'
+            }`}
+          >
+            {t('modal.ai.difficultySumHint', {
+              sum: difficultySum,
+              defaultValue: 'Current total: {{sum}}% — must equal 100%',
+            })}
+          </p>
         </div>
 
-        {/* Special requirements */}
+        <div className='mb-6'>
+          <Label className='text-sm font-medium mb-2 block'>Language</Label>
+          <Select
+            value={language}
+            onValueChange={(v) => setLanguage(v as ExamAILanguage)}
+            disabled={isLoading}
+          >
+            <SelectTrigger className='w-full'>
+              <SelectValue placeholder='Language' />
+            </SelectTrigger>
+            <SelectContent>
+              {EXAM_AI_LANGUAGES.map((lang) => (
+                <SelectItem key={lang} value={lang}>
+                  {lang}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* freeText — maps to freeText (note/file) or free_text (web) on API */}
         <div className='mb-6'>
           <Label className='text-sm font-medium mb-2 block'>
-            {t('modal.ai.specialRequirements', {
-              defaultValue: 'Special requirements (optional)',
+            {t('modal.ai.freeText', {
+              defaultValue: 'Additional instructions for the AI (optional)',
             })}
           </Label>
           <Textarea
-            value={specialRequirements}
-            onChange={(e) => setSpecialRequirements(e.target.value)}
-            placeholder={t('modal.ai.specialRequirementsPlaceholder', {
+            value={freeText}
+            onChange={(e) => setFreeText(e.target.value)}
+            placeholder={t('modal.ai.freeTextPlaceholder', {
               defaultValue:
                 'E.g. focus on definitions, avoid trick questions, align with chapter 3…',
             })}

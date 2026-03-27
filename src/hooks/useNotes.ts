@@ -7,7 +7,55 @@ import {
   type ConvertToVectorDBRequest,
   type DeleteNoteDocRequest,
   type SaveDocInNoteRequest,
+  type GetAllNotesBySetApiResponse,
+  type GetAllNotesBySetQuery,
+  type NoteListItem,
+  type NoteListResponse,
+  type NotesBySetResult,
 } from "@/services/types/note.types";
+
+function normalizeNotesBySetResponse(
+  body: GetAllNotesBySetApiResponse,
+  fallbackPage: number,
+  fallbackSize: number,
+): NotesBySetResult {
+  const raw = body.data;
+  const meta = body.metadata;
+
+  if (Array.isArray(raw)) {
+    return {
+      items: raw as NoteListItem[],
+      pageNo: meta?.currentPage ?? fallbackPage,
+      pageSize: meta?.pageSize ?? fallbackSize,
+      totalPage: Math.max(1, meta?.totalPages ?? 1),
+      totalElements: meta?.totalItems ?? raw.length,
+    };
+  }
+
+  if (
+    raw &&
+    typeof raw === "object" &&
+    "items" in raw &&
+    Array.isArray((raw as NoteListResponse).items)
+  ) {
+    const r = raw as NoteListResponse;
+    return {
+      items: r.items,
+      pageNo: r.pageNo ?? fallbackPage,
+      pageSize: r.pageSize ?? fallbackSize,
+      totalPage: Math.max(1, r.totalPage ?? 1),
+      totalElements: r.totalElements ?? r.items.length,
+    };
+  }
+
+  return {
+    items: [],
+    pageNo: fallbackPage,
+    pageSize: fallbackSize,
+    totalPage: 1,
+    totalElements: 0,
+  };
+}
 
 // Hook to get note detail
 export const useNoteDetail = (noteId: number) => {
@@ -22,16 +70,23 @@ export const useNoteDetail = (noteId: number) => {
 };
 
 // Hook to get all notes by set
-export const useNotesBySet = (
-  setId: number,
-  pageNo: number,
-  pageSize: number,
-) => {
+export const useNotesBySet = (setId: number, query: GetAllNotesBySetQuery) => {
   return useQuery({
-    queryKey: ["notes", setId, pageNo, pageSize],
+    queryKey: [
+      "notes",
+      setId,
+      query.page,
+      query.size,
+      query.q ?? "",
+      query.privacy ?? "",
+    ],
     queryFn: async () => {
-      const response = await noteAPI.getAllNotesBySet(setId, pageNo, pageSize);
-      return response.data.data;
+      const response = await noteAPI.getAllNotesBySet(setId, query);
+      return normalizeNotesBySetResponse(
+        response.data,
+        query.page,
+        query.size,
+      );
     },
     enabled: !!setId,
   });

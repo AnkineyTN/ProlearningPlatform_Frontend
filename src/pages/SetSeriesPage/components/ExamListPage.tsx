@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import ExamCard, { type ExamCardData } from "@/components/cards/ExamCard";
+import {
+  ResourceFiltersBar,
+  type ListPrivacyFilter,
+} from "@/components/lists/ResourceFiltersBar";
 import { Button } from "@/components/ui/button";
 import { useExams } from "@/hooks/useExams";
 
@@ -18,13 +22,27 @@ export default function ExamListPage({
 }: ExamListPageProps) {
   const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(0);
+  const [listSearch, setListSearch] = useState("");
+  const [debouncedQ, setDebouncedQ] = useState("");
+  const [privacyFilter, setPrivacyFilter] = useState<ListPrivacyFilter>("");
   const pageSize = 9;
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const t = window.setTimeout(() => setDebouncedQ(listSearch.trim()), 350);
+    return () => window.clearTimeout(t);
+  }, [listSearch]);
+
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [debouncedQ, privacyFilter]);
 
   const { data, isLoading, isError } = useExams({
     setId,
     page: currentPage,
     size: pageSize,
+    q: debouncedQ || undefined,
+    privacy: privacyFilter || undefined,
   });
 
   const exams = data?.data ?? [];
@@ -35,29 +53,46 @@ export default function ExamListPage({
     navigate(`/sets/${setId}/exams/${id}`);
   };
 
+  const filters = (
+    <ResourceFiltersBar
+      className='mb-4'
+      searchValue={listSearch}
+      onSearchChange={setListSearch}
+      privacy={privacyFilter}
+      onPrivacyChange={setPrivacyFilter}
+    />
+  );
+
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div
-            key={i}
-            className="bg-card rounded-xl p-5 h-40 animate-pulse"
-          />
-        ))}
+      <div>
+        {filters}
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6'>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className='bg-card rounded-xl p-5 h-40 animate-pulse'
+            />
+          ))}
+        </div>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="text-center py-12 text-muted-foreground">
-        Failed to load exams. Please try again.
+      <div>
+        {filters}
+        <div className='text-center py-12 text-muted-foreground'>
+          Failed to load exams. Please try again.
+        </div>
       </div>
     );
   }
 
   return (
     <div>
+      {filters}
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6'>
         {exams.map((exam) => (
           <ExamCard

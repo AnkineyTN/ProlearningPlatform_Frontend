@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Plus, FolderX } from "lucide-react";
 import SetCard from "@/components/cards/SetCard";
@@ -19,6 +19,10 @@ import {
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { getTimeAgo } from "@/lib/utils";
+import {
+  ResourceFiltersBar,
+  type ListPrivacyFilter,
+} from "@/components/lists/ResourceFiltersBar";
 
 const PAGE_SIZE = 6;
 const SORT_CONFIG = [{ property: "id", direction: "ASC" }];
@@ -48,6 +52,9 @@ export default function SetListPage() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(t("setlist.all"));
   const [currentPage, setCurrentPage] = useState(0);
+  const [listSearch, setListSearch] = useState("");
+  const [debouncedQ, setDebouncedQ] = useState("");
+  const [privacyFilter, setPrivacyFilter] = useState<ListPrivacyFilter>("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedSet, setSelectedSet] = useState<Set | null>(null);
@@ -57,10 +64,21 @@ export default function SetListPage() {
   const deleteSetMutation = useDeleteSet();
   const updateSetMutation = useUpdateSet();
 
+  useEffect(() => {
+    const t = window.setTimeout(() => setDebouncedQ(listSearch.trim()), 350);
+    return () => window.clearTimeout(t);
+  }, [listSearch]);
+
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [debouncedQ, privacyFilter]);
+
   const { data: setData } = useSetData({
     page: currentPage,
     size: PAGE_SIZE,
     sort: SORT_CONFIG,
+    q: debouncedQ || undefined,
+    privacy: privacyFilter || undefined,
   });
 
   const sets = mapSetData(setData?.data.data || []);
@@ -130,7 +148,7 @@ export default function SetListPage() {
   };
 
   const handleSearch = (query: string) => {
-    console.log("Search query:", query);
+    setListSearch(query);
   };
 
   const handlePageChange = (direction: "prev" | "next") => {
@@ -165,6 +183,12 @@ export default function SetListPage() {
               </Button>
             ))}
           </div>
+
+          <ResourceFiltersBar
+            showSearch={false}
+            privacy={privacyFilter}
+            onPrivacyChange={setPrivacyFilter}
+          />
 
           <Button
             onClick={() => setIsCreateModalOpen(true)}

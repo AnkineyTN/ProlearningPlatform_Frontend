@@ -27,6 +27,8 @@ export type SetQueryParams = {
     property: string;
     direction: string;
   }>;
+  q?: string;
+  privacy?: 'PUBLIC' | 'PRIVATE';
 };
 
 export type CreateSetPayload = {

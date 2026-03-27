@@ -1,44 +1,45 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Search } from "lucide-react";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-import AISourceModal from "@/components/modals/AISourceModal";
-import ExamAISourceModal from "@/components/modals/ExamAISourceModal";
-import CreateMethodModal from "@/components/modals/CreateMethodModal";
-import CreateNewModal from "@/components/modals/CreateNewModal";
-import DeleteConfirmDialog from "@/components/modals/DeleteConfirmDialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import AISourceModal from '@/components/modals/AISourceModal';
+import ExamAISourceModal from '@/components/modals/ExamAISourceModal';
+import CreateMethodModal from '@/components/modals/CreateMethodModal';
+import CreateNewModal from '@/components/modals/CreateNewModal';
+import { Button } from '@/components/ui/button';
 import {
   useDeleteFlashcard,
   useGenerateFlashcardsFromFiles,
   useGenerateFlashcardsFromNotes,
+  useGenerateFlashcardsFromWeb,
   useUpdateFlashcard,
-} from "@/hooks/useFlashcards";
-import { useDeleteExam, useUpdateExam, useGenerateExamFromFiles, useGenerateExamFromNotes } from "@/hooks/useExams";
-import { useCreateNote, useDeleteNote, useUpdateNote } from "@/hooks/useNotes";
-import { useDeleteSet } from "@/hooks/useSets";
+} from '@/hooks/useFlashcards';
+import {
+  useDeleteExam,
+  useUpdateExam,
+  useGenerateExamFromFiles,
+  useGenerateExamFromNotes,
+  useGenerateExamFromWeb,
+} from '@/hooks/useExams';
+import { useCreateNote, useDeleteNote, useUpdateNote } from '@/hooks/useNotes';
+import type { ExamAIDifficultyDistribution } from '@/services/types/exam.types';
 
-import FlashcardListPage from "./components/FlashcardListPage";
-import HeaderSetDetails from "./components/HeaderSetDetails";
-import MindmapListPage from "./components/MindmapListPage";
-import NoteListPage from "./components/NoteListPage";
-import RecordListPage from "./components/RecordListPage";
-import ExamListPage from "./components/ExamListPage";
+import FlashcardListPage from './components/FlashcardListPage';
+import HeaderSetDetails from './components/HeaderSetDetails';
+import MindmapListPage from './components/MindmapListPage';
+import NoteListPage from './components/NoteListPage';
+import RecordListPage from './components/RecordListPage';
+import ExamListPage from './components/ExamListPage';
 
-import type { Note } from "@/components/cards/NoteCard";
-import type { Flashcard } from "@/components/cards/FlashCard";
-import type { ExamCardData } from "@/components/cards/ExamCard";
-interface HeaderProps {
-  onSearch?: (query: string) => void;
+import type { Note } from '@/components/cards/NoteCard';
+import type { Flashcard } from '@/components/cards/FlashCard';
+import type { ExamCardData } from '@/components/cards/ExamCard';
+interface SetSeriesPageProps {
   setId: string;
 }
 
-export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
-  const { t } = useTranslation();
+export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -53,12 +54,12 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
 
   // Determine initial tab from current pathname (so route and UI stay in sync)
   const path = location.pathname.toLowerCase();
-  let initialTab = "Notes";
-  if (path.includes(`/sets/${setId}/flashcards`)) initialTab = "Flashcards";
-  else if (path.includes(`/sets/${setId}/exams`)) initialTab = "Exams";
-  else if (path.includes(`/sets/${setId}/mindmaps`)) initialTab = "Mindmaps";
-  else if (path.includes(`/sets/${setId}/records`)) initialTab = "Records";
-  else if (path.includes(`/sets/${setId}/notes`)) initialTab = "Notes";
+  let initialTab = 'Notes';
+  if (path.includes(`/sets/${setId}/flashcards`)) initialTab = 'Flashcards';
+  else if (path.includes(`/sets/${setId}/exams`)) initialTab = 'Exams';
+  else if (path.includes(`/sets/${setId}/mindmaps`)) initialTab = 'Mindmaps';
+  else if (path.includes(`/sets/${setId}/records`)) initialTab = 'Records';
+  else if (path.includes(`/sets/${setId}/notes`)) initialTab = 'Notes';
 
   const [activeTab, setActiveTab] = useState(initialTab);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
@@ -72,14 +73,15 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
   const deleteFlashcardMutation = useDeleteFlashcard();
   const deleteExamMutation = useDeleteExam();
   const updateExamMutation = useUpdateExam();
-  const deleteSetMutation = useDeleteSet();
   const createNoteMutation = useCreateNote();
   const updateNoteMutation = useUpdateNote();
   const deleteNoteMutation = useDeleteNote();
   const generateFlashcardsMutation = useGenerateFlashcardsFromNotes();
   const generateFlashcardsFromFilesMutation = useGenerateFlashcardsFromFiles();
+  const generateFlashcardsFromWebMutation = useGenerateFlashcardsFromWeb();
   const generateExamFromFilesMutation = useGenerateExamFromFiles();
   const generateExamFromNotesMutation = useGenerateExamFromNotes();
+  const generateExamFromWebMutation = useGenerateExamFromWeb();
 
   // Modal states
   const [isMethodModalOpen, setIsMethodModalOpen] = useState(false);
@@ -87,8 +89,6 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
   const [isAISourceModalOpen, setIsAISourceModalOpen] = useState(false);
   const [isExamAISourceModalOpen, setIsExamAISourceModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-
   const tabs = ['Notes', 'Flashcards', 'Exams', 'Mindmaps', 'Records'];
 
   const handleTabClick = (tab: string) => {
@@ -98,7 +98,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
   };
 
   const handleCreateButtonClick = () => {
-    if (activeTab === "Notes") {
+    if (activeTab === 'Notes') {
       setIsCreateModalOpen(true);
     } else {
       setIsMethodModalOpen(true);
@@ -110,7 +110,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
   };
 
   const handleSelectAI = () => {
-    if (activeTab === "Exams") {
+    if (activeTab === 'Exams') {
       setIsExamAISourceModalOpen(true);
     } else {
       setIsAISourceModalOpen(true);
@@ -119,7 +119,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
 
   const handleBackFromCreate = () => {
     setIsCreateModalOpen(false);
-    if (activeTab !== "Notes") {
+    if (activeTab !== 'Notes') {
       setIsMethodModalOpen(true);
     }
   };
@@ -131,88 +131,110 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
   };
 
   const handleAISourceSubmit = async (data: {
-    source: "notes" | "files";
+    source: 'notes' | 'files' | 'web';
     selectedItems: unknown[];
+    language: string;
+    freeText: string;
+    urls?: string[];
   }) => {
-    if (activeTab === "Flashcards") {
+    if (activeTab === 'Flashcards') {
       try {
         let result;
 
-        if (data.source === "notes") {
-          // Call the API to generate flashcards from notes
+        if (data.source === 'notes') {
           result = await generateFlashcardsMutation.mutateAsync({
             setId: Number(setId),
             noteIds: data.selectedItems as number[],
+            language: data.language,
+            freeText: data.freeText,
           });
-        } else if (data.source === "files") {
-          // Call the API to generate flashcards from files
+        } else if (data.source === 'files') {
           result = await generateFlashcardsFromFilesMutation.mutateAsync({
             setId: Number(setId),
             files: data.selectedItems as File[],
+            language: data.language,
+            freeText: data.freeText,
+          });
+        } else if (data.source === 'web' && data.urls?.length) {
+          result = await generateFlashcardsFromWebMutation.mutateAsync({
+            setId: Number(setId),
+            urls: data.urls,
+            language: data.language,
+            freeText: data.freeText,
           });
         }
 
         if (result) {
-          // Parse the content string to extract flashcards
           const flashcardsContent = result.data.content;
-          const flashcards = flashcardsContent.split(";").map((card) => {
-            const [frontCard, backCard] = card.split("|");
+          const flashcards = flashcardsContent.split(';').map((card) => {
+            const [frontCard, backCard] = card.split('|');
             return { frontCard: frontCard?.trim(), backCard: backCard?.trim() };
           });
 
-          // Close the modal
           setIsAISourceModalOpen(false);
 
-          // Navigate to editor with generated flashcards
+          const description =
+            data.source === 'notes'
+              ? `Generated from ${data.selectedItems.length} note(s)`
+              : data.source === 'files'
+                ? `Generated from ${data.selectedItems.length} file(s)`
+                : `Generated from ${data.urls?.length ?? 0} URL(s)`;
+
           navigate(`/sets/${setId}/flashcards/editor`, {
             state: {
-              title: "AI Generated Flashcards",
-              description:
-                data.source === "notes"
-                  ? `Generated from ${data.selectedItems.length} note(s)`
-                  : `Generated from ${data.selectedItems.length} file(s)`,
-              privacy: "PRIVATE",
+              title: 'AI Generated Flashcards',
+              description,
+              privacy: 'PRIVATE',
               generatedFlashcards: flashcards,
             },
           });
         }
       } catch (error) {
-        console.error("Error generating flashcards:", error);
-        toast.error("Failed to generate flashcards. Please try again.");
-        // You might want to show an error toast here
+        console.error('Error generating flashcards:', error);
+        toast.error('Failed to generate flashcards. Please try again.');
       }
     }
   };
 
   const handleExamAISubmit = async (data: {
-    source: "notes" | "files";
+    source: 'notes' | 'files' | 'web';
     noteIds?: number[];
     files?: File[];
+    urls?: string[];
     questionCounts: { MCQ: number; TF: number; ESS: number };
+    difficulty: ExamAIDifficultyDistribution;
     language: string;
-    difficulty: "easy" | "medium" | "hard";
-    specialRequirements?: string;
+    freeText: string;
   }) => {
     try {
       let result;
 
-      if (data.source === "notes" && data.noteIds) {
+      if (data.source === 'notes' && data.noteIds) {
         result = await generateExamFromNotesMutation.mutateAsync({
           setId: Number(setId),
           noteIds: data.noteIds,
           questionCounts: data.questionCounts,
           language: data.language,
           difficulty: data.difficulty,
-          specialRequirements: data.specialRequirements,
+          freeText: data.freeText,
         });
-      } else if (data.source === "files" && data.files) {
+      } else if (data.source === 'files' && data.files) {
         result = await generateExamFromFilesMutation.mutateAsync({
           setId: Number(setId),
           files: data.files,
           questionCounts: data.questionCounts,
           language: data.language,
           difficulty: data.difficulty,
-          specialRequirements: data.specialRequirements,
+          freeText: data.freeText,
+        });
+      } else if (data.source === 'web' && data.urls?.length) {
+        result = await generateExamFromWebMutation.mutateAsync({
+          setId: Number(setId),
+          urls: data.urls,
+          questionCounts: data.questionCounts,
+          language: data.language,
+          difficulty: data.difficulty,
+          freeText: data.freeText,
         });
       }
 
@@ -220,23 +242,25 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
 
       setIsExamAISourceModalOpen(false);
 
-      const content = result.data?.data?.content ?? "";
+      const content = result.data?.content ?? '';
       const sourceDesc =
-        data.source === "notes"
+        data.source === 'notes'
           ? `${data.noteIds?.length ?? 0} note(s)`
-          : `${data.files?.length ?? 0} file(s)`;
+          : data.source === 'files'
+            ? `${data.files?.length ?? 0} file(s)`
+            : `${data.urls?.length ?? 0} URL(s)`;
 
       navigate(`/sets/${setId}/exams/editor`, {
         state: {
-          title: "",
+          title: '',
           description: `Generated from ${sourceDesc}`,
-          privacy: "PRIVATE",
+          privacy: 'PRIVATE',
           aiContent: content,
         },
       });
     } catch (error) {
-      console.error("Error generating exam with AI:", error);
-      toast.error("Failed to generate exam. Please try again.");
+      console.error('Error generating exam with AI:', error);
+      toast.error('Failed to generate exam. Please try again.');
     }
   };
 
@@ -302,7 +326,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
   const handleUpdateFlashcard = (flashcard: Flashcard) => {
     setSelectedFlashcard(flashcard);
     setIsUpdateModalOpen(true);
-    setActiveTab("Flashcards");
+    setActiveTab('Flashcards');
   };
 
   const handleUpdate = (note: Note) => {
@@ -315,7 +339,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
       try {
         const payload = {
           title: data.title,
-          privacy: data.privacy === "PUBLIC" ? "PUBLIC" : "PRIVATE",
+          privacy: data.privacy === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE',
           description: data.description,
         };
 
@@ -323,12 +347,12 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
           id: selectedNote.id,
           payload,
         });
-        toast.success("Note updated successfully");
+        toast.success('Note updated successfully');
         setIsUpdateModalOpen(false);
         setSelectedNote(null);
       } catch (error) {
-        console.error("Error updating note:", error);
-        toast.error("Failed to update note. Please try again.");
+        console.error('Error updating note:', error);
+        toast.error('Failed to update note. Please try again.');
       }
     }
 
@@ -336,7 +360,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
       try {
         const payload = {
           title: data.title,
-          privacy: data.privacy.toUpperCase() as "PUBLIC" | "PRIVATE",
+          privacy: data.privacy.toUpperCase() as 'PUBLIC' | 'PRIVATE',
           description: data.description,
         };
 
@@ -345,12 +369,12 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
           flashcardId: selectedFlashcard.id,
           payload,
         });
-        toast.success("Flashcard updated successfully");
+        toast.success('Flashcard updated successfully');
         setIsUpdateModalOpen(false);
         setSelectedFlashcard(null);
       } catch (error) {
-        console.error("Error updating flashcard:", error);
-        toast.error("Failed to update flashcard. Please try again.");
+        console.error('Error updating flashcard:', error);
+        toast.error('Failed to update flashcard. Please try again.');
       }
     }
 
@@ -359,7 +383,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
         const payload = {
           title: data.title,
           description: data.description,
-          privacy: data.privacy.toUpperCase() as "PUBLIC" | "PRIVATE",
+          privacy: data.privacy.toUpperCase() as 'PUBLIC' | 'PRIVATE',
         };
 
         await updateExamMutation.mutateAsync({
@@ -367,12 +391,12 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
           examId: selectedExam.id,
           data: payload,
         });
-        toast.success("Exam updated successfully");
+        toast.success('Exam updated successfully');
         setIsUpdateModalOpen(false);
         setSelectedExam(null);
       } catch (error) {
-        console.error("Error updating exam:", error);
-        toast.error("Failed to update exam. Please try again.");
+        console.error('Error updating exam:', error);
+        toast.error('Failed to update exam. Please try again.');
       }
     }
   };
@@ -380,10 +404,10 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
   const handleDeleteNote = async (id: number) => {
     try {
       await deleteNoteMutation.mutateAsync(id);
-      toast.success("Note deleted successfully");
+      toast.success('Note deleted successfully');
     } catch (error) {
-      console.error("Error deleting note:", error);
-      toast.error("Failed to delete note. Please try again.");
+      console.error('Error deleting note:', error);
+      toast.error('Failed to delete note. Please try again.');
     }
   };
 
@@ -393,17 +417,17 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
         setId: Number(setId),
         flashcardId: id,
       });
-      toast.success("Flashcard deleted successfully");
+      toast.success('Flashcard deleted successfully');
     } catch (error) {
-      console.error("Error deleting flashcard:", error);
-      toast.error("Failed to delete flashcard. Please try again.");
+      console.error('Error deleting flashcard:', error);
+      toast.error('Failed to delete flashcard. Please try again.');
     }
   };
 
   const handleUpdateExam = (exam: ExamCardData) => {
     setSelectedExam(exam);
     setIsUpdateModalOpen(true);
-    setActiveTab("Exams");
+    setActiveTab('Exams');
   };
 
   const handleDeleteExam = async (id: number | string) => {
@@ -412,32 +436,17 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
         setId: Number(setId),
         examId: id,
       });
-      toast.success("Exam deleted successfully");
+      toast.success('Exam deleted successfully');
     } catch (error) {
-      console.error("Error deleting exam:", error);
-      toast.error("Failed to delete exam. Please try again.");
-    }
-  };
-
-  const handleDeleteClick = () => {
-    setShowDeleteDialog(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    try {
-      await deleteSetMutation.mutateAsync(Number(setId));
-      setShowDeleteDialog(false);
-      navigate("/sets");
-    } catch (error) {
-      console.error("Error deleting set:", error);
-      toast.error("Failed to delete set. Please try again.");
+      console.error('Error deleting exam:', error);
+      toast.error('Failed to delete exam. Please try again.');
     }
   };
 
   return (
     <div className='min-h-screen p-6'>
       <div className='max-w-7xl mx-auto'>
-        <HeaderSetDetails onDelete={handleDeleteClick} />
+        <HeaderSetDetails setId={setId} />
 
         {/* Tabs */}
         <div className='flex gap-2 mb-6 overflow-x-auto'>
@@ -447,8 +456,8 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
               onClick={() => handleTabClick(tab)}
               className={`cursor-pointer px-6 py-2 rounded-full text-foreground text-sm border border-ring font-medium transition-colors whitespace-nowrap ${
                 activeTab === tab
-                  ? "font-semibold text-text-pinked border-pink-500 bg-bg-pinked hover:bg-bg-pinked-selected"
-                  : "border-ring bg-card hover:bg-card-secondary"
+                  ? 'font-semibold text-text-pinked border-pink-500 bg-bg-pinked hover:bg-bg-pinked-selected'
+                  : 'border-ring bg-card hover:bg-card-secondary'
               }`}
             >
               {tab}
@@ -465,56 +474,49 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
               createNoteMutation.isPending ||
               generateFlashcardsMutation.isPending ||
               generateFlashcardsFromFilesMutation.isPending ||
+              generateFlashcardsFromWebMutation.isPending ||
               generateExamFromFilesMutation.isPending ||
-              generateExamFromNotesMutation.isPending
+              generateExamFromNotesMutation.isPending ||
+              generateExamFromWebMutation.isPending
             }
           >
             {generateFlashcardsMutation.isPending ||
             generateFlashcardsFromFilesMutation.isPending ||
+            generateFlashcardsFromWebMutation.isPending ||
             generateExamFromFilesMutation.isPending ||
-            generateExamFromNotesMutation.isPending
-              ? "Generating with AI..."
+            generateExamFromNotesMutation.isPending ||
+            generateExamFromWebMutation.isPending
+              ? 'Generating with AI...'
               : createNoteMutation.isPending
-                ? "Creating..."
+                ? 'Creating...'
                 : `+ Create a new ${activeTab.slice(0, -1).toLowerCase()}`}
           </Button>
-          <div className='relative'>
-            <div className='relative'>
-              <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5' />
-              <Input
-                type='text'
-                placeholder='Search...'
-                onChange={(e) => onSearch?.(e.target.value)}
-                className='bg-card pl-10 pr-4 py-2 w-80 rounded-full border border-muted-foreground'
-              />
-            </div>
-          </div>
         </div>
 
         {/* Content Grid */}
-        {activeTab === "Notes" && (
+        {activeTab === 'Notes' && (
           <NoteListPage
             setId={Number(setId)}
             onUpdate={handleUpdate}
             onDelete={(noteId) => handleDeleteNote(noteId)}
           />
         )}
-        {activeTab === "Flashcards" && (
+        {activeTab === 'Flashcards' && (
           <FlashcardListPage
             setId={Number(setId)}
             onUpdate={handleUpdateFlashcard}
             onDelete={(flashcardId) => handleDeleteFlashcard(flashcardId)}
           />
         )}
-        {activeTab === "Mindmaps" && <MindmapListPage />}
-        {activeTab === "Exams" && (
+        {activeTab === 'Mindmaps' && <MindmapListPage />}
+        {activeTab === 'Exams' && (
           <ExamListPage
             setId={Number(setId)}
             onUpdate={handleUpdateExam}
             onDelete={handleDeleteExam}
           />
         )}
-        {activeTab === "Records" && <RecordListPage />}
+        {activeTab === 'Records' && <RecordListPage />}
 
         {/* Modals */}
         <CreateMethodModal
@@ -536,7 +538,8 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
           onSubmit={handleAISourceSubmit}
           isLoading={
             generateFlashcardsMutation.isPending ||
-            generateFlashcardsFromFilesMutation.isPending
+            generateFlashcardsFromFilesMutation.isPending ||
+            generateFlashcardsFromWebMutation.isPending
           }
         />
 
@@ -548,7 +551,8 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
           onSubmit={handleExamAISubmit}
           isLoading={
             generateExamFromFilesMutation.isPending ||
-            generateExamFromNotesMutation.isPending
+            generateExamFromNotesMutation.isPending ||
+            generateExamFromWebMutation.isPending
           }
         />
 
@@ -556,7 +560,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
           type={activeTab.slice(0, -1)}
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
-          onBack={activeTab !== "Notes" ? handleBackFromCreate : undefined}
+          onBack={activeTab !== 'Notes' ? handleBackFromCreate : undefined}
           onSubmit={handleCreate}
         />
 
@@ -565,9 +569,9 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
             <CreateNewModal
               type={
                 selectedExam
-                  ? "Exam"
+                  ? 'Exam'
                   : selectedFlashcard
-                    ? "Flashcard"
+                    ? 'Flashcard'
                     : activeTab.slice(0, -1)
               }
               isOpen={isUpdateModalOpen}
@@ -583,18 +587,18 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
                   selectedNote?.title ||
                   selectedFlashcard?.title ||
                   selectedExam?.title ||
-                  "",
+                  '',
                 description:
                   selectedNote?.description ||
                   selectedFlashcard?.description ||
                   selectedExam?.description ||
-                  "",
+                  '',
                 privacy:
                   (
                     selectedNote?.privacy ||
                     selectedFlashcard?.privacy ||
                     selectedExam?.privacy ||
-                    "PUBLIC"
+                    'PUBLIC'
                   )
                     .charAt(0)
                     .toUpperCase() +
@@ -602,7 +606,7 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
                     selectedNote?.privacy ||
                     selectedFlashcard?.privacy ||
                     selectedExam?.privacy ||
-                    "public"
+                    'public'
                   )
                     .slice(1)
                     .toLowerCase(),
@@ -610,13 +614,6 @@ export default function SetSeriesPage({ onSearch, setId }: HeaderProps) {
               isUpdateMode={true}
             />
           )}
-        <DeleteConfirmDialog
-          isOpen={showDeleteDialog}
-          onClose={() => setShowDeleteDialog(false)}
-          onConfirm={handleConfirmDelete}
-          title={t("modal.deleteConfirmationTitle")}
-          itemName={`"Software Engineering"`}
-        />
       </div>
     </div>
   );

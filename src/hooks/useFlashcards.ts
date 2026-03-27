@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { flashcardAPI } from "@/services/endpoints/flashcard";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -14,6 +15,8 @@ interface UseFlashcardsParams {
   page: number;
   size: number;
   sort?: string;
+  q?: string;
+  privacy?: 'PUBLIC' | 'PRIVATE';
 }
 
 export const useFlashcards = ({
@@ -21,16 +24,19 @@ export const useFlashcards = ({
   page,
   size,
   sort = "id,ASC",
+  q,
+  privacy,
 }: UseFlashcardsParams) => {
   return useQuery({
-    queryKey: ["flashcards", setId, page, size, sort],
+    queryKey: ["flashcards", setId, page, size, sort, q ?? "", privacy ?? ""],
     queryFn: async () => {
-      const response = await flashcardAPI.getAllFlashcardsBySet(
-        setId,
+      const response = await flashcardAPI.getAllFlashcardsBySet(setId, {
         page,
         size,
         sort,
-      );
+        q,
+        privacy,
+      });
       return response.data;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -271,12 +277,18 @@ export const useGenerateFlashcardsFromNotes = () => {
     mutationFn: async ({
       setId,
       noteIds,
+      language,
+      freeText,
     }: {
       setId: number;
       noteIds: number[];
+      language: string;
+      freeText?: string;
     }) => {
       const response = await flashcardAPI.generateFlashcardsFromNote(setId, {
         noteIds,
+        language,
+        freeText: freeText?.trim() ?? "",
       });
       return response.data;
     },
@@ -289,15 +301,56 @@ export const useGenerateFlashcardsFromNotes = () => {
   });
 };
 
+export const useGenerateFlashcardsFromWeb = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      setId,
+      urls,
+      language,
+      freeText,
+    }: {
+      setId: number;
+      urls: string[];
+      language: string;
+      freeText: string;
+    }) => {
+      const response = await flashcardAPI.generateFlashcardsFromWeb(setId, {
+        urls,
+        language,
+        free_text: freeText,
+      });
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["flashcards", variables.setId],
+      });
+    },
+  });
+};
+
 export const useGenerateFlashcardsFromFiles = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ setId, files }: { setId: number; files: File[] }) => {
-      const response = await flashcardAPI.generateFlashcardsFromFile(
-        setId,
+    mutationFn: async ({
+      setId,
+      files,
+      language,
+      freeText,
+    }: {
+      setId: number;
+      files: File[];
+      language: string;
+      freeText?: string;
+    }) => {
+      const response = await flashcardAPI.generateFlashcardsFromFile(setId, {
         files,
-      );
+        language,
+        freeText,
+      });
       return response.data;
     },
     onSuccess: (_, variables) => {

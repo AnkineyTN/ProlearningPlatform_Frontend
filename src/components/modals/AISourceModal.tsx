@@ -1,11 +1,21 @@
-import { ArrowLeft, FileText, Loader2, Upload, X, FileX } from "lucide-react";
+import { ArrowLeft, FileText, Link2, Loader2, Upload, X, FileX } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
 import NoteCardSelect from "@/components/cards/NoteCardSelect";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useNotesBySet } from "@/hooks/useNotes";
+import { mapI18nToAiApiLanguage } from "@/lib/utils";
 
 type AISourceModalProps = {
   setId: number;
@@ -15,7 +25,13 @@ type AISourceModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onBack: () => void;
-  onSubmit: (data: { source: "notes" | "files"; selectedItems: unknown[] }) => void;
+  onSubmit: (data: {
+    source: "notes" | "files" | "web";
+    selectedItems: unknown[];
+    language: string;
+    freeText: string;
+    urls?: string[];
+  }) => void;
   isLoading?: boolean;
 };
 
@@ -47,11 +63,21 @@ const AISourceModal = ({
   onSubmit,
   isLoading,
 }: AISourceModalProps) => {
-  const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<"notes" | "files">("notes");
+  const { t, i18n } = useTranslation();
+  const [activeTab, setActiveTab] = useState<"notes" | "files" | "web">(
+    "notes",
+  );
   const [selectedNotes, setSelectedNotes] = useState<number[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const { data: notesData } = useNotesBySet(setId, currentPage, pageSize);
+  const [webUrlsText, setWebUrlsText] = useState("");
+  const [language, setLanguage] = useState(() =>
+    mapI18nToAiApiLanguage(i18n.language),
+  );
+  const [freeText, setFreeText] = useState("");
+  const { data: notesData } = useNotesBySet(setId, {
+    page: currentPage,
+    size: pageSize,
+  });
   const notes = notesData?.items || [];
 
   if (!isOpen) return null;
@@ -79,17 +105,34 @@ const AISourceModal = ({
     }
   };
 
+  const webUrls = webUrlsText
+    .split(/\n/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
   const handleSubmit = () => {
+    const payload = {
+      language,
+      freeText: freeText.trim(),
+    };
     if (activeTab === "notes" && selectedNotes.length > 0) {
-      onSubmit({ source: "notes", selectedItems: selectedNotes });
+      onSubmit({ source: "notes", selectedItems: selectedNotes, ...payload });
     } else if (activeTab === "files" && uploadedFiles.length > 0) {
-      onSubmit({ source: "files", selectedItems: uploadedFiles });
+      onSubmit({ source: "files", selectedItems: uploadedFiles, ...payload });
+    } else if (activeTab === "web" && webUrls.length > 0) {
+      onSubmit({
+        source: "web",
+        selectedItems: [],
+        urls: webUrls,
+        ...payload,
+      });
     }
   };
 
   const canSubmit =
     (activeTab === "notes" && selectedNotes.length > 0) ||
-    (activeTab === "files" && uploadedFiles.length > 0);
+    (activeTab === "files" && uploadedFiles.length > 0) ||
+    (activeTab === "web" && webUrls.length > 0);
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center'>
@@ -144,6 +187,19 @@ const AISourceModal = ({
             <div className='flex items-center gap-2'>
               <Upload className='w-4 h-4' />
               {t("modal.ai.uploadFiles")}
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab("web")}
+            className={`px-4 py-2 font-medium transition-colors cursor-pointer ${
+              activeTab === "web"
+                ? "text-foreground border-b-2 border-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <div className='flex items-center gap-2'>
+              <Link2 className='w-4 h-4' />
+              {t("modal.ai.fromWeb", { defaultValue: "Web URL" })}
             </div>
           </button>
         </div>
@@ -265,6 +321,70 @@ const AISourceModal = ({
               )}
             </div>
           )}
+
+          {activeTab === "web" && (
+            <div className='w-full'>
+              <p className='text-sm text-muted-foreground mb-2'>
+                {t("modal.ai.webUrlsHint", {
+                  defaultValue: "Enter one URL per line (https://…)",
+                })}
+              </p>
+              <Textarea
+                value={webUrlsText}
+                onChange={(e) => setWebUrlsText(e.target.value)}
+                placeholder='https://example.com/article'
+                disabled={isLoading}
+                rows={6}
+                className='resize-y min-h-[120px] font-mono text-sm'
+              />
+              {webUrls.length > 0 && (
+                <p className='text-sm text-muted-foreground mt-2'>
+                  {webUrls.length} URL{webUrls.length !== 1 ? "s" : ""}{" "}
+                  {t("modal.ai.selected")}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className='mb-6'>
+          <Label className='text-sm font-medium mb-2 block'>
+            {t("modal.ai.language", { defaultValue: "Language" })}
+          </Label>
+          <Select
+            value={language}
+            onValueChange={(v) =>
+              setLanguage(v as "English" | "Vietnamese")
+            }
+            disabled={isLoading}
+          >
+            <SelectTrigger className='w-full max-w-md'>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value='English'>English</SelectItem>
+              <SelectItem value='Vietnamese'>Vietnamese</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className='mb-6'>
+          <Label className='text-sm font-medium mb-2 block'>
+            {t("modal.ai.specialRequirements", {
+              defaultValue: "Special requirements (optional)",
+            })}
+          </Label>
+          <Textarea
+            value={freeText}
+            onChange={(e) => setFreeText(e.target.value)}
+            placeholder={t("modal.ai.specialRequirementsPlaceholder", {
+              defaultValue:
+                "E.g. focus on definitions, avoid obscure facts, align with chapter 3…",
+            })}
+            disabled={isLoading}
+            rows={4}
+            className='resize-y min-h-[100px]'
+          />
         </div>
 
         {/* Actions */}

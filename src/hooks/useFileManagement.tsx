@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { mapI18nToAiApiLanguage } from "@/lib/utils";
+
 interface UploadedFile {
   id: number;
   fileName: string;
@@ -102,9 +104,8 @@ export const useFileManagement = ({
     setIsSummarizing(true);
     try {
       const response = await summarizeFileMutation.mutateAsync({
-        lang: i18n.language || "vi",
+        language: mapI18nToAiApiLanguage(i18n.language),
         limit: 0,
-        asset_id: selectedFile.id,
         file_url: selectedFile.fileUrl,
       });
       setFileSummary(response.data.data.summary);

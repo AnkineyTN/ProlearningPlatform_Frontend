@@ -11,6 +11,7 @@ import "@blocknote/react/style.css";
 import { Button } from "@/components/ui/button";
 import { Sparkles, LoaderCircle } from "lucide-react";
 import { useExplainText } from "@/hooks/useNotes";
+import { mapI18nToAiApiLanguage } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import "./notes.css";
@@ -153,8 +154,7 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
 
     try {
       const response = await explainTextMutation.mutateAsync({
-        lang: i18n.language || "vi",
-        limit: "0",
+        language: mapI18nToAiApiLanguage(i18n.language),
         note_id: noteId,
         query_text: selectedText,
       });

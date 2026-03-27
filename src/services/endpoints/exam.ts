@@ -14,6 +14,8 @@ import type {
   VoidResponse,
   GenerateExamAIResponse,
   GenerateExamFromNotesRequest,
+  GenerateExamFromWebRequest,
+  ExamAIDifficultyDistribution,
 } from '../types/exam.types';
 
 export const examAPI = {
@@ -23,13 +25,33 @@ export const examAPI = {
    */
   getQuizzes: (
     setId: number,
-    page: number = 0,
-    size: number = 10,
-    sort: string = 'id,ASC',
-  ): Promise<AxiosResponse<QuizListResponse>> =>
-    api.get(`/set/${setId}/exams`, {
-      params: { page, size, sort },
-    }),
+    params: {
+      page?: number;
+      size?: number;
+      sort?: string;
+      q?: string;
+      privacy?: 'PUBLIC' | 'PRIVATE';
+    } = {},
+  ): Promise<AxiosResponse<QuizListResponse>> => {
+    const {
+      page = 0,
+      size = 10,
+      sort = 'id,ASC',
+      q,
+      privacy,
+    } = params;
+    const query: Record<string, string | number> = { page, size, sort };
+    const qt = q?.trim();
+    if (qt) {
+      query.q = qt;
+    }
+    if (privacy) {
+      query.privacy = privacy;
+    }
+    return api.get(`/set/${setId}/exams`, {
+      params: query,
+    });
+  },
 
   /**
    * Create a new quiz
@@ -141,23 +163,17 @@ export const examAPI = {
     setId: number,
     files: File[],
     questionCounts: { MCQ: number; TF: number; ESS: number },
+    difficulty: ExamAIDifficultyDistribution,
+    freeText: string,
     language: string,
-    options?: { difficulty?: string; specialRequirements?: string },
   ): Promise<AxiosResponse<GenerateExamAIResponse>> => {
     const formData = new FormData();
     files.forEach((file) => formData.append('files', file));
     formData.append('questions', JSON.stringify(questionCounts));
+    formData.append('difficulty', JSON.stringify(difficulty));
+    formData.append('freeText', freeText.trim());
     formData.append('language', language);
-    if (options?.difficulty) {
-      formData.append('difficulty', options.difficulty);
-    }
-    const extra = options?.specialRequirements?.trim();
-    if (extra) {
-      formData.append('specialRequirements', extra);
-    }
-    return api.post(`/set/${setId}/exams/ai-file`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    return api.post(`/set/${setId}/exams/ai-file`, formData);
   },
 
   generateExamFromNotes: (
@@ -165,4 +181,10 @@ export const examAPI = {
     data: GenerateExamFromNotesRequest,
   ): Promise<AxiosResponse<GenerateExamAIResponse>> =>
     api.post(`/set/${setId}/exams/ai-note`, data),
+
+  generateExamFromWeb: (
+    setId: number,
+    data: GenerateExamFromWebRequest,
+  ): Promise<AxiosResponse<GenerateExamAIResponse>> =>
+    api.post(`/set/${setId}/exams/ai-web`, data),
 };

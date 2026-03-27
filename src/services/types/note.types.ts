@@ -18,18 +18,46 @@ export type NoteListItem = {
   id: number;
   title: string;
   description: string;
-  timeAgo: string;
+  /** Not always returned by GET /note/all; UI can derive from updated_at */
+  timeAgo?: string;
   privacy: string;
   created_at: string;
   updated_at: string;
 };
 
+/** Legacy nested pagination shape (some backends). */
 export type NoteListResponse = {
   pageNo: number;
   pageSize: number;
   totalPage: number;
   totalElements: number;
   items: NoteListItem[];
+};
+
+/** Root metadata from GET /note/all/:setId (current API). */
+export type NoteListApiMetadata = {
+  currentPage?: number;
+  totalPages?: number;
+  totalItems?: number;
+  pageSize?: number;
+};
+
+/** Raw GET /note/all response: data is a note array, pagination in metadata. */
+export type GetAllNotesBySetApiResponse = {
+  status?: string | number;
+  message?: string;
+  data: NoteListItem[] | NoteListResponse;
+  metadata?: NoteListApiMetadata;
+};
+
+/** Normalized list returned by useNotesBySet (matches previous NoteListResponse). */
+export type NotesBySetResult = NoteListResponse;
+
+export type GetAllNotesBySetQuery = {
+  page: number;
+  size: number;
+  q?: string;
+  privacy?: 'PUBLIC' | 'PRIVATE';
 };
 
 export type CreateNotePayload = {
@@ -45,8 +73,7 @@ export type AutoSaveNoteRequest = {
 };
 
 export type ExplainTextRequest = {
-  lang: string;
-  limit: string;
+  language: "English" | "Vietnamese";
   note_id: number;
   query_text: string;
 };
@@ -81,9 +108,8 @@ export type UploadFileResponse = {
 };
 
 export type SummarizeFileRequest = {
-  lang: string;
+  language: "English" | "Vietnamese";
   limit: number;
-  asset_id: number;
   file_url: string;
 };
 

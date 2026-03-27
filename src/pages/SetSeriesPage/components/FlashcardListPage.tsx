@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFlashcards } from "@/hooks/useFlashcards";
 import FlashCard, { type Flashcard } from "@/components/cards/FlashCard";
+import {
+  ResourceFiltersBar,
+  type ListPrivacyFilter,
+} from "@/components/lists/ResourceFiltersBar";
 import { Button } from "@/components/ui/button";
 import { getTimeAgo } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, FileX } from "lucide-react";
@@ -18,14 +22,28 @@ const FlashcardListPage = ({
   onDelete,
 }: FlashcardListPageProps) => {
   const [currentPage, setCurrentPage] = useState(0);
+  const [listSearch, setListSearch] = useState("");
+  const [debouncedQ, setDebouncedQ] = useState("");
+  const [privacyFilter, setPrivacyFilter] = useState<ListPrivacyFilter>("");
   const pageSize = 6;
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const t = window.setTimeout(() => setDebouncedQ(listSearch.trim()), 350);
+    return () => window.clearTimeout(t);
+  }, [listSearch]);
+
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [debouncedQ, privacyFilter]);
 
   const { data, isLoading, isError, error } = useFlashcards({
     setId,
     page: currentPage,
     size: pageSize,
     sort: "id,ASC",
+    q: debouncedQ || undefined,
+    privacy: privacyFilter || undefined,
   });
 
   const handleAccess = (id: number | string) => {
@@ -44,11 +62,24 @@ const FlashcardListPage = ({
     }
   };
 
+  const filters = (
+    <ResourceFiltersBar
+      className='mb-4'
+      searchValue={listSearch}
+      onSearchChange={setListSearch}
+      privacy={privacyFilter}
+      onPrivacyChange={setPrivacyFilter}
+    />
+  );
+
   // Loading state
   if (isLoading) {
     return (
-      <div className='flex justify-center items-center min-h-[400px]'>
-        <div className='text-muted-foreground'>Loading flashcards...</div>
+      <div>
+        {filters}
+        <div className='flex justify-center items-center min-h-[400px]'>
+          <div className='text-muted-foreground'>Loading flashcards...</div>
+        </div>
       </div>
     );
   }
@@ -56,10 +87,13 @@ const FlashcardListPage = ({
   // Error state
   if (isError) {
     return (
-      <div className='flex justify-center items-center min-h-[400px]'>
-        <div className='text-destructive'>
-          Error loading flashcards:{" "}
-          {error instanceof Error ? error.message : "Unknown error"}
+      <div>
+        {filters}
+        <div className='flex justify-center items-center min-h-[400px]'>
+          <div className='text-destructive'>
+            Error loading flashcards:{" "}
+            {error instanceof Error ? error.message : "Unknown error"}
+          </div>
         </div>
       </div>
     );
@@ -68,9 +102,12 @@ const FlashcardListPage = ({
   // Empty state
   if (!data?.data || data.data.length === 0) {
     return (
-      <div className='flex flex-col justify-center items-center min-h-[400px]'>
-        <FileX className='mx-auto mb-4 text-6xl w-20 h-20' />
-        <div className='text-muted-foreground'>No flashcards found</div>
+      <div>
+        {filters}
+        <div className='flex flex-col justify-center items-center min-h-[400px]'>
+          <FileX className='mx-auto mb-4 text-6xl w-20 h-20' />
+          <div className='text-muted-foreground'>No flashcards found</div>
+        </div>
       </div>
     );
   }
@@ -80,6 +117,7 @@ const FlashcardListPage = ({
   const displayPage = currentPage + 1;
   return (
     <div>
+      {filters}
       {/* Flashcards Grid */}
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6'>
         {flashcards.map((flashcard) => (
