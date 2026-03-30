@@ -6,13 +6,25 @@ import {
   type SummarizeFileRequest,
   type ConvertToVectorDBRequest,
   type DeleteNoteDocRequest,
+  type DeleteNoteImgRequest,
   type SaveDocInNoteRequest,
+  type SaveImgInNoteRequest,
   type GetAllNotesBySetApiResponse,
   type GetAllNotesBySetQuery,
+  type NoteDetail,
+  type NoteDocItem,
   type NoteListItem,
   type NoteListResponse,
   type NotesBySetResult,
 } from "@/services/types/note.types";
+
+/** Merge image list from whichever field the API returns so reload shows attachments. */
+function normalizeNoteDetail(data: NoteDetail): NoteDetail {
+  const x = data as NoteDetail & { note_imgs?: NoteDocItem[] };
+  const imgs = x.noteImgs ?? x.noteImages ?? x.note_imgs;
+  if (!imgs) return data;
+  return { ...data, noteImgs: imgs };
+}
 
 function normalizeNotesBySetResponse(
   body: GetAllNotesBySetApiResponse,
@@ -63,7 +75,7 @@ export const useNoteDetail = (noteId: number) => {
     queryKey: ["note", noteId],
     queryFn: async () => {
       const response = await noteAPI.getNoteDetail(noteId);
-      return response.data.data;
+      return normalizeNoteDetail(response.data.data);
     },
     enabled: !!noteId,
   });
@@ -213,6 +225,21 @@ export const useSaveDocumentInNote = () => {
   });
 };
 
+export const useSaveImageInNote = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: SaveImgInNoteRequest) =>
+      noteAPI.saveImageInNote(data),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["note", variables.noteId] });
+    },
+    onError: (error) => {
+      console.error("Save image in note failed:", error);
+    },
+  });
+};
+
 // Hook for summarize file
 export const useSummarizeFile = () => {
   return useMutation({
@@ -248,6 +275,25 @@ export const useDeleteNoteDoc = () => {
     },
     onError: (error) => {
       console.error("Delete note document failed:", error);
+    },
+  });
+};
+
+export const useDeleteNoteImg = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: DeleteNoteImgRequest) =>
+      noteAPI.deleteImgInNote(data),
+    onSuccess: (_data, variables) => {
+      if (variables.noteId > 0) {
+        queryClient.invalidateQueries({
+          queryKey: ["note", variables.noteId],
+        });
+      }
+    },
+    onError: (error) => {
+      console.error("Delete note image failed:", error);
     },
   });
 };

@@ -93,7 +93,7 @@ const RoleSelection = ({
         <SwitchButton
           onPre={onBack}
           onNext={onNext}
-          disablePre={!selectedRole}
+          disableNext={!selectedRole}
         />
       </div>
     </div>

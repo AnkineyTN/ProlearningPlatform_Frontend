@@ -84,7 +84,7 @@ const LanguageSelection = ({
         <SwitchButton
           onPre={onBack}
           onNext={onNext}
-          disablePre={!selectedLanguage}
+          disableNext={!selectedLanguage}
         />
       </div>
     </div>

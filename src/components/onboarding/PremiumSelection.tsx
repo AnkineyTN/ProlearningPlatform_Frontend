@@ -26,7 +26,9 @@ const PremiumSelection = ({ onSelectPremium, onSkip, onBack }: Props) => {
             <h3 className='text-xl font-bold mb-4'>
               {t("onboarding.premiumSelection.free")}
             </h3>
-            <div className='text-3xl font-bold mb-6'>$0</div>
+            <div className='text-3xl font-bold mb-6'>
+              {t("onboarding.premiumSelection.priceFree")}
+            </div>
             <ul className='space-y-3 mb-8'>
               <li className='flex items-start gap-3'>
                 <Check className='w-5 h-5 text-green-600 flex-shrink-0 mt-0.5' />
@@ -57,13 +59,16 @@ const PremiumSelection = ({ onSelectPremium, onSkip, onBack }: Props) => {
 
           <div className='bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl border-2 border-transparent p-8 text-white relative overflow-hidden'>
             <div className='absolute top-4 right-4 bg-yellow-400 text-gray-900 px-3 py-1 rounded-full text-xs font-bold'>
-              POPULAR
+              {t("onboarding.premiumSelection.badgePopular")}
             </div>
             <h3 className='text-xl font-bold mb-4'>
               {t("onboarding.premiumSelection.premium")}
             </h3>
             <div className='text-3xl font-bold mb-6'>
-              $9.99<span className='text-lg font-normal'>/month</span>
+              {t("onboarding.premiumSelection.pricePremium")}
+              <span className='text-lg font-normal'>
+                {t("onboarding.premiumSelection.pricePremiumInterval")}
+              </span>
             </div>
             <ul className='space-y-3 mb-8'>
               <li className='flex items-start gap-3'>
@@ -122,7 +127,7 @@ const PremiumSelection = ({ onSelectPremium, onSkip, onBack }: Props) => {
             className='px-4 py-2 rounded-xl border border-ring bg-card text-foreground hover:bg-card-secondary transition-colors flex items-center gap-2 cursor-pointer'
           >
             <ChevronLeft className='w-4 h-4' />
-            <span>Back</span>
+            <span>{t("onboarding.back")}</span>
           </button>
           <button
             onClick={onSkip}

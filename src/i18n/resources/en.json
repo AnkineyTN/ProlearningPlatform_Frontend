@@ -1,4 +1,27 @@
 {
+    "adminOnboarding": {
+        "backToDashboard": "Back to dashboard",
+        "clearAll": "Clear all",
+        "clearConfirm": "Delete all onboarding records stored in this browser?",
+        "colCompletion": "Completion",
+        "colSummary": "Summary",
+        "colTime": "Time",
+        "colUser": "User",
+        "collapseRow": "Collapse row details",
+        "description": "Data is read from localStorage (no API yet). Each time a user finishes onboarding or skips the last step, one record is added.",
+        "detailJsonTitle": "JSON detail",
+        "expandRow": "Expand row details",
+        "empty": "No records yet. Complete the <link>/onboarding</link> flow or use \"Add sample (if empty)\".",
+        "planFree": "Free",
+        "planPremium": "Premium",
+        "refresh": "Refresh",
+        "seedMock": "Add sample (if empty)",
+        "statusCreatedSet": "Created set",
+        "statusSkipped": "Skipped",
+        "title": "Admin — Onboarding data",
+        "userIdChip": "· id {{id}}",
+        "notAvailable": "—"
+    },
     "calendar": {
         "days": {
             "friday": "Fri",
@@ -173,6 +196,7 @@
         "back": "Back",
         "continue": "Continue",
         "createStudySet": {
+            "charCount": "{{current}}/{{max}}",
             "createSet": "Create Set",
             "description": "Create your personalized learning space to organize your study materials",
             "descriptionLabel": "Description",
@@ -180,8 +204,11 @@
             "keepMaterialsInOnePlace": "Keep all of a class's materials in one place.",
             "makeManyStudySets": "You can make as many study sets as you want.",
             "nameLabel": "Study Set Name",
+            "namePlaceholder": "E.g. the name of your class",
+            "optionalTag": "(Optional)",
             "organizeMaterials": "Organize your materials into separate classes or semesters.",
             "privacyLabel": "Privacy",
+            "privacyPlaceholder": "Select privacy level",
             "privacyPrivate": "Private",
             "privacyPublic": "Public",
             "privacyUnlisted": "Unlisted",
@@ -208,18 +235,28 @@
         },
         "languageSelection": {
             "description": "Choose the language you'd like to use for your learning experience",
+            "header": "Choose Your Language",
             "info": "You can change your language preference anytime in your account settings.",
             "title": "Choose Your Language"
         },
+        "loading": "Loading…",
+        "progress": {
+            "step": "Step {{current}} / {{total}}",
+            "percent": "{{pct}}%"
+        },
         "premiumSelection": {
+            "badgePopular": "POPULAR",
             "description": "Select the plan that best suits your learning needs and goals.",
             "free": "Free",
             "freeFeatures": {
-                "accessToBasicContent": "Access to basic content",
-                "communitySupport": "Community support",
-                "limitedStudyModes": "Limited study modes"
+                "basicStudyModes": "Basic study modes",
+                "communityAccess": "Community access",
+                "unlimitedStudySets": "Unlimited study sets"
             },
             "premium": "Premium",
+            "priceFree": "$0",
+            "pricePremium": "$9.99",
+            "pricePremiumInterval": "/month",
             "premiumFeatures": {
                 "adFreeExperience": "Ad-free experience",
                 "advancedStudyModes": "Advanced study modes",
@@ -232,16 +269,27 @@
         },
         "roleSelection": {
             "description": "This helps us tailor your learning experience to suit your needs and goals.",
-            "header": "What best describes your role?"
+            "header": "What best describes your role?",
+            "student": "Student",
+            "studentDescription": "I'm focused on learning and studying materials",
+            "teacher": "Teacher",
+            "teacherDescription": "I create and share study materials"
         },
         "skipForNow": "Skip for now",
         "sourceSelection": {
+            "channels": {
+                "ChatGPT": "ChatGPT",
+                "Classmate": "Classmate",
+                "Facebook": "Facebook",
+                "Google": "Google",
+                "Instagram": "Instagram",
+                "Other": "Other",
+                "Reddit": "Reddit",
+                "TikTok": "TikTok",
+                "YouTube": "YouTube"
+            },
             "description": "Help us understand how you discovered our platform so we can improve our reach.",
-            "header": "How did you hear about ProLearning?",
-            "student": "Student",
-            "studentDescription": "Learning and studying materials",
-            "teacher": "Teacher",
-            "teacherDescription": "Creating and sharing study materials"
+            "header": "How did you hear about ProLearning?"
         }
     },
     "setlist": {

@@ -56,21 +56,26 @@ const CreateStudySet = ({
               </Label>
               <Input
                 type='text'
-                placeholder='E.g., The name of your class'
+                placeholder={t("onboarding.createStudySet.namePlaceholder")}
                 value={studySet.name}
                 onChange={(e) => onStudySetChange("name", e.target.value)}
                 className='w-full px-4 py-3 bg-card'
                 maxLength={100}
               />
               <div className='text-right text-xs text-gray-500 mt-1'>
-                {studySet.name.length}/100
+                {t("onboarding.createStudySet.charCount", {
+                  current: studySet.name.length,
+                  max: 100,
+                })}
               </div>
             </div>
 
             <div>
               <Label className='block text-sm font-semibold text-foreground mb-2'>
                 {t("onboarding.createStudySet.descriptionLabel")}{" "}
-                <span className='text-gray-500 font-normal'>(Optional)</span>
+                <span className='text-gray-500 font-normal'>
+                  {t("onboarding.createStudySet.optionalTag")}
+                </span>
               </Label>
               <Textarea
                 placeholder={t(
@@ -85,7 +90,10 @@ const CreateStudySet = ({
                 maxLength={300}
               />
               <div className='text-right text-xs text-gray-500 mt-1'>
-                {studySet.description.length}/300
+                {t("onboarding.createStudySet.charCount", {
+                  current: studySet.description.length,
+                  max: 300,
+                })}
               </div>
             </div>
 
@@ -98,7 +106,11 @@ const CreateStudySet = ({
                 onValueChange={(value) => onStudySetChange("privacy", value)}
               >
                 <SelectTrigger className='w-full px-4 py-3 bg-card appearance-none cursor-pointer'>
-                  <SelectValue placeholder='Select privacy level' />
+                  <SelectValue
+                    placeholder={t(
+                      "onboarding.createStudySet.privacyPlaceholder",
+                    )}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value='public'>

@@ -117,7 +117,7 @@ const EducationSelection = ({
         <SwitchButton
           onPre={onBack}
           onNext={onNext}
-          disablePre={!selectedEducation}
+          disableNext={!selectedEducation}
         />
       </div>
     </div>

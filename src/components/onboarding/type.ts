@@ -11,4 +11,20 @@ type OnboardingData = {
   };
 };
 
-export type { OnboardingData };
+type OnboardingDraft = {
+  currentStep: number;
+  data: OnboardingData;
+  updatedAt?: string;
+};
+
+type OnboardingSubmission = {
+  id: string;
+  submittedAt: string;
+  userId: number | null;
+  email: string | null;
+  displayName: string | null;
+  data: OnboardingData;
+  completedVia: "complete" | "skip";
+};
+
+export type { OnboardingData, OnboardingDraft, OnboardingSubmission };

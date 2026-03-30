@@ -12,8 +12,15 @@ import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useSaveDocumentInNote } from "@/hooks/useNotes";
-import { useUploadDocumentFile } from "@/hooks/useImageUpload";
+import {
+  useSaveDocumentInNote,
+  useSaveImageInNote,
+} from "@/hooks/useNotes";
+import { isBrowserImageFile } from "@/lib/utils";
+import {
+  useUploadDocumentFile,
+  useUploadImageFile,
+} from "@/hooks/useImageUpload";
 import { useNavigate } from "react-router-dom";
 
 interface NoteHeaderProps {
@@ -28,6 +35,7 @@ interface NoteHeaderProps {
     fileUrl: string;
     extension: string;
     publicId: string;
+    kind: "doc" | "image";
   }) => void;
   onDownloadHTML: () => void;
   attachedFileCount?: number;
@@ -55,8 +63,10 @@ export const NoteHeader = ({
 }: NoteHeaderProps) => {
   const navigate = useNavigate();
   const [isUploading, setIsUploading] = useState(false);
-  const uploadFileMutation = useUploadDocumentFile();
+  const uploadDocumentMutation = useUploadDocumentFile();
+  const uploadImageMutation = useUploadImageFile();
   const saveDocumentMutation = useSaveDocumentInNote();
+  const saveImageMutation = useSaveImageInNote();
 
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -64,17 +74,17 @@ export const NoteHeader = ({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    const validTypes = [
+    const validDocTypes = [
       "application/pdf",
       "application/msword",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "text/plain",
     ];
 
-    if (!validTypes.includes(file.type)) {
+    const isImage = isBrowserImageFile(file);
+    if (!isImage && !validDocTypes.includes(file.type)) {
       toast.error(
-        "Invalid file type. Please upload PDF, DOC, DOCX, or TXT files.",
+        "Invalid file type. Please upload images, PDF, DOC, DOCX, or TXT.",
       );
       return;
     }
@@ -86,29 +96,53 @@ export const NoteHeader = ({
 
     setIsUploading(true);
     try {
-      const result = await uploadFileMutation.mutateAsync(file);
+      if (isImage) {
+        const result = await uploadImageMutation.mutateAsync(file);
+        const ext = file.name.includes(".")
+          ? file.name.split(".").pop() || ""
+          : "";
 
-      const ext =
-        result.extension ||
-        (file.name.includes(".") ? file.name.split(".").pop() || "" : "");
+        await saveImageMutation.mutateAsync({
+          noteId,
+          assetId: result.assetId,
+          publicId: result.publicId,
+          extension: ext,
+          fileName: file.name,
+        });
 
-      await saveDocumentMutation.mutateAsync({
-        noteId,
-        assetId: result.assetId,
-        publicId: result.publicId,
-        extension: ext,
-        fileName: result.fileName,
-      });
+        onFileUploaded({
+          id: result.assetId,
+          fileName: file.name,
+          fileUrl: result.url,
+          extension: ext,
+          publicId: result.publicId,
+          kind: "image",
+        });
+      } else {
+        const result = await uploadDocumentMutation.mutateAsync(file);
 
-      const uploadedFile = {
-        id: result.assetId,
-        fileName: result.fileName,
-        fileUrl: result.url,
-        extension: ext,
-        publicId: result.publicId,
-      };
+        const ext =
+          result.extension ||
+          (file.name.includes(".") ? file.name.split(".").pop() || "" : "");
 
-      onFileUploaded(uploadedFile);
+        await saveDocumentMutation.mutateAsync({
+          noteId,
+          assetId: result.assetId,
+          publicId: result.publicId,
+          extension: ext,
+          fileName: result.fileName,
+        });
+
+        onFileUploaded({
+          id: result.assetId,
+          fileName: result.fileName,
+          fileUrl: result.url,
+          extension: ext,
+          publicId: result.publicId,
+          kind: "doc",
+        });
+      }
+
       toast.success("File uploaded successfully");
     } catch (error) {
       toast.error("Failed to upload file");
@@ -171,7 +205,7 @@ export const NoteHeader = ({
             disabled={isUploading}
             className='hidden'
             id='file-upload'
-            accept='.pdf,.doc,.docx,.txt,.pptx'
+            accept='.pdf,.doc,.docx,.txt,.pptx,.jpg,.jpeg,.png,.gif,.webp,.svg,.bmp,.avif'
           />
           <label htmlFor='file-upload'>
             <Button

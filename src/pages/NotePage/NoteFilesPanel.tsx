@@ -19,8 +19,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { useDeleteNoteDoc, useSummarizeFile } from "@/hooks/useNotes";
-import { mapI18nToAiApiLanguage } from "@/lib/utils";
+import {
+  useDeleteNoteDoc,
+  useDeleteNoteImg,
+  useSummarizeFile,
+} from "@/hooks/useNotes";
+import { isImageExtension, mapI18nToAiApiLanguage } from "@/lib/utils";
 
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
@@ -36,6 +40,8 @@ export interface NoteAttachedFile {
   fileUrl: string;
   extension: string;
   publicId: string;
+  /** How the file was stored; drives delete API (doc vs image). */
+  kind?: "doc" | "image";
 }
 
 interface NoteFilesPanelProps {
@@ -65,9 +71,12 @@ function NoteFileRow({
   const pdfWrapRef = useRef<HTMLDivElement>(null);
   const summarizeFileMutation = useSummarizeFile();
   const deleteNoteDocMutation = useDeleteNoteDoc();
+  const deleteNoteImgMutation = useDeleteNoteImg();
 
   const { fileName, fileUrl, extension, publicId, id: fileId } = file;
+  const kind = file.kind ?? (isImageExtension(extension) ? "image" : "doc");
   const isPdf = extension.toLowerCase() === "pdf";
+  const isImage = kind === "image" || isImageExtension(extension);
 
   useEffect(() => {
     setNumPages(null);
@@ -110,12 +119,20 @@ function NoteFileRow({
     }
     setIsDeleting(true);
     try {
-      await deleteNoteDocMutation.mutateAsync({
-        noteId,
-        assetId: fileId,
-        publicId,
-        extension,
-      });
+      if (kind === "image") {
+        await deleteNoteImgMutation.mutateAsync({
+          noteId,
+          publicId,
+          extension,
+        });
+      } else {
+        await deleteNoteDocMutation.mutateAsync({
+          noteId,
+          assetId: fileId,
+          publicId,
+          extension,
+        });
+      }
 
       onDeleted();
       toast.success("File deleted successfully");
@@ -202,9 +219,19 @@ function NoteFileRow({
               </div>
             )}
 
-            {!isPdf && (
+            {isImage && !isPdf && (
+              <div className='rounded-md border bg-muted/20 overflow-hidden max-h-[calc(100vh-380px)] overflow-y-auto mb-3 flex justify-center p-2'>
+                <img
+                  src={fileUrl}
+                  alt={fileName}
+                  className='max-w-full h-auto object-contain'
+                />
+              </div>
+            )}
+
+            {!isPdf && !isImage && (
               <p className='text-xs text-muted-foreground mb-3'>
-                Preview is available for PDF. You can still summarize this file with AI.
+                Preview is available for PDF and images. You can still summarize this file with AI.
               </p>
             )}
 

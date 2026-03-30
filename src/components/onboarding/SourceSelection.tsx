@@ -27,21 +27,16 @@ const SourceSelection = ({
 }: Props) => {
   const { t } = useTranslation();
   const sources = [
-    { id: "YouTube", label: "YouTube", icon: Youtube, color: "bg-red-500" },
-    { id: "TikTok", label: "TikTok", icon: Music, color: "bg-black" },
-    { id: "ChatGPT", label: "ChatGPT", icon: Sparkles, color: "bg-teal-500" },
-    { id: "Facebook", label: "Facebook", icon: Facebook, color: "bg-blue-500" },
-    { id: "Google", label: "Google", icon: Globe, color: "bg-gray-400" },
-    {
-      id: "Instagram",
-      label: "Instagram",
-      icon: Instagram,
-      color: "bg-pink-500",
-    },
-    { id: "Classmate", label: "Classmate", icon: Users, color: "bg-gray-500" },
-    { id: "Reddit", label: "Reddit", icon: CircleDot, color: "bg-orange-500" },
-    { id: "Other", label: "Other", icon: MoreHorizontal, color: "" },
-  ];
+    { id: "YouTube", icon: Youtube, color: "bg-red-500" },
+    { id: "TikTok", icon: Music, color: "bg-black" },
+    { id: "ChatGPT", icon: Sparkles, color: "bg-teal-500" },
+    { id: "Facebook", icon: Facebook, color: "bg-blue-500" },
+    { id: "Google", icon: Globe, color: "bg-gray-400" },
+    { id: "Instagram", icon: Instagram, color: "bg-pink-500" },
+    { id: "Classmate", icon: Users, color: "bg-gray-500" },
+    { id: "Reddit", icon: CircleDot, color: "bg-orange-500" },
+    { id: "Other", icon: MoreHorizontal, color: "" },
+  ] as const;
 
   return (
     <div className='min-h-screen flex items-center justify-center p-6'>
@@ -77,7 +72,7 @@ const SourceSelection = ({
                     <Icon className='w-6 h-6 text-white' />
                   </div>
                   <span className='font-medium text-foreground'>
-                    {source.label}
+                    {t(`onboarding.sourceSelection.channels.${source.id}`)}
                   </span>
                 </div>
               </button>
@@ -88,7 +83,7 @@ const SourceSelection = ({
         <SwitchButton
           onPre={onBack}
           onNext={onNext}
-          disablePre={!selectedSource}
+          disableNext={!selectedSource}
         />
       </div>
     </div>

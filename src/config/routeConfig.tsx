@@ -13,6 +13,7 @@ import FlashcardEditor from "@/pages/FlashcardPage/FlashcardEditor";
 import LandingPage from "@/pages/LandingPage";
 import TextEditor from "@/pages/NotePage";
 import OnboardingApp from "@/pages/OnboardingApp.tsx";
+import AdminOnboardingPage from "@/pages/AdminOnboardingPage";
 import SetListPage from "@/pages/SetListPage";
 import SetSeriesPage from "@/pages/SetSeriesPage";
 import TodoDashboard from "@/pages/TodoDashboard";
@@ -114,6 +115,10 @@ export const routeConfig: RouteObject[] = [
   {
     path: "/onboarding",
     element: <OnboardingApp />,
+  },
+  {
+    path: "/admin/onboarding",
+    element: <AdminOnboardingPage />,
   },
   {
     path: "/test",

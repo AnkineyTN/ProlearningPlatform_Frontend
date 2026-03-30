@@ -1,4 +1,27 @@
 {
+    "adminOnboarding": {
+        "backToDashboard": "Về dashboard",
+        "clearAll": "Xóa hết",
+        "clearConfirm": "Xóa toàn bộ bản ghi onboarding trong trình duyệt này?",
+        "colCompletion": "Hoàn tất",
+        "colSummary": "Tóm tắt",
+        "colTime": "Thời gian",
+        "colUser": "Người dùng",
+        "collapseRow": "Thu gọn chi tiết dòng",
+        "description": "Đọc từ localStorage (chưa có API). Mỗi lần hoàn tất hoặc bỏ qua bước cuối, một bản ghi được thêm vào.",
+        "detailJsonTitle": "Chi tiết JSON",
+        "expandRow": "Mở rộng chi tiết dòng",
+        "empty": "Chưa có bản ghi. Hoàn tất flow <link>/onboarding</link> hoặc bấm \"Thêm mẫu (nếu rỗng)\".",
+        "planFree": "Free",
+        "planPremium": "Premium",
+        "refresh": "Làm mới",
+        "seedMock": "Thêm mẫu (nếu rỗng)",
+        "statusCreatedSet": "Đã tạo set",
+        "statusSkipped": "Bỏ qua",
+        "title": "Admin — Dữ liệu onboarding",
+        "userIdChip": "· id {{id}}",
+        "notAvailable": "—"
+    },
     "calendar": {
         "days": {
             "friday": "T6",
@@ -173,6 +196,7 @@
         "back": "Quay lại",
         "continue": "Tiếp tục",
         "createStudySet": {
+            "charCount": "{{current}}/{{max}}",
             "createSet": "Tạo bộ tài liệu",
             "description": "Tạo không gian học tập cá nhân hóa của bạn để tổ chức tài liệu học tập",
             "descriptionLabel": "Mô tả",
@@ -180,8 +204,11 @@
             "keepMaterialsInOnePlace": "Giữ tất cả tài liệu của một lớp trong một nơi.",
             "makeManyStudySets": "Bạn có thể tạo nhiều bộ tài liệu học tập như bạn muốn.",
             "nameLabel": "Tên bộ tài liệu học tập",
+            "namePlaceholder": "Ví dụ: tên lớp hoặc môn học",
+            "optionalTag": "(Tùy chọn)",
             "organizeMaterials": "Tổ chức tài liệu của bạn thành các lớp hoặc học kỳ riêng biệt.",
             "privacyLabel": "Quyền riêng tư",
+            "privacyPlaceholder": "Chọn mức quyền riêng tư",
             "privacyPrivate": "Riêng tư",
             "privacyPublic": "Công khai",
             "privacyUnlisted": "Không niêm yết",
@@ -208,18 +235,28 @@
         },
         "languageSelection": {
             "description": "Chọn ngôn ngữ bạn muốn sử dụng cho trải nghiệm học tập của mình",
+            "header": "Chọn ngôn ngữ của bạn",
             "info": "Bạn có thể thay đổi sở thích ngôn ngữ bất cứ lúc nào trong cài đặt tài khoản của mình.",
             "title": "Chọn ngôn ngữ của bạn"
         },
+        "loading": "Đang tải…",
+        "progress": {
+            "step": "Bước {{current}} / {{total}}",
+            "percent": "{{pct}}%"
+        },
         "premiumSelection": {
+            "badgePopular": "PHỔ BIẾN",
             "description": "Chọn gói phù hợp nhất với nhu cầu và mục tiêu học tập của bạn.",
             "free": "Miễn phí",
             "freeFeatures": {
-                "accessToBasicContent": "Truy cập nội dung cơ bản",
-                "communitySupport": "Hỗ trợ cộng đồng",
-                "limitedStudyModes": "Chế độ học tập hạn chế"
+                "basicStudyModes": "Các chế độ học cơ bản",
+                "communityAccess": "Tham gia cộng đồng",
+                "unlimitedStudySets": "Không giới hạn bộ học tập"
             },
             "premium": "Gói cao cấp",
+            "priceFree": "$0",
+            "pricePremium": "$9.99",
+            "pricePremiumInterval": "/tháng",
             "premiumFeatures": {
                 "adFreeExperience": "Trải nghiệm không có quảng cáo",
                 "advancedStudyModes": "Chế độ học tập nâng cao",
@@ -232,16 +269,27 @@
         },
         "roleSelection": {
             "description": "Điều này giúp chúng tôi điều chỉnh trải nghiệm học tập của bạn phù hợp với nhu cầu và mục tiêu của bạn.",
-            "header": "Bạn là ai?"
+            "header": "Vai trò nào mô tả bạn nhất?",
+            "student": "Học sinh / Sinh viên",
+            "studentDescription": "Tôi tập trung vào học tập và ôn luyện",
+            "teacher": "Giáo viên / Giảng viên",
+            "teacherDescription": "Tôi tạo và chia sẻ tài liệu học tập"
         },
         "skipForNow": "Bỏ qua cho bây giờ",
         "sourceSelection": {
+            "channels": {
+                "ChatGPT": "ChatGPT",
+                "Classmate": "Bạn cùng lớp",
+                "Facebook": "Facebook",
+                "Google": "Google",
+                "Instagram": "Instagram",
+                "Other": "Khác",
+                "Reddit": "Reddit",
+                "TikTok": "TikTok",
+                "YouTube": "YouTube"
+            },
             "description": "Giúp chúng tôi hiểu cách bạn phát hiện ra nền tảng của chúng tôi để chúng tôi có thể cải thiện khả năng tiếp cận của mình.",
-            "header": "Bạn đã nghe về ProLearning từ đâu?",
-            "student": "Học sinh",
-            "studentDescription": "Tài liệu học tập và nghiên cứu",
-            "teacher": "Giáo viên",
-            "teacherDescription": "Tạo và chia sẻ tài liệu học tập"
+            "header": "Bạn đã nghe về ProLearning từ đâu?"
         }
     },
     "setlist": {

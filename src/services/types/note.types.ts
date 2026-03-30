@@ -12,6 +12,10 @@ export type NoteDetail = {
   privacy: string;
   content: string;
   noteDocs: NoteDocItem[];
+  /** Optional: images attached via /note/save-img (if backend returns separately from noteDocs). */
+  noteImgs?: NoteDocItem[];
+  /** Some APIs use this key instead of `noteImgs`. */
+  noteImages?: NoteDocItem[];
 };
 
 export type NoteListItem = {
@@ -173,6 +177,7 @@ export type SaveImgInNoteRequest = {
   assetId: number;
   publicId: string;
   extension: string;
+  fileName?: string;
 };
 
 export type SaveDocInNoteRequest = {

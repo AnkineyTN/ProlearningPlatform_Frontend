@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n/config";
 import { type OnboardingData } from "@/components/onboarding/type";
 import LanguageSelection from "@/components/onboarding/LanguageSelection";
 import EducationSelection from "@/components/onboarding/EducationSelection";
@@ -7,24 +10,74 @@ import RoleSelection from "@/components/onboarding/RoleSelection";
 import SourceSelection from "@/components/onboarding/SourceSelection";
 import PremiumSelection from "@/components/onboarding/PremiumSelection";
 import CreateStudySet from "@/components/onboarding/CreateStudySet";
+import OnboardingProgress from "@/components/onboarding/OnboardingProgress";
+import {
+  appendOnboardingSubmission,
+  clearOnboardingDraft,
+  loadOnboardingDraft,
+  saveOnboardingDraft,
+} from "@/lib/onboardingStorage";
+import type { RootState } from "@/store";
+
+const initialData: OnboardingData = {
+  language: "en",
+  education: "",
+  role: "",
+  source: "",
+  premium: false,
+  studySet: {
+    name: "",
+    description: "",
+    privacy: "public",
+  },
+};
 
 const OnboardingApp: React.FC = () => {
+  const { t } = useTranslation();
+  const user = useSelector((s: RootState) => s.auth.user);
+  const [hydrated, setHydrated] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [data, setData] = useState<OnboardingData>({
-    language: "en",
-    education: "",
-    role: "",
-    source: "",
-    premium: false,
-    studySet: {
-      name: "",
-      description: "",
-      privacy: "public",
-    },
-  });
+  const [data, setData] = useState<OnboardingData>(initialData);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const draft = loadOnboardingDraft();
+    if (draft) {
+      setCurrentStep(
+        Math.min(Math.max(draft.currentStep, 1), 6),
+      );
+      setData(draft.data);
+    }
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    void i18n.changeLanguage(data.language);
+  }, [hydrated, data.language]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    saveOnboardingDraft({ currentStep, data });
+  }, [hydrated, currentStep, data]);
+
+  const persistFinish = (completedVia: "complete" | "skip") => {
+    appendOnboardingSubmission({
+      userId: user?.id ?? null,
+      email: user?.email ?? null,
+      displayName: user
+        ? `${user.firstName} ${user.lastName}`.trim() || null
+        : null,
+      data,
+      completedVia,
+    });
+    clearOnboardingDraft();
+  };
+
   const handleNext = () => {
+    if (currentStep === 1) {
+      void i18n.changeLanguage(data.language);
+    }
     setCurrentStep((prev) => Math.min(prev + 1, 6));
   };
 
@@ -33,6 +86,12 @@ const OnboardingApp: React.FC = () => {
   };
 
   const handleComplete = () => {
+    persistFinish("complete");
+    navigate("/dashboard");
+  };
+
+  const handleSkipStudySet = () => {
+    persistFinish("skip");
     navigate("/dashboard");
   };
 
@@ -56,8 +115,17 @@ const OnboardingApp: React.FC = () => {
     });
   };
 
+  if (!hydrated) {
+    return (
+      <div className='min-h-screen flex items-center justify-center text-muted-foreground text-sm'>
+        {t("onboarding.loading")}
+      </div>
+    );
+  }
+
   return (
-    <>
+    <div className='pt-14'>
+      <OnboardingProgress currentStep={currentStep} />
       {currentStep === 1 && (
         <LanguageSelection
           selectedLanguage={data.language}
@@ -102,11 +170,11 @@ const OnboardingApp: React.FC = () => {
           studySet={data.studySet!}
           onStudySetChange={handleStudySetChange}
           onComplete={handleComplete}
-          onSkip={handleComplete}
+          onSkip={handleSkipStudySet}
           onBack={handleBack}
         />
       )}
-    </>
+    </div>
   );
 };
 

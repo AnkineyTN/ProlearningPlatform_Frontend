@@ -14,6 +14,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { useAutoSaveNote, useNoteDetail } from "@/hooks/useNotes";
+import { isImageExtension } from "@/lib/utils";
 import type { NoteDocItem } from "@/services/types/note.types";
 
 interface UploadedFile {
@@ -22,9 +23,13 @@ interface UploadedFile {
   fileUrl: string;
   extension: string;
   publicId: string;
+  kind: "doc" | "image";
 }
 
-function noteDocToUploadedFile(doc: NoteDocItem): UploadedFile {
+function noteItemToUploadedFile(
+  doc: NoteDocItem,
+  kind: UploadedFile["kind"],
+): UploadedFile {
   const ext = doc.fileName.includes(".")
     ? doc.fileName.split(".").pop() || ""
     : "";
@@ -34,7 +39,19 @@ function noteDocToUploadedFile(doc: NoteDocItem): UploadedFile {
     fileUrl: doc.fileUrl,
     extension: ext,
     publicId: doc.publicId,
+    kind,
   };
+}
+
+function attachmentKey(f: UploadedFile) {
+  return `${f.id}-${f.publicId}`;
+}
+
+function inferKindFromNoteDoc(doc: NoteDocItem): UploadedFile["kind"] {
+  const ext = doc.fileName.includes(".")
+    ? doc.fileName.split(".").pop() || ""
+    : "";
+  return isImageExtension(ext) ? "image" : "doc";
 }
 
 interface AISummary {
@@ -79,8 +96,18 @@ export const NotePage = () => {
 
   useEffect(() => {
     if (!noteDetail) return;
-    const docs = noteDetail.noteDocs ?? [];
-    setNoteFiles(docs.map(noteDocToUploadedFile));
+    const fromDocs = (noteDetail.noteDocs ?? []).map((d) =>
+      noteItemToUploadedFile(d, inferKindFromNoteDoc(d)),
+    );
+    const fromImgs = (
+      noteDetail.noteImgs ??
+      noteDetail.noteImages ??
+      []
+    ).map((d) => noteItemToUploadedFile(d, "image"));
+    const merged = new Map<string, UploadedFile>();
+    for (const f of fromDocs) merged.set(attachmentKey(f), f);
+    for (const f of fromImgs) merged.set(attachmentKey(f), f);
+    setNoteFiles([...merged.values()]);
   }, [noteDetail]);
 
   useEffect(() => {
