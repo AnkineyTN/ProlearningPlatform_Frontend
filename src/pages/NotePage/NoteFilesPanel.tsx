@@ -3,11 +3,12 @@ import {
   ChevronRight,
   FileText,
   LoaderCircle,
+  MessageSquarePlus,
   PanelRightClose,
   Sparkles,
   Trash2,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -26,6 +27,19 @@ import {
 } from "@/hooks/useNotes";
 import { isImageExtension, mapI18nToAiApiLanguage } from "@/lib/utils";
 
+import {
+  buildRegionCommentPayload,
+  RegionCommentOverlay,
+  uid,
+} from "@/pages/NotePage/NoteFileRegionComments";
+import type {
+  NoteAttachedFile,
+  NoteFileRegionCommentPayload,
+  RegionComment,
+} from "@/pages/NotePage/NoteFileRegionComments";
+
+export type { NoteAttachedFile, NoteFileRegionCommentPayload } from "@/pages/NotePage/NoteFileRegionComments";
+
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
@@ -34,22 +48,13 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url,
 ).toString();
 
-export interface NoteAttachedFile {
-  id: number;
-  fileName: string;
-  fileUrl: string;
-  extension: string;
-  publicId: string;
-  /** How the file was stored; drives delete API (doc vs image). */
-  kind?: "doc" | "image";
-}
-
 interface NoteFilesPanelProps {
   noteId: number;
   files: NoteAttachedFile[];
   onFileSummarize: (summary: string, fileName: string) => void;
   onFileDeleted: (fileId: number) => void;
   onClosePanel: () => void;
+  onRegionComment?: (payload: NoteFileRegionCommentPayload) => void;
 }
 
 function NoteFileRow({
@@ -57,11 +62,13 @@ function NoteFileRow({
   noteId,
   onFileSummarize,
   onDeleted,
+  onRegionComment,
 }: {
   file: NoteAttachedFile;
   noteId: number;
   onFileSummarize: (summary: string, fileName: string) => void;
   onDeleted: () => void;
+  onRegionComment?: (payload: NoteFileRegionCommentPayload) => void;
 }) {
   const { i18n } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -73,10 +80,15 @@ function NoteFileRow({
   const deleteNoteDocMutation = useDeleteNoteDoc();
   const deleteNoteImgMutation = useDeleteNoteImg();
 
+  const [isCommentMode, setIsCommentMode] = useState(false);
+  const [comments, setComments] = useState<RegionComment[]>([]);
+  const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
+
   const { fileName, fileUrl, extension, publicId, id: fileId } = file;
   const kind = file.kind ?? (isImageExtension(extension) ? "image" : "doc");
   const isPdf = extension.toLowerCase() === "pdf";
   const isImage = kind === "image" || isImageExtension(extension);
+  const canRegionComment = isPdf || (isImage && !isPdf);
 
   useEffect(() => {
     setNumPages(null);
@@ -93,6 +105,47 @@ function NoteFileRow({
     ro.observe(el);
     return () => ro.disconnect();
   }, [isPdf, fileUrl, open]);
+
+  useEffect(() => {
+    if (!isCommentMode || !open) return;
+    const h = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsCommentMode(false);
+        setActiveCommentId(null);
+      }
+    };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, [isCommentMode, open]);
+
+  const persistComment = useCallback(
+    (pageNumber: number, rect: RegionComment["rect"], text: string) => {
+      const id = uid();
+      const createdAt = new Date().toISOString();
+      const c: RegionComment = {
+        id,
+        pageNumber,
+        rect,
+        text: text.trim(),
+        createdAt,
+      };
+      setComments((prev) => [...prev, c]);
+      setIsCommentMode(false);
+      setActiveCommentId(null);
+      const payload = buildRegionCommentPayload(noteId, file, kind, c);
+      onRegionComment?.(payload);
+      if (import.meta.env.DEV) {
+        console.info("[note-file-region-comment]", payload);
+      }
+      toast.success("Comment added (local only until API is ready)");
+    },
+    [file, kind, noteId, onRegionComment],
+  );
+
+  const deleteComment = (id: string) => {
+    setComments((prev) => prev.filter((x) => x.id !== id));
+    setActiveCommentId(null);
+  };
 
   const handleSummarize = async () => {
     try {
@@ -187,7 +240,8 @@ function NoteFileRow({
             {isPdf && (
               <div
                 ref={pdfWrapRef}
-                className='rounded-md border bg-muted/20 overflow-y-auto max-h-[calc(100vh-380px)] overflow-x-hidden mb-3'
+                data-note-file-scroll
+                className='rounded-md border bg-muted/20 overflow-y-auto max-h-[calc(100vh-380px)] overflow-x-auto mb-3'
               >
                 <Document
                   file={fileUrl}
@@ -207,12 +261,23 @@ function NoteFileRow({
                         key={i + 1}
                         className='flex justify-center py-2 first:pt-3 last:pb-3'
                       >
-                        <Page
-                          pageNumber={i + 1}
-                          width={pageWidth}
-                          renderTextLayer
-                          renderAnnotationLayer
-                        />
+                        <div className='relative inline-block'>
+                          <Page
+                            pageNumber={i + 1}
+                            width={pageWidth}
+                            renderTextLayer
+                            renderAnnotationLayer
+                          />
+                          <RegionCommentOverlay
+                            drawEnabled={isCommentMode}
+                            pageNumber={i + 1}
+                            comments={comments}
+                            activeId={activeCommentId}
+                            setActiveId={setActiveCommentId}
+                            onDeleteComment={deleteComment}
+                            onSaveComment={(rect, text) => persistComment(i + 1, rect, text)}
+                          />
+                        </div>
                       </div>
                     ))}
                 </Document>
@@ -220,12 +285,26 @@ function NoteFileRow({
             )}
 
             {isImage && !isPdf && (
-              <div className='rounded-md border bg-muted/20 overflow-hidden max-h-[calc(100vh-380px)] overflow-y-auto mb-3 flex justify-center p-2'>
-                <img
-                  src={fileUrl}
-                  alt={fileName}
-                  className='max-w-full h-auto object-contain'
-                />
+              <div
+                data-note-file-scroll
+                className='rounded-md border bg-muted/20 max-h-[calc(100vh-380px)] overflow-y-auto overflow-x-auto mb-3 flex justify-center p-2'
+              >
+                <div className='relative inline-block max-w-full'>
+                  <img
+                    src={fileUrl}
+                    alt={fileName}
+                    className='max-w-full h-auto object-contain block'
+                  />
+                  <RegionCommentOverlay
+                    drawEnabled={isCommentMode}
+                    pageNumber={1}
+                    comments={comments}
+                    activeId={activeCommentId}
+                    setActiveId={setActiveCommentId}
+                    onDeleteComment={deleteComment}
+                    onSaveComment={(rect, text) => persistComment(1, rect, text)}
+                  />
+                </div>
               </div>
             )}
 
@@ -233,6 +312,34 @@ function NoteFileRow({
               <p className='text-xs text-muted-foreground mb-3'>
                 Preview is available for PDF and images. You can still summarize this file with AI.
               </p>
+            )}
+
+            {canRegionComment && (
+              <div className='flex flex-col gap-2 mb-3'>
+                <Button
+                  type='button'
+                  variant={isCommentMode ? "secondary" : "outline"}
+                  size='sm'
+                  className='w-full gap-2'
+                  onClick={() => {
+                    setIsCommentMode((v) => !v);
+                    setActiveCommentId(null);
+                  }}
+                >
+                  <MessageSquarePlus className='w-4 h-4' />
+                  {isCommentMode ? "Cancel commenting" : "+ Comments"}
+                </Button>
+                {isCommentMode && (
+                  <p className='text-xs text-muted-foreground text-center animate-pulse'>
+                    Drag to select a region · Esc to cancel mode
+                  </p>
+                )}
+                {comments.length > 0 && (
+                  <p className='text-xs text-muted-foreground text-center'>
+                    {comments.length} local comment{comments.length !== 1 ? "s" : ""}
+                  </p>
+                )}
+              </div>
             )}
 
             <Button
@@ -261,6 +368,7 @@ export const NoteFilesPanel = ({
   onFileSummarize,
   onFileDeleted,
   onClosePanel,
+  onRegionComment,
 }: NoteFilesPanelProps) => {
   return (
     <div className='w-full h-full overflow-hidden flex flex-col bg-background'>
@@ -287,9 +395,11 @@ export const NoteFilesPanel = ({
             noteId={noteId}
             onFileSummarize={onFileSummarize}
             onDeleted={() => onFileDeleted(f.id)}
+            onRegionComment={onRegionComment}
           />
         ))}
       </div>
     </div>
   );
 };
+
