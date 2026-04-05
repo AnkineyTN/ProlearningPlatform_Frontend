@@ -1,6 +1,7 @@
 import { BookOpen, SwatchBook } from "lucide-react";
 import ModeToggle from "@/components/theme/mode-toggle";
 import LanguageToggle  from "@/components/language/language-toggle";
+import NotificationBell from "@/components/notifications/NotificationBell";
 import { useNavigate } from "react-router";
 
 export default function FlashcardHeader({ setId, title, description }: { setId: number, title: string, description: string }) {
@@ -25,7 +26,8 @@ export default function FlashcardHeader({ setId, title, description }: { setId: 
                             <span className="text-muted-foreground text-sm">setTitle</span>
                         </div>
                     </div>
-                    <div className="flex justify-between px-4 gap-4">
+                    <div className="flex items-center gap-3 shrink-0">
+                        <NotificationBell />
                         <ModeToggle />
                         <LanguageToggle />
                     </div>

@@ -74,6 +74,18 @@
         "search": "Tìm kiếm...",
         "welcome": "Chào mừng trở lại!"
     },
+    "notificationsPanel": {
+        "title": "Thông báo",
+        "tabAll": "Tất cả",
+        "tabUnread": "Chưa đọc",
+        "sectionEarlier": "Trước đó",
+        "seeAll": "Xem thêm",
+        "empty": "Chưa có thông báo",
+        "emptyUnread": "Bạn đã xem hết thông báo",
+        "loadError": "Không tải được thông báo.",
+        "moreActions": "Tùy chọn khác",
+        "markAllRead": "Đánh dấu tất cả đã đọc"
+    },
     "landing": {
         "createAccount": "Tạo tài khoản",
         "cta": {

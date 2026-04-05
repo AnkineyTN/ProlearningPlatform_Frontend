@@ -3,7 +3,7 @@ import api from '../client';
 
 import type {
   DeviceTokenRegistration,
-  NotificationResponse,
+  SingleNotificationResponse,
   NotificationListResponse,
   NotificationUnreadCountResponse,
   MarkNotificationsReadRequest,
@@ -33,11 +33,11 @@ export const notificationAPI = {
    */
   getNotifications: (
     page: number = 0,
-    size: number = 10,
-    sort: string = 'createdAt,DESC',
+    size: number = 20,
+    sort?: string,
   ): Promise<AxiosResponse<NotificationListResponse>> =>
     api.get('/notifications', {
-      params: { page, size, sort },
+      params: sort != null ? { page, size, sort } : { page, size },
     }),
 
   /**
@@ -45,11 +45,11 @@ export const notificationAPI = {
    */
   getUnreadNotifications: (
     page: number = 0,
-    size: number = 10,
-    sort: string = 'createdAt,DESC',
+    size: number = 20,
+    sort?: string,
   ): Promise<AxiosResponse<NotificationListResponse>> =>
     api.get('/notifications/unread', {
-      params: { page, size, sort },
+      params: sort != null ? { page, size, sort } : { page, size },
     }),
 
   /**
@@ -63,7 +63,7 @@ export const notificationAPI = {
    */
   markAsRead: (
     notificationId: number | string,
-  ): Promise<AxiosResponse<NotificationResponse>> =>
+  ): Promise<AxiosResponse<SingleNotificationResponse>> =>
     api.patch(`/notifications/${notificationId}/read`),
 
   /**

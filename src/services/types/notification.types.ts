@@ -1,53 +1,36 @@
 // Device token registration
 export type DeviceTokenRegistration = {
   deviceToken: string;
-  deviceType?: 'WEB' | 'MOBILE' | 'DESKTOP';
+  deviceType?: "WEB" | "MOBILE" | "DESKTOP";
 };
 
-// Notification types
-export type NotificationType =
-  | 'FLASHCARD_REMINDER'
-  | 'QUIZ_AVAILABLE'
-  | 'NEW_CONTENT'
-  | 'SYSTEM_MESSAGE'
-  | 'FRIEND_REQUEST'
-  | 'COMMENT'
-  | 'LIKE'
-  | 'MENTION'
-  | 'OTHER';
-
-export type NotificationStatus = 'READ' | 'UNREAD';
-
-export type Notification = {
-  id: number | string;
-  userId?: number;
+/** One notification from GET /notifications or GET /notifications/unread */
+export type UserNotificationItem = {
+  id: number;
+  type: string;
   title: string;
   message: string;
-  type: NotificationType;
-  status: NotificationStatus;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
+  actionUrl?: string | null;
+  isRead: boolean;
   createdAt: string;
-  updatedAt?: string;
-  readAt?: string;
+  readAt?: string | null;
 };
 
-export type NotificationResponse = {
-  status: string;
-  message: string;
-  data: Notification;
-  metadata: Record<string, never>;
+export type NotificationListPayload = {
+  notifications: UserNotificationItem[];
+  unreadCount: number;
+  currentPage: number;
+  totalPages: number;
+  totalElements: number;
 };
 
+/** Wrapped API body for list endpoints */
 export type NotificationListResponse = {
   status: string;
   message: string;
-  data: Notification[];
-  metadata: {
-    totalItems: number;
-    totalPages: number;
-    currentPage: number;
-    pageSize: number;
-  };
+  data: NotificationListPayload;
+  metadata: Record<string, unknown> | null;
 };
 
 export type NotificationUnreadCountResponse = {
@@ -56,15 +39,20 @@ export type NotificationUnreadCountResponse = {
   data: {
     unreadCount: number;
   };
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown> | null;
 };
 
-// Mark as read payloads
+export type SingleNotificationResponse = {
+  status: string;
+  message: string;
+  data: UserNotificationItem;
+  metadata: Record<string, unknown> | null;
+};
+
 export type MarkNotificationsReadRequest = {
   notificationIds: (number | string)[];
 };
 
-// API Response types
 export type VoidResponse = {
   status: string;
   message: string;
@@ -78,5 +66,5 @@ export type MarkAsReadResponse = {
   data: {
     markedCount: number;
   };
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 };

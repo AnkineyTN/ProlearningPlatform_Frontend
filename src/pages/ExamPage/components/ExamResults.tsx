@@ -36,6 +36,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import type { Exam, ExamResult } from '../types';
 import ModeToggle from '@/components/theme/mode-toggle';
+import NotificationBell from '@/components/notifications/NotificationBell';
 
 interface ExamResultsProps {
   setId: number;
@@ -211,6 +212,7 @@ export default function ExamResults({
                 >
                   {t('exam.results.viewExam')}
                 </Button>
+                <NotificationBell />
                 <ModeToggle />
               </div>
             </div>

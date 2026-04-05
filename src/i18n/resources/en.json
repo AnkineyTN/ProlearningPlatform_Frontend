@@ -74,6 +74,18 @@
         "search": "Search...",
         "welcome": "Welcome back!"
     },
+    "notificationsPanel": {
+        "title": "Notifications",
+        "tabAll": "All",
+        "tabUnread": "Unread",
+        "sectionEarlier": "Earlier",
+        "seeAll": "See all",
+        "empty": "No notifications yet",
+        "emptyUnread": "You're all caught up",
+        "loadError": "Could not load notifications.",
+        "moreActions": "More options",
+        "markAllRead": "Mark all as read"
+    },
     "landing": {
         "createAccount": "Create an account",
         "cta": {

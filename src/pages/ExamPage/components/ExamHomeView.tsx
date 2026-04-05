@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import type { Exam } from "../types";
 import ModeToggle from "@/components/theme/mode-toggle";
+import NotificationBell from "@/components/notifications/NotificationBell";
 
 interface ExamHomeViewProps {
   exam: Exam;
@@ -20,7 +21,8 @@ export default function ExamHomeView({
   const { t } = useTranslation();
   return (
     <div className="min-h-[calc(100vh-200px)] flex items-center justify-center p-8">
-      <div className="absolute top-10 right-40">
+      <div className="absolute top-10 right-40 flex items-center gap-3">
+        <NotificationBell />
         <ModeToggle />
       </div>
       <div className="max-w-2xl w-full">

@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import LogoFG from "@/assets/logo_fg";
 import LanguageToggle from "@/components/language/language-toggle";
 import ModeToggle from "@/components/theme/mode-toggle";
+import NotificationBell from "@/components/notifications/NotificationBell";
 import { Button } from "@/components/ui/button";
 
 export default function LandingPage() {
@@ -123,7 +124,8 @@ export default function LandingPage() {
                 {t("landing.signUp")}
               </Button>
               <header className='flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12'>
-                <div className='flex w-full justify-between px-4 gap-4'>
+                <div className='flex items-center gap-3 px-2'>
+                  <NotificationBell />
                   <ModeToggle />
                   <LanguageToggle />
                 </div>

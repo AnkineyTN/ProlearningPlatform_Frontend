@@ -1,9 +1,9 @@
-import { Search, Bell } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import ModeToggle from "@/components/theme/mode-toggle";
 import LanguageToggle from "@/components/language/language-toggle";
+import NotificationBell from "@/components/notifications/NotificationBell";
 import { useTranslation } from "react-i18next";
-import { Button } from "../ui/button";
 
 type Props = {
   onSearch?: (query: string) => void;
@@ -26,14 +26,8 @@ const Header = ({ onSearch, title }: Props) => {
             className='bg-card pl-10 pr-4 py-2 w-80 rounded-full border border-muted-foreground'
           />
         </div>
-        <Button
-          variant={"ghost"}
-          className='p-2 rounded-lg cursor-pointer'
-          title={t("header.notifications")}
-        >
-          <Bell className='w-6 h-6' />
-        </Button>
-        <div className='flex w-full justify-between px-4 gap-4'>
+        <div className='flex items-center gap-3 shrink-0'>
+          <NotificationBell />
           <ModeToggle />
           <LanguageToggle />
         </div>

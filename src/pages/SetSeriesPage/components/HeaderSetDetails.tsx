@@ -9,6 +9,7 @@ import DeleteConfirmDialog from "@/components/modals/DeleteConfirmDialog";
 import { Button } from "@/components/ui/button";
 import LanguageToggle from "@/components/language/language-toggle";
 import ModeToggle from "@/components/theme/mode-toggle";
+import NotificationBell from "@/components/notifications/NotificationBell";
 import { useDeleteSet, useSet, useUpdateSet } from "@/hooks/useSets";
 
 type Props = {
@@ -153,6 +154,7 @@ const HeaderSetDetails = ({ setId }: Props) => {
         </div>
       </div>
       <div className="flex flex-col items-center justify-between px-4 gap-4">
+        <NotificationBell />
         <ModeToggle />
         <LanguageToggle />
       </div>

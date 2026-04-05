@@ -2,6 +2,7 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import ModeToggle from "@/components/theme/mode-toggle";
 import LanguageToggle from "@/components/language/language-toggle";
+import NotificationBell from "@/components/notifications/NotificationBell";
 import { useTranslation } from "react-i18next";
 
 type Props = {
@@ -25,7 +26,8 @@ const HeaderSet = ({ onSearch }: Props) => {
           />
         </div>
 
-        <div className='flex w-full justify-between px-4 gap-4'>
+        <div className='flex items-center gap-3 shrink-0'>
+          <NotificationBell />
           <ModeToggle />
           <LanguageToggle />
         </div>
