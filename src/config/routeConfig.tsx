@@ -98,6 +98,19 @@ function ExamUpdateWrapper() {
   return <ExamEditor />;
 }
 
+function AdminOnboardingRoute() {
+  const token = useSelector((s: RootState) => s.auth.token);
+  const user = useSelector((s: RootState) => s.auth.user);
+  if (!token) {
+    return <Navigate to='/login' replace />;
+  }
+  const isAdmin = user?.roles?.includes("ROLE_ADMIN") ?? false;
+  if (!isAdmin) {
+    return <Navigate to='/dashboard' replace />;
+  }
+  return <AdminOnboardingPage />;
+}
+
 export const routeConfig: RouteObject[] = [
   // Public routes
   {
@@ -118,7 +131,7 @@ export const routeConfig: RouteObject[] = [
   },
   {
     path: "/admin/onboarding",
-    element: <AdminOnboardingPage />,
+    element: <AdminOnboardingRoute />,
   },
   {
     path: "/test",

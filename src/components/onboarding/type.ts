@@ -1,7 +1,6 @@
 type OnboardingData = {
   language: string;
   education: string;
-  role: string;
   source: string;
   premium: boolean;
   studySet: {

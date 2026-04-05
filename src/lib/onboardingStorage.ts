@@ -84,7 +84,6 @@ export function seedMockOnboardingSubmissions(): void {
       data: {
         language: "vi",
         education: "College",
-        role: "student",
         source: "YouTube",
         premium: false,
         studySet: {
@@ -104,7 +103,6 @@ export function seedMockOnboardingSubmissions(): void {
       data: {
         language: "en",
         education: "Grad School",
-        role: "teacher",
         source: "Google",
         premium: true,
         studySet: {

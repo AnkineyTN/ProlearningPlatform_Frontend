@@ -5,7 +5,7 @@ type Props = {
   totalSteps?: number;
 };
 
-const TOTAL = 6;
+const TOTAL = 5;
 
 const OnboardingProgress = ({ currentStep, totalSteps = TOTAL }: Props) => {
   const { t } = useTranslation();

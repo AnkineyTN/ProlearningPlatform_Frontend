@@ -2,27 +2,35 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 import i18n from "@/i18n/config";
 import { type OnboardingData } from "@/components/onboarding/type";
 import LanguageSelection from "@/components/onboarding/LanguageSelection";
 import EducationSelection from "@/components/onboarding/EducationSelection";
-import RoleSelection from "@/components/onboarding/RoleSelection";
 import SourceSelection from "@/components/onboarding/SourceSelection";
 import PremiumSelection from "@/components/onboarding/PremiumSelection";
 import CreateStudySet from "@/components/onboarding/CreateStudySet";
 import OnboardingProgress from "@/components/onboarding/OnboardingProgress";
+import { mapOnboardingDataToSubmissionPayload } from "@/lib/onboardingApiMapping";
 import {
-  appendOnboardingSubmission,
   clearOnboardingDraft,
   loadOnboardingDraft,
   saveOnboardingDraft,
 } from "@/lib/onboardingStorage";
+import { onboardingAPI } from "@/services/endpoints/onboarding";
 import type { RootState } from "@/store";
+
+const TOTAL_STEPS = 5;
+
+/** Drafts from the old 6-step flow (with Role) map onto the new step index. */
+function migrateOnboardingStep(savedStep: number): number {
+  if (savedStep <= 3) return savedStep;
+  return savedStep - 1;
+}
 
 const initialData: OnboardingData = {
   language: "en",
   education: "",
-  role: "",
   source: "",
   premium: false,
   studySet: {
@@ -38,14 +46,14 @@ const OnboardingApp: React.FC = () => {
   const [hydrated, setHydrated] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [data, setData] = useState<OnboardingData>(initialData);
+  const [finishing, setFinishing] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const draft = loadOnboardingDraft();
     if (draft) {
-      setCurrentStep(
-        Math.min(Math.max(draft.currentStep, 1), 6),
-      );
+      const migrated = migrateOnboardingStep(draft.currentStep);
+      setCurrentStep(Math.min(Math.max(migrated, 1), TOTAL_STEPS));
       setData(draft.data);
     }
     setHydrated(true);
@@ -61,38 +69,39 @@ const OnboardingApp: React.FC = () => {
     saveOnboardingDraft({ currentStep, data });
   }, [hydrated, currentStep, data]);
 
-  const persistFinish = (completedVia: "complete" | "skip") => {
-    appendOnboardingSubmission({
-      userId: user?.id ?? null,
-      email: user?.email ?? null,
-      displayName: user
-        ? `${user.firstName} ${user.lastName}`.trim() || null
-        : null,
-      data,
-      completedVia,
-    });
-    clearOnboardingDraft();
+  const persistFinish = async () => {
+    if (user?.id == null) {
+      toast.error(t("onboarding.submitMissingUser"));
+      return;
+    }
+    setFinishing(true);
+    try {
+      await onboardingAPI.submit({
+        userId: user.id,
+        data: mapOnboardingDataToSubmissionPayload(data),
+      });
+      clearOnboardingDraft();
+      navigate("/dashboard");
+    } catch {
+      toast.error(t("onboarding.submitError"));
+    } finally {
+      setFinishing(false);
+    }
   };
 
   const handleNext = () => {
     if (currentStep === 1) {
       void i18n.changeLanguage(data.language);
     }
-    setCurrentStep((prev) => Math.min(prev + 1, 6));
+    setCurrentStep((prev) => Math.min(prev + 1, TOTAL_STEPS));
   };
 
   const handleBack = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const handleComplete = () => {
-    persistFinish("complete");
-    navigate("/dashboard");
-  };
-
   const handleSkipStudySet = () => {
-    persistFinish("skip");
-    navigate("/dashboard");
+    void persistFinish();
   };
 
   const handleSkipPremium = () => {
@@ -125,7 +134,10 @@ const OnboardingApp: React.FC = () => {
 
   return (
     <div className='pt-14'>
-      <OnboardingProgress currentStep={currentStep} />
+      <OnboardingProgress
+        currentStep={currentStep}
+        totalSteps={TOTAL_STEPS}
+      />
       {currentStep === 1 && (
         <LanguageSelection
           selectedLanguage={data.language}
@@ -143,14 +155,6 @@ const OnboardingApp: React.FC = () => {
         />
       )}
       {currentStep === 3 && (
-        <RoleSelection
-          selectedRole={data.role}
-          onRoleSelect={(role) => setData({ ...data, role })}
-          onNext={handleNext}
-          onBack={handleBack}
-        />
-      )}
-      {currentStep === 4 && (
         <SourceSelection
           selectedSource={data.source}
           onSourceSelect={(source) => setData({ ...data, source })}
@@ -158,20 +162,21 @@ const OnboardingApp: React.FC = () => {
           onBack={handleBack}
         />
       )}
-      {currentStep === 5 && (
+      {currentStep === 4 && (
         <PremiumSelection
           onSelectPremium={handleSelectPremium}
           onSkip={handleSkipPremium}
           onBack={handleBack}
         />
       )}
-      {currentStep === 6 && (
+      {currentStep === 5 && (
         <CreateStudySet
           studySet={data.studySet!}
           onStudySetChange={handleStudySetChange}
-          onComplete={handleComplete}
+          onComplete={persistFinish}
           onSkip={handleSkipStudySet}
           onBack={handleBack}
+          isSubmitting={finishing}
         />
       )}
     </div>

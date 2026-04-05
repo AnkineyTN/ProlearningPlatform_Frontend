@@ -5,6 +5,7 @@ import {
   Layers,
   Infinity,
 } from "lucide-react";
+import { toast } from "react-toastify";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,13 +17,31 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
+import { useCreateSet } from "@/hooks/useSets";
+import type { CreateSetPayload } from "@/services/types/set.types";
+
+function studySetToCreatePayload(studySet: {
+  name: string;
+  description: string;
+  privacy: string;
+}): CreateSetPayload {
+  const p = studySet.privacy.toLowerCase();
+  const privacy: CreateSetPayload["privacy"] =
+    p === "public" ? "PUBLIC" : "PRIVATE";
+  return {
+    title: studySet.name.trim(),
+    description: studySet.description.trim(),
+    privacy,
+  };
+}
 
 type Props = {
   studySet: { name: string; description: string; privacy: string };
   onStudySetChange: (field: string, value: string) => void;
-  onComplete: () => void;
+  onComplete: () => void | Promise<void>;
   onSkip: () => void;
   onBack: () => void;
+  isSubmitting?: boolean;
 };
 
 const CreateStudySet = ({
@@ -31,8 +50,24 @@ const CreateStudySet = ({
   onComplete,
   onSkip,
   onBack,
+  isSubmitting = false,
 }: Props) => {
   const { t } = useTranslation();
+  const createSetMutation = useCreateSet();
+
+  const handleCreateSet = async () => {
+    try {
+      await createSetMutation.mutateAsync(
+        studySetToCreatePayload(studySet),
+      );
+      await onComplete();
+    } catch {
+      toast.error(t("onboarding.createStudySet.createFailed"));
+    }
+  };
+
+  const busy = isSubmitting || createSetMutation.isPending;
+
   return (
     <div className='min-h-screen flex items-center justify-center p-6'>
       <div className='w-full max-w-5xl'>
@@ -127,11 +162,16 @@ const CreateStudySet = ({
             </div>
 
             <button
-              onClick={onComplete}
-              disabled={!studySet.name.trim()}
+              type='button'
+              onClick={() => void handleCreateSet()}
+              disabled={!studySet.name.trim() || busy}
               className='w-full py-4 bg-card-inverse text-background rounded-xl font-semibold hover:bg-card-hovered transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
             >
-              <span>+ {t("onboarding.createStudySet.createSet")}</span>
+              <span>
+                {busy
+                  ? t("onboarding.submitting")
+                  : `+ ${t("onboarding.createStudySet.createSet")}`}
+              </span>
             </button>
           </div>
 
@@ -193,15 +233,19 @@ const CreateStudySet = ({
 
         <div className='flex items-center justify-between mt-8'>
           <button
+            type='button'
             onClick={onBack}
-            className='px-4 py-2 rounded-xl border border-ring bg-card text-foreground hover:bg-card-secondary transition-colors flex items-center gap-2 cursor-pointer'
+            disabled={busy}
+            className='px-4 py-2 rounded-xl border border-ring bg-card text-foreground hover:bg-card-secondary transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
           >
             <ChevronLeft className='w-4 h-4' />
             <span>{t("onboarding.back")}</span>
           </button>
           <button
+            type='button'
             onClick={onSkip}
-            className='px-4 py-2 rounded-xl bg-foreground text-background hover:bg-card-hovered transition-colors flex items-center gap-2 cursor-pointer'
+            disabled={busy}
+            className='px-4 py-2 rounded-xl bg-foreground text-background hover:bg-card-hovered transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
           >
             <span>{t("onboarding.skipForNow")}</span>
             <ChevronRight className='w-4 h-4' />
