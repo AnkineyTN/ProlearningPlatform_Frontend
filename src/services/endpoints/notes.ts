@@ -26,20 +26,26 @@ import type {
 
 export const noteAPI = {
   getNoteDetail: (
+    setId: number,
     noteId: number,
   ): Promise<AxiosResponse<ApiResponseNoteDetail>> =>
-    api.get(`/note/${noteId}`),
+    api.get(`/sets/${setId}/notes/${noteId}`),
   createNote: (
+    setId: number,
     payload: CreateNotePayload,
   ): Promise<AxiosResponse<ApiResponseNoteDetail>> =>
-    api.post('/note/create', payload),
+    api.post(`/sets/${setId}/notes`, payload),
   updateNote: (
+    setId: number,
     noteId: number,
     payload: Partial<CreateNotePayload>,
   ): Promise<AxiosResponse<UpdateNoteResponse>> =>
-    api.patch(`/note/update/${noteId}`, payload),
-  deleteNote: (noteId: number): Promise<AxiosResponse<DeleteNoteResponse>> =>
-    api.delete(`/note/delete/${noteId}`),
+    api.patch(`/sets/${setId}/notes/${noteId}`, payload),
+  deleteNote: (
+    setId: number,
+    noteId: number,
+  ): Promise<AxiosResponse<DeleteNoteResponse>> =>
+    api.delete(`/sets/${setId}/notes/${noteId}`),
   getAllNotesBySet: (
     setId: number,
     query: GetAllNotesBySetQuery,
@@ -54,25 +60,28 @@ export const noteAPI = {
     if (query.privacy) {
       sp.set('privacy', query.privacy);
     }
-    return api.get(`/note/all/${setId}?${sp.toString()}`);
+    return api.get(`/sets/${setId}/notes?${sp.toString()}`);
   },
   autoSaveNote: (
+    setId: number,
     noteId: number,
     data: AutoSaveNoteRequest,
   ): Promise<AxiosResponse<AutoSaveNoteResponse>> =>
-    api.patch(`/note/save/${noteId}`, data),
+    api.patch(`/sets/${setId}/notes/${noteId}/save`, data),
   explainText: (
+    setId: number,
     data: ExplainTextRequest,
   ): Promise<AxiosResponse<ExplainTextResponseBody>> =>
-    api.post('/note/explain', data),
+    api.post(`/sets/${setId}/notes/explain`, data),
   uploadFile: (
     file: File,
+    setId: number,
     noteId: number,
   ): Promise<AxiosResponse<UploadFileResponse>> => {
     const formData = new FormData();
     formData.append('file', file);
     return api.post(
-      `/upload-file?subject=note-document&id=${noteId}`,
+      `/sets/${setId}/notes/upload-file?subject=note-document&id=${noteId}`,
       formData,
       {
         headers: {
@@ -82,30 +91,36 @@ export const noteAPI = {
     );
   },
   summarizeFile: (
+    setId: number,
     data: SummarizeFileRequest,
   ): Promise<AxiosResponse<SummarizeFileResponse>> =>
-    api.post('/note/summarize', data),
+    api.post(`/sets/${setId}/notes/summarize`, data),
   convertToVectorDB: (
+    setId: number,
     data: ConvertToVectorDBRequest,
   ): Promise<AxiosResponse<ConvertToVectorDBResponse>> =>
-    api.post('/note/convert-to-vectordb', data),
+    api.post(`/sets/${setId}/notes/convert-to-vectordb`, data),
   deleteNoteDoc: (
+    setId: number,
     data: DeleteNoteDocRequest,
   ): Promise<AxiosResponse<ResponseDataVoid>> =>
-    api.delete('/note/delete-doc', { data }),
+    api.delete(`/sets/${setId}/notes/delete-doc`, { data }),
 
   saveImageInNote: (
+    setId: number,
     data: SaveImgInNoteRequest,
   ): Promise<AxiosResponse<ResponseDataVoid>> =>
-    api.post('/note/save-img', data),
+    api.post(`/sets/${setId}/notes/save-img`, data),
 
   saveDocumentInNote: (
+    setId: number,
     data: SaveDocInNoteRequest,
   ): Promise<AxiosResponse<ResponseDataVoid>> =>
-    api.post('/note/save-doc', data),
+    api.post(`/sets/${setId}/notes/save-doc`, data),
 
   deleteImgInNote: (
+    setId: number,
     data: DeleteNoteImgRequest,
   ): Promise<AxiosResponse<ResponseDataVoid>> =>
-    api.delete('/note/delete-img', { data }),
+    api.delete(`/sets/${setId}/notes/delete-img`, { data }),
 };

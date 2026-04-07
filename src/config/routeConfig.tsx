@@ -5,6 +5,10 @@ import { Navigate, useParams } from "react-router-dom";
 
 import SignIn from "@/components/auth/SignIn";
 import SignUp from "@/components/auth/SignUp";
+import ForgotPassword from "@/components/auth/ForgotPassword";
+import VerifyEmail from "@/components/auth/VerifyEmail";
+import ResetOtp from "@/components/auth/ResetOtp";
+import ResetPassword from "@/components/auth/ResetPassword";
 import ProtectedLayout from "@/components/ProtectedLayout";
 import ProtectedLayoutNoSidebar from "@/components/ProtectedLayoutNoSidebar";
 import Dashboard from "@/pages/Dashboard";
@@ -51,6 +55,30 @@ function SignUpWrapper() {
   }
 
   return <SignUp />;
+}
+
+function ForgotPasswordWrapper() {
+  const token = useSelector((state: RootState) => state.auth.token);
+  if (token) return <Navigate to='/dashboard' replace />;
+  return <ForgotPassword />;
+}
+
+function VerifyEmailWrapper() {
+  const token = useSelector((state: RootState) => state.auth.token);
+  if (!token) return <Navigate to='/login' replace />;
+  return <VerifyEmail />;
+}
+
+function ResetOtpWrapper() {
+  const token = useSelector((state: RootState) => state.auth.token);
+  if (token) return <Navigate to='/dashboard' replace />;
+  return <ResetOtp />;
+}
+
+function ResetPasswordWrapper() {
+  const token = useSelector((state: RootState) => state.auth.token);
+  if (token) return <Navigate to='/dashboard' replace />;
+  return <ResetPassword />;
 }
 
 // Wrapper component to extract setId from params and pass as prop
@@ -124,6 +152,22 @@ export const routeConfig: RouteObject[] = [
   {
     path: "/signup",
     element: <SignUpWrapper />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPasswordWrapper />,
+  },
+  {
+    path: "/verify-email",
+    element: <VerifyEmailWrapper />,
+  },
+  {
+    path: "/reset-otp",
+    element: <ResetOtpWrapper />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPasswordWrapper />,
   },
   {
     path: "/onboarding",
@@ -225,7 +269,7 @@ export const routeConfig: RouteObject[] = [
     element: <ProtectedLayoutNoSidebar />,
     children: [
       {
-        path: "note/:id",
+        path: "sets/:setId/notes/:id",
         element: <TextEditorWrapper />,
       },
     ],

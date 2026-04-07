@@ -51,7 +51,7 @@ const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
   const totalPages = notesData?.totalPage || 1;
 
   const handleAccess = (id: number) => {
-    navigate(`/note/${id}`);
+    navigate(`/sets/${setId}/notes/${id}`);
   };
 
   const handleDelete = (id: number) => {
@@ -134,29 +134,29 @@ const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
       {filters}
       {/* Notes Grid */}
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6'>
-        {notes.map((note) => (
+        {notes.map((note) => {
+          const noteForUI: Note = {
+            id: note.id,
+            title: note.title,
+            description: note.description || "No description available...",
+            privacy: note.privacy,
+            timeAgo: getTimeAgo(note.updated_at),
+            created_at: new Date(note.created_at).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            }),
+          };
+          return (
           <NoteCard
             key={note.id}
-            note={{
-              id: note.id,
-              title: note.title,
-              description: note.description || "No description available...",
-              privacy: note.privacy,
-              timeAgo: getTimeAgo(note.updated_at),
-              created_at: new Date(note.created_at).toLocaleDateString(
-                "en-GB",
-                {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                },
-              ),
-            }}
+            note={noteForUI}
             onAccess={() => handleAccess(note.id)}
-            onUpdate={() => handleUpdate(note)}
+            onUpdate={() => handleUpdate(noteForUI)}
             onDelete={() => handleDelete(note.id)}
           />
-        ))}
+          );
+        })}
       </div>
 
       {/* Pagination */}

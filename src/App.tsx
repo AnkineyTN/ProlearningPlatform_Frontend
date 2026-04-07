@@ -39,7 +39,7 @@ function App() {
         window.history.replaceState({}, "", cleaned);
         window.location.reload();
       }
-    } catch (err) {
+    } catch {
       // ignore
     }
 

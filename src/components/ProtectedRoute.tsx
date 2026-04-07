@@ -18,7 +18,7 @@ const ProtectedRoute = ({ children }: Props) => {
         try {
           const response = await authAPI.getMe();
           dispatch(setUser(response.data.user));
-        } catch (error) {
+        } catch {
           dispatch(logout());
         }
       }

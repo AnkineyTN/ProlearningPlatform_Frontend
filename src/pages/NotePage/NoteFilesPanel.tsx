@@ -12,6 +12,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -71,6 +72,8 @@ function NoteFileRow({
   onRegionComment?: (payload: NoteFileRegionCommentPayload) => void;
 }) {
   const { i18n } = useTranslation();
+  const { setId: setIdParam } = useParams<{ setId: string }>();
+  const setId = setIdParam ? Number(setIdParam) : 0;
   const [open, setOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [numPages, setNumPages] = useState<number | null>(null);
@@ -150,9 +153,12 @@ function NoteFileRow({
   const handleSummarize = async () => {
     try {
       const response = await summarizeFileMutation.mutateAsync({
-        language: mapI18nToAiApiLanguage(i18n.language),
-        limit: 0,
-        file_url: fileUrl,
+        setId,
+        data: {
+          language: mapI18nToAiApiLanguage(i18n.language),
+          limit: 0,
+          file_url: fileUrl,
+        },
       });
 
       const summary = response.data.data.summary;
@@ -166,7 +172,7 @@ function NoteFileRow({
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!noteId) {
+    if (!setId || !noteId) {
       toast.error("Invalid note");
       return;
     }
@@ -174,16 +180,22 @@ function NoteFileRow({
     try {
       if (kind === "image") {
         await deleteNoteImgMutation.mutateAsync({
-          noteId,
-          publicId,
-          extension,
+          setId,
+          data: {
+            noteId,
+            publicId,
+            extension,
+          },
         });
       } else {
         await deleteNoteDocMutation.mutateAsync({
-          noteId,
-          assetId: fileId,
-          publicId,
-          extension,
+          setId,
+          data: {
+            noteId,
+            assetId: fileId,
+            publicId,
+            extension,
+          },
         });
       }
 

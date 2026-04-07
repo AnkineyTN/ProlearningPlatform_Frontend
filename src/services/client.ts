@@ -2,6 +2,14 @@ import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
+// For public endpoints that must NOT send Authorization header
+export const publicApi = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {

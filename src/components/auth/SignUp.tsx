@@ -45,7 +45,7 @@ const SignUp = () => {
     try {
       const response = await authAPI.googleAuth();
       window.location.href = response.data.data.authorizationUrl;
-    } catch (error: any) {
+    } catch {
       toast.error(t("signin.failedGoogleConnect"));
     }
   };
@@ -74,8 +74,8 @@ const SignUp = () => {
           token: loginResponse.data.data.accessToken,
         }),
       );
-      navigate("/onboarding");
-    } catch (error: any) {
+      navigate("/verify-email", { state: { email: data.email, after: "signup" } });
+    } catch {
       dispatch(loginFailure(t("signup.failed")));
     }
   };

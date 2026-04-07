@@ -70,14 +70,14 @@ function normalizeNotesBySetResponse(
 }
 
 // Hook to get note detail
-export const useNoteDetail = (noteId: number) => {
+export const useNoteDetail = (setId: number, noteId: number) => {
   return useQuery({
-    queryKey: ["note", noteId],
+    queryKey: ["note", setId, noteId],
     queryFn: async () => {
-      const response = await noteAPI.getNoteDetail(noteId);
+      const response = await noteAPI.getNoteDetail(setId, noteId);
       return normalizeNoteDetail(response.data.data);
     },
-    enabled: !!noteId,
+    enabled: !!setId && !!noteId,
   });
 };
 
@@ -109,7 +109,8 @@ export const useCreateNote = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: CreateNotePayload) => noteAPI.createNote(payload),
+    mutationFn: (payload: CreateNotePayload) =>
+      noteAPI.createNote(payload.setId, payload),
     onSuccess: () => {
       // Invalidate all notes lists for the set
       queryClient.invalidateQueries({ queryKey: ["notes"] });
@@ -125,16 +126,20 @@ export const useUpdateNote = () => {
 
   return useMutation({
     mutationFn: ({
+      setId,
       id,
       payload,
     }: {
+      setId: number;
       id: number;
       payload: Partial<CreateNotePayload>;
-    }) => noteAPI.updateNote(id, payload),
+    }) => noteAPI.updateNote(setId, id, payload),
     onSuccess: (_data, variables) => {
       // Invalidate all notes lists and note detail
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-      queryClient.invalidateQueries({ queryKey: ["note", variables.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["note", variables.setId, variables.id],
+      });
     },
     onError: (error) => {
       console.error("Error updating note:", error);
@@ -147,11 +152,14 @@ export const useDeleteNote = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (noteId: number) => noteAPI.deleteNote(noteId),
-    onSuccess: (_data, noteId) => {
+    mutationFn: ({ setId, noteId }: { setId: number; noteId: number }) =>
+      noteAPI.deleteNote(setId, noteId),
+    onSuccess: (_data, variables) => {
       // Invalidate all notes lists and note detail
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-      queryClient.invalidateQueries({ queryKey: ["note", noteId] });
+      queryClient.invalidateQueries({
+        queryKey: ["note", variables.setId, variables.noteId],
+      });
     },
     onError: (error) => {
       console.error("Error deleting note:", error);
@@ -161,7 +169,7 @@ export const useDeleteNote = () => {
 
 export const noteKeys = {
   all: ["notes"] as const,
-  detail: (id: number) => ["notes", "detail", id] as const,
+  detail: (setId: number, id: number) => ["note", setId, id] as const,
 };
 
 export const useAutoSaveNote = () => {
@@ -169,18 +177,20 @@ export const useAutoSaveNote = () => {
 
   return useMutation({
     mutationFn: ({
+      setId,
       noteId,
       title,
       content,
     }: {
+      setId: number;
       noteId: number;
       title: string;
       content: string;
-    }) => noteAPI.autoSaveNote(noteId, { title, content }),
+    }) => noteAPI.autoSaveNote(setId, noteId, { title, content }),
     onSuccess: (_, variables) => {
       // Invalidate and refetch note detail after successful save
       queryClient.invalidateQueries({
-        queryKey: noteKeys.detail(variables.noteId),
+        queryKey: noteKeys.detail(variables.setId, variables.noteId),
       });
     },
     onError: (error) => {
@@ -193,7 +203,8 @@ export const useAutoSaveNote = () => {
 // Hook for explain text with AI
 export const useExplainText = () => {
   return useMutation({
-    mutationFn: (data: ExplainTextRequest) => noteAPI.explainText(data),
+    mutationFn: ({ setId, data }: { setId: number; data: ExplainTextRequest }) =>
+      noteAPI.explainText(setId, data),
     onError: (error) => {
       console.error("Explain text failed:", error);
     },
@@ -202,8 +213,15 @@ export const useExplainText = () => {
 
 export const useUploadFile = () => {
   return useMutation({
-    mutationFn: ({ file, noteId }: { file: File; noteId: number }) =>
-      noteAPI.uploadFile(file, noteId),
+    mutationFn: ({
+      file,
+      setId,
+      noteId,
+    }: {
+      file: File;
+      setId: number;
+      noteId: number;
+    }) => noteAPI.uploadFile(file, setId, noteId),
     onError: (error) => {
       console.error("Upload file failed:", error);
     },
@@ -214,10 +232,10 @@ export const useSaveDocumentInNote = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: SaveDocInNoteRequest) =>
-      noteAPI.saveDocumentInNote(data),
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["note", variables.noteId] });
+    mutationFn: ({ setId, data }: { setId: number; data: SaveDocInNoteRequest }) =>
+      noteAPI.saveDocumentInNote(setId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["note"] });
     },
     onError: (error) => {
       console.error("Save document in note failed:", error);
@@ -229,10 +247,10 @@ export const useSaveImageInNote = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: SaveImgInNoteRequest) =>
-      noteAPI.saveImageInNote(data),
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["note", variables.noteId] });
+    mutationFn: ({ setId, data }: { setId: number; data: SaveImgInNoteRequest }) =>
+      noteAPI.saveImageInNote(setId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["note"] });
     },
     onError: (error) => {
       console.error("Save image in note failed:", error);
@@ -243,7 +261,8 @@ export const useSaveImageInNote = () => {
 // Hook for summarize file
 export const useSummarizeFile = () => {
   return useMutation({
-    mutationFn: (data: SummarizeFileRequest) => noteAPI.summarizeFile(data),
+    mutationFn: ({ setId, data }: { setId: number; data: SummarizeFileRequest }) =>
+      noteAPI.summarizeFile(setId, data),
     onError: (error) => {
       console.error("Summarize file failed:", error);
     },
@@ -252,8 +271,13 @@ export const useSummarizeFile = () => {
 
 export const useConvertToVectorDB = () => {
   return useMutation({
-    mutationFn: (payload: ConvertToVectorDBRequest) =>
-      noteAPI.convertToVectorDB(payload),
+    mutationFn: ({
+      setId,
+      payload,
+    }: {
+      setId: number;
+      payload: ConvertToVectorDBRequest;
+    }) => noteAPI.convertToVectorDB(setId, payload),
     onError: (error) => {
       console.error("Convert to vector DB failed:", error);
     },
@@ -264,12 +288,12 @@ export const useDeleteNoteDoc = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: DeleteNoteDocRequest) =>
-      noteAPI.deleteNoteDoc(data),
+    mutationFn: ({ setId, data }: { setId: number; data: DeleteNoteDocRequest }) =>
+      noteAPI.deleteNoteDoc(setId, data),
     onSuccess: (_data, variables) => {
-      if (variables.noteId > 0) {
+      if (variables.data.noteId > 0) {
         queryClient.invalidateQueries({
-          queryKey: ["note", variables.noteId],
+          queryKey: ["note"],
         });
       }
     },
@@ -283,12 +307,12 @@ export const useDeleteNoteImg = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: DeleteNoteImgRequest) =>
-      noteAPI.deleteImgInNote(data),
+    mutationFn: ({ setId, data }: { setId: number; data: DeleteNoteImgRequest }) =>
+      noteAPI.deleteImgInNote(setId, data),
     onSuccess: (_data, variables) => {
-      if (variables.noteId > 0) {
+      if (variables.data.noteId > 0) {
         queryClient.invalidateQueries({
-          queryKey: ["note", variables.noteId],
+          queryKey: ["note"],
         });
       }
     },

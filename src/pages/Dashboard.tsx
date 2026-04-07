@@ -40,6 +40,7 @@ function searchResultHref(item: Record<string, unknown>): string | null {
   const type = String(typeRaw).toUpperCase();
   const setId = item.setId ?? item.set_id;
   if (type.includes("SET")) return `/sets/${id}`;
+  if (type.includes("NOTE") && setId != null) return `/sets/${setId}/notes/${id}`;
   if (type.includes("NOTE")) return `/note/${id}`;
   if (type.includes("FLASH") && setId != null)
     return `/sets/${setId}/flashcards/${id}`;

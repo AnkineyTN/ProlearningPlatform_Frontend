@@ -62,7 +62,11 @@ interface AISummary {
 }
 
 export const NotePage = () => {
-  const { id: noteId } = useParams<{ id: string }>();
+  const { setId: setIdParam, id: noteId } = useParams<{
+    setId: string;
+    id: string;
+  }>();
+  const setId = setIdParam ? Number(setIdParam) : 0;
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isEditorReady, setIsEditorReady] = useState(false);
@@ -73,6 +77,7 @@ export const NotePage = () => {
   const editorRef = useRef<NoteEditorHandle>(null);
 
   const { data: noteDetail, isLoading: isLoadingNote } = useNoteDetail(
+    setId,
     noteId ? parseInt(noteId) : 0,
   );
   const autoSaveMutation = useAutoSaveNote();
@@ -114,8 +119,9 @@ export const NotePage = () => {
     if (isInitialLoadRef.current) return;
 
     const timer = setTimeout(() => {
-      if (noteId && (title || content)) {
+      if (setId && noteId && (title || content)) {
         autoSaveMutationRef.current.mutate({
+          setId,
           noteId: parseInt(noteId),
           title,
           content,
@@ -136,9 +142,10 @@ export const NotePage = () => {
 
   const handleSave = () => {
     console.log('🚀 ~ handleSave ~ noteId:', noteId)
-    if (noteId) {
+    if (setId && noteId) {
       autoSaveMutation.mutate(
         {
+          setId,
           noteId: parseInt(noteId),
           title,
           content,

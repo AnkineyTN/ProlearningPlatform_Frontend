@@ -41,7 +41,7 @@ const SignIn = () => {
     try {
       const response = await authAPI.googleAuth();
       window.location.href = response.data.data.authorizationUrl;
-    } catch (error: any) {
+    } catch {
       toast.error(t("signin.failedGoogleConnect"));
     }
   };
@@ -57,7 +57,7 @@ const SignIn = () => {
         }),
       );
       navigate("/dashboard");
-    } catch (error: any) {
+    } catch {
       dispatch(loginFailure(t("signin.wrongCredentials")));
     }
   };
@@ -123,7 +123,7 @@ const SignIn = () => {
                 {t("signin.password")} <span className='text-pink-400'>*</span>
               </Label>
               <a
-                href='#'
+                href='/forgot-password'
                 className='ml-auto text-xs text-violet-400/80 hover:text-violet-300 transition-colors'
               >
                 {t("signin.forgotPassword")}

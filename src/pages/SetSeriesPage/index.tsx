@@ -344,6 +344,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
         };
 
         await updateNoteMutation.mutateAsync({
+          setId: Number(setId),
           id: selectedNote.id,
           payload,
         });
@@ -403,7 +404,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
 
   const handleDeleteNote = async (id: number) => {
     try {
-      await deleteNoteMutation.mutateAsync(id);
+      await deleteNoteMutation.mutateAsync({ setId: Number(setId), noteId: id });
       toast.success('Note deleted successfully');
     } catch (error) {
       console.error('Error deleting note:', error);

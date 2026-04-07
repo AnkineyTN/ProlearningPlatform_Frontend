@@ -21,7 +21,7 @@ import {
   useUploadDocumentFile,
   useUploadImageFile,
 } from "@/hooks/useImageUpload";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface NoteHeaderProps {
   title: string;
@@ -62,6 +62,8 @@ export const NoteHeader = ({
   onToggleAiPanel,
 }: NoteHeaderProps) => {
   const navigate = useNavigate();
+  const { setId: setIdParam } = useParams<{ setId: string }>();
+  const setId = setIdParam ? Number(setIdParam) : 0;
   const [isUploading, setIsUploading] = useState(false);
   const uploadDocumentMutation = useUploadDocumentFile();
   const uploadImageMutation = useUploadImageFile();
@@ -89,7 +91,7 @@ export const NoteHeader = ({
       return;
     }
 
-    if (!noteId) {
+    if (!setId || !noteId) {
       toast.error("Invalid note");
       return;
     }
@@ -103,11 +105,14 @@ export const NoteHeader = ({
           : "";
 
         await saveImageMutation.mutateAsync({
-          noteId,
-          assetId: result.assetId,
-          publicId: result.publicId,
-          extension: ext,
-          fileName: file.name,
+          setId,
+          data: {
+            noteId,
+            assetId: result.assetId,
+            publicId: result.publicId,
+            extension: ext,
+            fileName: file.name,
+          },
         });
 
         onFileUploaded({
@@ -126,11 +131,14 @@ export const NoteHeader = ({
           (file.name.includes(".") ? file.name.split(".").pop() || "" : "");
 
         await saveDocumentMutation.mutateAsync({
-          noteId,
-          assetId: result.assetId,
-          publicId: result.publicId,
-          extension: ext,
-          fileName: result.fileName,
+          setId,
+          data: {
+            noteId,
+            assetId: result.assetId,
+            publicId: result.publicId,
+            extension: ext,
+            fileName: result.fileName,
+          },
         });
 
         onFileUploaded({

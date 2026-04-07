@@ -14,6 +14,7 @@ import { useExplainText } from "@/hooks/useNotes";
 import { mapI18nToAiApiLanguage } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
 import "./notes.css";
 
 export interface NoteEditorHandle {
@@ -34,6 +35,8 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
   onAISummarize,
 }, ref) => {
   const { i18n } = useTranslation();
+  const { setId: setIdParam } = useParams<{ setId: string }>();
+  const setId = setIdParam ? Number(setIdParam) : 0;
   const { theme: appTheme } = useTheme();
   const [blockNoteScheme, setBlockNoteScheme] = useState<"light" | "dark">(
     () =>
@@ -147,16 +150,19 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
       return;
     }
 
-    if (!noteId) {
+    if (!setId || !noteId) {
       toast.error("Invalid note");
       return;
     }
 
     try {
       const response = await explainTextMutation.mutateAsync({
-        language: mapI18nToAiApiLanguage(i18n.language),
-        note_id: noteId,
-        query_text: selectedText,
+        setId,
+        data: {
+          language: mapI18nToAiApiLanguage(i18n.language),
+          note_id: noteId,
+          query_text: selectedText,
+        },
       });
 
       const aiResponse = response.data.data.answer;
@@ -166,7 +172,7 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(({
     } catch {
       toast.error("Failed to explain text");
     }
-  }, [selectedText, noteId, i18n.language, explainTextMutation, onAISummarize]);
+  }, [selectedText, setId, noteId, i18n.language, explainTextMutation, onAISummarize]);
 
   return (
     <div className='relative w-full h-full overflow-hidden flex flex-col'>
