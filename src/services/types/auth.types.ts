@@ -53,8 +53,30 @@ export type GoogleAuthResponse = {
 }
 
 export type MeResponse = {
-  user: User;
-}
+  status: string;
+  message: string;
+  data: User;
+  metadata: Record<string, unknown> | null;
+};
+
+export type UpdateMeRequest = Partial<{
+  firstName: string;
+  lastName: string;
+  email: string;
+  language: string;
+  education: string;
+  hearAppFrom: string;
+  accountType: string;
+  currentPassword: string;
+  newPassword: string;
+}>;
+
+export type UpdateMeResponse = {
+  status: string;
+  message: string;
+  data: User;
+  metadata: Record<string, unknown> | null;
+};
 
 export type VerifyEmailData = {
   email: string;

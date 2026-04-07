@@ -24,6 +24,7 @@ import TodoDashboard from "@/pages/TodoDashboard";
 import PDFAnnotator from "@/pages/PDF";
 import ExamPage from "@/pages/ExamPage";
 import ExamEditor from "@/pages/ExamPage/ExamEditor";
+import ProfilePage from "@/pages/ProfilePage";
 import type { RouteObject } from "react-router-dom";
 
 import type { RootState } from "@/store";
@@ -261,6 +262,10 @@ export const routeConfig: RouteObject[] = [
       {
         path: "sets/:id",
         element: <SetSeriesPageWrapper />,
+      },
+      {
+        path: "profile",
+        element: <ProfilePage />,
       },
     ],
   },

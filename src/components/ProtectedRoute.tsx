@@ -17,7 +17,7 @@ const ProtectedRoute = ({ children }: Props) => {
       if (token && !user) {
         try {
           const response = await authAPI.getMe();
-          dispatch(setUser(response.data.user));
+          dispatch(setUser(response.data.data));
         } catch {
           dispatch(logout());
         }

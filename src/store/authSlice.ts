@@ -9,6 +9,7 @@ export type User = {
   language: string;
   education: string;
   hearAppFrom: string;
+  accountType?: string;
 };
 
 type AuthState = {

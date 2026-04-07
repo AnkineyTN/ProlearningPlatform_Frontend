@@ -12,6 +12,8 @@ import type {
   VerifyEmailData,
   VerifyResetOtpData,
   VerifyResetOtpResponseData,
+  UpdateMeRequest,
+  UpdateMeResponse,
 } from "../types/auth.types";
 
 export const authAPI = {
@@ -22,6 +24,10 @@ export const authAPI = {
     publicApi.post("/auth/login", userData),
 
   getMe: (): Promise<AxiosResponse<MeResponse>> => api.get("/users/me"),
+
+  updateMe: (
+    payload: UpdateMeRequest,
+  ): Promise<AxiosResponse<UpdateMeResponse>> => api.patch("/users/me", payload),
 
   googleAuth: (): Promise<AxiosResponse<GoogleAuthResponse>> =>
     publicApi.get("/auth/google/login"),
