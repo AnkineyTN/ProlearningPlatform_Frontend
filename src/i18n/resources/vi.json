@@ -84,6 +84,8 @@
         "emptyUnread": "Bạn đã xem hết thông báo",
         "loadError": "Không tải được thông báo.",
         "moreActions": "Tùy chọn khác",
+        "createTest": "Tạo thông báo test",
+        "markAsRead": "Đánh dấu đã đọc",
         "markAllRead": "Đánh dấu tất cả đã đọc"
     },
     "landing": {

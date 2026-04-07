@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import { useAppSelector } from "@/hooks/redux";
+import { notificationAPI } from "@/services/endpoints/notification";
 import {
   useMarkAllNotificationsRead,
   useMarkNotificationRead,
@@ -52,25 +53,35 @@ function isSystemLikeType(type: string): boolean {
 function NotificationRow({
   item,
   onActivate,
+  onMarkRead,
   isActivating,
 }: {
   item: UserNotificationItem;
   onActivate: (n: UserNotificationItem) => void;
+  onMarkRead: (n: UserNotificationItem) => void;
   isActivating: boolean;
 }) {
+  const { t } = useTranslation();
   const systemLike = isSystemLikeType(item.type);
   const initial = (item.title?.trim()?.[0] ?? item.message?.trim()?.[0] ?? "N")
     .toUpperCase();
 
   return (
-    <button
-      type="button"
-      disabled={isActivating}
+    <div
+      role="button"
+      tabIndex={0}
       onClick={() => onActivate(item)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onActivate(item);
+        }
+      }}
       className={cn(
         "flex w-full gap-3 rounded-lg px-2 py-2.5 text-left transition-colors",
         "hover:bg-muted/80 focus-visible:bg-muted/80 focus-visible:outline-none",
         !item.isRead && "bg-primary/5",
+        isActivating && "pointer-events-none opacity-70",
       )}
     >
       <div className="relative shrink-0">
@@ -106,15 +117,27 @@ function NotificationRow({
           {compactRelativeTime(item.createdAt)}
         </p>
       </div>
-      <div className="flex w-4 shrink-0 items-start justify-center pt-2">
+      <div className="flex w-9 shrink-0 items-start justify-center pt-2">
         {!item.isRead && (
-          <span
-            className="size-2.5 rounded-full bg-primary shadow-sm"
-            aria-label="Unread"
-          />
+          <button
+            type="button"
+            disabled={isActivating}
+            onClick={(e) => {
+              e.stopPropagation();
+              onMarkRead(item);
+            }}
+            className={cn(
+              "flex size-7 items-center justify-center rounded-full transition-colors",
+              "hover:bg-muted focus-visible:bg-muted focus-visible:outline-none",
+            )}
+            aria-label={t("notificationsPanel.markAsRead")}
+            title={t("notificationsPanel.markAsRead")}
+          >
+            <span className="size-2.5 rounded-full bg-primary shadow-sm" />
+          </button>
         )}
       </div>
-    </button>
+    </div>
   );
 }
 
@@ -122,10 +145,12 @@ export default function NotificationBell() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const token = useAppSelector((s) => s.auth.token);
+  const userId = useAppSelector((s) => s.auth.user?.id);
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<NotificationTab>("all");
   const [moreOpen, setMoreOpen] = useState(false);
   const [activatingId, setActivatingId] = useState<number | null>(null);
+  const [creatingTest, setCreatingTest] = useState(false);
   const moreWrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -182,6 +207,37 @@ export default function NotificationBell() {
     },
     [markRead, navigate],
   );
+
+  const handleMarkReadOnly = useCallback(
+    async (n: UserNotificationItem) => {
+      if (n.isRead) return;
+      setActivatingId(n.id);
+      try {
+        await markRead.mutateAsync(n.id);
+      } finally {
+        setActivatingId(null);
+      }
+    },
+    [markRead],
+  );
+
+  const handleCreateTest = useCallback(async () => {
+    if (!userId) return;
+    setCreatingTest(true);
+    try {
+      const now = new Date();
+      await notificationAPI.debugCreateNotification(userId, {
+        type: "GENERAL",
+        title: `Test notification (${now.toLocaleTimeString()})`,
+        message: `Generated at ${now.toISOString()}`,
+      });
+      setMoreOpen(false);
+      // Refresh list + badge
+      void listQuery.refetch();
+    } finally {
+      setCreatingTest(false);
+    }
+  }, [listQuery, userId]);
 
   if (!token) {
     return null;
@@ -244,6 +300,24 @@ export default function NotificationBell() {
                   role="menu"
                   className="absolute right-0 top-full z-[60] mt-1 min-w-[11rem] rounded-md border border-border bg-popover py-1 shadow-md"
                 >
+                  {import.meta.env.DEV && (
+                    <button
+                      type="button"
+                      role="menuitem"
+                      disabled={!userId || creatingTest}
+                      className="flex w-full px-3 py-2 text-left text-sm hover:bg-muted disabled:opacity-50"
+                      onClick={() => void handleCreateTest()}
+                    >
+                      {creatingTest ? (
+                        <span className="inline-flex items-center gap-2">
+                          <Loader2 className="size-4 animate-spin" />
+                          {t("notificationsPanel.createTest")}
+                        </span>
+                      ) : (
+                        t("notificationsPanel.createTest")
+                      )}
+                    </button>
+                  )}
                   <button
                     type="button"
                     role="menuitem"
@@ -326,6 +400,7 @@ export default function NotificationBell() {
                 <NotificationRow
                   item={item}
                   onActivate={handleActivate}
+                  onMarkRead={handleMarkReadOnly}
                   isActivating={activatingId === item.id}
                 />
               </li>

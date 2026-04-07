@@ -84,6 +84,8 @@
         "emptyUnread": "You're all caught up",
         "loadError": "Could not load notifications.",
         "moreActions": "More options",
+        "createTest": "Create test notification",
+        "markAsRead": "Mark as read",
         "markAllRead": "Mark all as read"
     },
     "landing": {

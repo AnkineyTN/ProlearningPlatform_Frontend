@@ -53,6 +53,12 @@ export type MarkNotificationsReadRequest = {
   notificationIds: (number | string)[];
 };
 
+export type DebugCreateNotificationRequest = {
+  type: string;
+  title: string;
+  message: string;
+};
+
 export type VoidResponse = {
   status: string;
   message: string;
@@ -60,11 +66,13 @@ export type VoidResponse = {
   metadata: Record<string, never>;
 };
 
+/**
+ * Response for PATCH /notifications/read and PATCH /notifications/read-all
+ * Backend returns a free-form number map (additionalProp* in swagger).
+ */
 export type MarkAsReadResponse = {
   status: string;
   message: string;
-  data: {
-    markedCount: number;
-  };
-  metadata: Record<string, unknown>;
+  data: Record<string, number>;
+  metadata: Record<string, unknown> | null;
 };

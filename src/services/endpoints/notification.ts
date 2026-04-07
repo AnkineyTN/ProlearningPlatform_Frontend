@@ -6,6 +6,7 @@ import type {
   SingleNotificationResponse,
   NotificationListResponse,
   NotificationUnreadCountResponse,
+  DebugCreateNotificationRequest,
   MarkNotificationsReadRequest,
   VoidResponse,
   MarkAsReadResponse,
@@ -57,6 +58,18 @@ export const notificationAPI = {
    */
   getUnreadCount: (): Promise<AxiosResponse<NotificationUnreadCountResponse>> =>
     api.get('/notifications/unread/count'),
+
+  /**
+   * Debug: create a notification for a user
+   * POST /notifications/debug/create/{userId}
+   *
+   * Note: some environments may expose it under `/api/...` already via baseURL.
+   */
+  debugCreateNotification: (
+    userId: number | string,
+    payload: DebugCreateNotificationRequest,
+  ): Promise<AxiosResponse<SingleNotificationResponse>> =>
+    api.post(`/notifications/debug/create/${userId}`, payload),
 
   /**
    * Mark a specific notification as read
