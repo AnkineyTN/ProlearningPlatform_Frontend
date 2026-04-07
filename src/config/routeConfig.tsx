@@ -49,12 +49,6 @@ function SignInWrapper() {
 }
 
 function SignUpWrapper() {
-  const token = useSelector((state: RootState) => state.auth.token);
-
-  if (token) {
-    return <Navigate to='/dashboard' replace />;
-  }
-
   return <SignUp />;
 }
 
@@ -65,8 +59,6 @@ function ForgotPasswordWrapper() {
 }
 
 function VerifyEmailWrapper() {
-  const token = useSelector((state: RootState) => state.auth.token);
-  if (!token) return <Navigate to='/login' replace />;
   return <VerifyEmail />;
 }
 

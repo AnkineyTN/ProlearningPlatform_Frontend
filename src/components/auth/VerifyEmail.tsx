@@ -25,7 +25,7 @@ export default function VerifyEmail() {
 
   const [submitting, setSubmitting] = useState(false);
   const resendLock = useCountdown({ seconds: 60, autoStart: true });
-  const otpTtl = useCountdown({ seconds: 10 * 60, autoStart: true });
+  const otpTtl = useCountdown({ seconds: 60, autoStart: true });
 
   const handleVerify = async (otp: string) => {
     if (!email) {
@@ -70,10 +70,17 @@ export default function VerifyEmail() {
 
     setSubmitting(true);
     try {
-      await authAPI.resendVerifyOtp();
-      toast.success("Mã OTP đã được gửi lại.");
+      if (after === "forgot") {
+        // Spec: resend OTP via calling forgot-password again (no JWT required)
+        await authAPI.forgotPassword({ email });
+        toast.success("Mã OTP đã được gửi lại.");
+      } else {
+        // Signup flow: resend verify OTP requires JWT
+        await authAPI.resendVerifyOtp();
+        toast.success("Mã OTP đã được gửi lại.");
+      }
       resendLock.reset(60);
-      otpTtl.reset(10 * 60);
+      otpTtl.reset(60);
     } catch (err: unknown) {
       const payload: ApiErrorResponse | undefined = axios.isAxiosError(err)
         ? (err.response?.data as ApiErrorResponse | undefined)
