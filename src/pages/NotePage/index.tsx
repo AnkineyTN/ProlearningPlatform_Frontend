@@ -13,7 +13,11 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { useAutoSaveNote, useNoteDetail } from "@/hooks/useNotes";
+import {
+  useAutoSaveNote,
+  useNoteDetail,
+  useNoteFileRegionComments,
+} from "@/hooks/useNotes";
 import { isImageExtension } from "@/lib/utils";
 import type { NoteDocItem } from "@/services/types/note.types";
 
@@ -260,6 +264,11 @@ export const NotePage = () => {
   }, [title]);
 
   const numericNoteId = noteId ? parseInt(noteId, 10) : 0;
+  const setId = noteDetail?.setId ?? 0;
+  const { data: fileRegionComments = [] } = useNoteFileRegionComments(
+    setId,
+    numericNoteId,
+  );
   const hasFilesPanel = showFilesPanel && noteFiles.length > 0;
   const hasAiPanel = showAiPanel && summaries.length > 0;
 
@@ -329,6 +338,8 @@ export const NotePage = () => {
               <ResizablePanel defaultSize={filesDefaultSize} minSize={18}>
                 <NoteFilesPanel
                   noteId={numericNoteId}
+                  setId={setId}
+                  fileComments={fileRegionComments}
                   files={noteFiles}
                   onFileSummarize={handleFileSummarize}
                   onFileDeleted={handleFileDeleted}

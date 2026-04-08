@@ -8,11 +8,11 @@ import {
   Sparkles,
   Trash2,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -27,17 +27,14 @@ import {
   useSummarizeFile,
 } from "@/hooks/useNotes";
 import { isImageExtension, mapI18nToAiApiLanguage } from "@/lib/utils";
+import { noteAPI } from "@/services/endpoints/notes";
+import type { NoteFileRegionCommentDto } from "@/services/types/note.types";
 
 import {
-  buildRegionCommentPayload,
+  fileRegionCommentDtoToRegion,
   RegionCommentOverlay,
-  uid,
 } from "@/pages/NotePage/NoteFileRegionComments";
-import type {
-  NoteAttachedFile,
-  NoteFileRegionCommentPayload,
-  RegionComment,
-} from "@/pages/NotePage/NoteFileRegionComments";
+import type { NoteAttachedFile, RegionComment } from "@/pages/NotePage/NoteFileRegionComments";
 
 export type { NoteAttachedFile, NoteFileRegionCommentPayload } from "@/pages/NotePage/NoteFileRegionComments";
 
@@ -51,29 +48,32 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 interface NoteFilesPanelProps {
   noteId: number;
+  /** From note detail (`setId`). When 0, region comments stay local-only. */
+  setId: number;
+  fileComments: NoteFileRegionCommentDto[];
   files: NoteAttachedFile[];
   onFileSummarize: (summary: string, fileName: string) => void;
   onFileDeleted: (fileId: number) => void;
   onClosePanel: () => void;
-  onRegionComment?: (payload: NoteFileRegionCommentPayload) => void;
 }
 
 function NoteFileRow({
   file,
   noteId,
+  setId,
+  serverComments,
   onFileSummarize,
   onDeleted,
-  onRegionComment,
 }: {
   file: NoteAttachedFile;
   noteId: number;
+  setId: number;
+  serverComments: NoteFileRegionCommentDto[];
   onFileSummarize: (summary: string, fileName: string) => void;
   onDeleted: () => void;
-  onRegionComment?: (payload: NoteFileRegionCommentPayload) => void;
 }) {
   const { i18n } = useTranslation();
-  const { setId: setIdParam } = useParams<{ setId: string }>();
-  const setId = setIdParam ? Number(setIdParam) : 0;
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [numPages, setNumPages] = useState<number | null>(null);
@@ -86,6 +86,7 @@ function NoteFileRow({
   const [isCommentMode, setIsCommentMode] = useState(false);
   const [comments, setComments] = useState<RegionComment[]>([]);
   const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
+  const [commentSaving, setCommentSaving] = useState(false);
 
   const { fileName, fileUrl, extension, publicId, id: fileId } = file;
   const kind = file.kind ?? (isImageExtension(extension) ? "image" : "doc");
@@ -110,6 +111,10 @@ function NoteFileRow({
   }, [isPdf, fileUrl, open]);
 
   useEffect(() => {
+    setComments(serverComments.map(fileRegionCommentDtoToRegion));
+  }, [serverComments]);
+
+  useEffect(() => {
     if (!isCommentMode || !open) return;
     const h = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -121,32 +126,59 @@ function NoteFileRow({
     return () => window.removeEventListener("keydown", h);
   }, [isCommentMode, open]);
 
+  const invalidateFileComments = useCallback(() => {
+    if (setId && noteId) {
+      void queryClient.invalidateQueries({
+        queryKey: ["note", noteId, "file-region-comments", setId],
+      });
+    }
+  }, [queryClient, setId, noteId]);
+
   const persistComment = useCallback(
-    (pageNumber: number, rect: RegionComment["rect"], text: string) => {
-      const id = uid();
-      const createdAt = new Date().toISOString();
-      const c: RegionComment = {
-        id,
-        pageNumber,
-        rect,
-        text: text.trim(),
-        createdAt,
-      };
-      setComments((prev) => [...prev, c]);
+    async (pageNumber: number, rect: RegionComment["rect"], text: string) => {
+      const trimmed = text.trim();
+      if (!trimmed) return;
       setIsCommentMode(false);
       setActiveCommentId(null);
-      const payload = buildRegionCommentPayload(noteId, file, kind, c);
-      onRegionComment?.(payload);
-      if (import.meta.env.DEV) {
-        console.info("[note-file-region-comment]", payload);
+      if (!setId) {
+        toast.error("Missing set context — cannot save comment (need setId on note detail).");
+        return;
       }
-      toast.success("Comment added (local only until API is ready)");
+      setCommentSaving(true);
+      try {
+        await noteAPI.createFileRegionComment(setId, noteId, {
+          noteAssetId: fileId,
+          kind,
+          pageNumber,
+          rectPercent: { ...rect },
+          content: trimmed,
+          publicId,
+        });
+        invalidateFileComments();
+        toast.success("Comment saved");
+      } catch (e) {
+        console.error(e);
+        toast.error("Failed to save comment");
+      } finally {
+        setCommentSaving(false);
+      }
     },
-    [file, kind, noteId, onRegionComment],
+    [fileId, invalidateFileComments, kind, noteId, publicId, setId],
   );
 
-  const deleteComment = (id: string) => {
-    setComments((prev) => prev.filter((x) => x.id !== id));
+  const deleteComment = async (id: string) => {
+    const serverNumeric = /^\d+$/.test(id) ? Number(id) : NaN;
+    if (!Number.isNaN(serverNumeric) && setId) {
+      try {
+        await noteAPI.deleteFileRegionComment(setId, noteId, serverNumeric);
+        invalidateFileComments();
+        toast.success("Comment removed");
+      } catch (e) {
+        console.error(e);
+        toast.error("Failed to delete comment");
+        return;
+      }
+    }
     setActiveCommentId(null);
   };
 
@@ -333,6 +365,7 @@ function NoteFileRow({
                   variant={isCommentMode ? "secondary" : "outline"}
                   size='sm'
                   className='w-full gap-2'
+                  disabled={commentSaving}
                   onClick={() => {
                     setIsCommentMode((v) => !v);
                     setActiveCommentId(null);
@@ -348,7 +381,8 @@ function NoteFileRow({
                 )}
                 {comments.length > 0 && (
                   <p className='text-xs text-muted-foreground text-center'>
-                    {comments.length} local comment{comments.length !== 1 ? "s" : ""}
+                    {comments.length} comment{comments.length !== 1 ? "s" : ""}
+                    {!setId ? " (not synced — open note from a set after API upgrade)" : ""}
                   </p>
                 )}
               </div>
@@ -376,12 +410,23 @@ function NoteFileRow({
 
 export const NoteFilesPanel = ({
   noteId,
+  setId,
+  fileComments,
   files,
   onFileSummarize,
   onFileDeleted,
   onClosePanel,
-  onRegionComment,
 }: NoteFilesPanelProps) => {
+  const commentsByAsset = useMemo(() => {
+    const m = new Map<number, NoteFileRegionCommentDto[]>();
+    for (const c of fileComments) {
+      const arr = m.get(c.noteAssetId) ?? [];
+      arr.push(c);
+      m.set(c.noteAssetId, arr);
+    }
+    return m;
+  }, [fileComments]);
+
   return (
     <div className='w-full h-full overflow-hidden flex flex-col bg-background'>
       <div className='p-3 border-b flex items-center justify-between gap-2 shrink-0'>
@@ -405,9 +450,10 @@ export const NoteFilesPanel = ({
             key={`${f.id}-${f.publicId}`}
             file={f}
             noteId={noteId}
+            setId={setId}
+            serverComments={commentsByAsset.get(f.id) ?? []}
             onFileSummarize={onFileSummarize}
             onDeleted={() => onFileDeleted(f.id)}
-            onRegionComment={onRegionComment}
           />
         ))}
       </div>

@@ -7,6 +7,8 @@ export type NoteDocItem = {
 
 export type NoteDetail = {
   id: number;
+  /** Present when detail comes from backend `GetDetailNoteResponseDTO` (for `/sets/{setId}/notes/...` APIs). */
+  setId?: number;
   title: string;
   description: string;
   privacy: string;
@@ -16,6 +18,30 @@ export type NoteDetail = {
   noteImgs?: NoteDocItem[];
   /** Some APIs use this key instead of `noteImgs`. */
   noteImages?: NoteDocItem[];
+};
+
+export type NoteFileRegionCommentDto = {
+  id: number;
+  noteId: number;
+  noteAssetId: number;
+  kind: 'doc' | 'image';
+  pageNumber: number;
+  rectPercent: { x: number; y: number; width: number; height: number };
+  content: string;
+  clientCommentId: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
+
+export type CreateNoteFileRegionCommentRequest = {
+  noteAssetId: number;
+  kind: 'doc' | 'image';
+  pageNumber: number;
+  rectPercent: { x: number; y: number; width: number; height: number };
+  content: string;
+  clientCommentId?: string;
+  /** Sent when available so the API can verify Cloudinary public id. */
+  publicId?: string;
 };
 
 export type NoteListItem = {

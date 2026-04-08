@@ -16,14 +16,19 @@ import {
   type NoteListItem,
   type NoteListResponse,
   type NotesBySetResult,
+  type NoteFileRegionCommentDto,
 } from "@/services/types/note.types";
 
 /** Merge image list from whichever field the API returns so reload shows attachments. */
 function normalizeNoteDetail(data: NoteDetail): NoteDetail {
-  const x = data as NoteDetail & { note_imgs?: NoteDocItem[] };
+  const x = data as NoteDetail & { set_id?: number; note_imgs?: NoteDocItem[] };
   const imgs = x.noteImgs ?? x.noteImages ?? x.note_imgs;
-  if (!imgs) return data;
-  return { ...data, noteImgs: imgs };
+  const setId = x.setId ?? x.set_id;
+  return {
+    ...data,
+    ...(imgs ? { noteImgs: imgs } : {}),
+    ...(setId != null ? { setId } : {}),
+  };
 }
 
 function normalizeNotesBySetResponse(
@@ -76,6 +81,17 @@ export const useNoteDetail = (setId: number, noteId: number) => {
     queryFn: async () => {
       const response = await noteAPI.getNoteDetail(setId, noteId);
       return normalizeNoteDetail(response.data.data);
+    },
+    enabled: !!setId && !!noteId,
+  });
+};
+
+export const useNoteFileRegionComments = (setId: number, noteId: number) => {
+  return useQuery({
+    queryKey: ["note", noteId, "file-region-comments", setId] as const,
+    queryFn: async () => {
+      const response = await noteAPI.listFileRegionComments(setId, noteId);
+      return response.data.data as NoteFileRegionCommentDto[];
     },
     enabled: !!setId && !!noteId,
   });
@@ -295,6 +311,13 @@ export const useDeleteNoteDoc = () => {
         queryClient.invalidateQueries({
           queryKey: ["note"],
         });
+        queryClient.invalidateQueries({
+          predicate: (q) =>
+            Array.isArray(q.queryKey) &&
+            q.queryKey[0] === "note" &&
+            q.queryKey[1] === variables.noteId &&
+            q.queryKey[2] === "file-region-comments",
+        });
       }
     },
     onError: (error) => {
@@ -313,6 +336,13 @@ export const useDeleteNoteImg = () => {
       if (variables.data.noteId > 0) {
         queryClient.invalidateQueries({
           queryKey: ["note"],
+        });
+        queryClient.invalidateQueries({
+          predicate: (q) =>
+            Array.isArray(q.queryKey) &&
+            q.queryKey[0] === "note" &&
+            q.queryKey[1] === variables.noteId &&
+            q.queryKey[2] === "file-region-comments",
         });
       }
     },

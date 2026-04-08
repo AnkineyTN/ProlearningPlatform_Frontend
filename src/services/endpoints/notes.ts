@@ -22,6 +22,8 @@ import type {
   SaveDocInNoteRequest,
   DeleteNoteImgRequest,
   ResponseDataVoid,
+  NoteFileRegionCommentDto,
+  CreateNoteFileRegionCommentRequest,
 } from '../types/note.types';
 
 export const noteAPI = {
@@ -123,4 +125,31 @@ export const noteAPI = {
     data: DeleteNoteImgRequest,
   ): Promise<AxiosResponse<ResponseDataVoid>> =>
     api.delete(`/sets/${setId}/notes/delete-img`, { data }),
+
+  /** Region comments (PDF / image) — Spring path `/api/sets/{setId}/notes/...`. */
+  listFileRegionComments: (
+    setId: number,
+    noteId: number,
+    assetId?: number,
+  ): Promise<
+    AxiosResponse<{ status: number; message: string; data: NoteFileRegionCommentDto[] }>
+  > =>
+    api.get(`/sets/${setId}/notes/${noteId}/file-region-comments`, {
+      params: assetId ? { assetId } : undefined,
+    }),
+
+  createFileRegionComment: (
+    setId: number,
+    noteId: number,
+    body: CreateNoteFileRegionCommentRequest,
+  ): Promise<
+    AxiosResponse<{ status: number; message: string; data: NoteFileRegionCommentDto }>
+  > => api.post(`/sets/${setId}/notes/${noteId}/file-region-comments`, body),
+
+  deleteFileRegionComment: (
+    setId: number,
+    noteId: number,
+    commentId: number,
+  ): Promise<AxiosResponse<ResponseDataVoid>> =>
+    api.delete(`/sets/${setId}/notes/${noteId}/file-region-comments/${commentId}`),
 };

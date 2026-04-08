@@ -152,6 +152,23 @@ export function buildRegionCommentPayload(
   };
 }
 
+/** Maps persisted API DTO to overlay state (server id as string). */
+export function fileRegionCommentDtoToRegion(d: {
+  id: number;
+  pageNumber: number;
+  rectPercent: { x: number; y: number; width: number; height: number };
+  content: string;
+  createdAt: string | null;
+}): RegionComment {
+  return {
+    id: String(d.id),
+    pageNumber: d.pageNumber,
+    rect: { ...d.rectPercent },
+    text: d.content,
+    createdAt: d.createdAt ?? new Date().toISOString(),
+  };
+}
+
 function CommentPin({
   comment,
   isActive,
