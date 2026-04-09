@@ -70,7 +70,7 @@ export const NotePage = () => {
     setId: string;
     id: string;
   }>();
-  const setId = setIdParam ? Number(setIdParam) : 0;
+  const numericSetId = setIdParam ? Number(setIdParam) : 0;
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isEditorReady, setIsEditorReady] = useState(false);
@@ -81,7 +81,7 @@ export const NotePage = () => {
   const editorRef = useRef<NoteEditorHandle>(null);
 
   const { data: noteDetail, isLoading: isLoadingNote } = useNoteDetail(
-    setId,
+    numericSetId,
     noteId ? parseInt(noteId) : 0,
   );
   const autoSaveMutation = useAutoSaveNote();
@@ -145,7 +145,6 @@ export const NotePage = () => {
   };
 
   const handleSave = () => {
-    console.log('🚀 ~ handleSave ~ noteId:', noteId)
     if (setId && noteId) {
       autoSaveMutation.mutate(
         {

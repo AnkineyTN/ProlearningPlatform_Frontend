@@ -62,14 +62,14 @@ export const noteAPI = {
     if (query.privacy) {
       sp.set('privacy', query.privacy);
     }
-    return api.get(`/sets/${setId}/notes?${sp.toString()}`);
+    return api.get(`/sets/${setId}/notes/all?${sp.toString()}`);
   },
   autoSaveNote: (
     setId: number,
     noteId: number,
     data: AutoSaveNoteRequest,
   ): Promise<AxiosResponse<AutoSaveNoteResponse>> =>
-    api.patch(`/sets/${setId}/notes/${noteId}/save`, data),
+    api.patch(`/sets/${setId}/notes/save/${noteId}`, data),
   explainText: (
     setId: number,
     data: ExplainTextRequest,
