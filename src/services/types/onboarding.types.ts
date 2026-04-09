@@ -5,18 +5,6 @@ export type OnboardingSubmissionPayload = {
   accountType: string;
 };
 
-export type OnboardingSubmissionRequest = {
-  userId: number;
-  data: OnboardingSubmissionPayload;
-};
-
-export type OnboardingSubmissionRecord = {
-  id: number;
-  submittedAt: string;
-  userId: number;
-  data: OnboardingSubmissionPayload | null;
-};
-
 export type OnboardingApiEnvelope<T> = {
   status: string;
   message: string;

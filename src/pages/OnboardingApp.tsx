@@ -17,7 +17,7 @@ import {
   loadOnboardingDraft,
   saveOnboardingDraft,
 } from "@/lib/onboardingStorage";
-import { onboardingAPI } from "@/services/endpoints/onboarding";
+import { authAPI } from "@/services/endpoints/auth";
 import type { RootState } from "@/store";
 
 const TOTAL_STEPS = 5;
@@ -76,10 +76,7 @@ const OnboardingApp: React.FC = () => {
     }
     setFinishing(true);
     try {
-      await onboardingAPI.submit({
-        userId: user.id,
-        data: mapOnboardingDataToSubmissionPayload(data),
-      });
+      await authAPI.updateMe(mapOnboardingDataToSubmissionPayload(data));
       clearOnboardingDraft();
       navigate("/dashboard");
     } catch {

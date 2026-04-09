@@ -17,7 +17,7 @@ import FlashcardEditor from "@/pages/FlashcardPage/FlashcardEditor";
 import LandingPage from "@/pages/LandingPage";
 import TextEditor from "@/pages/NotePage";
 import OnboardingApp from "@/pages/OnboardingApp.tsx";
-import AdminOnboardingPage from "@/pages/AdminOnboardingPage";
+import AdminDashboardPage from "@/pages/AdminDashboardPage";
 import SetListPage from "@/pages/SetListPage";
 import SetSeriesPage from "@/pages/SetSeriesPage";
 import TodoDashboard from "@/pages/TodoDashboard";
@@ -119,7 +119,7 @@ function ExamUpdateWrapper() {
   return <ExamEditor />;
 }
 
-function AdminOnboardingRoute() {
+function AdminDashboardRoute() {
   const token = useSelector((s: RootState) => s.auth.token);
   const user = useSelector((s: RootState) => s.auth.user);
   if (!token) {
@@ -129,7 +129,7 @@ function AdminOnboardingRoute() {
   if (!isAdmin) {
     return <Navigate to='/dashboard' replace />;
   }
-  return <AdminOnboardingPage />;
+  return <AdminDashboardPage />;
 }
 
 export const routeConfig: RouteObject[] = [
@@ -168,7 +168,11 @@ export const routeConfig: RouteObject[] = [
   },
   {
     path: "/admin/onboarding",
-    element: <AdminOnboardingRoute />,
+    element: <Navigate to='/admin' replace />,
+  },
+  {
+    path: "/admin",
+    element: <AdminDashboardRoute />,
   },
   {
     path: "/test",
