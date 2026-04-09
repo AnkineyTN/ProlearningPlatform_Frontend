@@ -16,6 +16,12 @@ import type {
   GenerateExamFromNotesRequest,
   GenerateExamFromWebRequest,
   ExamAIDifficultyDistribution,
+  ExamAttemptStartResponse,
+  ExamAttemptDetailResponse,
+  ExamAttemptListResponse,
+  SubmitExamAttemptRequest,
+  AiExplainWrongAnswerRequest,
+  AiExplainWrongAnswerResponse,
 } from '../types/exam.types';
 
 export const examAPI = {
@@ -187,4 +193,43 @@ export const examAPI = {
     data: GenerateExamFromWebRequest,
   ): Promise<AxiosResponse<GenerateExamAIResponse>> =>
     api.post(`/set/${setId}/exams/ai-web`, data),
+
+  /** Start a new exam attempt (server sets deadline from exam duration). */
+  startExamAttempt: (
+    setId: number,
+    examId: number,
+  ): Promise<AxiosResponse<ExamAttemptStartResponse>> =>
+    api.post(`/set/${setId}/exams/${examId}/attempts`),
+
+  /** List current user's attempts for this exam. */
+  listExamAttempts: (
+    setId: number,
+    examId: number,
+  ): Promise<AxiosResponse<ExamAttemptListResponse>> =>
+    api.get(`/set/${setId}/exams/${examId}/attempts`),
+
+  /** Graded attempt detail (after submit or for review). */
+  getExamAttempt: (
+    setId: number,
+    examId: number,
+    attemptId: number,
+  ): Promise<AxiosResponse<ExamAttemptDetailResponse>> =>
+    api.get(`/set/${setId}/exams/${examId}/attempts/${attemptId}`),
+
+  submitExamAttempt: (
+    setId: number,
+    examId: number,
+    attemptId: number,
+    body: SubmitExamAttemptRequest,
+  ): Promise<AxiosResponse<ExamAttemptDetailResponse>> =>
+    api.post(
+      `/set/${setId}/exams/${examId}/attempts/${attemptId}/submit`,
+      body,
+    ),
+
+  explainWrongAnswer: (
+    setId: number,
+    body: AiExplainWrongAnswerRequest,
+  ): Promise<AxiosResponse<AiExplainWrongAnswerResponse>> =>
+    api.post(`/set/${setId}/exams/ai-explain-wrong-answer`, body),
 };

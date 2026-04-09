@@ -11,9 +11,10 @@ import {
   Sparkles,
   BookOpen,
   Eye,
+  History,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
@@ -34,7 +35,21 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import type { Exam, ExamResult } from '../types';
+import type {
+  ExamAttemptDetail,
+  ExamAttemptSummary,
+  ExamGradedAnswer,
+} from '@/services/types/exam.types';
+import { examAPI } from '@/services/endpoints/exam';
 import ModeToggle from '@/components/theme/mode-toggle';
 import NotificationBell from '@/components/notifications/NotificationBell';
 
@@ -51,15 +66,21 @@ export default function ExamResults({
   exam,
   result,
 }: ExamResultsProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [openQuestions, setOpenQuestions] = useState<
     Record<string | number, boolean>
   >(() => {
-    // Auto-collapse correct answers, expand wrong/essay ones
     const initial: Record<string | number, boolean> = {};
     exam.questions.forEach((q) => {
+      const graded = result.gradedByBackend?.find(
+        (g) => String(g.questionId) === String(q.id),
+      );
+      if (graded) {
+        initial[q.id] = q.type === 'ESSAY' ? true : !graded.isCorrect;
+        return;
+      }
       const correctAnswerIds = q.answers
         .filter((a) => a.isCorrect)
         .map((a) => a.id);
@@ -71,7 +92,7 @@ export default function ExamResults({
         const isCorrect =
           correctAnswerIds.length === selectedAnswerIds.length &&
           correctAnswerIds.every((id) => selectedAnswerIds.includes(id));
-        initial[q.id] = !isCorrect; // expand wrong, collapse correct
+        initial[q.id] = !isCorrect;
       }
     });
     return initial;
@@ -86,6 +107,79 @@ export default function ExamResults({
     explanation: string;
   }>({ open: false, questionId: null, loading: false, explanation: '' });
 
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyError, setHistoryError] = useState(false);
+  const [historyAttempts, setHistoryAttempts] = useState<ExamAttemptSummary[]>(
+    [],
+  );
+
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [detailData, setDetailData] = useState<ExamAttemptDetail | null>(null);
+
+  const formatAttemptDateTime = (iso: string | null | undefined) => {
+    if (!iso) return '—';
+    const normalized = iso.trim().replace(/(\.\d{3})\d+/, '$1').replace(' ', 'T');
+    const d = new Date(normalized);
+    if (Number.isNaN(d.getTime())) return iso;
+    return d.toLocaleString(i18n.language, {
+      dateStyle: 'short',
+      timeStyle: 'short',
+    });
+  };
+
+  useEffect(() => {
+    if (!historyOpen) return;
+    let cancelled = false;
+    setHistoryLoading(true);
+    setHistoryError(false);
+    examAPI
+      .listExamAttempts(setId, examId)
+      .then((res) => {
+        if (cancelled) return;
+        const rows = res.data?.data ?? [];
+        const sorted = [...rows].sort((a, b) => {
+          const ts = (x: ExamAttemptSummary) => {
+            const raw = x.submittedAt ?? x.startedAt;
+            const n = raw
+              .replace(/(\.\d{3})\d+/, '$1')
+              .replace(' ', 'T');
+            const ms = new Date(n).getTime();
+            return Number.isNaN(ms) ? 0 : ms;
+          };
+          return ts(b) - ts(a) || b.id - a.id;
+        });
+        setHistoryAttempts(sorted);
+      })
+      .catch(() => {
+        if (!cancelled) setHistoryError(true);
+      })
+      .finally(() => {
+        if (!cancelled) setHistoryLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [historyOpen, setId, examId]);
+
+  const openAttemptDetail = (attemptId: number) => {
+    setDetailOpen(true);
+    setDetailLoading(true);
+    setDetailData(null);
+    examAPI
+      .getExamAttempt(setId, examId, attemptId)
+      .then((res) => {
+        setDetailData(res.data?.data ?? null);
+      })
+      .catch(() => {
+        setDetailData(null);
+      })
+      .finally(() => {
+        setDetailLoading(false);
+      });
+  };
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -95,10 +189,21 @@ export default function ExamResults({
   const getSubmissionForQuestion = (questionId: string | number) =>
     result.submissions.find((s) => s.questionId === questionId);
 
+  const getGradedForQuestion = (
+    questionId: string | number,
+  ): ExamGradedAnswer | undefined =>
+    result.gradedByBackend?.find(
+      (g) => String(g.questionId) === String(questionId),
+    );
+
   const isAnswerCorrect = (questionId: string | number) => {
     const question = exam.questions.find((q) => q.id === questionId);
+    const graded = getGradedForQuestion(questionId);
+    if (graded) return graded.isCorrect;
     const submission = getSubmissionForQuestion(questionId);
-    if (!question || !submission) return false;
+    if (!question || !submission) {
+      return question?.type === 'ESSAY' ? null : false;
+    }
     if (question.type === 'ESSAY') return null;
     const correctAnswerIds = question.answers
       .filter((a) => a.isCorrect)
@@ -110,10 +215,26 @@ export default function ExamResults({
 
   const getQuestionScore = (questionId: string | number) => {
     const question = exam.questions.find((q) => q.id === questionId);
+    const graded = getGradedForQuestion(questionId);
+    if (graded) return graded.earnedPoints ?? 0;
     const correct = isAnswerCorrect(questionId);
     if (!question) return 0;
     if (correct === null) return 0;
     return correct ? question.score : 0;
+  };
+
+  const isOptionSelected = (
+    answerId: string,
+    graded: ExamGradedAnswer | undefined,
+    submissionSelected: boolean,
+  ) => {
+    if (graded && graded.selectedOptionId != null) {
+      return (
+        String(graded.selectedOptionId) === answerId ||
+        Number(answerId) === graded.selectedOptionId
+      );
+    }
+    return submissionSelected;
   };
 
   const scrollToQuestion = (index: number) => {
@@ -134,37 +255,37 @@ export default function ExamResults({
     const question = exam.questions.find((q) => q.id === questionId);
     if (!question) return;
     const submission = getSubmissionForQuestion(questionId);
+    const graded = getGradedForQuestion(questionId);
 
     setAiDialog({ open: true, questionId, loading: true, explanation: '' });
 
     try {
-      const correctAnswers = question.answers
+      const correctFromUi = question.answers
         .filter((a) => a.isCorrect)
-        .map((a) => a.text);
-      const selectedAnswers = question.answers
-        .filter((a) => submission?.selectedAnswers.includes(a.id))
-        .map((a) => a.text);
+        .map((a) => a.text)
+        .join(', ');
+      const correctAnswer =
+        graded?.expectedAnswer?.trim() ||
+        correctFromUi ||
+        t('exam.results.noExplanation');
+      const userAnswer =
+        graded?.studentAnswer?.trim() ||
+        (question.type === 'ESSAY'
+          ? submission?.essayAnswer?.trim() || ''
+          : question.answers
+              .filter((a) => submission?.selectedAnswers.includes(a.id))
+              .map((a) => a.text)
+              .join(', ') || '');
 
-      const prompt =
-        question.type === 'ESSAY'
-          ? `Explain the ideal answer for this essay question: "${question.questionText}". The student wrote: "${submission?.essayAnswer ?? '(no answer)'}". Give constructive feedback and a model answer.`
-          : `Explain why the correct answer(s) are: ${correctAnswers.join(', ')} for the question: "${question.questionText}". ${selectedAnswers.length ? `The student selected: ${selectedAnswers.join(', ')}.` : ''} Be concise and educational.`;
-
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{ role: 'user', content: prompt }],
-        }),
+      const res = await examAPI.explainWrongAnswer(setId, {
+        question: question.questionText,
+        correctAnswer,
+        userAnswer,
+        language: i18n.language || 'en',
       });
 
-      const data = await response.json();
       const text =
-        data.content
-          ?.map((c: { type: string; text?: string }) => c.text ?? '')
-          .join('') ?? t('exam.results.noExplanation');
+        res.data?.data?.explanation?.trim() || t('exam.results.noExplanation');
       setAiDialog({
         open: true,
         questionId,
@@ -179,6 +300,15 @@ export default function ExamResults({
         explanation: t('exam.results.failedExplanation'),
       });
     }
+  };
+
+  const showExplainAi = (questionId: string | number) => {
+    const q = exam.questions.find((x) => x.id === questionId);
+    const graded = getGradedForQuestion(questionId);
+    if (!q) return false;
+    if (q.type === 'ESSAY') return true;
+    if (graded) return !graded.isCorrect;
+    return isAnswerCorrect(questionId) !== true;
   };
 
   const reviewedCount = Object.values(reviewed).filter(Boolean).length;
@@ -391,6 +521,7 @@ export default function ExamResults({
                 <div className='space-y-3'>
                   {exam.questions.map((question, index) => {
                     const submission = getSubmissionForQuestion(question.id);
+                    const graded = getGradedForQuestion(question.id);
                     const correct = isAnswerCorrect(question.id);
                     const score = getQuestionScore(question.id);
                     const isReviewed = reviewed[question.id];
@@ -507,10 +638,13 @@ export default function ExamResults({
                               {question.type !== 'ESSAY' && (
                                 <div className='space-y-2'>
                                   {question.answers.map((answer) => {
-                                    const isSelected =
+                                    const isSelected = isOptionSelected(
+                                      answer.id,
+                                      graded,
                                       submission?.selectedAnswers.includes(
                                         answer.id,
-                                      );
+                                      ) ?? false,
+                                    );
                                     const isCorrectAnswer = answer.isCorrect;
                                     return (
                                       <div
@@ -560,19 +694,45 @@ export default function ExamResults({
 
                               {/* Essay answer */}
                               {question.type === 'ESSAY' &&
-                                submission?.essayAnswer && (
+                                (graded?.studentAnswer || submission?.essayAnswer) && (
                                   <div className='bg-background border border-border rounded-lg p-4'>
                                     <p className='text-xs font-medium text-muted-foreground mb-2'>
                                       {t('exam.results.yourAnswerLabel')}
                                     </p>
                                     <p className='text-sm whitespace-pre-wrap'>
-                                      {submission.essayAnswer}
+                                      {graded?.studentAnswer ??
+                                        submission?.essayAnswer}
                                     </p>
                                   </div>
                                 )}
 
+                              {graded?.expectedAnswer &&
+                                question.type !== 'ESSAY' &&
+                                !graded.isCorrect && (
+                                  <div className='rounded-lg border border-border bg-muted/40 p-3 text-sm'>
+                                    <p className='text-xs font-medium text-muted-foreground mb-1'>
+                                      {t('exam.results.expectedAnswer')}
+                                    </p>
+                                    <p className='whitespace-pre-wrap'>
+                                      {graded.expectedAnswer}
+                                    </p>
+                                  </div>
+                                )}
+
+                              {graded?.feedback?.trim() && (
+                                <div className='rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm'>
+                                  <p className='text-xs font-medium text-muted-foreground mb-1'>
+                                    {t('exam.results.feedback')}
+                                  </p>
+                                  <p className='whitespace-pre-wrap'>
+                                    {graded.feedback}
+                                  </p>
+                                </div>
+                              )}
+
                               {/* Action buttons */}
                               <div className='flex items-center gap-2 pt-1'>
+                                {showExplainAi(question.id) && (
                                 <Button
                                   variant='outline'
                                   size='sm'
@@ -584,6 +744,7 @@ export default function ExamResults({
                                   <Sparkles className='w-3.5 h-3.5 text-purple-500' />
                                   {t('exam.results.explainAI')}
                                 </Button>
+                                )}
                                 <Button
                                   variant={isReviewed ? 'default' : 'outline'}
                                   size='sm'
@@ -617,15 +778,191 @@ export default function ExamResults({
                   {t('exam.results.backToSet')}
                 </Button>
                 <Button
-                  onClick={() => navigate(`/sets/${setId}/exams/${examId}`)}
+                  variant='default'
+                  className='gap-2'
+                  onClick={() => setHistoryOpen(true)}
                 >
-                  {t('exam.results.reviewExam')}
+                  <History className='w-4 h-4' />
+                  {t('exam.results.viewHistory')}
                 </Button>
               </div>
             </div>
           </main>
         </div>
       </div>
+
+      <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
+        <DialogContent className='max-w-4xl max-h-[85vh] flex flex-col gap-0'>
+          <DialogHeader>
+            <DialogTitle className='flex items-center gap-2'>
+              <History className='w-5 h-5' />
+              {t('exam.results.attemptHistoryTitle')}
+            </DialogTitle>
+          </DialogHeader>
+          <div className='mt-2 min-h-0 flex-1 overflow-y-auto pr-1'>
+            {historyLoading && (
+              <p className='text-sm text-muted-foreground py-8 text-center'>
+                {t('exam.results.attemptHistoryLoading')}
+              </p>
+            )}
+            {historyError && !historyLoading && (
+              <p className='text-sm text-destructive py-8 text-center'>
+                {t('exam.results.attemptHistoryLoadError')}
+              </p>
+            )}
+            {!historyLoading &&
+              !historyError &&
+              historyAttempts.length === 0 && (
+                <p className='text-sm text-muted-foreground py-8 text-center'>
+                  {t('exam.results.attemptHistoryEmpty')}
+                </p>
+              )}
+            {!historyLoading && !historyError && historyAttempts.length > 0 && (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('exam.results.tableStatus')}</TableHead>
+                    <TableHead>{t('exam.results.tableStarted')}</TableHead>
+                    <TableHead>{t('exam.results.tableSubmitted')}</TableHead>
+                    <TableHead>{t('exam.results.tableScore')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {historyAttempts.map((row) => {
+                    const submitted =
+                      row.status === 'SUBMITTED' ||
+                      row.submittedAt != null;
+                    const scoreLabel =
+                      submitted &&
+                      row.score != null &&
+                      row.totalPoints != null
+                        ? `${row.score}/${row.totalPoints}`
+                        : '—';
+                    return (
+                      <TableRow
+                        key={row.id}
+                        onClick={() => openAttemptDetail(row.id)}
+                        className='cursor-pointer'
+                      >
+                        <TableCell>
+                          <Badge
+                            variant={submitted ? 'default' : 'secondary'}
+                            className='text-xs'
+                          >
+                            {row.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className='text-muted-foreground whitespace-normal'>
+                          {formatAttemptDateTime(row.startedAt)}
+                        </TableCell>
+                        <TableCell className='text-muted-foreground whitespace-normal'>
+                          {formatAttemptDateTime(row.submittedAt)}
+                        </TableCell>
+                        <TableCell>{scoreLabel}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={detailOpen}
+        onOpenChange={(open) => {
+          setDetailOpen(open);
+          if (!open) setDetailData(null);
+        }}
+      >
+        <DialogContent className='max-w-2xl max-h-[80vh] flex flex-col'>
+          <DialogHeader>
+            <DialogTitle>{t('exam.results.attemptDetailTitle')}</DialogTitle>
+          </DialogHeader>
+          <div className='mt-2 min-h-0 flex-1 overflow-y-auto space-y-4 text-sm'>
+            {detailLoading && (
+              <p className='text-muted-foreground py-6 text-center'>
+                {t('exam.results.attemptDetailLoading')}
+              </p>
+            )}
+            {!detailLoading && !detailData && (
+              <p className='text-destructive py-6 text-center'>
+                {t('exam.results.attemptDetailError')}
+              </p>
+            )}
+            {!detailLoading && detailData && (
+              <>
+                <div className='grid grid-cols-2 gap-2 text-xs sm:text-sm'>
+                  <div>
+                    <span className='text-muted-foreground'>
+                      {t('exam.results.tableStatus')}:{' '}
+                    </span>
+                    <Badge variant='outline'>{detailData.status}</Badge>
+                  </div>
+                  <div>
+                    <span className='text-muted-foreground'>
+                      {t('exam.results.tableScore')}:{' '}
+                    </span>
+                    <span className='font-semibold'>
+                      {detailData.score != null && detailData.totalPoints != null
+                        ? `${detailData.score}/${detailData.totalPoints}`
+                        : '—'}
+                    </span>
+                  </div>
+                  <div className='col-span-2'>
+                    <span className='text-muted-foreground'>
+                      {t('exam.results.tableStarted')}:{' '}
+                    </span>
+                    {formatAttemptDateTime(detailData.startedAt)}
+                  </div>
+                  <div className='col-span-2'>
+                    <span className='text-muted-foreground'>
+                      {t('exam.results.tableSubmitted')}:{' '}
+                    </span>
+                    {formatAttemptDateTime(detailData.submittedAt)}
+                  </div>
+                </div>
+                {detailData.answers && detailData.answers.length > 0 && (
+                  <div className='space-y-3 border-t border-border pt-3'>
+                    <p className='font-medium text-xs uppercase tracking-wide text-muted-foreground'>
+                      {t('exam.results.attemptDetailAnswers')}
+                    </p>
+                    <ul className='space-y-3'>
+                      {detailData.answers.map((ans, idx) => (
+                        <li
+                          key={`${ans.questionId}-${idx}`}
+                          className='rounded-lg border border-border p-3 space-y-1'
+                        >
+                          <div className='flex items-start justify-between gap-2'>
+                            <p className='font-medium text-sm flex-1'>
+                              Q{idx + 1}:{' '}
+                              {ans.questionContent ?? `ID ${ans.questionId}`}
+                            </p>
+                            {ans.isCorrect ? (
+                              <CheckCircle className='w-4 h-4 text-green-600 shrink-0' />
+                            ) : (
+                              <XCircle className='w-4 h-4 text-red-600 shrink-0' />
+                            )}
+                          </div>
+                          <p className='text-xs text-muted-foreground'>
+                            {t('exam.results.tableScore')}: {ans.earnedPoints}
+                            {ans.feedback ? (
+                              <span className='block mt-1 text-foreground'>
+                                {ans.feedback}
+                              </span>
+                            ) : null}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* AI Explanation Dialog */}
       <Dialog

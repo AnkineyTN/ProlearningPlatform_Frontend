@@ -7,9 +7,10 @@ import NotificationBell from "@/components/notifications/NotificationBell";
 
 interface ExamHomeViewProps {
   exam: Exam;
-  onStartExam: () => void;
+  onStartExam: () => void | Promise<void>;
   onEditExam: () => void;
   onBack: () => void;
+  isStarting?: boolean;
 }
 
 export default function ExamHomeView({
@@ -17,6 +18,7 @@ export default function ExamHomeView({
   onStartExam,
   onEditExam,
   onBack,
+  isStarting = false,
 }: ExamHomeViewProps) {
   const { t } = useTranslation();
   return (
@@ -138,9 +140,13 @@ export default function ExamHomeView({
               <Edit className="w-4 h-4 mr-2" />
               {t("exam.home.editExam")}
             </Button>
-            <Button onClick={onStartExam} className="flex-1">
+            <Button
+              onClick={() => void onStartExam()}
+              className="flex-1"
+              disabled={isStarting}
+            >
               <Play className="w-4 h-4 mr-2" />
-              {t("exam.home.startExam")}
+              {isStarting ? t("exam.home.starting") : t("exam.home.startExam")}
             </Button>
           </div>
         </div>

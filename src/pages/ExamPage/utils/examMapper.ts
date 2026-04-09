@@ -46,10 +46,10 @@ export function uiQuestionTypeToApi(
   }
 }
 
-// API QuestionOption -> UI Answer
-function apiOptionToAnswer(opt: QuestionOption & { id: string }): Answer {
+// API QuestionOption -> UI Answer (prefer backend option id for submit payloads)
+function apiOptionToAnswer(opt: QuestionOption, answerId: string): Answer {
   return {
-    id: opt.id,
+    id: answerId,
     text: opt.optionText,
     isCorrect: opt.isCorrect,
   };
@@ -70,9 +70,14 @@ export function apiQuestionToUi(q: ApiQuestion & { type?: ApiQuestionType; conte
   const answers: Answer[] =
     type === "ESSAY"
       ? []
-      : (q.options ?? []).map((opt, index) =>
-          apiOptionToAnswer({ ...opt, id: (opt as { id?: string }).id ?? `opt-${index}` })
-        );
+      : (q.options ?? []).map((opt, index) => {
+          const raw = opt as QuestionOption & { id?: number | string };
+          const answerId =
+            raw.id !== undefined && raw.id !== null
+              ? String(raw.id)
+              : `opt-${index}`;
+          return apiOptionToAnswer(opt, answerId);
+        });
 
   return {
     id: q.id,
@@ -183,6 +188,10 @@ export function apiQuizDetailToExam(
     privacy: quiz.privacy === "PUBLIC" ? "Public" : "Private",
     totalScore,
     timeLimit: quiz.duration ?? 30,
+    passingScore:
+      quiz.passingScore != null && !Number.isNaN(Number(quiz.passingScore))
+        ? Number(quiz.passingScore)
+        : 60,
     questions,
   };
 }

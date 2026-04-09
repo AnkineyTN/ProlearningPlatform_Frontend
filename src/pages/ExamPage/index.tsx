@@ -1,12 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 import ExamHomeView from "./components/ExamHomeView";
 import ExamTaking from "./components/ExamTaking";
 import ExamResults from "./components/ExamResults";
 import type { Exam, ExamResult, ExamSubmission } from "./types";
 import { useExamDetail } from "@/hooks/useExams";
 import { apiQuizDetailToExam } from "./utils/examMapper";
+import {
+  buildExamAttemptAnswers,
+  examAttemptDetailToExamResult,
+} from "./utils/examAttemptUtils";
+import { examAPI } from "@/services/endpoints/exam";
+import type { ExamAttemptSummary } from "@/services/types/exam.types";
 
 type ViewMode = "home" | "taking" | "results";
 
@@ -20,6 +27,10 @@ export default function ExamPage({ setId, examId }: Props) {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<ViewMode>("home");
   const [examResult, setExamResult] = useState<ExamResult | null>(null);
+  const [activeAttempt, setActiveAttempt] = useState<ExamAttemptSummary | null>(
+    null,
+  );
+  const [isStartingAttempt, setIsStartingAttempt] = useState(false);
 
   const { data, isLoading, isError } = useExamDetail(
     Number(setId),
@@ -31,8 +42,22 @@ export default function ExamPage({ setId, examId }: Props) {
     : null;
   const hasNoQuestions = exam !== null && exam.questions.length === 0;
 
-  const handleStartExam = () => {
-    setViewMode("taking");
+  const handleStartExam = async () => {
+    setIsStartingAttempt(true);
+    try {
+      const res = await examAPI.startExamAttempt(Number(setId), Number(examId));
+      const attempt = res.data?.data;
+      if (!attempt?.id) {
+        toast.error(t("exam.page.startAttemptError"));
+        return;
+      }
+      setActiveAttempt(attempt);
+      setViewMode("taking");
+    } catch {
+      toast.error(t("exam.page.startAttemptError"));
+    } finally {
+      setIsStartingAttempt(false);
+    }
   };
 
   const handleEditExam = () => {
@@ -45,45 +70,42 @@ export default function ExamPage({ setId, examId }: Props) {
     });
   };
 
-  const handleSubmitExam = (
+  const handleAbandonAttempt = () => {
+    setActiveAttempt(null);
+    setViewMode("home");
+  };
+
+  const handleSubmitExam = async (
     submissions: ExamSubmission[],
     timeTaken: number,
   ) => {
-    if (!exam) return;
+    if (!exam || !activeAttempt) return;
 
-    let earnedScore = 0;
-    exam.questions.forEach((question) => {
-      const submission = submissions.find((s) => s.questionId === question.id);
-      if (!submission) return;
-      if (question.type === "ESSAY") return;
-
-      const correctAnswerIds = question.answers
-        .filter((a) => a.isCorrect)
-        .map((a) => a.id)
-        .sort();
-      const selectedAnswerIds = [...submission.selectedAnswers].sort();
-
-      const isCorrect =
-        correctAnswerIds.length === selectedAnswerIds.length &&
-        correctAnswerIds.every((id, idx) => id === selectedAnswerIds[idx]);
-
-      if (isCorrect) {
-        earnedScore += question.score;
+    const answers = buildExamAttemptAnswers(exam, submissions);
+    try {
+      const res = await examAPI.submitExamAttempt(
+        Number(setId),
+        Number(examId),
+        activeAttempt.id,
+        { answers },
+      );
+      const detail = res.data?.data;
+      if (!detail) {
+        toast.error(t("exam.page.submitError"));
+        return;
       }
-    });
-
-    const percentage = (earnedScore / exam.totalScore) * 100;
-    const passed = percentage >= 60;
-
-    setExamResult({
-      totalScore: exam.totalScore,
-      earnedScore,
-      percentage,
-      passed,
-      timeTaken,
-      submissions,
-    });
-    setViewMode("results");
+      const mapped = examAttemptDetailToExamResult(
+        detail,
+        exam,
+        submissions,
+        timeTaken,
+      );
+      setExamResult(mapped);
+      setActiveAttempt(null);
+      setViewMode("results");
+    } catch {
+      toast.error(t("exam.page.submitError"));
+    }
   };
 
   if (isLoading) {
@@ -155,6 +177,7 @@ export default function ExamPage({ setId, examId }: Props) {
         onStartExam={handleStartExam}
         onEditExam={handleEditExam}
         onBack={() => navigate(`/sets/${setId}/exams`)}
+        isStarting={isStartingAttempt}
       />
     );
   }
@@ -166,6 +189,7 @@ export default function ExamPage({ setId, examId }: Props) {
         examId={Number(examId)}
         exam={exam}
         onSubmit={handleSubmitExam}
+        onAbandon={handleAbandonAttempt}
       />
     );
   }

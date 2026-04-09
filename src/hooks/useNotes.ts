@@ -315,7 +315,7 @@ export const useDeleteNoteDoc = () => {
           predicate: (q) =>
             Array.isArray(q.queryKey) &&
             q.queryKey[0] === "note" &&
-            q.queryKey[1] === variables.noteId &&
+            q.queryKey[1] === variables.data.noteId &&
             q.queryKey[2] === "file-region-comments",
         });
       }
@@ -341,7 +341,7 @@ export const useDeleteNoteImg = () => {
           predicate: (q) =>
             Array.isArray(q.queryKey) &&
             q.queryKey[0] === "note" &&
-            q.queryKey[1] === variables.noteId &&
+            q.queryKey[1] === variables.data.noteId &&
             q.queryKey[2] === "file-region-comments",
         });
       }

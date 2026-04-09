@@ -1,7 +1,6 @@
 import { AlertCircle, ArrowLeft, Clock } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { Button } from "@/components/ui/button";
@@ -23,23 +22,39 @@ interface ExamTakingProps {
   setId: number;
   examId: number;
   exam: Exam;
-  onSubmit: (submissions: ExamSubmission[], timeTaken: number) => void;
+  onSubmit: (
+    submissions: ExamSubmission[],
+    timeTaken: number,
+  ) => void | Promise<void>;
+  /** Return to exam intro (same route — do not use navigate to this URL only). */
+  onAbandon: () => void;
 }
 
 export default function ExamTaking({
-  setId,
-  examId,
+  setId: _setId,
+  examId: _examId,
   exam,
   onSubmit,
+  onAbandon,
 }: ExamTakingProps) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [submissions, setSubmissions] = useState<
     Map<string | number, ExamSubmission>
   >(new Map());
-  const [timeRemaining, setTimeRemaining] = useState(exam.timeLimit * 60);
+  const [showLeaveDialog, setShowLeaveDialog] = useState(false);
+  const timeRemainingRef = useRef(0);
+  const [timeRemaining, setTimeRemaining] = useState(
+    () => Math.max(0, exam.timeLimit * 60),
+  );
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
+  const submissionsRef = useRef(submissions);
+  const onSubmitRef = useRef(onSubmit);
+  const submitFromTimerRef = useRef<(timeExpired?: boolean) => Promise<void>>(
+    async () => {},
+  );
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(
     new Set(),
   );
@@ -47,22 +62,30 @@ export default function ExamTaking({
   const currentQuestion = exam.questions[currentQuestionIndex];
   const totalQuestions = exam.questions.length;
 
+  submissionsRef.current = submissions;
+  onSubmitRef.current = onSubmit;
+  timeRemainingRef.current = timeRemaining;
+
   useEffect(() => {
+    const totalSeconds = Math.max(0, exam.timeLimit * 60);
+    setTimeRemaining(totalSeconds);
     const timer = setInterval(() => {
       setTimeRemaining((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          handleSubmit(true);
+          void submitFromTimerRef.current(true);
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [exam.timeLimit]);
 
   const formatTime = (seconds: number) => {
+    if (!Number.isFinite(seconds) || seconds < 0) {
+      return "0:00";
+    }
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
@@ -120,14 +143,28 @@ export default function ExamTaking({
     }
   };
 
-  const handleSubmit = (timeExpired = false) => {
+  const handleSubmit = async (timeExpired = false) => {
+    if (isSubmittingRef.current) return;
     if (timeExpired) {
       toast.warning(t("exam.taking.timeUp"));
     }
-    const submissionsArray = Array.from(submissions.values());
-    const timeTaken = exam.timeLimit * 60 - timeRemaining;
-    onSubmit(submissionsArray, timeTaken);
+    const submissionsArray = Array.from(submissionsRef.current.values());
+    const cap = exam.timeLimit * 60;
+    const timeTaken = Math.min(
+      cap,
+      Math.max(0, cap - timeRemainingRef.current),
+    );
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
+    try {
+      await Promise.resolve(onSubmitRef.current(submissionsArray, timeTaken));
+    } finally {
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
+    }
   };
+
+  submitFromTimerRef.current = handleSubmit;
 
   const currentSubmission = submissions.get(currentQuestion.id);
 
@@ -140,7 +177,8 @@ export default function ExamTaking({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate(`/sets/${setId}/exams/${examId}`)}
+                onClick={() => setShowLeaveDialog(true)}
+                disabled={isSubmitting}
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 {t("exam.taking.back")}
@@ -160,8 +198,13 @@ export default function ExamTaking({
                   {formatTime(timeRemaining)}
                 </span>
               </div>
-              <Button onClick={() => setShowSubmitDialog(true)}>
-                Submit Exam
+              <Button
+                onClick={() => setShowSubmitDialog(true)}
+                disabled={isSubmitting}
+              >
+                {isSubmitting
+                  ? t("exam.taking.submitting")
+                  : t("exam.taking.submitExam")}
               </Button>
             </div>
           </div>
@@ -326,6 +369,28 @@ export default function ExamTaking({
         </div>
       </div>
 
+      <AlertDialog open={showLeaveDialog} onOpenChange={setShowLeaveDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("exam.taking.leaveTitle")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("exam.taking.leaveDescription")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("exam.taking.stayContinue")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setShowLeaveDialog(false);
+                onAbandon();
+              }}
+            >
+              {t("exam.taking.leaveConfirm")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <AlertDialog open={showSubmitDialog} onOpenChange={setShowSubmitDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -345,9 +410,10 @@ export default function ExamTaking({
           <AlertDialogFooter>
             <AlertDialogCancel>{t("exam.taking.continueExam")}</AlertDialogCancel>
             <AlertDialogAction
+              disabled={isSubmitting}
               onClick={() => {
                 setShowSubmitDialog(false);
-                handleSubmit();
+                void handleSubmit();
               }}
             >
               {t("exam.taking.submitExam")}

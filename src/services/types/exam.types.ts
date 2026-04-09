@@ -196,3 +196,75 @@ export type GenerateExamFromWebRequest = {
   free_text: string;
   language: string;
 };
+
+// Exam attempts (take exam, submit, results)
+export type ExamAttemptSummary = {
+  id: number;
+  examId: number;
+  status: string;
+  startedAt: string;
+  deadlineAt: string;
+  submittedAt: string | null;
+  score: number | null;
+  totalPoints: number;
+};
+
+export type ExamAttemptAnswerPayload = {
+  questionId: number;
+  selectedOptionId: number;
+  essayAnswer: string;
+};
+
+export type SubmitExamAttemptRequest = {
+  answers: ExamAttemptAnswerPayload[];
+};
+
+export type ExamGradedAnswer = {
+  questionId: number;
+  questionContent?: string;
+  selectedOptionId: number;
+  studentAnswer?: string;
+  isCorrect: boolean;
+  expectedAnswer?: string;
+  earnedPoints: number;
+  feedback?: string;
+};
+
+export type ExamAttemptDetail = ExamAttemptSummary & {
+  answers?: ExamGradedAnswer[];
+};
+
+export type ExamAttemptStartResponse = {
+  status: string;
+  message: string;
+  data: ExamAttemptSummary;
+  metadata: unknown;
+};
+
+export type ExamAttemptDetailResponse = {
+  status: string;
+  message: string;
+  data: ExamAttemptDetail;
+  metadata: unknown;
+};
+
+export type ExamAttemptListResponse = {
+  status: string;
+  message: string;
+  data: ExamAttemptSummary[];
+  metadata: unknown;
+};
+
+export type AiExplainWrongAnswerRequest = {
+  question: string;
+  correctAnswer: string;
+  userAnswer: string;
+  language: string;
+};
+
+export type AiExplainWrongAnswerResponse = {
+  status: number | string;
+  message: string;
+  data: { explanation: string };
+  metadata?: Record<string, unknown>;
+};
