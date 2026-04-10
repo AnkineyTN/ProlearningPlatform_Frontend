@@ -28,6 +28,8 @@ export type NoteFileRegionCommentDto = {
   pageNumber: number;
   rectPercent: { x: number; y: number; width: number; height: number };
   content: string;
+  attachmentAssetId?: number | null;
+  attachmentImageUrl?: string | null;
   clientCommentId: string | null;
   createdAt: string | null;
   updatedAt: string | null;
@@ -38,7 +40,10 @@ export type CreateNoteFileRegionCommentRequest = {
   kind: 'doc' | 'image';
   pageNumber: number;
   rectPercent: { x: number; y: number; width: number; height: number };
+  /** May be empty when `attachmentAssetId` is set (image-only comment). */
   content: string;
+  /** Screenshot / paste — asset from image upload flow, not linked via save-img. */
+  attachmentAssetId?: number;
   clientCommentId?: string;
   /** Sent when available so the API can verify Cloudinary public id. */
   publicId?: string;

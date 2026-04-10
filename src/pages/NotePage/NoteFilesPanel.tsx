@@ -34,7 +34,11 @@ import {
   fileRegionCommentDtoToRegion,
   RegionCommentOverlay,
 } from "@/pages/NotePage/NoteFileRegionComments";
-import type { NoteAttachedFile, RegionComment } from "@/pages/NotePage/NoteFileRegionComments";
+import type {
+  NoteAttachedFile,
+  RegionComment,
+  RegionCommentSavePayload,
+} from "@/pages/NotePage/NoteFileRegionComments";
 
 export type { NoteAttachedFile, NoteFileRegionCommentPayload } from "@/pages/NotePage/NoteFileRegionComments";
 
@@ -135,9 +139,13 @@ function NoteFileRow({
   }, [queryClient, setId, noteId]);
 
   const persistComment = useCallback(
-    async (pageNumber: number, rect: RegionComment["rect"], text: string) => {
-      const trimmed = text.trim();
-      if (!trimmed) return;
+    async (
+      pageNumber: number,
+      rect: RegionComment["rect"],
+      payload: RegionCommentSavePayload,
+    ) => {
+      const trimmed = payload.text.trim();
+      if (!trimmed && !payload.attachmentAssetId) return;
       setIsCommentMode(false);
       setActiveCommentId(null);
       if (!setId) {
@@ -152,6 +160,9 @@ function NoteFileRow({
           pageNumber,
           rectPercent: { ...rect },
           content: trimmed,
+          ...(payload.attachmentAssetId != null
+            ? { attachmentAssetId: payload.attachmentAssetId }
+            : {}),
           publicId,
         });
         invalidateFileComments();
@@ -319,7 +330,7 @@ function NoteFileRow({
                             activeId={activeCommentId}
                             setActiveId={setActiveCommentId}
                             onDeleteComment={deleteComment}
-                            onSaveComment={(rect, text) => persistComment(i + 1, rect, text)}
+                            onSaveComment={(rect, p) => persistComment(i + 1, rect, p)}
                           />
                         </div>
                       </div>
@@ -346,7 +357,7 @@ function NoteFileRow({
                     activeId={activeCommentId}
                     setActiveId={setActiveCommentId}
                     onDeleteComment={deleteComment}
-                    onSaveComment={(rect, text) => persistComment(1, rect, text)}
+                    onSaveComment={(rect, p) => persistComment(1, rect, p)}
                   />
                 </div>
               </div>
