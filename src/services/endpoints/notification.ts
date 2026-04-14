@@ -10,6 +10,10 @@ import type {
   MarkNotificationsReadRequest,
   VoidResponse,
   MarkAsReadResponse,
+  SetNotificationPreferencesResponse,
+  UpdateSetNotificationPreferencesRequest,
+  GlobalNotificationPreferencesResponse,
+  UpdateGlobalNotificationPreferencesRequest,
 } from '../types/notification.types';
 
 export const notificationAPI = {
@@ -100,4 +104,42 @@ export const notificationAPI = {
     notificationId: number | string,
   ): Promise<AxiosResponse<VoidResponse>> =>
     api.delete(`/notifications/${notificationId}`),
+
+  // ─── Notification Preferences ──────────────────────────────────────────────
+
+  /**
+   * GET /sets/{setId}/notifications/preferences
+   * Returns notification preferences scoped to a specific study set
+   */
+  getSetNotificationPreferences: (
+    setId: number | string,
+  ): Promise<AxiosResponse<SetNotificationPreferencesResponse>> =>
+    api.get(`/sets/${setId}/notifications/preferences`),
+
+  /**
+   * PUT /sets/{setId}/notifications/preferences
+   * Updates notification preferences scoped to a specific study set
+   */
+  updateSetNotificationPreferences: (
+    setId: number | string,
+    data: UpdateSetNotificationPreferencesRequest,
+  ): Promise<AxiosResponse<SetNotificationPreferencesResponse>> =>
+    api.put(`/sets/${setId}/notifications/preferences`, data),
+
+  /**
+   * GET /notifications/preferences
+   * Returns the current user's global notification preferences
+   */
+  getGlobalNotificationPreferences: (): Promise<
+    AxiosResponse<GlobalNotificationPreferencesResponse>
+  > => api.get('/notifications/preferences'),
+
+  /**
+   * PUT /notifications/preferences
+   * Updates the current user's global notification preferences
+   */
+  updateGlobalNotificationPreferences: (
+    data: UpdateGlobalNotificationPreferencesRequest,
+  ): Promise<AxiosResponse<GlobalNotificationPreferencesResponse>> =>
+    api.put('/notifications/preferences', data),
 };

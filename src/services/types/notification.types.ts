@@ -76,3 +76,42 @@ export type MarkAsReadResponse = {
   data: Record<string, number>;
   metadata: Record<string, unknown> | null;
 };
+
+// ─── Notification Preferences ────────────────────────────────────────────────
+
+export type SetNotificationPreferences = {
+  weeklySummaryEnabled: boolean;
+  weeklySummaryDay: number;
+};
+
+export type SetNotificationPreferencesResponse = {
+  status: string;
+  message: string;
+  data: SetNotificationPreferences;
+  metadata: Record<string, unknown> | null;
+};
+
+export type UpdateSetNotificationPreferencesRequest = {
+  weeklySummaryEnabled: boolean;
+  /** 0–7 where 0 = Sunday, 7 = Saturday (or as defined by backend) */
+  weeklySummaryDay: number;
+};
+
+export type GlobalNotificationPreferences = {
+  dueCardReminderEnabled: boolean;
+  systemAnnouncementEnabled: boolean;
+  accountActivityEnabled: boolean;
+};
+
+export type GlobalNotificationPreferencesResponse = {
+  status: string;
+  message: string;
+  data: GlobalNotificationPreferences;
+  metadata: Record<string, unknown> | null;
+};
+
+export type UpdateGlobalNotificationPreferencesRequest = {
+  dueCardReminderEnabled: boolean;
+  systemAnnouncementEnabled: boolean;
+  accountActivityEnabled: boolean;
+};
