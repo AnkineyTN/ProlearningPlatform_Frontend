@@ -31,6 +31,7 @@ export type GetFlashcardsBySetQuery = {
   sort?: string;
   q?: string;
   privacy?: 'PUBLIC' | 'PRIVATE';
+  createMethod?: 'MANUAL' | 'AI' | 'REVIEW';
 };
 
 export const flashcardAPI = {
@@ -50,6 +51,9 @@ export const flashcardAPI = {
     }
     if (query.privacy) {
       params.privacy = query.privacy;
+    }
+    if (query.createMethod) {
+      params.createMethod = query.createMethod;
     }
     return api.get(`/sets/${setId}/flashcards`, { params });
   },

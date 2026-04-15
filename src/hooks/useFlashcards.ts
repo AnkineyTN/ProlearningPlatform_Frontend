@@ -17,6 +17,7 @@ interface UseFlashcardsParams {
   sort?: string;
   q?: string;
   privacy?: 'PUBLIC' | 'PRIVATE';
+  createMethod?: 'MANUAL' | 'AI' | 'REVIEW';
 }
 
 export const useFlashcards = ({
@@ -26,9 +27,10 @@ export const useFlashcards = ({
   sort = "id,ASC",
   q,
   privacy,
+  createMethod,
 }: UseFlashcardsParams) => {
   return useQuery({
-    queryKey: ["flashcards", setId, page, size, sort, q ?? "", privacy ?? ""],
+    queryKey: ["flashcards", setId, page, size, sort, q ?? "", privacy ?? "", createMethod ?? ""],
     queryFn: async () => {
       const response = await flashcardAPI.getAllFlashcardsBySet(setId, {
         page,
@@ -36,6 +38,7 @@ export const useFlashcards = ({
         sort,
         q,
         privacy,
+        createMethod,
       });
       return response.data;
     },

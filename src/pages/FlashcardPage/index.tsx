@@ -24,6 +24,7 @@ import ResultsView from "./components/ResultsView";
 import StudyView from "./components/StudyView";
 
 import type { Card } from "@/services/types/flashcard.types";
+
 // Types
 type ViewMode = "home" | "study" | "matching" | "results";
 
@@ -51,7 +52,35 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
   const deleteFlashcardMutation = useDeleteFlashcard();
   const navigate = useNavigate();
   const location = useLocation();
-  const [sessionId, setSessionId] = useState<number | null>(null);
+
+  // Fix #5: Persist sessionId to sessionStorage so results page survives a refresh
+  const SESSION_STORAGE_KEY = `flashcard-session-${setId}-${flashcardId}`;
+  const [sessionId, setSessionIdState] = useState<number | null>(null);
+
+  const setSessionId = (id: number | null) => {
+    try {
+      if (id !== null) {
+        sessionStorage.setItem(SESSION_STORAGE_KEY, String(id));
+      } else {
+        sessionStorage.removeItem(SESSION_STORAGE_KEY);
+      }
+    } catch {
+      // ignore storage errors
+    }
+    setSessionIdState(id);
+  };
+
+  // Restore sessionId from sessionStorage on mount
+  useEffect(() => {
+    try {
+      const stored = sessionStorage.getItem(SESSION_STORAGE_KEY);
+      if (stored) setSessionIdState(Number(stored));
+    } catch {
+      // ignore
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [cardReviews, setCardReviews] = useState<
     Array<{ cardId: number; known: boolean }>
   >([]);
@@ -87,14 +116,40 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
 
   const title = useMemo(() => data?.data.title || "Flashcard Set", [data]);
   const description = useMemo(() => data?.data.description || "", [data]);
+
   const flashcards: Array<Card> = useMemo(() => {
     const cards = data?.data.cards || [];
     return [...cards].sort((a, b) => a.id - b.id);
   }, [data]);
 
+  // Apply shuffle to original cards (used in home / matching views)
+  const displayedFlashcards: Array<Card> = useMemo(() => {
+    if (isShuffled && shuffledIndices.length > 0) {
+      return shuffledIndices.map((index) => flashcards[index]);
+    }
+    return flashcards;
+  }, [flashcards, isShuffled, shuffledIndices]);
+
+  // Fix #3: Apply shuffle to session cards so shuffle works in study mode
+  const displayedSessionCards: Array<Card> = useMemo(() => {
+    if (sessionCards.length === 0) return [];
+    if (isShuffled && shuffledIndices.length > 0) {
+      return shuffledIndices.map((i) => sessionCards[i]);
+    }
+    return sessionCards;
+  }, [sessionCards, isShuffled, shuffledIndices]);
+
+  // Single source of truth: session cards take priority over original cards
+  const activeCards: Array<Card> = useMemo(
+    () =>
+      displayedSessionCards.length > 0
+        ? displayedSessionCards
+        : displayedFlashcards,
+    [displayedSessionCards, displayedFlashcards],
+  );
+
   const handleNext = () => {
-    const cardsToUse = sessionCards.length > 0 ? sessionCards : flashcards;
-    if (currentCardIndex < cardsToUse.length - 1) {
+    if (currentCardIndex < activeCards.length - 1) {
       setCurrentCardIndex(currentCardIndex + 1);
       setIsFlipped(false);
     } else {
@@ -108,22 +163,37 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       setIsFlipped(false);
     }
   };
+
+  // Fix #2: Sync any pending reviews before navigating back
   const handleBackFromStudy = async () => {
+    if (unsyncedReviews.length > 0 && sessionId) {
+      try {
+        await syncProgressMutation.mutateAsync({
+          setId: Number(setId),
+          flashcardId: Number(flashcardId),
+          sessionId,
+          data: { cardItemReviews: unsyncedReviews },
+        });
+        setUnsyncedReviews([]);
+      } catch {
+        // best-effort – navigate home regardless
+      }
+    }
     navigate(`/sets/${setId}/flashcards/${flashcardId}`);
   };
 
   const handleShuffle = () => {
-    const cardsToUse = sessionCards.length > 0 ? sessionCards : flashcards;
     if (isShuffled) {
-      // Reset to original order
       setShuffledIndices([]);
       setIsShuffled(false);
       setCurrentCardIndex(0);
       setIsFlipped(false);
     } else {
-      // Create shuffled indices array
-      const indices = cardsToUse.map((_, index) => index);
-      const shuffled = [...indices].sort(() => Math.random() - 0.5);
+      const length =
+        sessionCards.length > 0 ? sessionCards.length : flashcards.length;
+      const shuffled = Array.from({ length }, (_, i) => i).sort(
+        () => Math.random() - 0.5,
+      );
       setShuffledIndices(shuffled);
       setIsShuffled(true);
       setCurrentCardIndex(0);
@@ -131,34 +201,20 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     }
   };
 
-  const displayedFlashcards: Array<Card> = useMemo(() => {
-    const cards = data?.data.cards || [];
-    const sortedCards = [...cards].sort((a, b) => a.id - b.id);
-
-    if (isShuffled && shuffledIndices.length > 0) {
-      return shuffledIndices.map((index) => sortedCards[index]);
-    }
-
-    return sortedCards;
-  }, [data, isShuffled, shuffledIndices]);
-
   const handleCardClick = (index: number) => {
     setCurrentCardIndex(index);
     setIsFlipped(false);
   };
 
   const startStudying = async () => {
-    // Check session status trước
     const statusData = sessionStatus?.data || [];
 
     if (statusData.length > 0 && statusData[0].status === "IN_PROGRESS") {
-      // Có session đang dở
       setPendingSessionData(statusData[0]);
       setShowContinueDialog(true);
       return;
     }
 
-    // Không có session dở -> start mới
     await startNewSession();
   };
 
@@ -171,12 +227,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
 
       const sessionData = response.data.data;
       setSessionId(sessionData.id);
-
-      // Sử dụng danh sách cards từ API response
-      const respCards = sessionData.cards ?? [];
-      setSessionCards(respCards);
-
-      // Bắt đầu từ card đầu tiên trong danh sách
+      setSessionCards(sessionData.cards ?? []);
       setCurrentCardIndex(0);
       setIsFlipped(false);
       setCardReviews([]);
@@ -190,7 +241,6 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
   const handleContinueSession = async () => {
     if (pendingSessionData) {
       try {
-        // Gọi lại startSession để lấy danh sách cards còn lại từ BE
         const response = await startSessionMutation.mutateAsync({
           setId: Number(setId),
           flashcardId: Number(flashcardId),
@@ -198,12 +248,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
 
         const sessionData = response.data.data;
         setSessionId(sessionData.id);
-
-        // Sử dụng danh sách cards từ API response
-        const respCards = sessionData.cards ?? [];
-        setSessionCards(respCards);
-
-        // Bắt đầu từ card đầu tiên trong danh sách
+        setSessionCards(sessionData.cards ?? []);
         setCurrentCardIndex(0);
         setIsFlipped(false);
         setShowContinueDialog(false);
@@ -224,6 +269,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           sessionId: pendingSessionData.id,
         });
         setShowContinueDialog(false);
+        setSessionId(null); // clears sessionStorage too
         await startNewSession();
       } catch (error) {
         console.error("Failed to cancel session:", error);
@@ -232,30 +278,11 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     }
   };
 
-  const handleCardAnswer = async (known: boolean) => {
-    if (!sessionId) return;
-
-    const currentCard = sessionCards[currentCardIndex];
-    const review = { cardId: currentCard.id, known };
-
-    // Thêm vào unsynced reviews
-    const newUnsyncedReviews = [...unsyncedReviews, review];
-    setUnsyncedReviews(newUnsyncedReviews);
-    setCardReviews([...cardReviews, review]);
-
-    // Sync nếu đủ batch size
-    if (newUnsyncedReviews.length >= SYNC_BATCH_SIZE) {
-      await syncProgress(newUnsyncedReviews);
-    }
-
-    // Tự động next
-    handleNext();
-  };
-
+  // Fix #1: Returns true when session completes so callers can skip further navigation
   const syncProgress = async (
     reviews: Array<{ cardId: number; known: boolean }>,
-  ) => {
-    if (!sessionId || reviews.length === 0) return;
+  ): Promise<boolean> => {
+    if (!sessionId || reviews.length === 0) return false;
 
     try {
       const response = await syncProgressMutation.mutateAsync({
@@ -265,16 +292,36 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         data: { cardItemReviews: reviews },
       });
 
-      // Clear unsynced sau khi sync thành công
       setUnsyncedReviews([]);
 
-      // Check nếu completed
       if (response.data.data.status === "COMPLETED") {
         navigate(`/sets/${setId}/flashcards/${flashcardId}/results`);
+        return true;
       }
     } catch (error) {
       console.error("Failed to sync progress:", error);
     }
+    return false;
+  };
+
+  const handleCardAnswer = async (known: boolean) => {
+    if (!sessionId) return;
+
+    // Fix #3: Use activeCards so the correct card ID is read after shuffle
+    const currentCard = activeCards[currentCardIndex];
+    const review = { cardId: currentCard.id, known };
+
+    const newUnsyncedReviews = [...unsyncedReviews, review];
+    setUnsyncedReviews(newUnsyncedReviews);
+    setCardReviews([...cardReviews, review]);
+
+    if (newUnsyncedReviews.length >= SYNC_BATCH_SIZE) {
+      // Fix #1: If session completed, syncProgress already navigated – skip handleNext
+      const completed = await syncProgress(newUnsyncedReviews);
+      if (completed) return;
+    }
+
+    handleNext();
   };
 
   useEffect(() => {
@@ -287,6 +334,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
 
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unsyncedReviews, sessionId]);
 
   const resetFlashcards = () => {
@@ -439,9 +487,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
 
       {viewMode === "study" && (
         <StudyView
-          flashcards={
-            sessionCards.length > 0 ? sessionCards : displayedFlashcards
-          }
+          flashcards={activeCards}
           currentCardIndex={currentCardIndex}
           isFlipped={isFlipped}
           onBack={handleBackFromStudy}
@@ -458,7 +504,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         <ResultsView
           studiedCards={studiedCards.size}
           totalCards={flashcards.length}
-          flashcards={sessionCards.length > 0 ? sessionCards : flashcards}
+          flashcards={activeCards}
           onHome={() => navigate(`/sets/${setId}/flashcards/${flashcardId}`)}
           onContinue={() =>
             navigate(`/sets/${setId}/flashcards/${flashcardId}/study`)

@@ -23,6 +23,11 @@ import type {
   AiExplainWrongAnswerRequest,
   AiExplainWrongAnswerResponse,
 } from '../types/exam.types';
+import type {
+  QuestionStatsResponse,
+  GenerateReviewExamRequest,
+  GenerateReviewExamResponse,
+} from '../types/review-bundle.types';
 
 export const examAPI = {
   // Quiz endpoints
@@ -37,6 +42,7 @@ export const examAPI = {
       sort?: string;
       q?: string;
       privacy?: 'PUBLIC' | 'PRIVATE';
+      createMethod?: 'MANUAL' | 'AI' | 'REVIEW';
     } = {},
   ): Promise<AxiosResponse<QuizListResponse>> => {
     const {
@@ -45,6 +51,7 @@ export const examAPI = {
       sort = 'id,ASC',
       q,
       privacy,
+      createMethod,
     } = params;
     const query: Record<string, string | number> = { page, size, sort };
     const qt = q?.trim();
@@ -54,7 +61,10 @@ export const examAPI = {
     if (privacy) {
       query.privacy = privacy;
     }
-    return api.get(`/set/${setId}/exams`, {
+    if (createMethod) {
+      query.createMethod = createMethod;
+    }
+    return api.get(`/sets/${setId}/exams`, {
       params: query,
     });
   },
@@ -66,7 +76,7 @@ export const examAPI = {
     setId: number,
     data: CreateQuizRequest,
   ): Promise<AxiosResponse<QuizResponse>> =>
-    api.post(`/set/${setId}/exams`, data),
+    api.post(`/sets/${setId}/exams`, data),
 
   /**
    * Get quiz metadata by id
@@ -75,7 +85,7 @@ export const examAPI = {
     setId: number,
     quizId: number,
   ): Promise<AxiosResponse<QuizResponse>> =>
-    api.get(`/set/${setId}/exams/${quizId}`),
+    api.get(`/sets/${setId}/exams/${quizId}`),
 
   /**
    * Get questions for a quiz (returns data.questions)
@@ -84,7 +94,7 @@ export const examAPI = {
     setId: number,
     quizId: number,
   ): Promise<AxiosResponse<QuizDetailResponse>> =>
-    api.get(`/set/${setId}/exams/${quizId}/questions`),
+    api.get(`/sets/${setId}/exams/${quizId}/questions`),
 
   /**
    * Update quiz
@@ -94,7 +104,7 @@ export const examAPI = {
     quizId: number,
     data: UpdateQuizRequest,
   ): Promise<AxiosResponse<QuizResponse>> =>
-    api.put(`/set/${setId}/exams/${quizId}`, data),
+    api.put(`/sets/${setId}/exams/${quizId}`, data),
 
   /**
    * Delete quiz
@@ -103,7 +113,7 @@ export const examAPI = {
     setId: number,
     quizId: number,
   ): Promise<AxiosResponse<VoidResponse>> =>
-    api.delete(`/set/${setId}/exams/${quizId}`),
+    api.delete(`/sets/${setId}/exams/${quizId}`),
 
   // Question endpoints
   /**
@@ -116,7 +126,7 @@ export const examAPI = {
     size: number = 10,
     sort: string = 'id,ASC',
   ): Promise<AxiosResponse<QuestionsListApiResponse>> =>
-    api.get(`/set/${setId}/exams/${quizId}/questions`, {
+    api.get(`/sets/${setId}/exams/${quizId}/questions`, {
       params: { page, size, sort },
     }),
 
@@ -128,7 +138,7 @@ export const examAPI = {
     quizId: number,
     data: CreateQuestionApiPayload[],
   ): Promise<AxiosResponse<unknown>> =>
-    api.post(`/set/${setId}/exams/${quizId}/questions`, data),
+    api.post(`/sets/${setId}/exams/${quizId}/questions`, data),
 
   /**
    * Get question details
@@ -138,7 +148,7 @@ export const examAPI = {
     quizId: number,
     questionId: number,
   ): Promise<AxiosResponse<QuestionResponse>> =>
-    api.get(`/set/${setId}/exams/${quizId}/questions/${questionId}`),
+    api.get(`/sets/${setId}/exams/${quizId}/questions/${questionId}`),
 
   /**
    * Update question
@@ -149,7 +159,7 @@ export const examAPI = {
     questionId: number,
     data: UpdateQuestionRequest,
   ): Promise<AxiosResponse<QuestionResponse>> =>
-    api.put(`/set/${setId}/exams/${quizId}/questions/${questionId}`, data),
+    api.put(`/sets/${setId}/exams/${quizId}/questions/${questionId}`, data),
 
   /**
    * Delete question
@@ -159,7 +169,7 @@ export const examAPI = {
     quizId: number,
     questionId: number,
   ): Promise<AxiosResponse<VoidResponse>> =>
-    api.delete(`/set/${setId}/exams/${quizId}/questions/${questionId}`),
+    api.delete(`/sets/${setId}/exams/${quizId}/questions/${questionId}`),
 
   /**
    * Generate exam from files with AI
@@ -179,34 +189,34 @@ export const examAPI = {
     formData.append('difficulty', JSON.stringify(difficulty));
     formData.append('freeText', freeText.trim());
     formData.append('language', language);
-    return api.post(`/set/${setId}/exams/ai-file`, formData);
+    return api.post(`/sets/${setId}/exams/ai-file`, formData);
   },
 
   generateExamFromNotes: (
     setId: number,
     data: GenerateExamFromNotesRequest,
   ): Promise<AxiosResponse<GenerateExamAIResponse>> =>
-    api.post(`/set/${setId}/exams/ai-note`, data),
+    api.post(`/sets/${setId}/exams/ai-note`, data),
 
   generateExamFromWeb: (
     setId: number,
     data: GenerateExamFromWebRequest,
   ): Promise<AxiosResponse<GenerateExamAIResponse>> =>
-    api.post(`/set/${setId}/exams/ai-web`, data),
+    api.post(`/sets/${setId}/exams/ai-web`, data),
 
   /** Start a new exam attempt (server sets deadline from exam duration). */
   startExamAttempt: (
     setId: number,
     examId: number,
   ): Promise<AxiosResponse<ExamAttemptStartResponse>> =>
-    api.post(`/set/${setId}/exams/${examId}/attempts`),
+    api.post(`/sets/${setId}/exams/${examId}/attempts`),
 
   /** List current user's attempts for this exam. */
   listExamAttempts: (
     setId: number,
     examId: number,
   ): Promise<AxiosResponse<ExamAttemptListResponse>> =>
-    api.get(`/set/${setId}/exams/${examId}/attempts`),
+    api.get(`/sets/${setId}/exams/${examId}/attempts`),
 
   /** Graded attempt detail (after submit or for review). */
   getExamAttempt: (
@@ -214,7 +224,7 @@ export const examAPI = {
     examId: number,
     attemptId: number,
   ): Promise<AxiosResponse<ExamAttemptDetailResponse>> =>
-    api.get(`/set/${setId}/exams/${examId}/attempts/${attemptId}`),
+    api.get(`/sets/${setId}/exams/${examId}/attempts/${attemptId}`),
 
   submitExamAttempt: (
     setId: number,
@@ -223,7 +233,7 @@ export const examAPI = {
     body: SubmitExamAttemptRequest,
   ): Promise<AxiosResponse<ExamAttemptDetailResponse>> =>
     api.post(
-      `/set/${setId}/exams/${examId}/attempts/${attemptId}/submit`,
+      `/sets/${setId}/exams/${examId}/attempts/${attemptId}/submit`,
       body,
     ),
 
@@ -231,5 +241,26 @@ export const examAPI = {
     setId: number,
     body: AiExplainWrongAnswerRequest,
   ): Promise<AxiosResponse<AiExplainWrongAnswerResponse>> =>
-    api.post(`/set/${setId}/exams/ai-explain-wrong-answer`, body),
+    api.post(`/sets/${setId}/exams/ai-explain-wrong-answer`, body),
+
+  /**
+   * GET /sets/{setId}/exams/{examId}/question-stats
+   * Returns accumulated incorrect answer stats for all questions in this exam
+   */
+  getQuestionStats: (
+    setId: number,
+    examId: number,
+  ): Promise<AxiosResponse<QuestionStatsResponse>> =>
+    api.get(`/sets/${setId}/exams/${examId}/question-stats`),
+
+  /**
+   * POST /sets/{setId}/exams/{examId}/generate-review-exam
+   * AI generates a new exam using variants of the selected wrong-answer questions
+   */
+  generateReviewExam: (
+    setId: number,
+    examId: number,
+    body: GenerateReviewExamRequest,
+  ): Promise<AxiosResponse<GenerateReviewExamResponse>> =>
+    api.post(`/sets/${setId}/exams/${examId}/generate-review-exam`, body),
 };

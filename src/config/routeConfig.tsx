@@ -25,6 +25,8 @@ import PDFAnnotator from "@/pages/PDF";
 import ExamPage from "@/pages/ExamPage";
 import ExamEditor from "@/pages/ExamPage/ExamEditor";
 import ProfilePage from "@/pages/ProfilePage";
+import ReviewBundlesPage from "@/pages/ReviewBundlesPage";
+import ReviewBundleDetailPage from "@/pages/ReviewBundleDetailPage";
 import type { RouteObject } from "react-router-dom";
 
 import type { RootState } from "@/store";
@@ -217,6 +219,10 @@ export const routeConfig: RouteObject[] = [
         element: <SetSeriesPageWrapper />,
       },
       {
+        path: "sets/:id/review",
+        element: <SetSeriesPageWrapper />,
+      },
+      {
         path: "sets/:setId/flashcards/editor",
         element: <FlashcardEditorWrapper />,
       },
@@ -262,6 +268,14 @@ export const routeConfig: RouteObject[] = [
       {
         path: "profile",
         element: <ProfilePage />,
+      },
+      {
+        path: "review-bundles",
+        element: <ReviewBundlesPage />,
+      },
+      {
+        path: "review-bundles/:bundleId",
+        element: <ReviewBundleDetailPage />,
       },
     ],
   },

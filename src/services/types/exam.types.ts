@@ -96,6 +96,7 @@ export type Quiz = {
   duration?: number;
   passingScore?: number;
   status?: QuizStatus;
+  createMethod?: 'MANUAL' | 'AI' | 'REVIEW';
   createdAt?: string;
   updatedAt?: string;
 };

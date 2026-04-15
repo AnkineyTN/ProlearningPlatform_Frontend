@@ -92,3 +92,31 @@ export type DeleteReviewBundleResponse = {
   data: null;
   metadata: Record<string, unknown> | null;
 };
+
+// ─── Exam Question Stats (Luồng 2 — Retry Wrong Answers) ─────────────────────
+
+export type QuestionStat = {
+  questionId: number;
+  questionText: string;
+  totalAttempts: number;
+  incorrectCount: number;
+  incorrectRate: number;
+};
+
+export type QuestionStatsResponse = {
+  status: string;
+  message: string;
+  data: QuestionStat[];
+  pagination: null;
+};
+
+export type GenerateReviewExamRequest = {
+  questionIds: number[];
+};
+
+export type GenerateReviewExamResponse = {
+  status: string;
+  message: string;
+  data: GeneratedExam;
+  metadata: Record<string, unknown> | null;
+};

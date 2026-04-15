@@ -8,7 +8,7 @@ export type Flashcard = {
   known: number;
   learning: number;
   remain: number;
-  createMethod: 'MANUAL' | 'AI';
+  createMethod: 'MANUAL' | 'AI' | 'REVIEW';
 };
 
 export type FlashcardMetadata = {
@@ -51,7 +51,7 @@ export type FlashcardDetail = {
   known: number;
   learning: number;
   remain: number;
-  createMethod: 'MANUAL' | 'AI';
+  createMethod: 'MANUAL' | 'AI' | 'REVIEW';
   cards: Card[];
 };
 
@@ -153,7 +153,7 @@ export type AddCardsResponse = {
     known: number;
     learning: number;
     remain: number;
-    createMethod: 'MANUAL' | 'AI';
+    createMethod: 'MANUAL' | 'AI' | 'REVIEW';
     numCards: number;
     createdAt: string;
     updatedAt: string;

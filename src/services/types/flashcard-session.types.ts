@@ -1,4 +1,4 @@
-export type StudyMode = 'SPACED_REPETITION';
+export type StudyMode = 'SPACED_REPETITION' | 'REVIEW';
 export type CardStatus = 'NEW' | 'LEARNING' | 'KNOWN';
 export type SessionStatus = 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
 

@@ -23,6 +23,7 @@ import {
   Book,
   Heart,
   Settings,
+  Inbox,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -34,12 +35,15 @@ import { logout } from "@/store/authSlice.ts";
 import { useNavigate } from "react-router-dom";
 import LogoFG from "@/assets/logo_fg";
 import { useTranslation } from "react-i18next";
+import { useReviewBundles } from "@/hooks/useReviewBundles";
 
 const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { data: reviewBundlesData } = useReviewBundles();
+  const bundleCount = reviewBundlesData?.data?.length ?? 0;
 
   const handleLogout = () => {
     dispatch(logout());
@@ -83,6 +87,13 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
     },
   ];
 
+  const reviewBundlesItem = {
+    title: "Review Bundles",
+    icon: Inbox,
+    url: "/review-bundles",
+    badge: bundleCount > 0 ? bundleCount : undefined,
+  };
+
   const handleProfile = () => {
     navigate("/profile");
   };
@@ -118,6 +129,20 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
+            {/* Review Bundles — action-required item */}
+            <SidebarMenuItem key={reviewBundlesItem.title}>
+              <SidebarMenuButton asChild>
+                <a href={reviewBundlesItem.url} className='relative flex items-center gap-2'>
+                  <reviewBundlesItem.icon className='size-4' />
+                  <span>{reviewBundlesItem.title}</span>
+                  {reviewBundlesItem.badge !== undefined && (
+                    <span className='ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full bg-pink-500 px-1.5 text-[10px] font-bold text-white'>
+                      {reviewBundlesItem.badge}
+                    </span>
+                  )}
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

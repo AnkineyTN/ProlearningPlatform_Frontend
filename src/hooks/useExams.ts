@@ -19,6 +19,7 @@ interface UseExamsParams {
   sort?: string;
   q?: string;
   privacy?: "PUBLIC" | "PRIVATE";
+  createMethod?: "MANUAL" | "AI" | "REVIEW";
 }
 
 export const useExams = ({
@@ -28,9 +29,10 @@ export const useExams = ({
   sort = "id,ASC",
   q,
   privacy,
+  createMethod,
 }: UseExamsParams) => {
   return useQuery({
-    queryKey: ["exams", setId, page, size, sort, q ?? "", privacy ?? ""],
+    queryKey: ["exams", setId, page, size, sort, q ?? "", privacy ?? "", createMethod ?? ""],
     queryFn: async () => {
       const response = await examAPI.getQuizzes(setId, {
         page,
@@ -38,6 +40,7 @@ export const useExams = ({
         sort,
         q,
         privacy,
+        createMethod,
       });
       return response.data;
     },

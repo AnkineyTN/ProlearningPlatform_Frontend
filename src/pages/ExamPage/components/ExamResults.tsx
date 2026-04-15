@@ -12,6 +12,9 @@ import {
   BookOpen,
   Eye,
   History,
+  RotateCcw,
+  Loader2,
+  AlertCircle,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
@@ -52,6 +55,8 @@ import type {
 import { examAPI } from '@/services/endpoints/exam';
 import ModeToggle from '@/components/theme/mode-toggle';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import { useExamQuestionStats, useGenerateReviewExam } from '@/hooks/useReviewBundles';
+import { toast } from 'react-toastify';
 
 interface ExamResultsProps {
   setId: number;
@@ -117,6 +122,16 @@ export default function ExamResults({
   const [detailOpen, setDetailOpen] = useState(false);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailData, setDetailData] = useState<ExamAttemptDetail | null>(null);
+
+  // Retry Wrong Answers (Flow 2)
+  const [retryOpen, setRetryOpen] = useState(false);
+  const [selectedRetryIds, setSelectedRetryIds] = useState<Set<number>>(new Set());
+  const [retryDone, setRetryDone] = useState(false);
+  const { data: questionStatsData, isLoading: statsLoading } = useExamQuestionStats(
+    setId,
+    examId,
+  );
+  const generateReviewExam = useGenerateReviewExam();
 
   const formatAttemptDateTime = (iso: string | null | undefined) => {
     if (!iso) return '—';
@@ -770,7 +785,7 @@ export default function ExamResults({
                 </div>
               </div>
 
-              <div className='flex justify-center gap-4 pb-8'>
+              <div className='flex justify-center gap-4 pb-8 flex-wrap'>
                 <Button
                   variant='outline'
                   onClick={() => navigate(`/sets/${setId}`)}
@@ -784,6 +799,18 @@ export default function ExamResults({
                 >
                   <History className='w-4 h-4' />
                   {t('exam.results.viewHistory')}
+                </Button>
+                <Button
+                  variant='outline'
+                  className='gap-2 border-orange-400/50 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950/30 cursor-pointer'
+                  onClick={() => {
+                    setRetryOpen(true);
+                    setSelectedRetryIds(new Set());
+                    setRetryDone(false);
+                  }}
+                >
+                  <RotateCcw className='w-4 h-4' />
+                  Luyện lại câu sai
                 </Button>
               </div>
             </div>
@@ -989,6 +1016,178 @@ export default function ExamResults({
                 {aiDialog.explanation}
               </p>
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+      {/* Retry Wrong Answers Dialog */}
+      <Dialog open={retryOpen} onOpenChange={setRetryOpen}>
+        <DialogContent className='max-w-2xl max-h-[85vh] flex flex-col'>
+          <DialogHeader>
+            <DialogTitle className='flex items-center gap-2'>
+              <RotateCcw className='w-5 h-5 text-orange-500' />
+              Luyện lại câu sai
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className='mt-2 min-h-0 flex-1 overflow-y-auto space-y-3'>
+            {statsLoading && (
+              <div className='flex items-center justify-center gap-2 py-8 text-muted-foreground'>
+                <Loader2 className='w-5 h-5 animate-spin' />
+                <span className='text-sm'>Đang tải thống kê...</span>
+              </div>
+            )}
+
+            {!statsLoading && (!questionStatsData?.data || questionStatsData.data.length === 0) && (
+              <div className='flex flex-col items-center gap-2 py-8 text-muted-foreground text-center'>
+                <AlertCircle className='w-8 h-8' />
+                <p className='text-sm'>Chưa có dữ liệu thống kê câu sai.</p>
+                <p className='text-xs'>Câu essay đang chờ chấm sẽ không hiển thị ở đây.</p>
+              </div>
+            )}
+
+            {!statsLoading && questionStatsData?.data && questionStatsData.data.length > 0 && (
+              <>
+                <p className='text-sm text-muted-foreground'>
+                  Chọn các câu bạn muốn ôn lại. AI sẽ tạo bài kiểm tra mới với câu hỏi biến thể trên cùng chủ đề.
+                </p>
+
+                {/* Select all */}
+                <div className='flex items-center gap-2 pb-1 border-b border-border'>
+                  <input
+                    type='checkbox'
+                    id='select-all-retry'
+                    className='cursor-pointer'
+                    checked={
+                      selectedRetryIds.size === questionStatsData.data.length
+                    }
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedRetryIds(
+                          new Set(questionStatsData.data.map((q) => q.questionId)),
+                        );
+                      } else {
+                        setSelectedRetryIds(new Set());
+                      }
+                    }}
+                  />
+                  <label htmlFor='select-all-retry' className='text-sm font-medium cursor-pointer'>
+                    Chọn tất cả ({questionStatsData.data.length} câu)
+                  </label>
+                </div>
+
+                <ul className='space-y-2'>
+                  {questionStatsData.data.map((stat) => {
+                    const pct = Math.round(stat.incorrectRate * 100);
+                    const checked = selectedRetryIds.has(stat.questionId);
+                    return (
+                      <li
+                        key={stat.questionId}
+                        className={`flex items-start gap-3 p-3 rounded-lg border transition-colors cursor-pointer ${
+                          checked
+                            ? 'border-orange-400/60 bg-orange-50/40 dark:bg-orange-950/20'
+                            : 'border-border hover:border-muted-foreground/30'
+                        }`}
+                        onClick={() => {
+                          setSelectedRetryIds((prev) => {
+                            const next = new Set(prev);
+                            if (next.has(stat.questionId)) {
+                              next.delete(stat.questionId);
+                            } else {
+                              next.add(stat.questionId);
+                            }
+                            return next;
+                          });
+                        }}
+                      >
+                        <input
+                          type='checkbox'
+                          checked={checked}
+                          onChange={() => {}}
+                          className='mt-0.5 cursor-pointer shrink-0'
+                        />
+                        <div className='flex-1 min-w-0'>
+                          <p className='text-sm font-medium line-clamp-2'>
+                            {stat.questionText}
+                          </p>
+                          <div className='flex items-center gap-3 mt-1.5'>
+                            {/* Incorrect rate bar */}
+                            <div className='flex items-center gap-1.5 flex-1'>
+                              <div className='h-1.5 flex-1 rounded-full bg-muted overflow-hidden'>
+                                <div
+                                  className='h-full rounded-full bg-red-500 transition-all'
+                                  style={{ width: `${pct}%` }}
+                                />
+                              </div>
+                              <span
+                                className={`text-xs font-semibold ${
+                                  pct >= 60
+                                    ? 'text-red-500'
+                                    : pct >= 30
+                                      ? 'text-orange-500'
+                                      : 'text-muted-foreground'
+                                }`}
+                              >
+                                {pct}% sai
+                              </span>
+                            </div>
+                            <span className='text-xs text-muted-foreground shrink-0'>
+                              {stat.incorrectCount}/{stat.totalAttempts} lần
+                            </span>
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className='flex items-center justify-between pt-3 border-t border-border mt-2'>
+            <span className='text-sm text-muted-foreground'>
+              {selectedRetryIds.size} câu được chọn
+            </span>
+            <div className='flex gap-2'>
+              <Button variant='outline' size='sm' onClick={() => setRetryOpen(false)}>
+                Hủy
+              </Button>
+              <Button
+                size='sm'
+                disabled={
+                  selectedRetryIds.size === 0 ||
+                  generateReviewExam.isPending ||
+                  retryDone
+                }
+                className='gap-1.5 bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:opacity-90 cursor-pointer disabled:opacity-60'
+                onClick={async () => {
+                  try {
+                    await generateReviewExam.mutateAsync({
+                      setId,
+                      examId,
+                      body: { questionIds: Array.from(selectedRetryIds) },
+                    });
+                    setRetryDone(true);
+                    toast.success('Đã tạo Exam ôn tập! Kiểm tra trong tab Review của Set.');
+                    setTimeout(() => {
+                      setRetryOpen(false);
+                      navigate(`/sets/${setId}/review`);
+                    }, 1500);
+                  } catch {
+                    toast.error('Tạo Exam thất bại. Vui lòng thử lại.');
+                  }
+                }}
+              >
+                {generateReviewExam.isPending ? (
+                  <Loader2 className='w-4 h-4 animate-spin' />
+                ) : retryDone ? (
+                  <CheckCircle className='w-4 h-4' />
+                ) : (
+                  <RotateCcw className='w-4 h-4' />
+                )}
+                {retryDone ? 'Đã tạo!' : 'Tạo bài ôn tập'}
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
