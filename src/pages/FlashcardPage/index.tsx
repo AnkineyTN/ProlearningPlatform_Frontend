@@ -447,12 +447,16 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     }
   };
 
+  const userRole = data?.data.userRole ?? 'OWNER';
+
   return (
     <div>
       <FlashcardHeader
         setId={Number(setId)}
+        flashcardId={Number(flashcardId)}
         title={title}
         description={description}
+        userRole={userRole}
       />
       <ContinueSessionDialog
         open={showContinueDialog}

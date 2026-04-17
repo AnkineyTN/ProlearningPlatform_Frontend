@@ -1,29 +1,51 @@
-import { Clock, FileText, Play, Edit, ChevronLeft } from "lucide-react";
+import { Clock, FileText, Play, Edit, ChevronLeft, Share2 } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import type { Exam } from "../types";
 import ModeToggle from "@/components/theme/mode-toggle";
 import NotificationBell from "@/components/notifications/NotificationBell";
+import { ShareDialog } from "@/components/collaboration/ShareDialog";
+import type { CollabRole } from "@/services/types/collaboration.types";
+import { useAppSelector } from "@/hooks/redux";
 
 interface ExamHomeViewProps {
   exam: Exam;
+  setId: number;
+  examId: number;
   onStartExam: () => void | Promise<void>;
   onEditExam: () => void;
   onBack: () => void;
   isStarting?: boolean;
+  userRole?: CollabRole;
 }
 
 export default function ExamHomeView({
   exam,
+  setId,
+  examId,
   onStartExam,
   onEditExam,
   onBack,
   isStarting = false,
+  userRole = 'OWNER',
 }: ExamHomeViewProps) {
   const { t } = useTranslation();
+  const currentUserId = useAppSelector((s) => s.auth.user?.id);
+  const [shareOpen, setShareOpen] = useState(false);
+
   return (
     <div className="min-h-[calc(100vh-200px)] flex items-center justify-center p-8">
       <div className="absolute top-10 right-40 flex items-center gap-3">
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-1.5"
+          onClick={() => setShareOpen(true)}
+        >
+          <Share2 className="size-4" />
+          Share
+        </Button>
         <NotificationBell />
         <ModeToggle />
       </div>
@@ -151,6 +173,15 @@ export default function ExamHomeView({
           </div>
         </div>
       </div>
+      <ShareDialog
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+        setId={setId}
+        resourceType="exams"
+        resourceId={examId}
+        userRole={userRole}
+        currentUserId={currentUserId}
+      />
     </div>
   );
 }

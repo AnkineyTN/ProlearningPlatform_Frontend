@@ -40,6 +40,7 @@ export default function ExamPage({ setId, examId }: Props) {
   const exam: Exam | null = data?.data
     ? apiQuizDetailToExam(data.data)
     : null;
+  const userRole = data?.data?.userRole ?? 'OWNER';
   const hasNoQuestions = exam !== null && exam.questions.length === 0;
 
   const handleStartExam = async () => {
@@ -174,10 +175,13 @@ export default function ExamPage({ setId, examId }: Props) {
     return (
       <ExamHomeView
         exam={exam}
+        setId={Number(setId)}
+        examId={Number(examId)}
         onStartExam={handleStartExam}
         onEditExam={handleEditExam}
         onBack={() => navigate(`/sets/${setId}/exams`)}
         isStarting={isStartingAttempt}
+        userRole={userRole}
       />
     );
   }

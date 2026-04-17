@@ -53,6 +53,7 @@ export type FlashcardDetail = {
   remain: number;
   createMethod: 'MANUAL' | 'AI' | 'REVIEW';
   cards: Card[];
+  userRole?: 'OWNER' | 'EDITOR' | 'VIEWER';
 };
 
 export type FlashcardDetailResponse = {

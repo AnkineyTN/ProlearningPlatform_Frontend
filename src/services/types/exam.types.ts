@@ -99,6 +99,7 @@ export type Quiz = {
   createMethod?: 'MANUAL' | 'AI' | 'REVIEW';
   createdAt?: string;
   updatedAt?: string;
+  userRole?: 'OWNER' | 'EDITOR' | 'VIEWER';
 };
 
 export type CreateQuizRequest = {

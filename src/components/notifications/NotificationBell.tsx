@@ -65,6 +65,8 @@ function isInviteType(type: string): type is keyof typeof INVITE_TYPES {
   return type in INVITE_TYPES;
 }
 
+type InviteLocalStatus = "accepted" | "declined" | null;
+
 function InviteActions({
   item,
   onDone,
@@ -72,8 +74,15 @@ function InviteActions({
   item: UserNotificationItem;
   onDone: () => void;
 }) {
+  const navigate = useNavigate();
   const resourceType = INVITE_TYPES[item.type];
-  const data = item.data as { noteId?: number; flashcardId?: number; examId?: number; setId?: number; expiresAt?: string } | undefined;
+  const data = item.data as {
+    noteId?: number;
+    flashcardId?: number;
+    examId?: number;
+    setId?: number;
+    expiresAt?: string;
+  } | undefined;
 
   const resourceId =
     resourceType === "notes"
@@ -84,22 +93,36 @@ function InviteActions({
   const setId = data?.setId;
   const expiresAt = data?.expiresAt;
 
+  // Track accept/decline within this session
+  const [localStatus, setLocalStatus] = useState<InviteLocalStatus>(null);
+
   const acceptMutation = useAcceptInvite();
   const declineMutation = useDeclineInvite();
   const markRead = useMarkNotificationRead();
 
-  // Hide buttons if expired or already read
   if (!resourceId || !setId) return null;
-  if (expiresAt && new Date(expiresAt) < new Date()) return null;
-  if (item.isRead) return null;
+
+  const isExpired = !!(expiresAt && new Date(expiresAt) < new Date());
+
+  function buildDestUrl() {
+    if (resourceType === "notes") return `/sets/${setId}/notes/${resourceId}`;
+    if (resourceType === "exams") return `/sets/${setId}/exams/${resourceId}`;
+    return `/sets/${setId}/flashcards/${resourceId}`;
+  }
+
+  const handleOpen = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(buildDestUrl());
+  };
 
   const handleAccept = async (e: React.MouseEvent) => {
     e.stopPropagation();
     try {
       await acceptMutation.mutateAsync({ setId, resourceType, resourceId });
       await markRead.mutateAsync(item.id).catch(() => {/* ignore */});
-      toast.success("Invitation accepted");
+      setLocalStatus("accepted");
       onDone();
+      navigate(buildDestUrl());
     } catch {
       toast.error("Failed to accept invitation");
     }
@@ -110,6 +133,7 @@ function InviteActions({
     try {
       await declineMutation.mutateAsync({ setId, resourceType, resourceId });
       await markRead.mutateAsync(item.id).catch(() => {/* ignore */});
+      setLocalStatus("declined");
       toast.success("Invitation declined");
       onDone();
     } catch {
@@ -119,6 +143,62 @@ function InviteActions({
 
   const isBusy = acceptMutation.isPending || declineMutation.isPending;
 
+  // ── Vừa accept trong session này ──────────────────────────────────────────
+  if (localStatus === "accepted") {
+    return (
+      <div className="mt-2 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+        <span className="flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
+          <Check className="size-3" />
+          Accepted
+        </span>
+        <button
+          type="button"
+          onClick={handleOpen}
+          className="text-xs font-medium text-primary hover:underline"
+        >
+          Open →
+        </button>
+      </div>
+    );
+  }
+
+  // ── Vừa decline trong session này ────────────────────────────────────────
+  if (localStatus === "declined") {
+    return (
+      <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+        <span className="flex w-fit items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+          <X className="size-3" />
+          Declined
+        </span>
+      </div>
+    );
+  }
+
+  // ── Đã read từ session trước (không biết accepted hay declined) ───────────
+  if (item.isRead && !isExpired) {
+    return (
+      <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+        <button
+          type="button"
+          onClick={handleOpen}
+          className="text-xs font-medium text-primary hover:underline"
+        >
+          Open →
+        </button>
+      </div>
+    );
+  }
+
+  // ── Link hết hạn ─────────────────────────────────────────────────────────
+  if (isExpired) {
+    return (
+      <div className="mt-2">
+        <span className="text-xs text-muted-foreground">Link expired</span>
+      </div>
+    );
+  }
+
+  // ── Chưa xử lý — hiện Accept / Decline ───────────────────────────────────
   return (
     <div className="mt-2 flex gap-2" onClick={(e) => e.stopPropagation()}>
       <Button
@@ -151,6 +231,29 @@ function InviteActions({
       </Button>
     </div>
   );
+}
+
+/** Build a resource URL from an invite notification's data field */
+function buildInviteDestUrl(item: UserNotificationItem): string | null {
+  const resourceType = INVITE_TYPES[item.type];
+  if (!resourceType) return null;
+  const data = item.data as {
+    noteId?: number;
+    flashcardId?: number;
+    examId?: number;
+    setId?: number;
+  } | undefined;
+  const setId = data?.setId;
+  const resourceId =
+    resourceType === "notes"
+      ? data?.noteId
+      : resourceType === "flashcards"
+        ? data?.flashcardId
+        : data?.examId;
+  if (!setId || !resourceId) return null;
+  if (resourceType === "notes") return `/sets/${setId}/notes/${resourceId}`;
+  if (resourceType === "exams") return `/sets/${setId}/exams/${resourceId}`;
+  return `/sets/${setId}/flashcards/${resourceId}`;
 }
 
 function NotificationRow({
@@ -299,6 +402,14 @@ export default function NotificationBell() {
             await markRead.mutateAsync(n.id);
           } catch {
             /* still allow navigation */
+          }
+        }
+        // For invite notifications that are read → navigate to the resource directly
+        if (isInviteType(n.type)) {
+          const destUrl = buildInviteDestUrl(n);
+          if (destUrl) {
+            navigate(destUrl);
+            return;
           }
         }
         const url = n.actionUrl?.trim();
