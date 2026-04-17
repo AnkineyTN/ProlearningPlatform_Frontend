@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Bell,
+  Check,
   Layers,
   Loader2,
   MoreHorizontal,
   Shield,
+  X,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 import { useAppSelector } from "@/hooks/redux";
 import { notificationAPI } from "@/services/endpoints/notification";
@@ -27,6 +30,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useAcceptInvite, useDeclineInvite } from "@/hooks/useCollaboration";
+import type { ResourceType } from "@/services/endpoints/collaboration";
 
 function compactRelativeTime(iso: string): string {
   const then = new Date(iso).getTime();
@@ -50,16 +55,116 @@ function isSystemLikeType(type: string): boolean {
   return /SYSTEM|SECURITY|ADMIN/i.test(type);
 }
 
+const INVITE_TYPES: Record<string, ResourceType> = {
+  NOTE_INVITE: "notes",
+  FLASHCARD_INVITE: "flashcards",
+  EXAM_INVITE: "exams",
+};
+
+function isInviteType(type: string): type is keyof typeof INVITE_TYPES {
+  return type in INVITE_TYPES;
+}
+
+function InviteActions({
+  item,
+  onDone,
+}: {
+  item: UserNotificationItem;
+  onDone: () => void;
+}) {
+  const resourceType = INVITE_TYPES[item.type];
+  const data = item.data as { noteId?: number; flashcardId?: number; examId?: number; setId?: number; expiresAt?: string } | undefined;
+
+  const resourceId =
+    resourceType === "notes"
+      ? data?.noteId
+      : resourceType === "flashcards"
+        ? data?.flashcardId
+        : data?.examId;
+  const setId = data?.setId;
+  const expiresAt = data?.expiresAt;
+
+  const acceptMutation = useAcceptInvite();
+  const declineMutation = useDeclineInvite();
+  const markRead = useMarkNotificationRead();
+
+  // Hide buttons if expired or already read
+  if (!resourceId || !setId) return null;
+  if (expiresAt && new Date(expiresAt) < new Date()) return null;
+  if (item.isRead) return null;
+
+  const handleAccept = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await acceptMutation.mutateAsync({ setId, resourceType, resourceId });
+      await markRead.mutateAsync(item.id).catch(() => {/* ignore */});
+      toast.success("Invitation accepted");
+      onDone();
+    } catch {
+      toast.error("Failed to accept invitation");
+    }
+  };
+
+  const handleDecline = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await declineMutation.mutateAsync({ setId, resourceType, resourceId });
+      await markRead.mutateAsync(item.id).catch(() => {/* ignore */});
+      toast.success("Invitation declined");
+      onDone();
+    } catch {
+      toast.error("Failed to decline invitation");
+    }
+  };
+
+  const isBusy = acceptMutation.isPending || declineMutation.isPending;
+
+  return (
+    <div className="mt-2 flex gap-2" onClick={(e) => e.stopPropagation()}>
+      <Button
+        size="sm"
+        variant="default"
+        className="h-7 gap-1 px-3 text-xs"
+        disabled={isBusy}
+        onClick={(e) => void handleAccept(e)}
+      >
+        {acceptMutation.isPending ? (
+          <Loader2 className="size-3 animate-spin" />
+        ) : (
+          <Check className="size-3" />
+        )}
+        Accept
+      </Button>
+      <Button
+        size="sm"
+        variant="outline"
+        className="h-7 gap-1 px-3 text-xs"
+        disabled={isBusy}
+        onClick={(e) => void handleDecline(e)}
+      >
+        {declineMutation.isPending ? (
+          <Loader2 className="size-3 animate-spin" />
+        ) : (
+          <X className="size-3" />
+        )}
+        Decline
+      </Button>
+    </div>
+  );
+}
+
 function NotificationRow({
   item,
   onActivate,
   onMarkRead,
   isActivating,
+  onRefresh,
 }: {
   item: UserNotificationItem;
   onActivate: (n: UserNotificationItem) => void;
   onMarkRead: (n: UserNotificationItem) => void;
   isActivating: boolean;
+  onRefresh?: () => void;
 }) {
   const { t } = useTranslation();
   const systemLike = isSystemLikeType(item.type);
@@ -116,6 +221,9 @@ function NotificationRow({
         <p className="mt-1 text-xs font-medium text-primary/90">
           {compactRelativeTime(item.createdAt)}
         </p>
+        {isInviteType(item.type) && (
+          <InviteActions item={item} onDone={() => onRefresh?.()} />
+        )}
       </div>
       <div className="flex w-9 shrink-0 items-start justify-center pt-2">
         {!item.isRead && (
@@ -402,6 +510,7 @@ export default function NotificationBell() {
                   onActivate={handleActivate}
                   onMarkRead={handleMarkReadOnly}
                   isActivating={activatingId === item.id}
+                  onRefresh={() => void listQuery.refetch()}
                 />
               </li>
             ))}

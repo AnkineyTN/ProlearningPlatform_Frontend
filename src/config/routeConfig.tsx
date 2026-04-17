@@ -27,6 +27,9 @@ import ExamEditor from "@/pages/ExamPage/ExamEditor";
 import ProfilePage from "@/pages/ProfilePage";
 import ReviewBundlesPage from "@/pages/ReviewBundlesPage";
 import ReviewBundleDetailPage from "@/pages/ReviewBundleDetailPage";
+import InviteAcceptPage from "@/pages/InviteAcceptPage";
+import ExamInviteAcceptPage from "@/pages/ExamInviteAcceptPage";
+import FlashcardInviteAcceptPage from "@/pages/FlashcardInviteAcceptPage";
 import type { RouteObject } from "react-router-dom";
 
 import type { RootState } from "@/store";
@@ -179,6 +182,19 @@ export const routeConfig: RouteObject[] = [
   {
     path: "/test",
     element: <PDFAnnotator />,
+  },
+  // Invite accept pages (email links — no auth required by page itself)
+  {
+    path: "/invites/accept",
+    element: <InviteAcceptPage />,
+  },
+  {
+    path: "/exam-invites/accept",
+    element: <ExamInviteAcceptPage />,
+  },
+  {
+    path: "/flashcard-invites/accept",
+    element: <FlashcardInviteAcceptPage />,
   },
   // Protected routes
   {

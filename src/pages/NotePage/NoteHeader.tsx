@@ -4,6 +4,7 @@ import {
   FileText,
   LoaderCircle,
   Save,
+  Share2,
   Sparkles,
   Upload,
 } from "lucide-react";
@@ -22,6 +23,9 @@ import {
   useUploadImageFile,
 } from "@/hooks/useImageUpload";
 import { useNavigate, useParams } from "react-router-dom";
+import { ShareDialog } from "@/components/collaboration/ShareDialog";
+import type { CollabRole } from "@/services/types/collaboration.types";
+import { useAppSelector } from "@/hooks/redux";
 
 interface NoteHeaderProps {
   title: string;
@@ -29,6 +33,8 @@ interface NoteHeaderProps {
   onSave: () => void;
   isSaving: boolean;
   noteId: number;
+  setId: number;
+  userRole?: CollabRole;
   onFileUploaded: (file: {
     id: number;
     fileName: string;
@@ -52,6 +58,8 @@ export const NoteHeader = ({
   onSave,
   isSaving,
   noteId,
+  setId,
+  userRole = 'OWNER',
   onFileUploaded,
   onDownloadHTML,
   attachedFileCount = 0,
@@ -63,8 +71,10 @@ export const NoteHeader = ({
 }: NoteHeaderProps) => {
   const navigate = useNavigate();
   const { setId: setIdParam } = useParams<{ setId: string }>();
-  const setId = setIdParam ? Number(setIdParam) : 0;
+  const _setId = setId || (setIdParam ? Number(setIdParam) : 0);
+  const currentUserId = useAppSelector((s) => s.auth.user?.id);
   const [isUploading, setIsUploading] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const uploadDocumentMutation = useUploadDocumentFile();
   const uploadImageMutation = useUploadImageFile();
   const saveDocumentMutation = useSaveDocumentInNote();
@@ -91,7 +101,7 @@ export const NoteHeader = ({
       return;
     }
 
-    if (!setId || !noteId) {
+    if (!_setId || !noteId) {
       toast.error("Invalid note");
       return;
     }
@@ -105,7 +115,7 @@ export const NoteHeader = ({
           : "";
 
         await saveImageMutation.mutateAsync({
-          setId,
+          setId: _setId,
           data: {
             noteId,
             assetId: result.assetId,
@@ -131,7 +141,7 @@ export const NoteHeader = ({
           (file.name.includes(".") ? file.name.split(".").pop() || "" : "");
 
         await saveDocumentMutation.mutateAsync({
-          setId,
+          setId: _setId,
           data: {
             noteId,
             assetId: result.assetId,
@@ -167,6 +177,7 @@ export const NoteHeader = ({
   };
 
   return (
+    <>
     <div className='flex items-center justify-between gap-4 border-b p-4 shadow-sm'>
       <Button variant='outline' size='sm' className='gap-2' onClick={() => navigate(-1)}>
         <ArrowLeft className='w-4 h-4' />
@@ -178,89 +189,115 @@ export const NoteHeader = ({
           onChange={(e) => onTitleChange(e.target.value)}
           placeholder='Untitled Note'
           className='text-2xl font-bold border-none focus-visible:ring-0 px-4 py-2 h-auto w-100'
+          readOnly={userRole === 'VIEWER'}
         />
       </div>
 
       <div className='flex items-center gap-2'>
         <Button
-          onClick={onSave}
-          disabled={isSaving}
-          size='sm'
-          className='gap-2'
-        >
-          {isSaving ? (
-            <LoaderCircle className='w-4 h-4 animate-spin' />
-          ) : (
-            <Save className='w-4 h-4' />
-          )}
-          Save
-        </Button>
-
-        <Button
-          onClick={handleDownloadHTML}
           variant='outline'
           size='sm'
           className='gap-2'
+          onClick={() => setShareOpen(true)}
         >
-          <Download className='w-4 h-4' />
-          Download
+          <Share2 className='w-4 h-4' />
+          Share
         </Button>
 
-        <div className='relative'>
-          <input
-            type='file'
-            onChange={handleFileUpload}
-            disabled={isUploading}
-            className='hidden'
-            id='file-upload'
-            accept='.pdf,.doc,.docx,.txt,.pptx,.jpg,.jpeg,.png,.gif,.webp,.svg,.bmp,.avif'
-          />
-          <label htmlFor='file-upload'>
-            <Button
-              asChild
-              variant='outline'
-              size='sm'
-              className='gap-2 cursor-pointer'
+        {userRole !== 'VIEWER' && (
+          <>
+          <Button
+            onClick={onSave}
+            disabled={isSaving}
+            size='sm'
+            className='gap-2'
+          >
+            {isSaving ? (
+              <LoaderCircle className='w-4 h-4 animate-spin' />
+            ) : (
+              <Save className='w-4 h-4' />
+            )}
+            Save
+          </Button>
+
+          <Button
+            onClick={handleDownloadHTML}
+            variant='outline'
+            size='sm'
+            className='gap-2'
+          >
+            <Download className='w-4 h-4' />
+            Download
+          </Button>
+
+          <div className='relative'>
+            <input
+              type='file'
+              onChange={handleFileUpload}
               disabled={isUploading}
+              className='hidden'
+              id='file-upload'
+              accept='.pdf,.doc,.docx,.txt,.pptx,.jpg,.jpeg,.png,.gif,.webp,.svg,.bmp,.avif'
+            />
+            <label htmlFor='file-upload'>
+              <Button
+                asChild
+                variant='outline'
+                size='sm'
+                className='gap-2 cursor-pointer'
+                disabled={isUploading}
+              >
+                <span>
+                  {isUploading ? (
+                    <LoaderCircle className='w-4 h-4 animate-spin' />
+                  ) : (
+                    <Upload className='w-4 h-4' />
+                  )}
+                  Upload
+                </span>
+              </Button>
+            </label>
+          </div>
+
+          {attachedFileCount > 0 && onToggleFilesPanel ? (
+            <Button
+              type='button'
+              variant={showFilesPanel ? "secondary" : "outline"}
+              size='sm'
+              className='gap-2'
+              onClick={onToggleFilesPanel}
             >
-              <span>
-                {isUploading ? (
-                  <LoaderCircle className='w-4 h-4 animate-spin' />
-                ) : (
-                  <Upload className='w-4 h-4' />
-                )}
-                Upload
-              </span>
+              <FileText className='w-4 h-4' />
+              Files ({attachedFileCount})
             </Button>
-          </label>
-        </div>
+          ) : null}
 
-        {attachedFileCount > 0 && onToggleFilesPanel ? (
-          <Button
-            type='button'
-            variant={showFilesPanel ? "secondary" : "outline"}
-            size='sm'
-            className='gap-2'
-            onClick={onToggleFilesPanel}
-          >
-            <FileText className='w-4 h-4' />
-            Files ({attachedFileCount})
-          </Button>
-        ) : null}
-
-        {aiSummaryCount > 0 && onToggleAiPanel ? (
-          <Button
-            type='button'
-            variant={showAiPanel ? "secondary" : "outline"}
-            size='sm'
-            className='gap-2'
-            onClick={onToggleAiPanel}
-          >
-            <Sparkles className='w-4 h-4' />
-            AI ({aiSummaryCount})
-          </Button>
-        ) : null}
+          {aiSummaryCount > 0 && onToggleAiPanel ? (
+            <Button
+              type='button'
+              variant={showAiPanel ? "secondary" : "outline"}
+              size='sm'
+              className='gap-2'
+              onClick={onToggleAiPanel}
+            >
+              <Sparkles className='w-4 h-4' />
+              AI ({aiSummaryCount})
+            </Button>
+          ) : null}
+          </>
+        )}
       </div>
     </div>
+
+    <ShareDialog
+      open={shareOpen}
+      onOpenChange={setShareOpen}
+      setId={_setId}
+      resourceType="notes"
+      resourceId={noteId}
+      userRole={userRole}
+      currentUserId={currentUserId}
+    />
+    </>
   );
 };

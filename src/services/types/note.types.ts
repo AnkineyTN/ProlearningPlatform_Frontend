@@ -18,6 +18,8 @@ export type NoteDetail = {
   noteImgs?: NoteDocItem[];
   /** Some APIs use this key instead of `noteImgs`. */
   noteImages?: NoteDocItem[];
+  /** Role of the current user for this note (collaboration). */
+  userRole?: 'OWNER' | 'EDITOR' | 'VIEWER';
 };
 
 export type NoteFileRegionCommentDto = {
@@ -221,8 +223,7 @@ export type SaveDocInNoteRequest = {
 
 export type DeleteNoteImgRequest = {
   noteId: number;
-  publicId: string;
-  extension: string;
+  fileUrl: string;
 };
 
 export type ResponseDataVoid = {

@@ -20,6 +20,8 @@ import {
 } from "@/hooks/useNotes";
 import { isImageExtension } from "@/lib/utils";
 import type { NoteDocItem } from "@/services/types/note.types";
+import { useAppSelector } from "@/hooks/redux";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface UploadedFile {
   id: number;
@@ -71,6 +73,7 @@ export const NotePage = () => {
     id: string;
   }>();
   const numericSetId = setIdParam ? Number(setIdParam) : 0;
+  const currentUser = useAppSelector((s) => s.auth.user);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isEditorReady, setIsEditorReady] = useState(false);
@@ -78,6 +81,7 @@ export const NotePage = () => {
   const [showFilesPanel, setShowFilesPanel] = useState(true);
   const [showAiPanel, setShowAiPanel] = useState(true);
   const [summaries, setSummaries] = useState<AISummary[]>([]);
+  const [onlineUsers, setOnlineUsers] = useState<{ name: string; color: string }[]>([]);
   const editorRef = useRef<NoteEditorHandle>(null);
 
   const { data: noteDetail, isLoading: isLoadingNote } = useNoteDetail(
@@ -303,6 +307,8 @@ export const NotePage = () => {
         onSave={handleSave}
         isSaving={autoSaveMutation.isPending}
         noteId={numericNoteId}
+        setId={setId}
+        userRole={noteDetail?.userRole ?? 'OWNER'}
         onFileUploaded={handleFileUploaded}
         onDownloadHTML={handleDownloadHTML}
         attachedFileCount={noteFiles.length}
@@ -312,6 +318,23 @@ export const NotePage = () => {
         showAiPanel={showAiPanel}
         onToggleAiPanel={() => setShowAiPanel((v) => !v)}
       />
+
+      {/* Online users avatars */}
+      {onlineUsers.length > 0 && (
+        <div className="flex items-center gap-1 px-4 py-1 border-b bg-muted/30">
+          <span className="text-xs text-muted-foreground mr-1">Online:</span>
+          {onlineUsers.slice(0, 8).map((u, i) => (
+            <Avatar key={i} className="size-6 border-2" style={{ borderColor: u.color }}>
+              <AvatarFallback className="text-[10px]" style={{ backgroundColor: u.color, color: '#fff' }}>
+                {u.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          ))}
+          {onlineUsers.length > 8 && (
+            <span className="text-xs text-muted-foreground">+{onlineUsers.length - 8}</span>
+          )}
+        </div>
+      )}
 
       <div className='flex-1 overflow-hidden'>
         <ResizablePanelGroup className='w-full h-full' key={`${hasFilesPanel}-${hasAiPanel}`}>
@@ -323,6 +346,10 @@ export const NotePage = () => {
                 content={content}
                 onContentChange={handleContentChange}
                 onAISummarize={handleAISummarize}
+                userRole={noteDetail?.userRole ?? 'OWNER'}
+                currentUserId={currentUser?.id ?? 0}
+                currentUserName={currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : 'User'}
+                onOnlineUsersChange={setOnlineUsers}
               />
             ) : (
               <div className='flex items-center justify-center h-full'>

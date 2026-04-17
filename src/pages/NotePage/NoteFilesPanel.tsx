@@ -226,8 +226,7 @@ function NoteFileRow({
           setId,
           data: {
             noteId,
-            publicId,
-            extension,
+            fileUrl,
           },
         });
       } else {
