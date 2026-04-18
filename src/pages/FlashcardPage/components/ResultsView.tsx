@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -140,7 +141,7 @@ const ResultsView = ({
                 className='flex-1 cursor-pointer'
                 onClick={onContinue}
               >
-                Practice with Test
+                Practice with Exam
               </Button>
               <Button
                 variant='default'

@@ -2,6 +2,7 @@ import {
   Blocks,
   Brain,
   Check,
+  ClipboardList,
   Edit,
   Heart,
   Image as ImageIcon,
@@ -35,6 +36,8 @@ type HomeViewProps = {
   onCardClick: (index: number) => void;
   onStudy: () => void;
   onMatching: () => void;
+  onPracticeWithExam: () => void;
+  isPracticeWithExamLoading?: boolean;
   isFlipped: boolean;
   currentCardIndex: number;
   onFlip: () => void;
@@ -66,6 +69,8 @@ const HomeView = ({
   onCardClick,
   onStudy,
   onMatching,
+  onPracticeWithExam,
+  isPracticeWithExamLoading = false,
   isFlipped,
   currentCardIndex,
   onFlip,
@@ -88,11 +93,13 @@ const HomeView = ({
     backCard: string;
     imageUrl?: string;
     imageAssetId?: number;
+    imageRemoved: boolean;
   }>({
     frontCard: "",
     backCard: "",
     imageUrl: undefined,
     imageAssetId: undefined,
+    imageRemoved: false,
   });
   const menuRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -149,6 +156,7 @@ const HomeView = ({
       backCard: card.backCard,
       imageUrl: card.imageUrl || undefined,
       imageAssetId: undefined,
+      imageRemoved: false,
     });
   };
 
@@ -160,6 +168,7 @@ const HomeView = ({
       backCard: "",
       imageUrl: undefined,
       imageAssetId: undefined,
+      imageRemoved: false,
     });
   };
 
@@ -175,7 +184,8 @@ const HomeView = ({
       id: card.id,
       frontCard: editData.frontCard.trim(),
       backCard: editData.backCard.trim(),
-      imageAssetId: editData.imageAssetId,
+      // Send null to explicitly remove the image; undefined means "no change"
+      imageAssetId: editData.imageRemoved ? null : editData.imageAssetId,
       cardStatus: card.cardStatus,
     });
 
@@ -185,6 +195,7 @@ const HomeView = ({
       backCard: "",
       imageUrl: undefined,
       imageAssetId: undefined,
+      imageRemoved: false,
     });
   };
 
@@ -223,6 +234,7 @@ const HomeView = ({
         ...prev,
         imageUrl: result.url,
         imageAssetId: result.assetId,
+        imageRemoved: false,
       }));
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -239,6 +251,7 @@ const HomeView = ({
       ...prev,
       imageUrl: undefined,
       imageAssetId: undefined,
+      imageRemoved: true,
     }));
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -269,6 +282,19 @@ const HomeView = ({
           >
             <Blocks className='w-5 h-5' />
             Matching
+          </Button>
+          <Button
+            variant='default'
+            onClick={onPracticeWithExam}
+            disabled={isPracticeWithExamLoading}
+            className='gap-2 cursor-pointer'
+          >
+            {isPracticeWithExamLoading ? (
+              <Loader2 className='w-5 h-5 animate-spin' />
+            ) : (
+              <ClipboardList className='w-5 h-5' />
+            )}
+            Practice with Exam
           </Button>
           <div className='ml-auto flex gap-2'>
             <Button variant='ghost' size='icon' className='cursor-pointer'>

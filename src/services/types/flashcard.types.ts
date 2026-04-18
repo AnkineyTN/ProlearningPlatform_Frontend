@@ -110,7 +110,7 @@ export type UpdateCardRequest = {
   id: number;
   frontCard: string;
   backCard: string;
-  imageAssetId?: number;
+  imageAssetId?: number | null;
   cardStatus?: 'NEW' | 'LEARNING' | 'KNOWN';
 };
 
@@ -235,9 +235,6 @@ export type CardItemReviewRequest = {
   known: boolean;
 };
 
-export type FlashcardStudySessionSyncRequest = {
-  cardItemReviews: CardItemReviewRequest[];
-};
 
 export type CardLearnResponse = {
   id: number;
@@ -248,24 +245,77 @@ export type CardLearnResponse = {
   nextReviewAt?: string;
 };
 
-export type FlashcardLearnResponse = {
-  status: string;
-  message: string;
-  data: CardLearnResponse[];
-  metadata: Record<string, unknown>;
-};
-
-export type CardReviewResponse = {
-  status: string;
-  message: string;
-  data: Record<string, unknown>;
-  metadata: Record<string, unknown>;
-};
-
 // Response wrappers for clarity
 export type VoidResponse = {
   status: string;
   message: string;
   data: null;
   metadata: Record<string, never>;
+};
+
+// Generate exam from flashcard
+export type GenerateExamFromFlashcardResponse = {
+  status: string;
+  message: string;
+  data: {
+    id: number;
+    title: string;
+    privacy: 'PUBLIC' | 'PRIVATE';
+    description: string;
+    duration: number;
+    numQuestions: number;
+    creationMethod: string;
+    createdAt: string;
+    updatedAt: string;
+    userRole: string;
+  };
+  metadata: Record<string, unknown>;
+};
+
+// Matching game
+export type SaveGameResultRequest = {
+  totalCards: number;
+  durationSeconds: number;
+};
+
+export type SaveGameResultResponse = {
+  status: string;
+  message: string;
+  data: {
+    id: number;
+    totalCards: number;
+    durationSeconds: number;
+    completedAt: string;
+  };
+  metadata: Record<string, unknown>;
+};
+
+export type GameRankingItem = {
+  rank: number;
+  userId: number;
+  firstName: string;
+  lastName: string;
+  bestDuration: number;
+  playCount: number;
+};
+
+export type GameRankingResponse = {
+  status: string;
+  message: string;
+  data: GameRankingItem[];
+  metadata: Record<string, unknown>;
+};
+
+export type GameHistoryItem = {
+  id: number;
+  totalCards: number;
+  durationSeconds: number;
+  completedAt: string;
+};
+
+export type GameHistoryResponse = {
+  status: string;
+  message: string;
+  data: GameHistoryItem[];
+  metadata: Record<string, unknown>;
 };

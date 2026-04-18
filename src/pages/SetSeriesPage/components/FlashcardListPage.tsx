@@ -5,6 +5,8 @@ import FlashCard, { type Flashcard } from "@/components/cards/FlashCard";
 import {
   ResourceFiltersBar,
   type ListPrivacyFilter,
+  type ListCreateMethodFilter,
+  type ListSortOption,
 } from "@/components/lists/ResourceFiltersBar";
 import { Button } from "@/components/ui/button";
 import { getTimeAgo } from "@/lib/utils";
@@ -25,6 +27,8 @@ const FlashcardListPage = ({
   const [listSearch, setListSearch] = useState("");
   const [debouncedQ, setDebouncedQ] = useState("");
   const [privacyFilter, setPrivacyFilter] = useState<ListPrivacyFilter>("");
+  const [createMethodFilter, setCreateMethodFilter] = useState<ListCreateMethodFilter>("");
+  const [sort, setSort] = useState<ListSortOption>("id,DESC");
   const pageSize = 6;
   const navigate = useNavigate();
 
@@ -35,15 +39,16 @@ const FlashcardListPage = ({
 
   useEffect(() => {
     setCurrentPage(0);
-  }, [debouncedQ, privacyFilter]);
+  }, [debouncedQ, privacyFilter, createMethodFilter, sort]);
 
   const { data, isLoading, isError, error } = useFlashcards({
     setId,
     page: currentPage,
     size: pageSize,
-    sort: "id,ASC",
+    sort,
     q: debouncedQ || undefined,
     privacy: privacyFilter || undefined,
+    createMethod: createMethodFilter || undefined,
   });
 
   const handleAccess = (id: number | string) => {
@@ -69,10 +74,13 @@ const FlashcardListPage = ({
       onSearchChange={setListSearch}
       privacy={privacyFilter}
       onPrivacyChange={setPrivacyFilter}
+      createMethod={createMethodFilter}
+      onCreateMethodChange={setCreateMethodFilter}
+      sort={sort}
+      onSortChange={setSort}
     />
   );
 
-  // Loading state
   if (isLoading) {
     return (
       <div>
@@ -84,7 +92,6 @@ const FlashcardListPage = ({
     );
   }
 
-  // Error state
   if (isError) {
     return (
       <div>
@@ -99,7 +106,6 @@ const FlashcardListPage = ({
     );
   }
 
-  // Empty state
   if (!data?.data || data.data.length === 0) {
     return (
       <div>
@@ -115,10 +121,10 @@ const FlashcardListPage = ({
   const { data: flashcards, metadata } = data;
   const totalPages = metadata.totalPages;
   const displayPage = currentPage + 1;
+
   return (
     <div>
       {filters}
-      {/* Flashcards Grid */}
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6'>
         {flashcards.map((flashcard) => (
           <FlashCard
@@ -146,7 +152,6 @@ const FlashcardListPage = ({
         ))}
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className='flex justify-center items-center gap-4'>
           <Button

@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import ExamCard, { type ExamCardData } from "@/components/cards/ExamCard";
 import {
   ResourceFiltersBar,
   type ListPrivacyFilter,
+  type ListCreateMethodFilter,
+  type ListSortOption,
 } from "@/components/lists/ResourceFiltersBar";
 import { Button } from "@/components/ui/button";
 import { useExams } from "@/hooks/useExams";
+import { ChevronLeft, ChevronRight, FileX } from "lucide-react";
 
 interface ExamListPageProps {
   setId: number;
@@ -20,11 +22,12 @@ export default function ExamListPage({
   onUpdate,
   onDelete,
 }: ExamListPageProps) {
-  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(0);
   const [listSearch, setListSearch] = useState("");
   const [debouncedQ, setDebouncedQ] = useState("");
   const [privacyFilter, setPrivacyFilter] = useState<ListPrivacyFilter>("");
+  const [createMethodFilter, setCreateMethodFilter] = useState<ListCreateMethodFilter>("");
+  const [sort, setSort] = useState<ListSortOption>("id,DESC");
   const pageSize = 9;
   const navigate = useNavigate();
 
@@ -35,14 +38,16 @@ export default function ExamListPage({
 
   useEffect(() => {
     setCurrentPage(0);
-  }, [debouncedQ, privacyFilter]);
+  }, [debouncedQ, privacyFilter, createMethodFilter, sort]);
 
   const { data, isLoading, isError } = useExams({
     setId,
     page: currentPage,
     size: pageSize,
+    sort,
     q: debouncedQ || undefined,
     privacy: privacyFilter || undefined,
+    createMethod: createMethodFilter || undefined,
   });
 
   const exams = data?.data ?? [];
@@ -60,6 +65,10 @@ export default function ExamListPage({
       onSearchChange={setListSearch}
       privacy={privacyFilter}
       onPrivacyChange={setPrivacyFilter}
+      createMethod={createMethodFilter}
+      onCreateMethodChange={setCreateMethodFilter}
+      sort={sort}
+      onSortChange={setSort}
     />
   );
 
@@ -114,31 +123,32 @@ export default function ExamListPage({
       </div>
 
       {exams.length === 0 && (
-        <div className='text-center py-12 text-muted-foreground'>
-          {t("exam.list.empty")}
+        <div className='flex flex-col justify-center items-center min-h-[400px]'>
+          <FileX className='mx-auto mb-4 w-20 h-20' />
+          <div className='text-muted-foreground'>No exams found</div>
         </div>
       )}
 
       {totalPages > 1 && (
         <div className='flex justify-center items-center gap-4'>
           <Button
+            variant='ghost'
             onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
             disabled={currentPage === 0}
-            className='p-2 hover:bg-white rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed'
+            className='p-2 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed'
           >
-            <span className='text-gray-700'>‹</span>
+            <ChevronLeft className='text-foreground' />
           </Button>
-          <span className='text-sm font-medium text-gray-700'>
+          <span className='text-sm font-medium'>
             {currentPage + 1}/{totalPages}
           </span>
           <Button
-            onClick={() =>
-              setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
-            }
+            variant='ghost'
+            onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
             disabled={currentPage >= totalPages - 1}
-            className='p-2 hover:bg-white rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed'
+            className='p-2 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed'
           >
-            <span className='text-gray-700'>›</span>
+            <ChevronRight className='text-foreground' />
           </Button>
         </div>
       )}

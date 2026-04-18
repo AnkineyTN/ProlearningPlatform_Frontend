@@ -8,6 +8,7 @@ import type {
   AddCardsRequest,
   DeleteMultipleCardsRequest,
   UpdateMultipleCardsRequest,
+  SaveGameResultRequest,
 } from "@/services/types/flashcard.types";
 
 interface UseFlashcardsParams {
@@ -361,5 +362,61 @@ export const useGenerateFlashcardsFromFiles = () => {
         queryKey: ["flashcards", variables.setId],
       });
     },
+  });
+};
+
+export const useGenerateExamFromFlashcard = () => {
+  return useMutation({
+    mutationFn: ({
+      setId,
+      flashcardId,
+    }: {
+      setId: number;
+      flashcardId: number | string;
+    }) => flashcardAPI.generateExamFromFlashcard(setId, flashcardId),
+  });
+};
+
+export const useSaveGameResult = () => {
+  return useMutation({
+    mutationFn: ({
+      setId,
+      flashcardId,
+      data,
+    }: {
+      setId: number;
+      flashcardId: number | string;
+      data: SaveGameResultRequest;
+    }) => flashcardAPI.saveGameResult(setId, flashcardId, data),
+  });
+};
+
+export const useGameRanking = (
+  setId: number,
+  flashcardId: number | string,
+  enabled = true,
+) => {
+  return useQuery({
+    queryKey: ["game-ranking", setId, flashcardId],
+    queryFn: async () => {
+      const response = await flashcardAPI.getGameRanking(setId, flashcardId);
+      return response.data;
+    },
+    enabled,
+  });
+};
+
+export const useGameHistory = (
+  setId: number,
+  flashcardId: number | string,
+  enabled = true,
+) => {
+  return useQuery({
+    queryKey: ["game-history", setId, flashcardId],
+    queryFn: async () => {
+      const response = await flashcardAPI.getGameHistory(setId, flashcardId);
+      return response.data;
+    },
+    enabled,
   });
 };

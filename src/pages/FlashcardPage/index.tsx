@@ -6,6 +6,7 @@ import {
   useDeleteCard,
   useDeleteFlashcard,
   useFlashcardDetail,
+  useGenerateExamFromFlashcard,
   useUpdateCard,
 } from "@/hooks/useFlashcards";
 import {
@@ -50,6 +51,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
   const updateCardMutation = useUpdateCard();
   const deleteCardMutation = useDeleteCard();
   const deleteFlashcardMutation = useDeleteFlashcard();
+  const generateExamMutation = useGenerateExamFromFlashcard();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -447,7 +449,22 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     }
   };
 
+  const handlePracticeWithExam = async () => {
+    try {
+      const response = await generateExamMutation.mutateAsync({
+        setId: Number(setId),
+        flashcardId: Number(flashcardId),
+      });
+      const examId = response.data.data.id;
+      navigate(`/sets/${setId}/exams/${examId}`);
+    } catch (error) {
+      console.error("Failed to generate exam:", error);
+      toast.error("Failed to generate exam. Please try again.");
+    }
+  };
+
   const userRole = data?.data.userRole ?? 'OWNER';
+  const privacy = data?.data.privacy ?? 'PRIVATE';
 
   return (
     <div>
@@ -474,6 +491,8 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           onMatching={() =>
             navigate(`/sets/${setId}/flashcards/${flashcardId}/matching`)
           }
+          onPracticeWithExam={handlePracticeWithExam}
+          isPracticeWithExamLoading={generateExamMutation.isPending}
           isFlipped={isFlipped}
           currentCardIndex={currentCardIndex}
           onFlip={handleFlip}
@@ -520,6 +539,9 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
 
       {viewMode === "matching" && (
         <MatchingView
+          setId={Number(setId)}
+          flashcardId={flashcardId}
+          privacy={privacy}
           flashcards={flashcards}
           onBack={() => navigate(`/sets/${setId}/flashcards/${flashcardId}`)}
         />

@@ -31,7 +31,6 @@ import MindmapListPage from './components/MindmapListPage';
 import NoteListPage from './components/NoteListPage';
 import RecordListPage from './components/RecordListPage';
 import ExamListPage from './components/ExamListPage';
-import ReviewListPage from './components/ReviewListPage';
 
 import type { Note } from '@/components/cards/NoteCard';
 import type { Flashcard } from '@/components/cards/FlashCard';
@@ -51,14 +50,12 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
     Exams: 'exams',
     Mindmaps: 'mindmaps',
     Records: 'records',
-    Review: 'review',
   };
 
   // Determine initial tab from current pathname (so route and UI stay in sync)
   const path = location.pathname.toLowerCase();
   let initialTab = 'Notes';
-  if (path.includes(`/sets/${setId}/review`)) initialTab = 'Review';
-  else if (path.includes(`/sets/${setId}/flashcards`)) initialTab = 'Flashcards';
+  if (path.includes(`/sets/${setId}/flashcards`)) initialTab = 'Flashcards';
   else if (path.includes(`/sets/${setId}/exams`)) initialTab = 'Exams';
   else if (path.includes(`/sets/${setId}/mindmaps`)) initialTab = 'Mindmaps';
   else if (path.includes(`/sets/${setId}/records`)) initialTab = 'Records';
@@ -92,7 +89,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
   const [isAISourceModalOpen, setIsAISourceModalOpen] = useState(false);
   const [isExamAISourceModalOpen, setIsExamAISourceModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-  const tabs = ['Notes', 'Flashcards', 'Exams', 'Mindmaps', 'Records', 'Review'];
+  const tabs = ['Notes', 'Flashcards', 'Exams', 'Mindmaps', 'Records'];
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
@@ -103,7 +100,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
   const handleCreateButtonClick = () => {
     if (activeTab === 'Notes') {
       setIsCreateModalOpen(true);
-    } else if (activeTab !== 'Review') {
+    } else {
       setIsMethodModalOpen(true);
     }
   };
@@ -469,8 +466,8 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
           ))}
         </div>
 
-        {/* Action Bar — hidden on Review tab */}
-        {activeTab !== 'Review' && (
+        {/* Action Bar */}
+        {(
           <div className='flex justify-between items-center mb-6'>
             <Button
               className='bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 px-5 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-colors disabled:opacity-50'
@@ -523,9 +520,6 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
           />
         )}
         {activeTab === 'Records' && <RecordListPage />}
-        {activeTab === 'Review' && (
-          <ReviewListPage setId={Number(setId)} />
-        )}
 
         {/* Modals */}
         <CreateMethodModal

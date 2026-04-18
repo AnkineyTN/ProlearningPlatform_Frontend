@@ -20,9 +20,11 @@ import type {
   UpdateCardRequest,
   UpdateCardResponse,
   DeleteCardResponse,
-  CardReviewResponse,
-  FlashcardLearnResponse,
-  FlashcardStudySessionSyncRequest,
+  GenerateExamFromFlashcardResponse,
+  SaveGameResultRequest,
+  SaveGameResultResponse,
+  GameRankingResponse,
+  GameHistoryResponse,
 } from '../types/flashcard.types';
 
 export type GetFlashcardsBySetQuery = {
@@ -167,24 +169,43 @@ export const flashcardAPI = {
   },
 
   /**
-   * Get cards for flashcard review/learning
+   * Generate exam from flashcard
+   * POST /sets/{setId}/exams/from-flashcard/{flashcardId}
    */
-  getCardsForReview: (
+  generateExamFromFlashcard: (
     setId: number,
-    flashcardId: number,
-    limit: number = 20,
-  ): Promise<AxiosResponse<FlashcardLearnResponse>> =>
-    api.get(`/sets/${setId}/flashcards/review/${flashcardId}/learn`, {
-      params: { limit },
-    }),
+    flashcardId: number | string,
+  ): Promise<AxiosResponse<GenerateExamFromFlashcardResponse>> =>
+    api.post(`/sets/${setId}/exams/from-flashcard/${flashcardId}`),
 
   /**
-   * Submit review for a card
+   * Save matching game result
+   * POST /sets/{setId}/flashcards/{flashcardId}/game/results
    */
-  submitCardReview: (
+  saveGameResult: (
     setId: number,
-    flashcardId: number,
-    data: FlashcardStudySessionSyncRequest,
-  ): Promise<AxiosResponse<CardReviewResponse>> =>
-    api.post(`/sets/${setId}/flashcards/review/${flashcardId}/reviews`, data),
+    flashcardId: number | string,
+    data: SaveGameResultRequest,
+  ): Promise<AxiosResponse<SaveGameResultResponse>> =>
+    api.post(`/sets/${setId}/flashcards/${flashcardId}/game/results`, data),
+
+  /**
+   * Get top 20 game ranking
+   * GET /sets/{setId}/flashcards/{flashcardId}/game/ranking
+   */
+  getGameRanking: (
+    setId: number,
+    flashcardId: number | string,
+  ): Promise<AxiosResponse<GameRankingResponse>> =>
+    api.get(`/sets/${setId}/flashcards/${flashcardId}/game/ranking`),
+
+  /**
+   * Get current user's game history
+   * GET /sets/{setId}/flashcards/{flashcardId}/game/history
+   */
+  getGameHistory: (
+    setId: number,
+    flashcardId: number | string,
+  ): Promise<AxiosResponse<GameHistoryResponse>> =>
+    api.get(`/sets/${setId}/flashcards/${flashcardId}/game/history`),
 };
