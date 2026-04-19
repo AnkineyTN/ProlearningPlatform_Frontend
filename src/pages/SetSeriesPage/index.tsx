@@ -197,7 +197,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
   };
 
   const handleExamAISubmit = async (data: {
-    source: 'notes' | 'files' | 'web';
+    source: 'notes' | 'files' | 'web' | 'similar';
     noteIds?: number[];
     files?: File[];
     urls?: string[];
@@ -236,6 +236,18 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
           difficulty: data.difficulty,
           freeText: data.freeText,
         });
+      } else if (data.source === 'similar' && data.files?.length) {
+        const similarInstruction =
+          'Generate a brand-new exam inspired by the uploaded sample exam. Preserve the overall topic coverage and difficulty style, but create entirely new questions — do not copy any question verbatim.' +
+          (data.freeText ? ' ' + data.freeText : '');
+        result = await generateExamFromFilesMutation.mutateAsync({
+          setId: Number(setId),
+          files: data.files,
+          questionCounts: data.questionCounts,
+          language: data.language,
+          difficulty: data.difficulty,
+          freeText: similarInstruction,
+        });
       }
 
       if (!result) return;
@@ -246,9 +258,11 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
       const sourceDesc =
         data.source === 'notes'
           ? `${data.noteIds?.length ?? 0} note(s)`
-          : data.source === 'files'
-            ? `${data.files?.length ?? 0} file(s)`
-            : `${data.urls?.length ?? 0} URL(s)`;
+          : data.source === 'similar'
+            ? `sample exam (${data.files?.[0]?.name ?? 'file'})`
+            : data.source === 'files'
+              ? `${data.files?.length ?? 0} file(s)`
+              : `${data.urls?.length ?? 0} URL(s)`;
 
       navigate(`/sets/${setId}/exams/editor`, {
         state: {

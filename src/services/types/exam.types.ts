@@ -213,7 +213,7 @@ export type ExamAttemptSummary = {
 
 export type ExamAttemptAnswerPayload = {
   questionId: number;
-  selectedOptionId: number;
+  selectedOptionId: number | null;
   essayAnswer: string;
 };
 
@@ -224,7 +224,7 @@ export type SubmitExamAttemptRequest = {
 export type ExamGradedAnswer = {
   questionId: number;
   questionContent?: string;
-  selectedOptionId: number;
+  selectedOptionId: number | null;
   studentAnswer?: string;
   isCorrect: boolean;
   expectedAnswer?: string;

@@ -32,7 +32,7 @@ export function buildExamAttemptAnswers(
     if (q.type === 'ESSAY') {
       return {
         questionId: qid,
-        selectedOptionId: 0,
+        selectedOptionId: null,
         essayAnswer: sub?.essayAnswer?.trim() ?? '',
       };
     }

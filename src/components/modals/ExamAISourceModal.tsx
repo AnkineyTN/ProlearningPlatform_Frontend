@@ -1,4 +1,4 @@
-import { ArrowLeft, FileText, Link2, Loader2, Upload, X, FileX } from 'lucide-react';
+import { ArrowLeft, FileText, Link2, Loader2, Upload, X, FileX, Repeat2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
@@ -51,7 +51,7 @@ type ExamAISourceModalProps = {
   onClose: () => void;
   onBack: () => void;
   onSubmit: (data: {
-    source: 'notes' | 'files' | 'web';
+    source: 'notes' | 'files' | 'web' | 'similar';
     noteIds?: number[];
     files?: File[];
     urls?: string[];
@@ -72,7 +72,7 @@ const ExamAISourceModal = ({
   isLoading,
 }: ExamAISourceModalProps) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<'notes' | 'files' | 'web'>(
+  const [activeTab, setActiveTab] = useState<'notes' | 'files' | 'web' | 'similar'>(
     'notes',
   );
   const [selectedNotes, setSelectedNotes] = useState<number[]>([]);
@@ -87,6 +87,8 @@ const ExamAISourceModal = ({
   const [diffMedium, setDiffMedium] = useState(DEFAULT_DIFFICULTY.Medium);
   const [diffHard, setDiffHard] = useState(DEFAULT_DIFFICULTY.Hard);
   const [freeText, setFreeText] = useState('');
+  const [sampleFile, setSampleFile] = useState<File | null>(null);
+  const [similarDesc, setSimilarDesc] = useState('');
 
   const { data: notesData } = useNotesBySet(setId, { page: 0, size: 20 });
   const notes = notesData?.items || [];
@@ -124,9 +126,12 @@ const ExamAISourceModal = ({
   const hasSource =
     (activeTab === 'notes' && selectedNotes.length > 0) ||
     (activeTab === 'files' && uploadedFiles.length > 0) ||
-    (activeTab === 'web' && webUrls.length > 0);
+    (activeTab === 'web' && webUrls.length > 0) ||
+    (activeTab === 'similar' && sampleFile !== null);
   const canSubmit =
-    hasSource && totalQuestions > 0 && difficultyValid;
+    activeTab === 'similar'
+      ? hasSource
+      : hasSource && totalQuestions > 0 && difficultyValid;
 
   const clampPct = (n: number) =>
     Number.isFinite(n) ? Math.min(100, Math.max(0, Math.round(n))) : 0;
@@ -149,8 +154,15 @@ const ExamAISourceModal = ({
       onSubmit({ source: 'notes', noteIds: selectedNotes, ...payload });
     } else if (activeTab === 'files') {
       onSubmit({ source: 'files', files: uploadedFiles, ...payload });
-    } else {
+    } else if (activeTab === 'web') {
       onSubmit({ source: 'web', urls: webUrls, ...payload });
+    } else if (activeTab === 'similar' && sampleFile) {
+      onSubmit({
+        source: 'similar',
+        files: [sampleFile],
+        ...payload,
+        freeText: similarDesc.trim(),
+      });
     }
   };
 
@@ -214,6 +226,19 @@ const ExamAISourceModal = ({
             <div className='flex items-center gap-2'>
               <Link2 className='w-4 h-4' />
               {t('modal.ai.fromWeb', { defaultValue: 'Web URL' })}
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab('similar')}
+            className={`px-4 py-2 font-medium transition-colors cursor-pointer ${
+              activeTab === 'similar'
+                ? 'text-foreground border-b-2 border-foreground'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <div className='flex items-center gap-2'>
+              <Repeat2 className='w-4 h-4' />
+              {t('modal.ai.similarExam', { defaultValue: 'Similar Exam' })}
             </div>
           </button>
         </div>
@@ -350,9 +375,85 @@ const ExamAISourceModal = ({
               )}
             </div>
           )}
+
+          {activeTab === 'similar' && (
+            <div className='flex flex-col gap-5'>
+              <div>
+                <p className='text-sm text-muted-foreground mb-3'>
+                  {t('modal.ai.similarExamHint', {
+                    defaultValue:
+                      'Upload a sample exam file. The AI will generate a brand-new exam with similar topics and difficulty — no questions will be copied.',
+                  })}
+                </p>
+                <div className='w-full border-2 border-dashed border-ring rounded-lg p-6 text-center hover:border-foreground transition-colors'>
+                  <Repeat2 className='w-10 h-10 mx-auto mb-3 text-muted-foreground' />
+                  <p className='text-sm text-muted-foreground mb-3'>
+                    {t('modal.ai.similarExamFileHint', {
+                      defaultValue: 'PDF, DOCX, TXT (1 file only)',
+                    })}
+                  </p>
+                  <label className='inline-block'>
+                    <input
+                      type='file'
+                      onChange={(e) => {
+                        if (!isLoading && e.target.files?.[0]) {
+                          setSampleFile(e.target.files[0]);
+                        }
+                      }}
+                      className='hidden'
+                      accept='.pdf,.docx,.txt,.doc'
+                      disabled={isLoading}
+                    />
+                    <span
+                      className={`px-4 py-2 bg-foreground text-background rounded-lg inline-block text-sm ${
+                        isLoading
+                          ? 'opacity-50 cursor-not-allowed'
+                          : 'cursor-pointer hover:opacity-90 transition-opacity'
+                      }`}
+                    >
+                      {t('modal.ai.chooseFile', { defaultValue: 'Choose File' })}
+                    </span>
+                  </label>
+                </div>
+
+                {sampleFile && (
+                  <div className='mt-3 flex items-center justify-between p-2 bg-card rounded border border-border'>
+                    <span className='text-sm truncate'>{sampleFile.name}</span>
+                    <button
+                      onClick={() => setSampleFile(null)}
+                      disabled={isLoading}
+                      className='text-muted-foreground hover:text-foreground cursor-pointer ml-2 shrink-0'
+                    >
+                      <X className='w-4 h-4' />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <Label className='text-sm font-medium mb-2 block'>
+                  {t('modal.ai.similarExamDesc', {
+                    defaultValue: 'Additional description (optional)',
+                  })}
+                </Label>
+                <Textarea
+                  value={similarDesc}
+                  onChange={(e) => setSimilarDesc(e.target.value)}
+                  placeholder={t('modal.ai.similarExamDescPlaceholder', {
+                    defaultValue:
+                      'E.g. Focus on calculus problems, skip the essay section, increase difficulty slightly, add more real-world application questions…',
+                  })}
+                  disabled={isLoading}
+                  rows={4}
+                  className='resize-y min-h-[100px]'
+                />
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Question Counts */}
+        {/* Question Counts, Difficulty, Language, freeText — hidden for Similar Exam tab */}
+        {activeTab !== 'similar' && <>
         <div className='mb-6'>
           <Label className='text-sm font-medium mb-3 block'>
             Number of Questions by Type
@@ -527,6 +628,7 @@ const ExamAISourceModal = ({
             className='resize-y min-h-[100px]'
           />
         </div>
+        </>}
 
         {/* Actions */}
         <div className='flex justify-end gap-3'>
