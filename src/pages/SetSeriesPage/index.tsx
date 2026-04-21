@@ -7,7 +7,6 @@ import AISourceModal from '@/components/modals/AISourceModal';
 import ExamAISourceModal from '@/components/modals/ExamAISourceModal';
 import CreateMethodModal from '@/components/modals/CreateMethodModal';
 import CreateNewModal from '@/components/modals/CreateNewModal';
-import { Button } from '@/components/ui/button';
 import {
   useDeleteFlashcard,
   useGenerateFlashcardsFromFiles,
@@ -35,6 +34,8 @@ import ExamListPage from './components/ExamListPage';
 import type { Note } from '@/components/cards/NoteCard';
 import type { Flashcard } from '@/components/cards/FlashCard';
 import type { ExamCardData } from '@/components/cards/ExamCard';
+import { cn } from '@/lib/utils';
+
 interface SetSeriesPageProps {
   setId: string;
 }
@@ -43,7 +44,6 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Map UI tab labels to route slugs
   const tabMap: Record<string, string> = {
     Notes: 'notes',
     Flashcards: 'flashcards',
@@ -52,7 +52,6 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
     Records: 'records',
   };
 
-  // Determine initial tab from current pathname (so route and UI stay in sync)
   const path = location.pathname.toLowerCase();
   let initialTab = 'Notes';
   if (path.includes(`/sets/${setId}/flashcards`)) initialTab = 'Flashcards';
@@ -68,7 +67,6 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
   );
   const [selectedExam, setSelectedExam] = useState<ExamCardData | null>(null);
 
-  // Mutations
   const updateFlashcardMutation = useUpdateFlashcard();
   const deleteFlashcardMutation = useDeleteFlashcard();
   const deleteExamMutation = useDeleteExam();
@@ -83,7 +81,6 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
   const generateExamFromNotesMutation = useGenerateExamFromNotes();
   const generateExamFromWebMutation = useGenerateExamFromWeb();
 
-  // Modal states
   const [isMethodModalOpen, setIsMethodModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isAISourceModalOpen, setIsAISourceModalOpen] = useState(false);
@@ -105,9 +102,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
     }
   };
 
-  const handleSelectManual = () => {
-    setIsCreateModalOpen(true);
-  };
+  const handleSelectManual = () => setIsCreateModalOpen(true);
 
   const handleSelectAI = () => {
     if (activeTab === 'Exams') {
@@ -418,7 +413,10 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
 
   const handleDeleteNote = async (id: number) => {
     try {
-      await deleteNoteMutation.mutateAsync({ setId: Number(setId), noteId: id });
+      await deleteNoteMutation.mutateAsync({
+        setId: Number(setId),
+        noteId: id,
+      });
       toast.success('Note deleted successfully');
     } catch (error) {
       console.error('Error deleting note:', error);
@@ -458,59 +456,72 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
     }
   };
 
-  return (
-    <div className='min-h-screen p-6'>
-      <div className='max-w-7xl mx-auto'>
-        <HeaderSetDetails setId={setId} />
+  const isGenerating =
+    generateFlashcardsMutation.isPending ||
+    generateFlashcardsFromFilesMutation.isPending ||
+    generateFlashcardsFromWebMutation.isPending ||
+    generateExamFromFilesMutation.isPending ||
+    generateExamFromNotesMutation.isPending ||
+    generateExamFromWebMutation.isPending;
 
-        {/* Tabs */}
-        <div className='flex gap-2 mb-6 overflow-x-auto'>
-          {tabs.map((tab) => (
-            <Button
+  return (
+    <div className='min-h-screen bg-[var(--pl-bg)] transition-[background] duration-300'>
+      <HeaderSetDetails setId={setId} />
+
+      {/* Tabs */}
+      <div className='px-10 border-b border-b-[var(--pl-border)] flex gap-0.5 sticky top-0 bg-[var(--pl-bg)] z-10 overflow-x-auto'>
+        {tabs.map((tab) => {
+          const active = activeTab === tab;
+          return (
+            <button
               key={tab}
               onClick={() => handleTabClick(tab)}
-              className={`cursor-pointer px-6 py-2 rounded-full text-foreground text-sm border border-ring font-medium transition-colors whitespace-nowrap ${
-                activeTab === tab
-                  ? 'font-semibold text-text-pinked border-pink-500 bg-bg-pinked hover:bg-bg-pinked-selected'
-                  : 'border-ring bg-card hover:bg-card-secondary'
-              }`}
+              className={cn(
+                'px-[18px] py-[14px] flex items-center gap-2 border-t-0 border-l-0 border-r-0 border-b-2 bg-transparent cursor-pointer whitespace-nowrap transition-[color] duration-150 text-[13.5px] -mb-px',
+                active
+                  ? 'border-b-[var(--pl-accent)] text-[var(--pl-text)] font-semibold'
+                  : 'border-b-transparent text-[var(--pl-text-muted)] font-normal',
+              )}
             >
               {tab}
-            </Button>
-          ))}
-        </div>
+            </button>
+          );
+        })}
+      </div>
 
-        {/* Action Bar */}
-        {(
-          <div className='flex justify-between items-center mb-6'>
-            <Button
-              className='bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 px-5 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-colors disabled:opacity-50'
-              onClick={handleCreateButtonClick}
-              disabled={
-                createNoteMutation.isPending ||
-                generateFlashcardsMutation.isPending ||
-                generateFlashcardsFromFilesMutation.isPending ||
-                generateFlashcardsFromWebMutation.isPending ||
-                generateExamFromFilesMutation.isPending ||
-                generateExamFromNotesMutation.isPending ||
-                generateExamFromWebMutation.isPending
-              }
-            >
-              {generateFlashcardsMutation.isPending ||
-              generateFlashcardsFromFilesMutation.isPending ||
-              generateFlashcardsFromWebMutation.isPending ||
-              generateExamFromFilesMutation.isPending ||
-              generateExamFromNotesMutation.isPending ||
-              generateExamFromWebMutation.isPending
-                ? 'Generating with AI...'
-                : createNoteMutation.isPending
-                  ? 'Creating...'
-                  : `+ Create a new ${activeTab.slice(0, -1).toLowerCase()}`}
-            </Button>
-          </div>
-        )}
+      {/* Action Bar */}
+      <div className='px-10 pt-5 flex items-center'>
+        <button
+          onClick={handleCreateButtonClick}
+          disabled={createNoteMutation.isPending || isGenerating}
+          className={cn(
+            'flex items-center gap-2 px-[18px] py-[9px] bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] rounded-full font-semibold text-[13px] border-0 cursor-pointer transition-[opacity] duration-150',
+            (createNoteMutation.isPending || isGenerating) &&
+              'opacity-55 cursor-not-allowed',
+          )}
+        >
+          <svg
+            width='13'
+            height='13'
+            viewBox='0 0 24 24'
+            fill='none'
+            stroke='currentColor'
+            strokeWidth='2.5'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          >
+            <path d='M12 5v14M5 12h14' />
+          </svg>
+          {isGenerating
+            ? 'Generating with AI…'
+            : createNoteMutation.isPending
+              ? 'Creating…'
+              : `New ${activeTab.slice(0, -1).toLowerCase()}`}
+        </button>
+      </div>
 
-        {/* Content Grid */}
+      {/* Content Grid */}
+      <div className='px-10'>
         {activeTab === 'Notes' && (
           <NoteListPage
             setId={Number(setId)}
@@ -534,104 +545,104 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
           />
         )}
         {activeTab === 'Records' && <RecordListPage />}
-
-        {/* Modals */}
-        <CreateMethodModal
-          type={activeTab.slice(0, -1)}
-          isOpen={isMethodModalOpen}
-          onClose={() => setIsMethodModalOpen(false)}
-          onSelectManual={handleSelectManual}
-          onSelectAI={handleSelectAI}
-        />
-
-        <AISourceModal
-          setId={Number(setId)}
-          currentPage={0}
-          pageSize={6}
-          type={activeTab.slice(0, -1)}
-          isOpen={isAISourceModalOpen}
-          onClose={() => setIsAISourceModalOpen(false)}
-          onBack={handleBackFromAISource}
-          onSubmit={handleAISourceSubmit}
-          isLoading={
-            generateFlashcardsMutation.isPending ||
-            generateFlashcardsFromFilesMutation.isPending ||
-            generateFlashcardsFromWebMutation.isPending
-          }
-        />
-
-        <ExamAISourceModal
-          setId={Number(setId)}
-          isOpen={isExamAISourceModalOpen}
-          onClose={() => setIsExamAISourceModalOpen(false)}
-          onBack={handleBackFromAISource}
-          onSubmit={handleExamAISubmit}
-          isLoading={
-            generateExamFromFilesMutation.isPending ||
-            generateExamFromNotesMutation.isPending ||
-            generateExamFromWebMutation.isPending
-          }
-        />
-
-        <CreateNewModal
-          type={activeTab.slice(0, -1)}
-          isOpen={isCreateModalOpen}
-          onClose={() => setIsCreateModalOpen(false)}
-          onBack={activeTab !== 'Notes' ? handleBackFromCreate : undefined}
-          onSubmit={handleCreate}
-        />
-
-        {isUpdateModalOpen &&
-          (selectedNote || selectedFlashcard || selectedExam) && (
-            <CreateNewModal
-              type={
-                selectedExam
-                  ? 'Exam'
-                  : selectedFlashcard
-                    ? 'Flashcard'
-                    : activeTab.slice(0, -1)
-              }
-              isOpen={isUpdateModalOpen}
-              onClose={() => {
-                setIsUpdateModalOpen(false);
-                setSelectedNote(null);
-                setSelectedFlashcard(null);
-                setSelectedExam(null);
-              }}
-              onSubmit={handleUpdateSubmit}
-              initialData={{
-                title:
-                  selectedNote?.title ||
-                  selectedFlashcard?.title ||
-                  selectedExam?.title ||
-                  '',
-                description:
-                  selectedNote?.description ||
-                  selectedFlashcard?.description ||
-                  selectedExam?.description ||
-                  '',
-                privacy:
-                  (
-                    selectedNote?.privacy ||
-                    selectedFlashcard?.privacy ||
-                    selectedExam?.privacy ||
-                    'PUBLIC'
-                  )
-                    .charAt(0)
-                    .toUpperCase() +
-                  (
-                    selectedNote?.privacy ||
-                    selectedFlashcard?.privacy ||
-                    selectedExam?.privacy ||
-                    'public'
-                  )
-                    .slice(1)
-                    .toLowerCase(),
-              }}
-              isUpdateMode={true}
-            />
-          )}
       </div>
+
+      {/* Modals */}
+      <CreateMethodModal
+        type={activeTab.slice(0, -1)}
+        isOpen={isMethodModalOpen}
+        onClose={() => setIsMethodModalOpen(false)}
+        onSelectManual={handleSelectManual}
+        onSelectAI={handleSelectAI}
+      />
+
+      <AISourceModal
+        setId={Number(setId)}
+        currentPage={0}
+        pageSize={6}
+        type={activeTab.slice(0, -1)}
+        isOpen={isAISourceModalOpen}
+        onClose={() => setIsAISourceModalOpen(false)}
+        onBack={handleBackFromAISource}
+        onSubmit={handleAISourceSubmit}
+        isLoading={
+          generateFlashcardsMutation.isPending ||
+          generateFlashcardsFromFilesMutation.isPending ||
+          generateFlashcardsFromWebMutation.isPending
+        }
+      />
+
+      <ExamAISourceModal
+        setId={Number(setId)}
+        isOpen={isExamAISourceModalOpen}
+        onClose={() => setIsExamAISourceModalOpen(false)}
+        onBack={handleBackFromAISource}
+        onSubmit={handleExamAISubmit}
+        isLoading={
+          generateExamFromFilesMutation.isPending ||
+          generateExamFromNotesMutation.isPending ||
+          generateExamFromWebMutation.isPending
+        }
+      />
+
+      <CreateNewModal
+        type={activeTab.slice(0, -1)}
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onBack={activeTab !== 'Notes' ? handleBackFromCreate : undefined}
+        onSubmit={handleCreate}
+      />
+
+      {isUpdateModalOpen &&
+        (selectedNote || selectedFlashcard || selectedExam) && (
+          <CreateNewModal
+            type={
+              selectedExam
+                ? 'Exam'
+                : selectedFlashcard
+                  ? 'Flashcard'
+                  : activeTab.slice(0, -1)
+            }
+            isOpen={isUpdateModalOpen}
+            onClose={() => {
+              setIsUpdateModalOpen(false);
+              setSelectedNote(null);
+              setSelectedFlashcard(null);
+              setSelectedExam(null);
+            }}
+            onSubmit={handleUpdateSubmit}
+            initialData={{
+              title:
+                selectedNote?.title ||
+                selectedFlashcard?.title ||
+                selectedExam?.title ||
+                '',
+              description:
+                selectedNote?.description ||
+                selectedFlashcard?.description ||
+                selectedExam?.description ||
+                '',
+              privacy:
+                (
+                  selectedNote?.privacy ||
+                  selectedFlashcard?.privacy ||
+                  selectedExam?.privacy ||
+                  'PUBLIC'
+                )
+                  .charAt(0)
+                  .toUpperCase() +
+                (
+                  selectedNote?.privacy ||
+                  selectedFlashcard?.privacy ||
+                  selectedExam?.privacy ||
+                  'public'
+                )
+                  .slice(1)
+                  .toLowerCase(),
+            }}
+            isUpdateMode={true}
+          />
+        )}
     </div>
   );
 }

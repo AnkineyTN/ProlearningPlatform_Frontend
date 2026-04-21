@@ -1,207 +1,294 @@
-import React from "react";
-import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarRail,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard,
   LayoutList,
   CheckCheck,
   Hourglass,
-  LogOut,
-  User,
-  ChevronUp,
   Book,
   Heart,
   Settings,
   Inbox,
-} from "lucide-react";
+  LogOut,
+  User,
+  ChevronRight,
+  Search,
+  PanelLeftClose,
+  PanelLeftOpen,
+} from 'lucide-react';
+
+import { logout } from '@/store/authSlice.ts';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { useReviewBundles } from '@/hooks/useReviewBundles';
+import ColorThemeSwitcher from '@/components/theme/color-theme-switcher';
+import ModeToggle from '@/components/theme/mode-toggle';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { logout } from "@/store/authSlice.ts";
-import { useNavigate } from "react-router-dom";
-import LogoFG from "@/assets/logo_fg";
-import { useTranslation } from "react-i18next";
-import { useReviewBundles } from "@/hooks/useReviewBundles";
+} from '@/components/ui/dropdown-menu';
+import { cn } from '@/lib/utils';
 
-const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
-  const { user } = useAppSelector((state) => state.auth);
+const STORAGE_KEY = 'pl-sidebar-collapsed';
+
+const AppSidebar = () => {
+  const [collapsed, setCollapsed] = useState(
+    () => localStorage.getItem(STORAGE_KEY) === 'true',
+  );
+
+  const toggle = () => {
+    setCollapsed((v) => {
+      localStorage.setItem(STORAGE_KEY, String(!v));
+      return !v;
+    });
+  };
+
+  const { user } = useAppSelector((s) => s.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const location = useLocation();
   const { data: reviewBundlesData } = useReviewBundles();
   const bundleCount = reviewBundlesData?.data?.length ?? 0;
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/login");
+    navigate('/login');
   };
+
   const menuItems = [
+    { title: t('sidebar.dashboard'), icon: LayoutDashboard, url: '/dashboard' },
+    { title: t('sidebar.setList'), icon: LayoutList, url: '/sets' },
+    { title: t('sidebar.todo'), icon: CheckCheck, url: '/todo' },
+    { title: t('sidebar.pomodoro'), icon: Hourglass, url: '/pomodoro' },
+    { title: t('sidebar.blog'), icon: Book, url: '/blog' },
+    { title: t('sidebar.socials'), icon: Heart, url: '/socials' },
     {
-      title: t("sidebar.dashboard"),
-      icon: LayoutDashboard,
-      url: "/dashboard",
+      title: 'Review Bundles',
+      icon: Inbox,
+      url: '/review-bundles',
+      badge: bundleCount > 0 ? bundleCount : undefined,
     },
-    {
-      title: t("sidebar.setList"),
-      icon: LayoutList,
-      url: "/sets",
-    },
-    {
-      title: t("sidebar.todo"),
-      icon: CheckCheck,
-      url: "/todo",
-    },
-    {
-      title: t("sidebar.pomodoro"),
-      icon: Hourglass,
-      url: "/pomodoro",
-    },
-    {
-      title: t("sidebar.blog"),
-      icon: Book,
-      url: "/blog",
-    },
-    {
-      title: t("sidebar.socials"),
-      icon: Heart,
-      url: "/socials",
-    },
-    {
-      title: t("sidebar.settings"),
-      icon: Settings,
-      url: "/settings",
-    },
+    { title: t('sidebar.settings'), icon: Settings, url: '/settings' },
   ];
 
-  const reviewBundlesItem = {
-    title: "Review Bundles",
-    icon: Inbox,
-    url: "/review-bundles",
-    badge: bundleCount > 0 ? bundleCount : undefined,
-  };
+  const initials =
+    [user?.firstName?.[0], user?.lastName?.[0]]
+      .filter(Boolean)
+      .join('')
+      .toUpperCase() || 'U';
 
-  const handleProfile = () => {
-    navigate("/profile");
-  };
+  const fullName =
+    [user?.firstName, user?.lastName].filter(Boolean).join(' ') ||
+    'Unknown User';
 
   return (
-    <Sidebar collapsible='icon' {...props}>
-      <SidebarHeader>
-        <SidebarMenu className='border-b border-sidebar-border py-2'>
-          <SidebarMenuItem className='flex items-center'>
-            <SidebarMenuButton size='lg' asChild>
-              <a href='/dashboard'>
-                <div className='flex size-6 items-center justify-center rounded-lg text-sidebar-primary-foreground'>
-                  <LogoFG />
+    <aside
+      className='bg-[var(--pl-bg-sunken)] border-r border-r-[var(--pl-border)] flex flex-col h-screen sticky top-0 shrink-0 z-20 overflow-hidden transition-[width] duration-[280ms] ease-[cubic-bezier(0.4,0,0.2,1)]'
+      style={{ width: collapsed ? 68 : 232 }}
+    >
+      {/* ── Logo ── */}
+      <div
+        className={cn(
+          'h-[68px] flex items-center border-b border-b-[var(--pl-border)] shrink-0',
+          collapsed ? 'justify-center px-0' : 'justify-between px-4',
+        )}
+      >
+        {collapsed ? (
+          <button
+            onClick={toggle}
+            title='Expand sidebar'
+            className='w-[34px] h-[34px] rounded-[9px] bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] grid place-items-center font-bold text-[16px] border-0 cursor-pointer'
+          >
+            <PanelLeftOpen size={16} />
+          </button>
+        ) : (
+          <>
+            <a
+              href='/dashboard'
+              className='flex items-center gap-[10px] no-underline'
+            >
+              <div className='w-8 h-8 rounded-[9px] bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] grid place-items-center font-bold text-[18px] tracking-[-0.02em] shrink-0'>
+                P
+              </div>
+              <div>
+                <div className='text-[15px] font-bold tracking-[-0.02em] leading-none text-[var(--pl-text)] whitespace-nowrap'>
+                  ProLearning
                 </div>
-                <span className='font-semibold text-lg ml-1'>ProLearning</span>
-              </a>
-            </SidebarMenuButton>
-            <SidebarTrigger size='lg' />
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
+                <div className='text-[9px] text-[var(--pl-text-faint)] tracking-[0.14em] uppercase mt-0.5'>
+                  Platform
+                </div>
+              </div>
+            </a>
+            <button
+              onClick={toggle}
+              title='Collapse sidebar'
+              className='text-[var(--pl-text-faint)] bg-transparent border-0 cursor-pointer grid place-items-center rounded-[6px] p-1 hover:text-[var(--pl-text)]'
+            >
+              <PanelLeftClose size={16} />
+            </button>
+          </>
+        )}
+      </div>
 
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarMenu>
-            {menuItems.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
-                  <a href={item.url}>
-                    <item.icon className='size-4' />
-                    <span>{item.title}</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-            {/* Review Bundles — action-required item */}
-            <SidebarMenuItem key={reviewBundlesItem.title}>
-              <SidebarMenuButton asChild>
-                <a href={reviewBundlesItem.url} className='relative flex items-center gap-2'>
-                  <reviewBundlesItem.icon className='size-4' />
-                  <span>{reviewBundlesItem.title}</span>
-                  {reviewBundlesItem.badge !== undefined && (
-                    <span className='ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full bg-pink-500 px-1.5 text-[10px] font-bold text-white'>
-                      {reviewBundlesItem.badge}
-                    </span>
-                  )}
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
-      </SidebarContent>
+      {/* ── Search ── */}
+      {!collapsed && (
+        <div className='px-3 pt-[10px] pb-[6px]'>
+          <button className='w-full flex items-center gap-2 px-[10px] py-[7px] bg-[var(--pl-bg)] border border-[var(--pl-border)] rounded-lg text-[var(--pl-text-faint)] text-[12.5px] cursor-text text-left'>
+            <Search size={13} className='shrink-0' />
+            <span className='flex-1'>Search</span>
+            <span className='text-[10px] opacity-60 whitespace-nowrap'>⌘K</span>
+          </button>
+        </div>
+      )}
 
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                  size='lg'
-                  className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
-                >
-                  <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white'>
-                    <User className='size-4' />
-                  </div>
-                  <div className='grid flex-1 text-left text-sm leading-tight'>
-                    <span className='truncate font-semibold'>
-                      {user?.firstName || "Unknown User"} {user?.lastName || ""}
-                    </span>
-                    <span className='truncate text-xs text-sidebar-foreground/70'>
-                      {user?.email || "no-email@example.com"}
-                    </span>
-                  </div>
-                  <ChevronUp className='ml-auto size-4' />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
-                side='bottom'
-                align='end'
-                sideOffset={4}
+      {/* ── Nav ── */}
+      <nav
+        className={cn(
+          'flex-1 flex flex-col gap-0.5 overflow-y-auto',
+          collapsed ? 'px-2 py-[10px]' : 'px-[10px] py-[6px]',
+        )}
+      >
+        {menuItems.map((item) => {
+          const active =
+            item.url === '/dashboard'
+              ? location.pathname === '/dashboard'
+              : location.pathname.startsWith(item.url);
+
+          return (
+            <a
+              key={item.url}
+              href={item.url}
+              title={collapsed ? item.title : undefined}
+              className={cn(
+                'flex items-center rounded-[7px] text-[13px] no-underline transition-[background,color] duration-150 relative',
+                collapsed
+                  ? 'justify-center gap-0 py-[10px] px-0'
+                  : 'justify-start gap-[11px] px-[10px] py-2',
+                active
+                  ? 'text-[var(--pl-accent-strong)] bg-[var(--pl-accent-soft)] font-semibold'
+                  : 'text-[var(--pl-text-muted)] bg-transparent font-normal hover:bg-[var(--pl-bg-hover)]',
+              )}
+            >
+              <item.icon size={16} className='shrink-0' />
+              {!collapsed && <span className='flex-1'>{item.title}</span>}
+              {!collapsed && item.badge !== undefined && (
+                <span className='text-[10px] font-bold min-w-[18px] h-[18px] rounded-full bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] flex items-center justify-center px-[5px] shrink-0'>
+                  {item.badge}
+                </span>
+              )}
+              {collapsed && item.badge !== undefined && (
+                <span className='absolute top-1 right-1 w-2 h-2 rounded-full bg-[var(--pl-accent)]' />
+              )}
+            </a>
+          );
+        })}
+      </nav>
+
+      {/* ── Footer ── */}
+      <div className='border-t border-t-[var(--pl-border)] shrink-0'>
+        {/* Theme controls */}
+        <div
+          className={cn(
+            'flex items-center gap-2',
+            collapsed
+              ? 'justify-center py-[10px] px-0'
+              : 'justify-between py-[10px] px-[14px]',
+          )}
+        >
+          <ColorThemeSwitcher collapsed={collapsed} />
+          {!collapsed && <ModeToggle />}
+        </div>
+
+        {/* User card */}
+        <div className='border-t border-t-[var(--pl-border)]'>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className={cn(
+                  'w-full flex items-center bg-transparent border-0 cursor-pointer transition-[background] duration-150 hover:bg-[var(--pl-bg-hover)]',
+                  collapsed
+                    ? 'justify-center gap-0 py-3 px-0'
+                    : 'justify-start gap-[10px] py-[10px] px-[14px]',
+                )}
               >
-                <DropdownMenuItem
-                  className='cursor-pointer hover:bg-card-secondary'
-                  onClick={handleProfile}
+                {/* Avatar */}
+                <div
+                  className='w-8 h-8 rounded-[9px] shrink-0 grid place-items-center text-white text-[12px] font-bold'
+                  style={{
+                    background:
+                      'linear-gradient(135deg, var(--pl-accent), oklch(var(--pl-accent-l) calc(var(--pl-accent-c) * 0.8) calc(var(--pl-accent-h) + 40)))',
+                  }}
                 >
-                  <User className='mr-2 size-4' />
-                  <span>{t("sidebar.profile")}</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className='cursor-pointer hover:bg-card-secondary'>
-                  <Settings className='mr-2 size-4' />
-                  <span>{t("sidebar.settings")}</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className='cursor-pointer hover:bg-card-secondary'
-                  onClick={handleLogout}
-                >
-                  <LogOut className='mr-2 size-4' />
-                  <span>{t("sidebar.logout")}</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
+                  {initials}
+                </div>
 
-      <SidebarRail />
-    </Sidebar>
+                {!collapsed && (
+                  <>
+                    <div className='flex-1 min-w-0 text-left'>
+                      <div className='text-[12.5px] font-semibold text-[var(--pl-text)] overflow-hidden text-ellipsis whitespace-nowrap'>
+                        {fullName}
+                      </div>
+                      <div className='text-[10.5px] text-[var(--pl-text-faint)] overflow-hidden text-ellipsis whitespace-nowrap'>
+                        {user?.email || '—'}
+                      </div>
+                    </div>
+                    <ChevronRight
+                      size={13}
+                      className='text-[var(--pl-text-faint)] shrink-0'
+                    />
+                  </>
+                )}
+              </button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent
+              side='right'
+              align='end'
+              sideOffset={8}
+              className='min-w-44 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[10px] p-1 shadow-[0_8px_24px_oklch(0_0_0/0.14)]'
+            >
+              {[
+                {
+                  label: t('sidebar.profile'),
+                  icon: User,
+                  onClick: () => navigate('/profile'),
+                  danger: false,
+                },
+                {
+                  label: t('sidebar.settings'),
+                  icon: Settings,
+                  onClick: () => navigate('/settings'),
+                  danger: false,
+                },
+                {
+                  label: t('sidebar.logout'),
+                  icon: LogOut,
+                  onClick: handleLogout,
+                  danger: true,
+                },
+              ].map(({ label, icon: Icon, onClick, danger }) => (
+                <DropdownMenuItem
+                  key={label}
+                  onClick={onClick}
+                  className={cn(
+                    'flex items-center gap-2 px-[10px] py-2 rounded-[7px] text-[13px] cursor-pointer',
+                    danger
+                      ? 'text-[oklch(0.65_0.2_25)]'
+                      : 'text-[var(--pl-text)]',
+                  )}
+                >
+                  <Icon size={14} />
+                  {label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+    </aside>
   );
 };
 

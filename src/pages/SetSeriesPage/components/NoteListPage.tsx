@@ -1,14 +1,18 @@
-import { useEffect, useState } from "react";
-import NoteCard, { type Note } from "@/components/cards/NoteCard";
+import { useEffect, useState } from 'react';
+import NoteCard, { type Note } from '@/components/cards/NoteCard';
 import {
   ResourceFiltersBar,
   type ListPrivacyFilter,
-} from "@/components/lists/ResourceFiltersBar";
-import { Button } from "@/components/ui/button";
-import { useNavigate, useParams } from "react-router-dom";
-import { ChevronLeft, ChevronRight, FileX } from "lucide-react";
-import { useNotesBySet } from "@/hooks/useNotes";
-import { getTimeAgo } from "@/lib/utils";
+} from '@/components/lists/ResourceFiltersBar';
+import {
+  CardGrid,
+  CardGridSkeleton,
+  EmptyState,
+  Pagination,
+} from '@/components/lists/ListShared';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useNotesBySet } from '@/hooks/useNotes';
+import { getTimeAgo } from '@/lib/utils';
 
 type Props = {
   setId?: number;
@@ -18,13 +22,12 @@ type Props = {
 
 const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [listSearch, setListSearch] = useState("");
-  const [debouncedQ, setDebouncedQ] = useState("");
-  const [privacyFilter, setPrivacyFilter] = useState<ListPrivacyFilter>("");
+  const [listSearch, setListSearch] = useState('');
+  const [debouncedQ, setDebouncedQ] = useState('');
+  const [privacyFilter, setPrivacyFilter] = useState<ListPrivacyFilter>('');
   const navigate = useNavigate();
   const { setId: paramSetId } = useParams<{ setId: string }>();
   const pageSize = 6;
-
   const setId = propSetId || Number(paramSetId);
 
   useEffect(() => {
@@ -50,39 +53,17 @@ const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
   const notes = notesData?.items || [];
   const totalPages = notesData?.totalPage || 1;
 
-  const handleAccess = (id: number) => {
-    navigate(`/sets/${setId}/notes/${id}`);
-  };
+  const handleAccess = (id: number) => navigate(`/sets/${setId}/notes/${id}`);
 
-  const handleDelete = (id: number) => {
-    onDelete(id);
-  };
-
-  const handleUpdate = (note: Note) => {
-    onUpdate(note);
-  };
-
-  const handlePreviousPage = () => {
-    setCurrentPage((prev) => Math.max(0, prev - 1));
-  };
-
-  const handleNextPage = () => {
-    if (notesData?.totalPage) {
-      setCurrentPage((prev) => Math.min(notesData.totalPage - 1, prev + 1));
-    }
-  };
-
-  if (!setId) {
+  if (!setId)
     return (
-      <div className='flex justify-center items-center py-8'>
-        <div className='text-destructive'>Invalid set ID</div>
+      <div className='py-10 text-center text-[oklch(0.65_0.2_25)] text-[13px]'>
+        Invalid set ID
       </div>
     );
-  }
 
   const filters = (
     <ResourceFiltersBar
-      className='mb-4'
       searchValue={listSearch}
       onSearchChange={setListSearch}
       privacy={privacyFilter}
@@ -90,101 +71,66 @@ const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
     />
   );
 
-  if (isLoading) {
+  if (isLoading)
     return (
       <div>
         {filters}
-        <div className='flex justify-center items-center py-8'>
-          <div className='text-muted-foreground'>Loading notes...</div>
-        </div>
+        <CardGridSkeleton />
       </div>
     );
-  }
 
-  if (error) {
+  if (error)
     return (
       <div>
         {filters}
-        <div className='flex justify-center items-center py-8'>
-          <div className='text-destructive'>
-            Error loading notes. Please try again.
-          </div>
+        <div className='py-10 text-center text-[oklch(0.65_0.2_25)] text-[13px]'>
+          Error loading notes. Please try again.
         </div>
       </div>
     );
-  }
 
-  if (notes.length === 0) {
+  if (notes.length === 0)
     return (
       <div>
         {filters}
-        <div className='flex flex-col justify-center items-center py-12 gap-4'>
-          <FileX className='mx-auto mb-4 text-6xl w-20 h-20' />
-          <div className='text-muted-foreground text-lg'>No notes found</div>
-          <div className='text-muted-foreground text-sm'>
-            Create your first note to get started!
-          </div>
-        </div>
+        <EmptyState label='No notes found — create your first note!' />
       </div>
     );
-  }
 
   return (
     <div>
       {filters}
-      {/* Notes Grid */}
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6'>
+      <CardGrid>
         {notes.map((note) => {
           const noteForUI: Note = {
             id: note.id,
             title: note.title,
-            description: note.description || "No description available...",
+            description: note.description || 'No description available…',
             privacy: note.privacy,
             timeAgo: getTimeAgo(note.updated_at),
-            created_at: new Date(note.created_at).toLocaleDateString("en-GB", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
+            created_at: new Date(note.created_at).toLocaleDateString('en-GB', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
             }),
           };
           return (
-          <NoteCard
-            key={note.id}
-            note={noteForUI}
-            onAccess={() => handleAccess(note.id)}
-            onUpdate={() => handleUpdate(noteForUI)}
-            onDelete={() => handleDelete(note.id)}
-          />
+            <NoteCard
+              key={note.id}
+              note={noteForUI}
+              onAccess={() => handleAccess(note.id)}
+              onUpdate={() => onUpdate(noteForUI)}
+              onDelete={() => onDelete(note.id)}
+            />
           );
         })}
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className='flex justify-center items-center gap-4'>
-          <Button
-            variant={"ghost"}
-            onClick={handlePreviousPage}
-            disabled={currentPage === 0}
-            className='p-2 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed'
-          >
-            <ChevronLeft className='w-5 h-5 text-muted-foreground' />
-          </Button>
-
-          <span className='text-sm font-medium'>
-            {currentPage + 1}/{totalPages}
-          </span>
-
-          <Button
-            variant={"ghost"}
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages - 1}
-            className='p-2 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed'
-          >
-            <ChevronRight className='w-5 h-5 text-muted-foreground' />
-          </Button>
-        </div>
-      )}
+      </CardGrid>
+      <Pagination
+        current={currentPage}
+        total={totalPages}
+        onPrev={() => setCurrentPage((p) => Math.max(0, p - 1))}
+        onNext={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
+      />
     </div>
   );
 };
