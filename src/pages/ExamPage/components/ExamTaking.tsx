@@ -1,12 +1,17 @@
-import { AlertCircle, ArrowLeft, Clock } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { toast } from "react-toastify";
+import {
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  BookmarkIcon,
+  Clock,
+  X,
+} from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import type { Exam, ExamSubmission } from "../types";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from '@/components/ui/textarea';
+import type { Exam, ExamSubmission } from '../types';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,23 +21,20 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 
 interface ExamTakingProps {
-  setId: number;
-  examId: number;
   exam: Exam;
   onSubmit: (
     submissions: ExamSubmission[],
     timeTaken: number,
   ) => void | Promise<void>;
-  /** Return to exam intro (same route — do not use navigate to this URL only). */
   onAbandon: () => void;
 }
 
+const OPTION_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
 export default function ExamTaking({
-  setId: _setId,
-  examId: _examId,
   exam,
   onSubmit,
   onAbandon,
@@ -43,20 +45,23 @@ export default function ExamTaking({
     Map<string | number, ExamSubmission>
   >(new Map());
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
-  const timeRemainingRef = useRef(0);
-  const [timeRemaining, setTimeRemaining] = useState(
-    () => Math.max(0, exam.timeLimit * 60),
-  );
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(
+    new Set(),
+  );
+  const [flagged, setFlagged] = useState<Set<number>>(new Set());
+  const [hoveredOption, setHoveredOption] = useState<string | null>(null);
+
+  const timeRemainingRef = useRef(0);
+  const [timeRemaining, setTimeRemaining] = useState(() =>
+    Math.max(0, exam.timeLimit * 60),
+  );
   const isSubmittingRef = useRef(false);
   const submissionsRef = useRef(submissions);
   const onSubmitRef = useRef(onSubmit);
   const submitFromTimerRef = useRef<(timeExpired?: boolean) => Promise<void>>(
     async () => {},
-  );
-  const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(
-    new Set(),
   );
 
   const currentQuestion = exam.questions[currentQuestionIndex];
@@ -67,8 +72,8 @@ export default function ExamTaking({
   timeRemainingRef.current = timeRemaining;
 
   useEffect(() => {
-    const totalSeconds = Math.max(0, exam.timeLimit * 60);
-    setTimeRemaining(totalSeconds);
+    const total = Math.max(0, exam.timeLimit * 60);
+    setTimeRemaining(total);
     const timer = setInterval(() => {
       setTimeRemaining((prev) => {
         if (prev <= 1) {
@@ -83,12 +88,8 @@ export default function ExamTaking({
   }, [exam.timeLimit]);
 
   const formatTime = (seconds: number) => {
-    if (!Number.isFinite(seconds) || seconds < 0) {
-      return "0:00";
-    }
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
+    if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
+    return `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`;
   };
 
   const handleAnswerChange = (
@@ -96,59 +97,53 @@ export default function ExamTaking({
     answerId: string,
     isChecked: boolean,
   ) => {
-    const currentSubmission = submissions.get(questionId) || {
+    const current = submissions.get(questionId) || {
       questionId,
       selectedAnswers: [],
     };
     const question = exam.questions.find((q) => q.id === questionId);
     if (!question) return;
 
-    let newSelectedAnswers: string[];
-    if (question.type === "TRUE_FALSE") {
-      newSelectedAnswers = [answerId];
-    } else {
-      newSelectedAnswers = isChecked
-        ? [...currentSubmission.selectedAnswers, answerId]
-        : currentSubmission.selectedAnswers.filter((id) => id !== answerId);
-    }
+    const newAnswers: string[] =
+      question.type === 'TRUE_FALSE'
+        ? [answerId]
+        : isChecked
+          ? [...current.selectedAnswers, answerId]
+          : current.selectedAnswers.filter((id) => id !== answerId);
 
-    const newSubmission: ExamSubmission = {
-      ...currentSubmission,
-      selectedAnswers: newSelectedAnswers,
-    };
-    setSubmissions(new Map(submissions.set(questionId, newSubmission)));
-
-    if (newSelectedAnswers.length > 0) {
-      setAnsweredQuestions(new Set(answeredQuestions).add(currentQuestionIndex));
-    } else {
-      const next = new Set(answeredQuestions);
-      next.delete(currentQuestionIndex);
-      setAnsweredQuestions(next);
-    }
+    setSubmissions(
+      new Map(
+        submissions.set(questionId, {
+          ...current,
+          selectedAnswers: newAnswers,
+        }),
+      ),
+    );
+    const next = new Set(answeredQuestions);
+    if (newAnswers.length > 0) next.add(currentQuestionIndex);
+    else next.delete(currentQuestionIndex);
+    setAnsweredQuestions(next);
   };
 
   const handleEssayChange = (questionId: string | number, text: string) => {
-    const newSubmission: ExamSubmission = {
-      questionId,
-      selectedAnswers: [],
-      essayAnswer: text,
-    };
-    setSubmissions(new Map(submissions.set(questionId, newSubmission)));
-    if (text.trim()) {
-      setAnsweredQuestions(new Set(answeredQuestions).add(currentQuestionIndex));
-    } else {
-      const next = new Set(answeredQuestions);
-      next.delete(currentQuestionIndex);
-      setAnsweredQuestions(next);
-    }
+    setSubmissions(
+      new Map(
+        submissions.set(questionId, {
+          questionId,
+          selectedAnswers: [],
+          essayAnswer: text,
+        }),
+      ),
+    );
+    const next = new Set(answeredQuestions);
+    if (text.trim()) next.add(currentQuestionIndex);
+    else next.delete(currentQuestionIndex);
+    setAnsweredQuestions(next);
   };
 
   const handleSubmit = async (timeExpired = false) => {
     if (isSubmittingRef.current) return;
-    if (timeExpired) {
-      toast.warning(t("exam.taking.timeUp"));
-    }
-    const submissionsArray = Array.from(submissionsRef.current.values());
+    if (timeExpired) toast.warning(t('exam.taking.timeUp'));
     const cap = exam.timeLimit * 60;
     const timeTaken = Math.min(
       cap,
@@ -157,7 +152,12 @@ export default function ExamTaking({
     isSubmittingRef.current = true;
     setIsSubmitting(true);
     try {
-      await Promise.resolve(onSubmitRef.current(submissionsArray, timeTaken));
+      await Promise.resolve(
+        onSubmitRef.current(
+          Array.from(submissionsRef.current.values()),
+          timeTaken,
+        ),
+      );
     } finally {
       isSubmittingRef.current = false;
       setIsSubmitting(false);
@@ -167,248 +167,368 @@ export default function ExamTaking({
   submitFromTimerRef.current = handleSubmit;
 
   const currentSubmission = submissions.get(currentQuestion.id);
+  const isAnswered = answeredQuestions.has(currentQuestionIndex);
+  const isFlagged = flagged.has(currentQuestionIndex);
+  const isUrgent = timeRemaining < 300;
+
+  const toggleFlag = () => {
+    const next = new Set(flagged);
+    if (isFlagged) next.delete(currentQuestionIndex);
+    else next.add(currentQuestionIndex);
+    setFlagged(next);
+  };
+
+  const questionTypeLabel =
+    currentQuestion.type === 'MULTIPLE_CHOICE'
+      ? t('exam.common.multipleChoice')
+      : currentQuestion.type === 'TRUE_FALSE'
+        ? t('exam.common.trueFalse')
+        : t('exam.common.essay');
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="bg-card border-b border-border sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowLeaveDialog(true)}
-                disabled={isSubmitting}
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                {t("exam.taking.back")}
-              </Button>
-              <h1 className="text-2xl font-bold">{exam.title}</h1>
-            </div>
-            <div className="flex items-center gap-4">
-              <div
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
-                  timeRemaining < 300
-                    ? "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-200"
-                    : "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-200"
-                }`}
-              >
-                <Clock className="w-5 h-5" />
-                <span className="font-semibold text-lg">
-                  {formatTime(timeRemaining)}
-                </span>
-              </div>
-              <Button
-                onClick={() => setShowSubmitDialog(true)}
-                disabled={isSubmitting}
-              >
-                {isSubmitting
-                  ? t("exam.taking.submitting")
-                  : t("exam.taking.submitExam")}
-              </Button>
-            </div>
+    <div
+      className='flex flex-col min-h-screen'
+      style={{ background: 'var(--pl-bg)' }}
+    >
+      {/* Header */}
+      <div
+        className='sticky top-0 z-10 flex items-center justify-between px-10 py-4'
+        style={{
+          borderBottom: '1px solid var(--pl-border)',
+          background: 'var(--pl-bg)',
+        }}
+      >
+        <div className='flex items-center gap-4'>
+          <button
+            onClick={() => setShowLeaveDialog(true)}
+            disabled={isSubmitting}
+            className='flex items-center gap-2 text-[12.5px] transition-opacity hover:opacity-70'
+            style={{ color: 'var(--pl-text-muted)' }}
+          >
+            <X size={14} /> Exit exam
+          </button>
+          <div
+            className='h-[18px] w-px'
+            style={{ background: 'var(--pl-border)' }}
+          />
+          <span
+            className='text-[11px] uppercase tracking-[0.14em]'
+            style={{ color: 'var(--pl-text-faint)' }}
+          >
+            {exam.title} · Practice Exam
+          </span>
+        </div>
+
+        <div className='flex items-center gap-5'>
+          <div
+            className='flex items-center gap-2 px-4 py-2 rounded-lg text-[13px]'
+            style={{
+              background: isUrgent
+                ? 'oklch(0.65 0.2 25 / 0.12)'
+                : 'var(--pl-bg-elev)',
+              border: `1px solid ${isUrgent ? 'oklch(0.65 0.2 25 / 0.4)' : 'var(--pl-border)'}`,
+              color: isUrgent ? 'oklch(0.65 0.2 25)' : 'var(--pl-text-muted)',
+              fontFamily: 'var(--font-mono-pl)',
+            }}
+          >
+            <Clock size={13} />
+            <span className='font-[500]'>{formatTime(timeRemaining)}</span>
+            <span style={{ color: 'var(--pl-text-faint)' }}>
+              / {formatTime(exam.timeLimit * 60)}
+            </span>
           </div>
+          <button
+            onClick={() => setShowSubmitDialog(true)}
+            disabled={isSubmitting}
+            className='px-5 py-[10px] rounded-full text-[13px] font-[500] transition-opacity disabled:opacity-50'
+            style={{
+              background: 'var(--pl-accent)',
+              color: 'var(--pl-accent-fg)',
+            }}
+          >
+            {isSubmitting
+              ? t('exam.taking.submitting')
+              : t('exam.taking.submitExam')}
+          </button>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-8">
-            <div className="bg-card border border-border rounded-lg p-6">
-              <div className="flex items-center justify-between mb-4 pb-4 border-b border-border">
-                <div>
-                  <span className="text-sm text-muted-foreground">
-                    {t("exam.taking.questionNofM", {
-                      current: currentQuestionIndex + 1,
-                      total: totalQuestions,
-                    })}
-                  </span>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
-                      {currentQuestion.type === "MULTIPLE_CHOICE"
-                        ? t("exam.common.multipleChoice")
-                        : currentQuestion.type === "TRUE_FALSE"
-                          ? t("exam.common.trueFalse")
-                          : t("exam.common.essay")}
-                    </span>
-                    <span className="text-xs bg-secondary/10 text-secondary-foreground px-2 py-1 rounded">
-                      {t("exam.taking.points", { n: currentQuestion.score })}
-                    </span>
-                  </div>
-                </div>
-              </div>
+      {/* Progress dots */}
+      <div
+        className='flex items-center gap-3 px-10 py-[14px]'
+        style={{ borderBottom: '1px solid var(--pl-border)' }}
+      >
+        <span
+          className='text-[11px] uppercase tracking-[0.14em] flex-shrink-0'
+          style={{ color: 'var(--pl-text-faint)' }}
+        >
+          Question {currentQuestionIndex + 1}/{totalQuestions}
+        </span>
+        <div className='flex-1 flex gap-1'>
+          {exam.questions.map((_, i) => {
+            const done = answeredQuestions.has(i);
+            const curr = i === currentQuestionIndex;
+            return (
+              <button
+                key={i}
+                onClick={() => setCurrentQuestionIndex(i)}
+                className='flex-1 h-1 rounded-full transition-all'
+                style={{
+                  background: curr
+                    ? 'var(--pl-accent)'
+                    : done
+                      ? 'var(--pl-success)'
+                      : 'var(--pl-border)',
+                  opacity: done && !curr ? 0.7 : 1,
+                }}
+              />
+            );
+          })}
+        </div>
+        <span
+          className='text-[11.5px] flex-shrink-0'
+          style={{
+            color: 'var(--pl-text-faint)',
+            fontFamily: 'var(--font-mono-pl)',
+          }}
+        >
+          {answeredQuestions.size}/{totalQuestions} answered
+        </span>
+      </div>
 
-              <div className="mb-6">
-                <p className="text-lg font-medium mb-4">
-                  {currentQuestion.questionText}
-                </p>
-              </div>
-
-              {currentQuestion.type !== "ESSAY" ? (
-                <div className="space-y-3">
-                  {currentQuestion.answers.map((answer) => (
-                    <label
-                      key={answer.id}
-                      className="flex items-start gap-3 p-4 border border-border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    >
-                      <Checkbox
-                        checked={
-                          currentSubmission?.selectedAnswers.includes(
-                            answer.id,
-                          ) || false
-                        }
-                        onCheckedChange={(checked) =>
-                          handleAnswerChange(
-                            currentQuestion.id,
-                            answer.id,
-                            checked as boolean,
-                          )
-                        }
-                      />
-                      <span className="flex-1">{answer.text}</span>
-                    </label>
-                  ))}
-                </div>
-              ) : (
-                <Textarea
-                  value={currentSubmission?.essayAnswer || ""}
-                  onChange={(e) =>
-                    handleEssayChange(currentQuestion.id, e.target.value)
-                  }
-                  placeholder={t("exam.taking.essayPlaceholder")}
-                  className="w-full min-h-[200px] resize-none"
-                />
-              )}
-
-              <div className="flex items-center justify-between mt-6 pt-6 border-t border-border">
-                <Button
-                  onClick={() =>
-                    setCurrentQuestionIndex(Math.max(0, currentQuestionIndex - 1))
-                  }
-                  disabled={currentQuestionIndex === 0}
-                  variant="outline"
-                >
-                  {t("exam.taking.previous")}
-                </Button>
-                <Button
-                  onClick={() =>
-                    setCurrentQuestionIndex(
-                      Math.min(totalQuestions - 1, currentQuestionIndex + 1),
-                    )
-                  }
-                  disabled={currentQuestionIndex === totalQuestions - 1}
-                >
-                  {t("exam.taking.next")}
-                </Button>
-              </div>
-            </div>
+      {/* Main */}
+      <div className='flex-1 overflow-auto flex items-start justify-center px-10 py-12'>
+        <div style={{ maxWidth: 760, width: '100%' }}>
+          {/* Question meta */}
+          <div
+            className='flex items-center gap-3 text-[11px] uppercase tracking-[0.16em] mb-3'
+            style={{ color: 'var(--pl-text-faint)' }}
+          >
+            <span>{questionTypeLabel}</span>
+            <span>·</span>
+            <span style={{ color: 'var(--pl-text-faint)' }}>
+              {currentQuestion.type === 'MULTIPLE_CHOICE'
+                ? 'Multiple answers'
+                : currentQuestion.type === 'TRUE_FALSE'
+                  ? 'Single answer'
+                  : 'Written response'}
+            </span>
+            <span>·</span>
+            <span style={{ color: 'var(--pl-accent-strong)' }}>
+              +{currentQuestion.score}{' '}
+              {currentQuestion.score === 1 ? 'point' : 'points'}
+            </span>
           </div>
 
-          <div className="col-span-4">
-            <div className="bg-card border border-border rounded-lg p-4 sticky top-24">
-              <h3 className="font-semibold mb-4">
-                {t("exam.taking.questionsSidebar")}
-              </h3>
-              <div className="grid grid-cols-5 gap-2">
-                {exam.questions.map((question, index) => (
+          {/* Question text */}
+          <h2
+            className='text-[28px] font-[400] leading-[1.28] mb-8'
+            style={{
+              fontFamily: 'var(--font-display)',
+              letterSpacing: '-0.02em',
+              color: 'var(--pl-text)',
+            }}
+          >
+            {currentQuestion.questionText}
+          </h2>
+
+          {/* Options */}
+          {currentQuestion.type !== 'ESSAY' ? (
+            <div className='flex flex-col gap-[10px]'>
+              {currentQuestion.answers.map((answer, idx) => {
+                const sel =
+                  currentSubmission?.selectedAnswers.includes(answer.id) ??
+                  false;
+                const letter = OPTION_LABELS[idx] ?? String(idx + 1);
+                return (
                   <button
-                    key={question.id}
-                    onClick={() => setCurrentQuestionIndex(index)}
-                    className={`aspect-square rounded-lg border-2 font-semibold text-sm transition-all hover:scale-105 ${
-                      index === currentQuestionIndex
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : answeredQuestions.has(index)
-                          ? "border-green-500 bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-200"
-                          : "border-border bg-background"
-                    }`}
+                    key={answer.id}
+                    onClick={() =>
+                      handleAnswerChange(currentQuestion.id, answer.id, !sel)
+                    }
+                    onMouseEnter={() => setHoveredOption(answer.id)}
+                    onMouseLeave={() => setHoveredOption(null)}
+                    className='flex items-center gap-[14px] px-5 py-4 rounded-[12px] text-left transition-all'
+                    style={{
+                      background: sel
+                        ? 'var(--pl-accent-soft)'
+                        : hoveredOption === answer.id
+                          ? 'var(--pl-bg-hover)'
+                          : 'var(--pl-bg-elev)',
+                      border: `1.5px solid ${sel ? 'var(--pl-accent)' : hoveredOption === answer.id ? 'var(--pl-border-strong)' : 'var(--pl-border)'}`,
+                    }}
                   >
-                    {index + 1}
+                    <div
+                      className='w-7 h-7 rounded-[7px] grid place-items-center flex-shrink-0 text-[12px] font-[500]'
+                      style={{
+                        background: sel ? 'var(--pl-bg)' : 'var(--pl-bg-hover)',
+                        border: '1px solid var(--pl-border)',
+                        color: sel
+                          ? 'var(--pl-accent-strong)'
+                          : 'var(--pl-text-muted)',
+                        fontFamily: 'var(--font-mono-pl)',
+                      }}
+                    >
+                      {letter}
+                    </div>
+                    <span
+                      className='flex-1 text-[14.5px] leading-[1.5]'
+                      style={{ color: 'var(--pl-text)' }}
+                    >
+                      {answer.text}
+                    </span>
                   </button>
-                ))}
-              </div>
-              <div className="mt-6 space-y-2 text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-primary" />
-                  <span>Current</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-green-50 border-2 border-green-500" />
-                  <span>Answered</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-background border-2 border-border" />
-                  <span>Not Answered</span>
-                </div>
-              </div>
-              <div className="mt-6 pt-4 border-t border-border">
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">
-                      {t("exam.taking.answeredCount")}
-                    </span>
-                    <span className="font-semibold">
-                      {answeredQuestions.size}/{totalQuestions}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">
-                      {t("exam.taking.totalScore")}
-                    </span>
-                    <span className="font-semibold">{exam.totalScore}</span>
-                  </div>
-                </div>
-              </div>
-              {answeredQuestions.size < totalQuestions && (
-                <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800 rounded-lg text-xs text-yellow-800 dark:text-yellow-200">
-                  <AlertCircle className="w-4 h-4 inline mr-1" />
-                  {t("exam.taking.notAnsweredWarning")}
-                </div>
-              )}
+                );
+              })}
             </div>
-          </div>
+          ) : (
+            <Textarea
+              value={currentSubmission?.essayAnswer || ''}
+              onChange={(e) =>
+                handleEssayChange(currentQuestion.id, e.target.value)
+              }
+              placeholder={t('exam.taking.essayPlaceholder')}
+              className='w-full min-h-[200px] resize-none'
+              style={{
+                background: 'var(--pl-bg-elev)',
+                border: '1px solid var(--pl-border)',
+                color: 'var(--pl-text)',
+              }}
+            />
+          )}
+
+          {/* Unanswered warning */}
+          {!isAnswered && currentQuestion.type !== 'ESSAY' && (
+            <div
+              className='mt-6 p-3 rounded-lg text-[12px] flex items-center gap-2'
+              style={{
+                background: 'var(--pl-warning, oklch(0.78 0.15 75)) / 0.1',
+                border: '1px solid oklch(0.78 0.15 75 / 0.3)',
+                color: 'var(--pl-text-muted)',
+              }}
+            >
+              <AlertCircle size={13} />
+              {t('exam.taking.notAnsweredWarning')}
+            </div>
+          )}
         </div>
       </div>
 
+      {/* Footer */}
+      <div
+        className='sticky bottom-0 flex items-center justify-between px-10 py-4'
+        style={{
+          borderTop: '1px solid var(--pl-border)',
+          background: 'var(--pl-bg-elev)',
+        }}
+      >
+        <button
+          onClick={() => setCurrentQuestionIndex((p) => Math.max(0, p - 1))}
+          disabled={currentQuestionIndex === 0}
+          className='flex items-center gap-2 px-[18px] py-[10px] rounded-full text-[13px] transition-opacity disabled:opacity-30'
+          style={{
+            border: '1px solid var(--pl-border)',
+            color: 'var(--pl-text-muted)',
+          }}
+        >
+          <ArrowLeft size={12} /> {t('exam.taking.previous')}
+        </button>
+
+        <button
+          onClick={toggleFlag}
+          className='flex items-center gap-2 text-[12.5px] transition-opacity hover:opacity-70'
+          style={{
+            color: isFlagged
+              ? 'var(--pl-accent-strong)'
+              : 'var(--pl-text-faint)',
+          }}
+        >
+          <BookmarkIcon size={12} fill={isFlagged ? 'currentColor' : 'none'} />
+          Flag for review
+        </button>
+
+        {currentQuestionIndex < totalQuestions - 1 ? (
+          <button
+            onClick={() =>
+              setCurrentQuestionIndex((p) =>
+                Math.min(totalQuestions - 1, p + 1),
+              )
+            }
+            className='flex items-center gap-2 px-[22px] py-[10px] rounded-full text-[13px] font-[500] transition-colors'
+            style={{
+              background: 'var(--pl-accent)',
+              color: 'var(--pl-accent-fg)',
+            }}
+          >
+            {t('exam.taking.next')} <ArrowRight size={12} />
+          </button>
+        ) : (
+          <button
+            onClick={() => setShowSubmitDialog(true)}
+            disabled={isSubmitting}
+            className='flex items-center gap-2 px-[22px] py-[10px] rounded-full text-[13px] font-[500] transition-opacity disabled:opacity-50'
+            style={{
+              background: 'var(--pl-accent)',
+              color: 'var(--pl-accent-fg)',
+            }}
+          >
+            {isSubmitting
+              ? t('exam.taking.submitting')
+              : t('exam.taking.submitExam')}{' '}
+            <ArrowRight size={12} />
+          </button>
+        )}
+      </div>
+
+      {/* Leave dialog */}
       <AlertDialog open={showLeaveDialog} onOpenChange={setShowLeaveDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("exam.taking.leaveTitle")}</AlertDialogTitle>
+            <AlertDialogTitle>{t('exam.taking.leaveTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("exam.taking.leaveDescription")}
+              {t('exam.taking.leaveDescription')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("exam.taking.stayContinue")}</AlertDialogCancel>
+            <AlertDialogCancel>
+              {t('exam.taking.stayContinue')}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 setShowLeaveDialog(false);
                 onAbandon();
               }}
             >
-              {t("exam.taking.leaveConfirm")}
+              {t('exam.taking.leaveConfirm')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
+      {/* Submit dialog */}
       <AlertDialog open={showSubmitDialog} onOpenChange={setShowSubmitDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("exam.taking.submitTitle")}</AlertDialogTitle>
+            <AlertDialogTitle>{t('exam.taking.submitTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("exam.taking.submitConfirm", {
+              {t('exam.taking.submitConfirm', {
                 answered: answeredQuestions.size,
                 total: totalQuestions,
               })}
               {answeredQuestions.size < totalQuestions && (
-                <span className="block mt-2 text-yellow-600">
-                  {t("exam.taking.unansweredWarning")}
+                <span
+                  className='block mt-2'
+                  style={{ color: 'var(--pl-warning)' }}
+                >
+                  {t('exam.taking.unansweredWarning')}
                 </span>
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("exam.taking.continueExam")}</AlertDialogCancel>
+            <AlertDialogCancel>
+              {t('exam.taking.continueExam')}
+            </AlertDialogCancel>
             <AlertDialogAction
               disabled={isSubmitting}
               onClick={() => {
@@ -416,7 +536,7 @@ export default function ExamTaking({
                 void handleSubmit();
               }}
             >
-              {t("exam.taking.submitExam")}
+              {t('exam.taking.submitExam')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

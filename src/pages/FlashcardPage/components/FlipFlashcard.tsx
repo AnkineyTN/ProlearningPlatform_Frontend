@@ -1,24 +1,16 @@
-import {
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Fullscreen,
-  Settings,
-  Shuffle,
-  X,
-} from "lucide-react";
-import { useState } from "react";
+import { Shuffle, Settings } from 'lucide-react';
+import { useState } from 'react';
 
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+} from '@/components/ui/dialog';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 type Props = {
   isFlipped: boolean;
@@ -35,6 +27,13 @@ type Props = {
   onCardAnswer: (isCorrect: boolean) => void;
 };
 
+const RECALL_BUTTONS = [
+  { label: 'Again', hint: '< 1m', correct: false, color: 'var(--pl-danger)' },
+  { label: 'Hard', hint: '6m', correct: false, color: 'var(--pl-warning)' },
+  { label: 'Good', hint: '1d', correct: true, color: 'var(--pl-accent)' },
+  { label: 'Easy', hint: '3d', correct: true, color: 'var(--pl-success)' },
+] as const;
+
 const FlipFlashcard = ({
   isFlipped,
   flashcards,
@@ -46,149 +45,304 @@ const FlipFlashcard = ({
   onCardAnswer,
 }: Props) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [trackProgress, setTrackProgress] = useState(true);
-  const [cardSide, setCardSide] = useState<"term" | "definition">("term");
+  const [cardSide, setCardSide] = useState<'term' | 'definition'>('term');
+  const [hoveredBtn, setHoveredBtn] = useState<number | null>(null);
 
-  const handleFullscreen = () => {
-    setIsFullscreen(!isFullscreen);
-  };
-
-  const handleReset = () => {
-    window.location.reload();
-  };
+  const total = flashcards.length;
+  const progress = ((currentCardIndex + 1) / total) * 100;
+  const current = flashcards[currentCardIndex];
 
   return (
     <>
-      <div className='flex items-center justify-center perspective-1000'>
+      {/* Progress bar */}
+      <div className='px-10 pt-5'>
         <div
-          className={`relative w-full ${
-            isFullscreen ? "h-screen" : "max-w-4xl h-[400px]"
-          } cursor-pointer`}
-          style={{ perspective: "1000px" }}
-          onClick={onFlip}
+          className='flex justify-between text-[11.5px] mb-2'
+          style={{
+            color: 'var(--pl-text-faint)',
+            fontFamily: 'var(--font-mono-pl)',
+          }}
+        >
+          <span>
+            {String(currentCardIndex + 1).padStart(2, '0')} / {total}
+          </span>
+          <span>
+            Mastery ·{' '}
+            <span style={{ color: 'var(--pl-text)' }}>
+              {Math.round(progress)}%
+            </span>
+          </span>
+        </div>
+        <div
+          className='h-[2px] rounded-full overflow-hidden'
+          style={{ background: 'var(--pl-border)' }}
         >
           <div
-            className='relative w-full h-full transition-transform duration-600 preserve-3d'
-            style={{
-              transformStyle: "preserve-3d",
-              transform: isFlipped ? "rotateX(180deg)" : "rotateX(0deg)",
-              transition: "transform 0.6s",
-            }}
-          >
-            {/* Front Side - Question */}
-            <div
-              className='absolute w-full h-full bg-card rounded-2xl shadow-2xl p-16 flex items-center justify-center backface-hidden'
-              style={{
-                backfaceVisibility: "hidden",
-                WebkitBackfaceVisibility: "hidden",
-              }}
-            >
-              <div className='text-center'>
-                <div className='text-sm text-muted-foreground mb-4 uppercase tracking-wide'>
-                  Question
-                </div>
-                {flashcards[currentCardIndex].imageUrl && (
-                  <img
-                    src={flashcards[currentCardIndex].imageUrl}
-                    alt='Flashcard Image'
-                    className='max-w-full max-h-50 object-contain rounded'
-                  />
-                )}
-                <p className='text-3xl font-medium leading-relaxed'>
-                  {flashcards[currentCardIndex].frontCard}
-                </p>
-              </div>
-              <div className='absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground'>
-                Click to flip
-              </div>
-            </div>
-
-            {/* Back Side - Answer */}
-            <div
-              className='absolute w-full h-full bg-card rounded-2xl shadow-2xl p-16 flex items-center justify-center backface-hidden'
-              style={{
-                backfaceVisibility: "hidden",
-                WebkitBackfaceVisibility: "hidden",
-                transform: "rotateX(180deg)",
-              }}
-            >
-              <div className='text-center'>
-                <div className='text-sm text-muted-foreground mb-4 uppercase tracking-wide'>
-                  Answer
-                </div>
-                <p className='text-3xl font-medium leading-relaxed'>
-                  {flashcards[currentCardIndex].backCard}
-                </p>
-              </div>
-              <div className='absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground'>
-                Click to flip back
-              </div>
-            </div>
-          </div>
+            className='h-full rounded-full transition-all duration-300'
+            style={{ width: `${progress}%`, background: 'var(--pl-accent)' }}
+          />
         </div>
       </div>
-      <div className='flex items-center gap-8 mt-8'>
-        <div className='flex-1' />
-        <div className='flex items-center justify-center gap-8'>
-          <Button
-            variant='outline'
-            size='lg'
-            className='cursor-pointer text-red-600 border-red-600 hover:bg-red-50'
-            onClick={() => onCardAnswer(false)}
-          >
-            <X className='w-5 h-5 mr-2' />
-            Chưa thuộc
-          </Button>
-          <Button
-            variant='default'
-            className='cursor-pointer'
-            onClick={onPrevious}
-            disabled={currentCardIndex === 0}
-          >
-            <ChevronLeft className='w-8 h-8' />
-          </Button>
 
-          <div className='text-foreground'>
-            {currentCardIndex + 1} / {flashcards.length}
+      {/* Card area */}
+      <div className='flex-1 flex items-center justify-center px-10 py-10 gap-7'>
+        {/* Prev */}
+        <button
+          onClick={onPrevious}
+          disabled={currentCardIndex === 0}
+          className='w-11 h-11 rounded-full grid place-items-center flex-shrink-0 transition-opacity disabled:opacity-30'
+          style={{
+            border: '1px solid var(--pl-border)',
+            color: 'var(--pl-text-muted)',
+          }}
+        >
+          <svg width='16' height='16' viewBox='0 0 16 16' fill='none'>
+            <path
+              d='M10 3L5 8L10 13'
+              stroke='currentColor'
+              strokeWidth='1.5'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+            />
+          </svg>
+        </button>
+
+        {/* Flip card */}
+        <div className='flex-1 max-w-[720px]' style={{ perspective: '1800px' }}>
+          <div
+            onClick={onFlip}
+            className='relative cursor-pointer'
+            style={{
+              height: 440,
+              transformStyle: 'preserve-3d',
+              transition: 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
+              transform: isFlipped ? 'rotateY(180deg)' : 'none',
+            }}
+          >
+            {/* Front */}
+            <div
+              className='absolute inset-0 rounded-[20px] p-[44px_48px] flex flex-col'
+              style={{
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden',
+                background: 'var(--pl-bg-elev)',
+                border: '1px solid var(--pl-border)',
+                boxShadow: '0 30px 80px oklch(0 0 0 / 0.1)',
+              }}
+            >
+              <div className='flex justify-between items-start'>
+                <span
+                  className='text-[11px] uppercase tracking-[0.16em]'
+                  style={{ color: 'var(--pl-text-faint)' }}
+                >
+                  Question · Tap to reveal
+                </span>
+                <span
+                  className='text-[10.5px] px-[10px] py-[3px] rounded-full uppercase tracking-[0.08em] font-[500]'
+                  style={{
+                    background: 'var(--pl-accent-soft)',
+                    color: 'var(--pl-accent-strong)',
+                  }}
+                >
+                  Medium
+                </span>
+              </div>
+
+              <div className='flex-1 flex items-center justify-center text-center py-5'>
+                <div>
+                  <div
+                    className='text-[13px] mb-4'
+                    style={{
+                      color: 'var(--pl-text-faint)',
+                      fontFamily: 'var(--font-mono-pl)',
+                    }}
+                  >
+                    Q·{String(currentCardIndex + 1).padStart(2, '0')}
+                  </div>
+                  {current.imageUrl && (
+                    <img
+                      src={current.imageUrl}
+                      alt='Card'
+                      className='max-w-full max-h-36 object-contain rounded mb-4 mx-auto'
+                    />
+                  )}
+                  <div
+                    className='text-[32px] font-[400] leading-[1.25]'
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      letterSpacing: '-0.02em',
+                      color: 'var(--pl-text)',
+                    }}
+                  >
+                    {current.frontCard}
+                  </div>
+                </div>
+              </div>
+
+              <div className='flex justify-between items-center'>
+                <div />
+                <div
+                  className='text-[11.5px] flex items-center gap-2'
+                  style={{ color: 'var(--pl-text-faint)' }}
+                >
+                  <span>Press</span>
+                  <kbd
+                    className='text-[10.5px] px-[7px] py-[2px] rounded'
+                    style={{
+                      background: 'var(--pl-bg-hover)',
+                      border: '1px solid var(--pl-border)',
+                      fontFamily: 'var(--font-mono-pl)',
+                    }}
+                  >
+                    Space
+                  </kbd>
+                  <span>to flip</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Back */}
+            <div
+              className='absolute inset-0 rounded-[20px] p-[44px_48px] flex flex-col'
+              style={{
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden',
+                transform: 'rotateY(180deg)',
+                background: 'var(--pl-bg-elev)',
+                border: '1px solid var(--pl-accent-border)',
+                boxShadow: '0 30px 80px oklch(0 0 0 / 0.1)',
+              }}
+            >
+              <div
+                className='text-[11px] uppercase tracking-[0.16em] mb-5'
+                style={{ color: 'var(--pl-accent-strong)' }}
+              >
+                Answer
+              </div>
+              <div className='flex-1 overflow-auto'>
+                <div
+                  className='text-[22px] font-[400] leading-[1.4]'
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    letterSpacing: '-0.01em',
+                    color: 'var(--pl-text)',
+                  }}
+                >
+                  {current.backCard}
+                </div>
+              </div>
+            </div>
           </div>
 
-          <Button variant='default' className='cursor-pointer' onClick={onNext}>
-            <ChevronRight className='w-8 h-8' />
-          </Button>
-          <Button
-            variant='outline'
-            size='lg'
-            className='cursor-pointer text-green-600 border-green-600 hover:bg-green-50'
-            onClick={() => onCardAnswer(true)}
-          >
-            <Check className='w-5 h-5 mr-2' />
-            Đã thuộc
-          </Button>
+          {/* Recall buttons */}
+          <div className='mt-7'>
+            <div
+              className='text-[11px] uppercase tracking-[0.16em] text-center mb-3'
+              style={{ color: 'var(--pl-text-faint)' }}
+            >
+              How well did you recall this?
+            </div>
+            <div className='grid grid-cols-4 gap-[10px]'>
+              {RECALL_BUTTONS.map((btn, i) => (
+                <button
+                  key={btn.label}
+                  onClick={() => onCardAnswer(btn.correct)}
+                  onMouseEnter={() => setHoveredBtn(i)}
+                  onMouseLeave={() => setHoveredBtn(null)}
+                  className='py-[14px] px-4 rounded-[10px] flex flex-col items-start gap-[2px] transition-all'
+                  style={{
+                    background:
+                      hoveredBtn === i
+                        ? 'var(--pl-bg-hover)'
+                        : 'var(--pl-bg-elev)',
+                    border:
+                      hoveredBtn === i
+                        ? `1px solid ${btn.color}`
+                        : '1px solid var(--pl-border)',
+                  }}
+                >
+                  <div className='flex items-center gap-2 w-full'>
+                    <span
+                      className='w-[6px] h-[6px] rounded-full flex-shrink-0'
+                      style={{ background: btn.color }}
+                    />
+                    <span
+                      className='text-[13.5px] font-[500]'
+                      style={{ color: 'var(--pl-text)' }}
+                    >
+                      {btn.label}
+                    </span>
+                    <span
+                      className='ml-auto text-[10px] px-[6px] py-[1px] rounded'
+                      style={{
+                        background: 'var(--pl-bg-hover)',
+                        color: 'var(--pl-text-faint)',
+                        fontFamily: 'var(--font-mono-pl)',
+                      }}
+                    >
+                      {i + 1}
+                    </span>
+                  </div>
+                  <span
+                    className='text-[11px]'
+                    style={{
+                      color: 'var(--pl-text-faint)',
+                      fontFamily: 'var(--font-mono-pl)',
+                    }}
+                  >
+                    Review in {btn.hint}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
-        <div className='flex-1 justify-end flex items-center gap-2'>
-          <Button
-            variant='ghost'
-            className='cursor-pointer'
-            onClick={onShuffle}
-          >
-            <Shuffle className='w-8 h-8' />
-          </Button>
-          <Button
-            variant='ghost'
-            className='cursor-pointer'
-            onClick={() => setIsSettingsOpen(true)}
-          >
-            <Settings className='w-8 h-8' />
-          </Button>
-          <Button
-            variant='ghost'
-            className='cursor-pointer'
-            onClick={handleFullscreen}
-          >
-            <Fullscreen className='w-8 h-8' />
-          </Button>
-        </div>
+
+        {/* Next */}
+        <button
+          onClick={onNext}
+          disabled={currentCardIndex >= total - 1}
+          className='w-11 h-11 rounded-full grid place-items-center flex-shrink-0 transition-opacity disabled:opacity-30'
+          style={{
+            border: '1px solid var(--pl-border)',
+            color: 'var(--pl-text-muted)',
+          }}
+        >
+          <svg width='16' height='16' viewBox='0 0 16 16' fill='none'>
+            <path
+              d='M6 3L11 8L6 13'
+              stroke='currentColor'
+              strokeWidth='1.5'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+            />
+          </svg>
+        </button>
+      </div>
+
+      {/* Bottom toolbar */}
+      <div className='flex justify-end gap-2 px-10 pb-6'>
+        <button
+          onClick={onShuffle}
+          className='p-2 rounded-lg transition-colors'
+          style={{
+            border: '1px solid var(--pl-border)',
+            color: 'var(--pl-text-muted)',
+          }}
+        >
+          <Shuffle size={14} />
+        </button>
+        <button
+          onClick={() => setIsSettingsOpen(true)}
+          className='p-2 rounded-lg transition-colors'
+          style={{
+            border: '1px solid var(--pl-border)',
+            color: 'var(--pl-text-muted)',
+          }}
+        >
+          <Settings size={14} />
+        </button>
       </div>
 
       {/* Settings Dialog */}
@@ -197,9 +351,7 @@ const FlipFlashcard = ({
           <DialogHeader>
             <DialogTitle>Settings</DialogTitle>
           </DialogHeader>
-
           <div className='space-y-6 py-4'>
-            {/* Track Progress */}
             <div className='flex items-center justify-between'>
               <div>
                 <div className='font-medium'>Track Progress</div>
@@ -208,13 +360,11 @@ const FlipFlashcard = ({
                 </div>
               </div>
               <Switch
-                className='cursor-pointer'
                 checked={trackProgress}
                 onCheckedChange={setTrackProgress}
+                className='cursor-pointer'
               />
             </div>
-
-            {/* Card Side Selection */}
             <div>
               <div className='font-medium mb-3'>Front Side</div>
               <div className='space-x-10 flex items-center'>
@@ -222,8 +372,8 @@ const FlipFlashcard = ({
                   <Input
                     type='radio'
                     name='cardSide'
-                    checked={cardSide === "term"}
-                    onChange={() => setCardSide("term")}
+                    checked={cardSide === 'term'}
+                    onChange={() => setCardSide('term')}
                     className='w-4 h-4'
                   />
                   <span>Term</span>
@@ -232,160 +382,24 @@ const FlipFlashcard = ({
                   <Input
                     type='radio'
                     name='cardSide'
-                    checked={cardSide === "definition"}
-                    onChange={() => setCardSide("definition")}
+                    checked={cardSide === 'definition'}
+                    onChange={() => setCardSide('definition')}
                     className='w-4 h-4'
                   />
                   <span>Definition</span>
                 </Label>
               </div>
             </div>
-
-            {/* Reset Cards */}
-            <div>
-              <Button
-                variant='outline'
-                className='w-full cursor-pointer mt-2'
-                onClick={handleReset}
-              >
-                Reset Flashcards
-              </Button>
-            </div>
+            <Button
+              variant='outline'
+              className='w-full cursor-pointer mt-2'
+              onClick={() => window.location.reload()}
+            >
+              Reset Flashcards
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Fullscreen Overlay */}
-      {isFullscreen && (
-        <div className='fixed inset-0 bg-background z-40 flex flex-col'>
-          <div className='flex-1 flex items-center justify-center p-8'>
-            <div className='w-full max-w-5xl'>
-              <div
-                className='relative w-full h-[600px] cursor-pointer'
-                style={{ perspective: "1000px" }}
-                onClick={onFlip}
-              >
-                <div
-                  className='relative w-full h-full transition-transform duration-600 preserve-3d'
-                  style={{
-                    transformStyle: "preserve-3d",
-                    transform: isFlipped ? "rotateX(180deg)" : "rotateX(0deg)",
-                    transition: "transform 0.6s",
-                  }}
-                >
-                  {/* Front Side - Question */}
-                  <div
-                    className='absolute w-full h-full bg-card rounded-2xl shadow-2xl p-16 flex items-center justify-center backface-hidden'
-                    style={{
-                      backfaceVisibility: "hidden",
-                      WebkitBackfaceVisibility: "hidden",
-                    }}
-                  >
-                    <div className='text-center'>
-                      <div className='text-sm text-muted-foreground mb-4 uppercase tracking-wide'>
-                        Question
-                      </div>
-                      {flashcards[currentCardIndex].imageUrl && (
-                        <img
-                          src={flashcards[currentCardIndex].imageUrl}
-                          alt='Flashcard Image'
-                          className='max-w-full max-h-50 object-contain rounded mb-4'
-                        />
-                      )}
-                      <p className='text-4xl font-medium leading-relaxed'>
-                        {flashcards[currentCardIndex].frontCard}
-                      </p>
-                    </div>
-                    <div className='absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground'>
-                      Click to flip
-                    </div>
-                  </div>
-
-                  {/* Back Side - Answer */}
-                  <div
-                    className='absolute w-full h-full bg-card rounded-2xl shadow-2xl p-16 flex items-center justify-center backface-hidden'
-                    style={{
-                      backfaceVisibility: "hidden",
-                      WebkitBackfaceVisibility: "hidden",
-                      transform: "rotateX(180deg)",
-                    }}
-                  >
-                    <div className='text-center'>
-                      <div className='text-sm text-muted-foreground mb-4 uppercase tracking-wide'>
-                        Answer
-                      </div>
-                      <p className='text-4xl font-medium leading-relaxed'>
-                        {flashcards[currentCardIndex].backCard}
-                      </p>
-                    </div>
-                    <div className='absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground'>
-                      Click to flip back
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {isFlipped && (
-            <div className='flex items-center justify-center gap-4 px-8 pb-4'>
-              <Button
-                variant='outline'
-                size='lg'
-                className='cursor-pointer text-red-600 border-red-600 hover:bg-red-50'
-                onClick={() => onCardAnswer(false)}
-              >
-                <X className='w-5 h-5 mr-2' />
-                Chưa thuộc
-              </Button>
-              <Button
-                variant='outline'
-                size='lg'
-                className='cursor-pointer text-green-600 border-green-600 hover:bg-green-50'
-                onClick={() => onCardAnswer(true)}
-              >
-                <Check className='w-5 h-5 mr-2' />
-                Đã thuộc
-              </Button>
-            </div>
-          )}
-
-          {/* Fullscreen Controls */}
-          <div className='flex items-center gap-8 p-8 border-t'>
-            <div className='flex-1' />
-            <div className='flex items-center justify-center gap-8'>
-              <Button
-                variant='default'
-                className='cursor-pointer'
-                onClick={onPrevious}
-                disabled={currentCardIndex === 0}
-              >
-                <ChevronLeft className='w-8 h-8' />
-              </Button>
-
-              <div className='text-foreground text-lg'>
-                {currentCardIndex + 1} / {flashcards.length}
-              </div>
-
-              <Button
-                variant='default'
-                className='cursor-pointer'
-                onClick={onNext}
-              >
-                <ChevronRight className='w-8 h-8' />
-              </Button>
-            </div>
-            <div className='flex-1 justify-end flex items-center gap-2'>
-              <Button
-                variant='ghost'
-                className='cursor-pointer'
-                onClick={handleFullscreen}
-              >
-                <X className='w-8 h-8' />
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };

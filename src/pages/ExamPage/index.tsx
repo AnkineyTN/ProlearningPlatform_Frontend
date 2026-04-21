@@ -189,8 +189,6 @@ export default function ExamPage({ setId, examId }: Props) {
   if (viewMode === "taking") {
     return (
       <ExamTaking
-        setId={Number(setId)}
-        examId={Number(examId)}
         exam={exam}
         onSubmit={handleSubmitExam}
         onAbandon={handleAbandonAttempt}

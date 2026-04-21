@@ -1,11 +1,11 @@
-import { Button } from "@/components/ui/button";
-
-import FlipFlashcard from "./FlipFlashcard";
+import { ArrowLeft } from 'lucide-react';
+import FlipFlashcard from './FlipFlashcard';
 
 type StudyViewProps = {
   flashcards: Array<{
     frontCard: string;
     backCard: string;
+    imageUrl?: string | null;
   }>;
   currentCardIndex: number;
   isFlipped: boolean;
@@ -33,25 +33,35 @@ const StudyView = ({
   onCardAnswer,
 }: StudyViewProps) => {
   return (
-    <div className='max-w-4xl mx-auto p-6'>
-      <div className='flex flex-col'>
-        <div className='flex items-center justify-between mb-4'>
-          <Button variant='ghost' onClick={onBack} className='cursor-pointer'>
-            ← Back
-          </Button>
-        </div>
-
-        <FlipFlashcard
-          isFlipped={isFlipped}
-          flashcards={flashcards}
-          currentCardIndex={currentCardIndex}
-          onFlip={onFlip}
-          onPrevious={onPrevious}
-          onNext={onNext}
-          onShuffle={onShuffle}
-          onCardAnswer={onCardAnswer}
-        />
+    <div
+      className='flex flex-col min-h-screen'
+      style={{ background: 'var(--pl-bg)' }}
+    >
+      {/* Header */}
+      <div
+        className='flex items-center px-10 py-[18px]'
+        style={{ borderBottom: '1px solid var(--pl-border)' }}
+      >
+        <button
+          onClick={onBack}
+          className='flex items-center gap-2 text-[12.5px] transition-opacity hover:opacity-70'
+          style={{ color: 'var(--pl-text-muted)' }}
+        >
+          <ArrowLeft size={13} />
+          Back to deck
+        </button>
       </div>
+
+      <FlipFlashcard
+        isFlipped={isFlipped}
+        flashcards={flashcards}
+        currentCardIndex={currentCardIndex}
+        onFlip={onFlip}
+        onPrevious={onPrevious}
+        onNext={onNext}
+        onShuffle={onShuffle}
+        onCardAnswer={onCardAnswer}
+      />
     </div>
   );
 };

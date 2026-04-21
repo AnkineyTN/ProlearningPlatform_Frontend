@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -16,6 +17,9 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono-pl: 'JetBrains Mono', ui-monospace, monospace;
   --radius: 0.625rem;
   --background: oklch(96.7% 0.003 264.542);
   --foreground: oklch(0.13 0.028 261.692);
