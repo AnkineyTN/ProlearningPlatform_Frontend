@@ -22,7 +22,6 @@ import { logout } from '@/store/authSlice.ts';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { useReviewBundles } from '@/hooks/useReviewBundles';
 import ColorThemeSwitcher from '@/components/theme/color-theme-switcher';
-import ModeToggle from '@/components/theme/mode-toggle';
 import {
   DropdownMenu,
   DropdownMenuContent,

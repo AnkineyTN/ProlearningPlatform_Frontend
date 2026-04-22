@@ -428,7 +428,7 @@ const ExamAISourceModal = ({
                 </div>
 
                 {sampleFile && (
-                  <div className='mt-3 flex items-center justify-between p-2 bg-[var(--pl-bg)] rounded border border-border'>
+                  <div className='mt-3 flex items-center justify-between p-2 bg-[var(--pl-bg-sunken)] rounded border border-border'>
                     <span className='text-sm truncate'>{sampleFile.name}</span>
                     <button
                       onClick={() => setSampleFile(null)}

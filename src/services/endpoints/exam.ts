@@ -204,6 +204,17 @@ export const examAPI = {
   ): Promise<AxiosResponse<GenerateExamAIResponse>> =>
     api.post(`/sets/${setId}/exams/ai-web`, data),
 
+  generateExamFromExistingExam: (
+    setId: number,
+    file: File,
+    description?: string,
+  ): Promise<AxiosResponse<GenerateExamAIResponse>> => {
+    const formData = new FormData();
+    formData.append('files', file);
+    if (description?.trim()) formData.append('description', description.trim());
+    return api.post(`/sets/${setId}/exams/ai-existing-exam`, formData);
+  },
+
   /** Start a new exam attempt (server sets deadline from exam duration). */
   startExamAttempt: (
     setId: number,

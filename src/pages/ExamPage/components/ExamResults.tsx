@@ -9,8 +9,6 @@ import {
   ChevronDown,
   ChevronUp,
   Sparkles,
-  BookOpen,
-  Eye,
   History,
   RotateCcw,
   Loader2,
@@ -105,9 +103,6 @@ export default function ExamResults({
     });
     return initial;
   });
-  const [reviewed, setReviewed] = useState<Record<string | number, boolean>>(
-    {},
-  );
   const [aiDialog, setAiDialog] = useState<{
     open: boolean;
     questionId: string | number | null;
@@ -266,10 +261,6 @@ export default function ExamResults({
     setOpenQuestions((prev) => ({ ...prev, [qId]: true }));
   };
 
-  const toggleReviewed = (questionId: string | number) => {
-    setReviewed((prev) => ({ ...prev, [questionId]: !prev[questionId] }));
-  };
-
   const handleExplainWithAI = async (questionId: string | number) => {
     const question = exam.questions.find((q) => q.id === questionId);
     if (!question) return;
@@ -330,7 +321,6 @@ export default function ExamResults({
     return isAnswerCorrect(questionId) !== true;
   };
 
-  const reviewedCount = Object.values(reviewed).filter(Boolean).length;
   const totalNonEssay = exam.questions.filter((q) => q.type !== 'ESSAY').length;
   const correctCount = exam.questions.filter(
     (q) => isAnswerCorrect(q.id) === true,
@@ -374,40 +364,18 @@ export default function ExamResults({
               <h2 className='font-semibold text-sm mb-1'>
                 {t('exam.results.navigatorTitle')}
               </h2>
-              <p className='text-xs text-muted-foreground'>
-                {t('exam.results.reviewedCount', {
-                  done: reviewedCount,
-                  total: exam.questions.length,
-                })}
-              </p>
-              {/* Mini progress bar */}
-              <div className='mt-2 h-1.5 rounded-full bg-muted overflow-hidden'>
-                <div
-                  className='h-full bg-yellow-400 transition-all duration-500'
-                  style={{
-                    width: `${(reviewedCount / exam.questions.length) * 100}%`,
-                  }}
-                />
-              </div>
             </div>
 
             <div className='flex-1 min-h-0 overflow-y-auto p-3 space-y-1'>
               {exam.questions.map((question, index) => {
                 const correct = isAnswerCorrect(question.id);
-                const isReviewed = reviewed[question.id];
 
                 let tooltipText = '';
                 let bgColor = '';
                 let textColor = '';
                 let icon = null;
 
-                if (isReviewed) {
-                  tooltipText = t('exam.results.navReviewed');
-                  bgColor =
-                    'bg-yellow-400/20 border-yellow-400/60 hover:bg-yellow-400/30';
-                  textColor = 'text-yellow-700 dark:text-yellow-300';
-                  icon = <Eye className='w-3 h-3' />;
-                } else if (correct === true) {
+if (correct === true) {
                   tooltipText = t('exam.results.navCorrect');
                   bgColor =
                     'bg-green-500/10 border-green-500/40 hover:bg-green-500/20';
@@ -438,14 +406,6 @@ export default function ExamResults({
                           {icon}
                         </span>
                         <span className='truncate'>Q{index + 1}</span>
-                        {isReviewed && (
-                          <Badge
-                            variant='outline'
-                            className='ml-auto text-[10px] px-1 py-0 border-yellow-400 text-yellow-600'
-                          >
-                            ✓
-                          </Badge>
-                        )}
                       </button>
                     </TooltipTrigger>
                     <TooltipContent side='right'>
@@ -543,20 +503,15 @@ export default function ExamResults({
                     const graded = getGradedForQuestion(question.id);
                     const correct = isAnswerCorrect(question.id);
                     const score = getQuestionScore(question.id);
-                    const isReviewed = reviewed[question.id];
                     const isOpen = openQuestions[question.id] ?? true;
 
-                    const borderColor = isReviewed
-                      ? 'border-yellow-400 bg-yellow-50/40 dark:bg-yellow-950/20'
-                      : correct === true
+                    const borderColor = correct === true
                         ? 'border-green-200 bg-green-50/50 dark:bg-green-950/20 dark:border-green-800'
                         : correct === false
                           ? 'border-red-200 bg-red-50/50 dark:bg-red-950/20 dark:border-red-800'
                           : 'border-yellow-200 bg-yellow-50/50 dark:bg-yellow-950/20 dark:border-yellow-700';
 
-                    const iconBg = isReviewed
-                      ? 'bg-yellow-400 text-white'
-                      : correct === true
+                    const iconBg = correct === true
                         ? 'bg-green-500 text-white'
                         : correct === false
                           ? 'bg-red-500 text-white'
@@ -584,9 +539,7 @@ export default function ExamResults({
                             <div
                               className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center ${iconBg}`}
                             >
-                              {isReviewed ? (
-                                <Eye className='w-4 h-4' />
-                              ) : correct === true ? (
+                              {correct === true ? (
                                 <CheckCircle className='w-4 h-4' />
                               ) : correct === false ? (
                                 <XCircle className='w-4 h-4' />
@@ -607,12 +560,7 @@ export default function ExamResults({
                                       ? t('exam.common.trueFalse')
                                       : t('exam.common.essay')}
                                 </Badge>
-                                {isReviewed && (
-                                  <Badge className='text-xs bg-yellow-400 text-yellow-950 hover:bg-yellow-400'>
-                                    {t('exam.results.navReviewed')}
-                                  </Badge>
-                                )}
-                                {correct === null && !isReviewed && (
+                                {correct === null && (
                                   <Badge
                                     variant='outline'
                                     className='text-xs text-yellow-600 border-yellow-500'
@@ -766,21 +714,6 @@ export default function ExamResults({
                                     {t('exam.results.explainAI')}
                                   </Button>
                                 )}
-                                <Button
-                                  variant={isReviewed ? 'default' : 'outline'}
-                                  size='sm'
-                                  className={`gap-1.5 text-xs h-8 ${
-                                    isReviewed
-                                      ? 'bg-yellow-400 hover:bg-yellow-500 text-yellow-950 border-yellow-400'
-                                      : ''
-                                  }`}
-                                  onClick={() => toggleReviewed(question.id)}
-                                >
-                                  <BookOpen className='w-3.5 h-3.5' />
-                                  {isReviewed
-                                    ? t('exam.results.reviewed')
-                                    : t('exam.results.markReviewed')}
-                                </Button>
                               </div>
                             </div>
                           </CollapsibleContent>

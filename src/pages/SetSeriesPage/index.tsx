@@ -20,6 +20,7 @@ import {
   useGenerateExamFromFiles,
   useGenerateExamFromNotes,
   useGenerateExamFromWeb,
+  useGenerateExamFromExistingExam,
 } from '@/hooks/useExams';
 import { useCreateNote, useDeleteNote, useUpdateNote } from '@/hooks/useNotes';
 import type { ExamAIDifficultyDistribution } from '@/services/types/exam.types';
@@ -80,6 +81,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
   const generateExamFromFilesMutation = useGenerateExamFromFiles();
   const generateExamFromNotesMutation = useGenerateExamFromNotes();
   const generateExamFromWebMutation = useGenerateExamFromWeb();
+  const generateExamFromExistingExamMutation = useGenerateExamFromExistingExam();
 
   const [isMethodModalOpen, setIsMethodModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -232,16 +234,10 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
           freeText: data.freeText,
         });
       } else if (data.source === 'similar' && data.files?.length) {
-        const similarInstruction =
-          'Generate a brand-new exam inspired by the uploaded sample exam. Preserve the overall topic coverage and difficulty style, but create entirely new questions — do not copy any question verbatim.' +
-          (data.freeText ? ' ' + data.freeText : '');
-        result = await generateExamFromFilesMutation.mutateAsync({
+        result = await generateExamFromExistingExamMutation.mutateAsync({
           setId: Number(setId),
-          files: data.files,
-          questionCounts: data.questionCounts,
-          language: data.language,
-          difficulty: data.difficulty,
-          freeText: similarInstruction,
+          file: data.files[0],
+          description: data.freeText?.trim() || undefined,
         });
       }
 
@@ -581,7 +577,8 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
         isLoading={
           generateExamFromFilesMutation.isPending ||
           generateExamFromNotesMutation.isPending ||
-          generateExamFromWebMutation.isPending
+          generateExamFromWebMutation.isPending ||
+          generateExamFromExistingExamMutation.isPending
         }
       />
 

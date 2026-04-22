@@ -361,7 +361,7 @@
         "creating": "Creating...",
         "in_progress": "In Progress",
         "new_set": "New Set",
-        "title": "Set List",
+        "title": "Set Library",
         "your_set": "Your Set"
     },
     "sidebar": {
@@ -370,7 +370,7 @@
         "logout": "Logout",
         "pomodoro": "Pomodoro",
         "profile": "Profile",
-        "setList": "Set List",
+        "setList": "Set Library",
         "settings": "Settings",
         "socials": "Socials",
         "todo": "To-Do"

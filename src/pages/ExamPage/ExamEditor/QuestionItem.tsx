@@ -141,10 +141,10 @@ export default function QuestionItem({
           {/* Question header row */}
           <div className='flex items-center justify-between gap-3'>
             <div className='flex items-center gap-2'>
-              <span className='font-[family-name:var(--font-mono-pl)] text-xs text-muted-foreground/60 uppercase tracking-widest'>
+              <span className='font-[family-name:var(--font-mono-pl)] text-xs text-muted-foreground uppercase tracking-widest'>
                 Q{String(index + 1).padStart(2, '0')}
               </span>
-              <div className='flex items-center gap-1.5 text-muted-foreground text-xs'>
+              <div className='flex items-center gap-1.5 text-foreground text-xs'>
                 {typeIcon(question.type)}
                 <span>
                   {question.type === 'MULTIPLE_CHOICE'
@@ -312,7 +312,7 @@ export default function QuestionItem({
           )}
 
           {question.type === 'ESSAY' && (
-            <div className='bg-secondary/50 rounded-lg px-4 py-3 text-xs text-muted-foreground border border-border/50'>
+            <div className='bg-[var(--pl-bg)] rounded-lg px-4 py-3 text-xs text-muted-foreground border border-border/50'>
               {t('exam.editor.essayGradingNote')}
             </div>
           )}

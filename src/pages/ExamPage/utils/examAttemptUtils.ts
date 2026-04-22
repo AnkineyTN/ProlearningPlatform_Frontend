@@ -11,12 +11,12 @@ function toNumericQuestionId(id: string | number): number {
 
 function firstNumericOptionId(
   submission: ExamSubmission | undefined,
-): number {
+): number | null {
   for (const raw of submission?.selectedAnswers ?? []) {
     const n = Number(raw);
     if (!Number.isNaN(n)) return n;
   }
-  return 0;
+  return null;
 }
 
 /**

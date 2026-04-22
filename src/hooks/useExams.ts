@@ -386,6 +386,30 @@ export const useGenerateExamFromWeb = () => {
   });
 };
 
+export const useGenerateExamFromExistingExam = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      setId,
+      file,
+      description,
+    }: {
+      setId: number;
+      file: File;
+      description?: string;
+    }) => {
+      const response = await examAPI.generateExamFromExistingExam(setId, file, description);
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['exams', variables.setId],
+      });
+    },
+  });
+};
+
 export const useDeleteQuestion = () => {
   const queryClient = useQueryClient();
 
