@@ -1,16 +1,16 @@
 import {
-  Blocks,
   Brain,
-  Check,
+  Blocks,
   ClipboardList,
-  Edit,
   Heart,
-  Image as ImageIcon,
-  Loader2,
-  MoreVertical,
   Share2,
+  MoreVertical,
+  Edit,
   Trash2,
   Volume2,
+  Image as ImageIcon,
+  Loader2,
+  Check,
   X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -20,13 +20,10 @@ import { toast } from "react-toastify";
 
 import DeleteConfirmDialog from "@/components/modals/DeleteConfirmDialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useUploadImageFile } from "@/hooks/useImageUpload";
-
 import FlipFlashcard from "./FlipFlashcard";
-
 import type { Card as CardData } from "@/services/types/flashcard.types";
 
 type HomeViewProps = {
@@ -47,7 +44,7 @@ type HomeViewProps = {
     id: number;
     frontCard: string;
     backCard: string;
-    imageAssetId?: number;
+    imageAssetId?: number | null;
     cardStatus?: "NEW" | "LEARNING" | "KNOWN";
   }) => void;
   onDeleteCard: (cardId: number) => void;
@@ -113,14 +110,8 @@ const HomeView = ({
         setShowMenu(false);
       }
     };
-
-    if (showMenu) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    if (showMenu) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showMenu]);
 
   const handleMoreClick = (e: React.MouseEvent) => {
@@ -128,23 +119,15 @@ const HomeView = ({
     setShowMenu(!showMenu);
   };
 
-  const handleDeleteFlashcard = async (e: React.MouseEvent) => {
+  const handleDeleteFlashcard = (e: React.MouseEvent) => {
     e.stopPropagation();
     setShowMenu(false);
     setShowDeleteDialog(true);
   };
 
-  const handleConfirmDeleteFlashcard = () => {
-    if (onDeleteFlashcard) {
-      onDeleteFlashcard();
-    }
-    setShowDeleteDialog(false);
-  };
-
   const handleUpdate = (e: React.MouseEvent) => {
     e.stopPropagation();
     setShowMenu(false);
-    // Navigate to update page
     navigate(`/sets/${setId}/flashcards/${flashcardId}/update`);
   };
 
@@ -163,43 +146,26 @@ const HomeView = ({
   const handleCancelEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
     setEditingCardId(null);
-    setEditData({
-      frontCard: "",
-      backCard: "",
-      imageUrl: undefined,
-      imageAssetId: undefined,
-      imageRemoved: false,
-    });
+    setEditData({ frontCard: "", backCard: "", imageUrl: undefined, imageAssetId: undefined, imageRemoved: false });
   };
 
   const handleSaveEdit = async (card: CardData, e: React.MouseEvent) => {
     e.stopPropagation();
-
     if (!editData.frontCard.trim() || !editData.backCard.trim()) {
       toast.error("Front and back card cannot be empty");
       return;
     }
-
     await onUpdateCard({
       id: card.id,
       frontCard: editData.frontCard.trim(),
       backCard: editData.backCard.trim(),
-      // Send null to explicitly remove the image; undefined means "no change"
       imageAssetId: editData.imageRemoved ? null : editData.imageAssetId,
       cardStatus: card.cardStatus,
     });
-
     setEditingCardId(null);
-    setEditData({
-      frontCard: "",
-      backCard: "",
-      imageUrl: undefined,
-      imageAssetId: undefined,
-      imageRemoved: false,
-    });
+    setEditData({ frontCard: "", backCard: "", imageUrl: undefined, imageAssetId: undefined, imageRemoved: false });
   };
 
-  // When deleting a card, store the card id so confirm dialog knows which to delete
   const handleDeleteCard = (cardId: number, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setShowMenu(false);
@@ -217,127 +183,93 @@ const HomeView = ({
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please select an image file");
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image size must be less than 5MB");
-      return;
-    }
-
+    if (!file.type.startsWith("image/")) { toast.error("Please select an image file"); return; }
+    if (file.size > 5 * 1024 * 1024) { toast.error("Image size must be less than 5MB"); return; }
     try {
       const result = await uploadImageMutation.mutateAsync(file);
-      setEditData((prev) => ({
-        ...prev,
-        imageUrl: result.url,
-        imageAssetId: result.assetId,
-        imageRemoved: false,
-      }));
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    } catch (error) {
-      console.error("Upload failed:", error);
+      setEditData((prev) => ({ ...prev, imageUrl: result.url, imageAssetId: result.assetId, imageRemoved: false }));
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    } catch {
       toast.error("Failed to upload image. Please try again.");
     }
   };
 
   const handleRemoveImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setEditData((prev) => ({
-      ...prev,
-      imageUrl: undefined,
-      imageAssetId: undefined,
-      imageRemoved: true,
-    }));
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-
-  const handleImageClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    fileInputRef.current?.click();
+    setEditData((prev) => ({ ...prev, imageUrl: undefined, imageAssetId: undefined, imageRemoved: true }));
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
     <>
-      <div className='max-w-4xl mx-auto p-6'>
-        <div className='flex gap-2 mb-6'>
-          <Button
-            variant='default'
-            onClick={onStudy}
-            className='gap-2 cursor-pointer'
-          >
-            <Brain className='w-5 h-5' />
+      <div className="max-w-4xl mx-auto px-6 py-8">
+
+        {/* Action bar */}
+        <div className="flex items-center gap-2 mb-7">
+          <Button onClick={onStudy} className="gap-2 text-sm" size="sm">
+            <Brain className="w-4 h-4" />
             Study
           </Button>
-          <Button
-            variant='default'
-            onClick={onMatching}
-            className='gap-2 cursor-pointer'
-          >
-            <Blocks className='w-5 h-5' />
+          <Button onClick={onMatching} className="gap-2 text-sm" size="sm">
+            <Blocks className="w-4 h-4" />
             Matching
           </Button>
           <Button
-            variant='default'
             onClick={onPracticeWithExam}
             disabled={isPracticeWithExamLoading}
-            className='gap-2 cursor-pointer'
+            className="gap-2 text-sm"
+            size="sm"
           >
             {isPracticeWithExamLoading ? (
-              <Loader2 className='w-5 h-5 animate-spin' />
+              <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <ClipboardList className='w-5 h-5' />
+              <ClipboardList className="w-4 h-4" />
             )}
             Practice with Exam
           </Button>
-          <div className='ml-auto flex gap-2'>
-            <Button variant='ghost' size='icon' className='cursor-pointer'>
-              <Heart className='w-5 h-5' />
-            </Button>
-            <div className='relative' ref={menuRef}>
-              <Button
-                variant='ghost'
-                onClick={handleMoreClick}
-                className='hover:bg-card-secondary p-1 rounded cursor-pointer transition-colors'
-                title='More options'
-              >
-                <MoreVertical className='w-4 h-4' />
-              </Button>
 
+          <div className="ml-auto flex items-center gap-1">
+            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+              <Heart className="w-4 h-4" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+              <Share2 className="w-4 h-4" />
+            </Button>
+            {/* More dropdown */}
+            <div className="relative" ref={menuRef}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                onClick={handleMoreClick}
+              >
+                <MoreVertical className="w-4 h-4" />
+              </Button>
               {showMenu && (
-                <div className='absolute right-0 mt-1 w-30 bg-card border border-border rounded-lg shadow-lg z-10 overflow-hidden'>
-                  <Button
-                    variant='ghost'
+                <div className="absolute right-0 mt-1.5 w-40 bg-card border border-border rounded-xl shadow-xl z-20 overflow-hidden py-1">
+                  <button
                     onClick={handleUpdate}
-                    className='w-full text-center transition-colors flex items-center gap-2 cursor-pointer'
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-foreground hover:bg-secondary transition-colors cursor-pointer"
                   >
-                    <Edit className='w-4 h-4' />
+                    <Edit className="w-3.5 h-3.5 text-muted-foreground" />
                     Update
-                  </Button>
-                  <Button
-                    variant='ghost'
+                  </button>
+                  <div className="my-1 border-t border-border" />
+                  <button
                     onClick={handleDeleteFlashcard}
-                    className='w-full text-center text-destructive cursor-pointer transition-colors flex items-center gap-2'
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
                   >
-                    <Trash2 className='w-4 h-4' />
+                    <Trash2 className="w-3.5 h-3.5" />
                     Delete
-                  </Button>
+                  </button>
                 </div>
               )}
             </div>
-            <Button variant='ghost' size='icon' className='cursor-pointer'>
-              <Share2 className='w-5 h-5' />
-            </Button>
           </div>
         </div>
 
-        <div className='mb-6'>
+        {/* Flip card preview */}
+        <div className="mb-8">
           <FlipFlashcard
             isFlipped={isFlipped}
             flashcards={flashcards}
@@ -350,197 +282,188 @@ const HomeView = ({
           />
         </div>
 
-        <h2 className='text-lg font-bold mb-4'>Card ({flashcards.length})</h2>
+        {/* Card list header */}
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-[family-name:var(--font-display)] text-xl font-medium tracking-tight">
+            Cards
+            <span className="font-[family-name:var(--font-mono-pl)] text-sm font-normal text-muted-foreground ml-2">
+              ({flashcards.length})
+            </span>
+          </h2>
+        </div>
 
+        {/* Hidden file input */}
         <Input
           ref={fileInputRef}
-          type='file'
-          accept='image/*'
+          type="file"
+          accept="image/*"
           onChange={handleFileChange}
-          className='hidden'
+          className="hidden"
         />
 
-        <div className='space-y-3'>
+        {/* Cards */}
+        <div className="space-y-2">
           {flashcards.map((card, index) => (
-            <Card
+            <div
               key={card.id}
-              className={`transition-all ${
+              className={`bg-card border rounded-xl transition-all ${
                 editingCardId === card.id
-                  ? "shadow-lg"
-                  : "cursor-pointer hover:shadow-md"
+                  ? "border-primary/50 shadow-md"
+                  : "border-border hover:border-border/80 cursor-pointer hover:shadow-sm"
               }`}
               onClick={() => editingCardId !== card.id && onCardClick(index)}
             >
-              <CardContent>
-                {editingCardId === card.id ? (
-                  // Edit Mode
-                  <div
-                    className='space-y-4 flex flex-col justify-end'
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className='flex items-end gap-4'>
-                      <div className='flex-1 max-w-[250px]'>
-                        <label className='text-sm font-medium text-muted-foreground mb-2 block'>
-                          Term
-                        </label>
-                        <Textarea
-                          value={editData.frontCard}
-                          onChange={(e) =>
-                            setEditData((prev) => ({
-                              ...prev,
-                              frontCard: e.target.value,
-                            }))
-                          }
-                          placeholder='Enter front card text'
-                          className='min-h-[50px] resize-none'
-                          autoFocus
-                        />
-                      </div>
-                      <div className='flex-1 border-l pl-6'>
-                        <label className='text-sm font-medium text-muted-foreground mb-2 block'>
-                          Definition
-                        </label>
-                        <Textarea
-                          value={editData.backCard}
-                          onChange={(e) =>
-                            setEditData((prev) => ({
-                              ...prev,
-                              backCard: e.target.value,
-                            }))
-                          }
-                          placeholder='Enter back card text'
-                          className='min-h-[50px] resize-none'
-                        />
-                      </div>
-                      <div className='flex items-center gap-2'>
-                        {editData.imageUrl ? (
-                          <div className='relative group'>
-                            <img
-                              src={editData.imageUrl}
-                              alt='Card'
-                              className='w-16 h-16 object-cover rounded border-2 border-border'
-                            />
-                            <button
-                              onClick={handleRemoveImage}
-                              className='absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity'
-                            >
-                              <X className='w-3 h-3' />
-                            </button>
-                          </div>
-                        ) : (
-                          <Button
-                            variant='outline'
-                            onClick={handleImageClick}
-                            disabled={uploadImageMutation.isPending}
-                            className='h-16 w-16 rounded transition-colors cursor-pointer border-2 border-dashed flex flex-col items-center justify-center text-muted-foreground hover:border-foreground disabled:opacity-50'
+              {editingCardId === card.id ? (
+                /* Edit mode */
+                <div
+                  className="p-5 space-y-4"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="flex gap-6">
+                    <div className="flex-1">
+                      <label className="text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block font-medium">
+                        Term
+                      </label>
+                      <Textarea
+                        value={editData.frontCard}
+                        onChange={(e) => setEditData((p) => ({ ...p, frontCard: e.target.value }))}
+                        placeholder="Enter term"
+                        className="min-h-[80px] resize-none bg-background border-border focus:border-primary text-sm"
+                        autoFocus
+                      />
+                    </div>
+                    <div className="w-px bg-border self-stretch" />
+                    <div className="flex-1">
+                      <label className="text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block font-medium">
+                        Definition
+                      </label>
+                      <Textarea
+                        value={editData.backCard}
+                        onChange={(e) => setEditData((p) => ({ ...p, backCard: e.target.value }))}
+                        placeholder="Enter definition"
+                        className="min-h-[80px] resize-none bg-background border-border focus:border-primary text-sm"
+                      />
+                    </div>
+                    {/* Image */}
+                    <div className="flex flex-col justify-center">
+                      {editData.imageUrl ? (
+                        <div className="relative group">
+                          <img
+                            src={editData.imageUrl}
+                            alt="Card"
+                            className="w-16 h-16 object-cover rounded-lg border border-border"
+                          />
+                          <button
+                            onClick={handleRemoveImage}
+                            className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                           >
-                            {uploadImageMutation.isPending ? (
-                              <Loader2 className='w-6 h-6 animate-spin' />
-                            ) : (
-                              <>
-                                <ImageIcon className='w-6 h-6' />
-                                <span className='text-xs'>Image</span>
-                              </>
-                            )}
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                    <div className='flex gap-2 ml-auto'>
-                      <Button
-                        variant='ghost'
-                        size='sm'
-                        onClick={handleCancelEdit}
-                        className='gap-2 cursor-pointer'
-                      >
-                        <X className='w-4 h-4' />
-                        Cancel
-                      </Button>
-                      <Button
-                        variant='default'
-                        size='sm'
-                        onClick={(e) => handleSaveEdit(card, e)}
-                        disabled={
-                          isUpdating ||
-                          !editData.frontCard.trim() ||
-                          !editData.backCard.trim()
-                        }
-                        className='gap-2 cursor-pointer'
-                      >
-                        <Check className='w-4 h-4' />
-                        {isUpdating ? "Saving..." : "Save"}
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  // View Mode
-                  <div className='flex items-start gap-4'>
-                    <div className='flex-1 max-w-[250px]'>
-                      <p className='font-medium mb-2'>{card.frontCard}</p>
-                    </div>
-                    <div className='flex-1 border-l pl-6'>
-                      <p className='text-foreground'>{card.backCard}</p>
-                    </div>
-                    <div className=''>
-                      {card.imageUrl && (
-                        <img
-                          src={card.imageUrl}
-                          alt='Flashcard'
-                          className='w-16 h-16 object-cover rounded'
-                        />
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                          disabled={uploadImageMutation.isPending}
+                          className="w-16 h-16 rounded-lg border-2 border-dashed border-border flex flex-col items-center justify-center gap-1 text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors disabled:opacity-50 cursor-pointer"
+                        >
+                          {uploadImageMutation.isPending ? (
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                          ) : (
+                            <>
+                              <ImageIcon className="w-5 h-5" />
+                              <span className="text-[10px] uppercase tracking-wide">Image</span>
+                            </>
+                          )}
+                        </button>
                       )}
                     </div>
-                    <div className='flex gap-2'>
-                      <Button
-                        variant='ghost'
-                        size='icon'
-                        className='h-8 w-8 cursor-pointer hover:bg-accent'
-                        onClick={(e) => handleEditCard(card, e)}
-                        title='Edit card'
-                      >
-                        <Edit className='w-4 h-4' />
-                      </Button>
-                      <Button
-                        variant='ghost'
-                        size='icon'
-                        className='h-8 w-8 cursor-pointer text-destructive hover:text-destructive hover:bg-destructive/10'
-                        onClick={(e) => handleDeleteCard(card.id, e)}
-                        title='Delete card'
-                      >
-                        <Trash2 className='w-4 h-4' />
-                      </Button>
-                      <Button
-                        variant='ghost'
-                        size='icon'
-                        className='h-8 w-8 cursor-pointer hover:bg-accent'
-                      >
-                        <Volume2 className='w-4 h-4' />
-                      </Button>
-                    </div>
                   </div>
-                )}
-              </CardContent>
-            </Card>
+
+                  <div className="flex justify-end gap-2 pt-1">
+                    <Button variant="ghost" size="sm" onClick={handleCancelEdit} className="gap-1.5 text-xs">
+                      <X className="w-3.5 h-3.5" />
+                      Cancel
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={(e) => handleSaveEdit(card, e)}
+                      disabled={isUpdating || !editData.frontCard.trim() || !editData.backCard.trim()}
+                      className="gap-1.5 text-xs"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                      {isUpdating ? "Saving…" : "Save"}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                /* View mode */
+                <div className="p-4 flex items-start gap-4">
+                  <span className="font-[family-name:var(--font-mono-pl)] text-xs text-muted-foreground/60 mt-0.5 w-5 flex-shrink-0 text-right">
+                    {index + 1}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm leading-snug">{card.frontCard}</p>
+                  </div>
+                  <div className="w-px bg-border self-stretch mx-2" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-muted-foreground leading-snug">{card.backCard}</p>
+                  </div>
+                  {card.imageUrl && (
+                    <img
+                      src={card.imageUrl}
+                      alt="Flashcard"
+                      className="w-12 h-12 object-cover rounded-lg border border-border flex-shrink-0"
+                    />
+                  )}
+                  {/* Card actions */}
+                  <div className="flex gap-0.5 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
+                      onClick={(e) => handleEditCard(card, e)}
+                      title="Edit card"
+                    >
+                      <Edit className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
+                      onClick={(e) => handleDeleteCard(card.id, e)}
+                      title="Delete card"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
+                      title="Text to speech"
+                    >
+                      <Volume2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
         </div>
-        <DeleteConfirmDialog
-          isOpen={showDeleteCardDialog}
-          onClose={() => setShowDeleteCardDialog(false)}
-          onConfirm={handleConfirmDeleteCard}
-          title='Delete Card'
-          itemName={t("modal.thisCard")}
-        />
-
-        <DeleteConfirmDialog
-          isOpen={showDeleteDialog}
-          onClose={() => setShowDeleteDialog(false)}
-          onConfirm={handleConfirmDeleteFlashcard}
-          title='Delete Flashcard'
-          itemName={t("modal.thisFlashcard")}
-        />
       </div>
+
+      {/* Make card actions visible on hover via group */}
+      <style>{`.group:hover .opacity-0 { opacity: 1; }`}</style>
+
+      <DeleteConfirmDialog
+        isOpen={showDeleteCardDialog}
+        onClose={() => setShowDeleteCardDialog(false)}
+        onConfirm={handleConfirmDeleteCard}
+        title="Delete Card"
+        itemName={t("modal.thisCard")}
+      />
+      <DeleteConfirmDialog
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={() => { if (onDeleteFlashcard) onDeleteFlashcard(); setShowDeleteDialog(false); }}
+        title="Delete Flashcard"
+        itemName={t("modal.thisFlashcard")}
+      />
     </>
   );
-}
+};
 
 export default HomeView;

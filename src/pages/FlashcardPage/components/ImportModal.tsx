@@ -1,9 +1,8 @@
-import { X } from "lucide-react";
+import { X, ArrowLeft, Upload } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -25,23 +24,23 @@ type Props = {
 
 const FORMATS = {
   simple: {
-    label: "Simple (Term | Definition)",
+    label: "Pipe separated  (Term | Definition)",
     example:
       "Variable | A container for storing data values\nFunction | A block of code that performs a specific task\nArray | A data structure that stores multiple values",
     separator: "|",
     description: "Each line: Term | Definition",
   },
   tab: {
-    label: "Tab Separated",
+    label: "Tab separated  (Term [TAB] Definition)",
     example:
-      "Variable\tA container for storing data values\nFunction\tA block of code that performs a specific task\nArray\tA data structure that stores multiple values",
+      "Variable\tA container for storing data values\nFunction\tA block of code that performs a specific task",
     separator: "\t",
     description: "Each line: Term [TAB] Definition",
   },
   comma: {
-    label: "Comma Separated",
+    label: "Comma separated  (Term, Definition)",
     example:
-      "Variable,A container for storing data values\nFunction,A block of code that performs a specific task\nArray,A data structure that stores multiple values",
+      "Variable,A container for storing data values\nFunction,A block of code that performs a specific task",
     separator: ",",
     description: "Each line: Term, Definition",
   },
@@ -56,42 +55,23 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
   if (!isOpen) return null;
 
   const handleParse = () => {
-    if (!content.trim()) {
-      toast.error("Please enter content to import");
-      return;
-    }
-
-    const lines = content.split("\n").filter((line) => line.trim());
+    if (!content.trim()) { toast.error("Please enter content to import"); return; }
+    const lines = content.split("\n").filter((l) => l.trim());
     const separator = FORMATS[format].separator;
     const parsed: ImportedCard[] = [];
-
-    lines.forEach((line, index) => {
+    lines.forEach((line) => {
       const parts = line.split(separator);
       if (parts.length >= 2) {
-        parsed.push({
-          term: parts[0].trim(),
-          definition: parts.slice(1).join(separator).trim(),
-        });
-      } else if (parts.length === 1 && parts[0].trim()) {
-        // Dòng chỉ có term, không có definition
-        console.warn(`Line ${index + 1}: Missing definition`);
+        parsed.push({ term: parts[0].trim(), definition: parts.slice(1).join(separator).trim() });
       }
     });
-
-    if (parsed.length === 0) {
-      toast.error("No valid cards found. Please check the format.");
-      return;
-    }
-
+    if (parsed.length === 0) { toast.error("No valid cards found. Please check the format."); return; }
     setPreview(parsed);
     setShowPreview(true);
   };
 
   const handleInsert = () => {
-    if (preview.length === 0) {
-      toast.error("Please parse content first");
-      return;
-    }
+    if (preview.length === 0) { toast.error("Please parse content first"); return; }
     onInsert(preview);
     handleClose();
   };
@@ -103,150 +83,118 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
     onClose();
   };
 
-  const handleBack = () => {
-    setShowPreview(false);
-  };
-
   return (
-    <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50'>
-      <div className='bg-background rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col'>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col">
+
         {/* Header */}
-        <div className='flex items-center justify-between p-6 border-b'>
-          <h2 className='text-xl font-semibold'>
-            {showPreview ? "Preview Import" : "Insert data"}
-          </h2>
+        <div className="flex items-center justify-between px-6 py-5 border-b border-border">
+          <div className="flex items-center gap-3">
+            {showPreview && (
+              <button
+                onClick={() => setShowPreview(false)}
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+            )}
+            <div>
+              <p className="text-xs uppercase tracking-widest text-muted-foreground/60 mb-0.5">
+                {showPreview ? `${preview.length} cards found` : "Import flashcards"}
+              </p>
+              <h2 className="font-[family-name:var(--font-display)] text-xl font-medium tracking-tight">
+                {showPreview ? "Preview Import" : "Insert Data"}
+              </h2>
+            </div>
+          </div>
           <button
             onClick={handleClose}
-            className='text-muted-foreground hover:text-foreground transition-colors'
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
           >
-            <X className='w-5 h-5' />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Content */}
-        <div className='flex-1 overflow-y-auto p-6'>
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto px-6 py-5">
           {!showPreview ? (
-            <>
-              {/* Format Selection */}
-              <div className='mb-6'>
-                <Label className='text-sm font-medium mb-2 block'>
-                  Choose import format:
-                </Label>
-                <Select
-                  value={format}
-                  onValueChange={(val) =>
-                    setFormat(val as keyof typeof FORMATS)
-                  }
-                >
-                  <SelectTrigger className='w-full'>
+            <div className="space-y-5">
+              {/* Format selector */}
+              <div>
+                <label className="text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block">
+                  Format
+                </label>
+                <Select value={format} onValueChange={(v) => setFormat(v as keyof typeof FORMATS)}>
+                  <SelectTrigger className="w-full bg-background border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='simple'>
-                      {FORMATS.simple.label}
-                    </SelectItem>
-                    <SelectItem value='tab'>{FORMATS.tab.label}</SelectItem>
-                    <SelectItem value='comma'>{FORMATS.comma.label}</SelectItem>
+                    <SelectItem value="simple">{FORMATS.simple.label}</SelectItem>
+                    <SelectItem value="tab">{FORMATS.tab.label}</SelectItem>
+                    <SelectItem value="comma">{FORMATS.comma.label}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Format Example */}
-              <div className='mb-6 p-4 bg-muted rounded-lg'>
-                <Label className='text-sm font-medium mb-2 block'>
-                  Format example:
-                </Label>
-                <p className='text-sm text-muted-foreground mb-2'>
-                  {FORMATS[format].description}
+              {/* Example */}
+              <div className="bg-secondary/50 rounded-xl p-4 border border-border/50">
+                <p className="text-xs uppercase tracking-widest text-muted-foreground/60 mb-2">
+                  Example · {FORMATS[format].description}
                 </p>
-                <pre className='text-xs bg-background p-3 rounded border overflow-x-auto whitespace-pre-wrap'>
+                <pre className="font-[family-name:var(--font-mono-pl)] text-xs text-muted-foreground whitespace-pre-wrap leading-relaxed">
                   {FORMATS[format].example}
                 </pre>
               </div>
 
-              {/* Content Input */}
-              <div className='mb-4'>
-                <Label className='text-sm font-medium mb-2 block'>
-                  Your content:
-                </Label>
+              {/* Content input */}
+              <div>
+                <label className="text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block">
+                  Your content
+                </label>
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  placeholder='Paste your flashcard content here...'
-                  className='w-full h-64 p-3 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 bg-background'
+                  placeholder="Paste your flashcard content here…"
+                  className="w-full h-52 px-4 py-3 bg-background border border-border rounded-xl resize-none text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-colors font-[family-name:var(--font-mono-pl)]"
                 />
               </div>
-            </>
+            </div>
           ) : (
-            <>
-              {/* Preview */}
-              <div className='mb-4'>
-                <div className='flex items-center justify-between mb-4'>
-                  <p className='text-sm text-muted-foreground'>
-                    Found {preview.length} card{preview.length !== 1 ? "s" : ""}
-                  </p>
-                  <Button
-                    onClick={handleBack}
-                    variant='ghost'
-                    size='sm'
-                    className='cursor-pointer'
-                  >
-                    ← Back to edit
-                  </Button>
-                </div>
-
-                <div className='space-y-3 max-h-96 overflow-y-auto'>
-                  {preview.map((card, index) => (
-                    <div key={index} className='p-4 border rounded-lg bg-card'>
-                      <div className='flex items-start gap-4'>
-                        <span className='text-sm font-medium text-muted-foreground min-w-[24px]'>
-                          {index + 1}
-                        </span>
-                        <div className='flex items-start gap-4'>
-                          <div className='w-[160px]'>
-                            <Label className='text-xs text-muted-foreground mb-1 block'>
-                              Term
-                            </Label>
-                            <p className='text-sm'>{card.term}</p>
-                          </div>
-                          <div className='flex-1 border-l pl-6'>
-                            <Label className='text-xs text-muted-foreground mb-1 block'>
-                              Definition
-                            </Label>
-                            <p className='text-sm'>{card.definition}</p>
-                          </div>
-                        </div>
-                      </div>
+            <div className="space-y-2">
+              {preview.map((card, i) => (
+                <div key={i} className="bg-background border border-border rounded-xl px-4 py-3 flex items-start gap-3">
+                  <span className="font-[family-name:var(--font-mono-pl)] text-xs text-muted-foreground/60 mt-0.5 w-5 text-right flex-shrink-0">
+                    {i + 1}
+                  </span>
+                  <div className="flex-1 min-w-0 grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-widest text-muted-foreground/50 mb-1">Term</p>
+                      <p className="text-sm font-medium">{card.term}</p>
                     </div>
-                  ))}
+                    <div className="border-l border-border pl-4">
+                      <p className="text-[10px] uppercase tracking-widest text-muted-foreground/50 mb-1">Definition</p>
+                      <p className="text-sm text-muted-foreground">{card.definition}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </>
+              ))}
+            </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className='flex items-center justify-end gap-3 p-6 border-t'>
-          <Button
-            onClick={handleClose}
-            variant='outline'
-            className='cursor-pointer'
-          >
+        <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border">
+          <Button variant="ghost" onClick={handleClose} className="text-muted-foreground">
             Cancel
           </Button>
           {!showPreview ? (
-            <Button
-              onClick={handleParse}
-              className='bg-foreground text-background cursor-pointer'
-            >
+            <Button onClick={handleParse} className="gap-2">
+              <Upload className="w-3.5 h-3.5" />
               Preview
             </Button>
           ) : (
-            <Button
-              onClick={handleInsert}
-              className='bg-foreground text-background cursor-pointer'
-            >
-              Insert
+            <Button onClick={handleInsert} className="gap-2">
+              Insert {preview.length} cards
             </Button>
           )}
         </div>

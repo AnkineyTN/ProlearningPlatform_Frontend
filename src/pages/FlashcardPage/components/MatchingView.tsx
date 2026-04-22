@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Blocks, Trophy, Clock, Award, Medal } from "lucide-react";
+import { Trophy, Clock, Medal, ArrowLeft, RotateCcw } from "lucide-react";
 import type { Card } from "@/services/types/flashcard.types";
 import { Button } from "@/components/ui/button";
 import { useGameHistory, useGameRanking, useSaveGameResult } from "@/hooks/useFlashcards";
@@ -47,14 +47,12 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
     false,
   );
 
-  // Initialize game
   useEffect(() => {
     if (flashcards.length > 0 && !isGameStarted) {
       initializeGame();
     }
   }, [flashcards, isGameStarted]);
 
-  // Timer
   useEffect(() => {
     if (startTime && !endTime) {
       const interval = setInterval(() => {
@@ -64,7 +62,6 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
     }
   }, [startTime, endTime]);
 
-  // Save result when game ends
   useEffect(() => {
     if (endTime && startTime && !resultSaved) {
       const durationSeconds = Math.round((endTime - startTime) / 1000);
@@ -85,7 +82,6 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
 
   const initializeGame = () => {
     const selectedFlashcards = flashcards.slice(0, 6);
-
     const termCards: MatchingCard[] = selectedFlashcards.map((card) => ({
       id: `term-${card.id}`,
       content: card.frontCard,
@@ -93,7 +89,6 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
       originalId: card.id,
       isMatched: false,
     }));
-
     const definitionCards: MatchingCard[] = selectedFlashcards.map((card) => ({
       id: `def-${card.id}`,
       content: card.backCard,
@@ -101,10 +96,8 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
       originalId: card.id,
       isMatched: false,
     }));
-
     const allCards = [...termCards, ...definitionCards];
     const shuffled = allCards.sort(() => Math.random() - 0.5);
-
     setCards(shuffled);
     setSelectedCards([]);
     setMatchedPairs(new Set());
@@ -116,10 +109,7 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
   };
 
   const handleCardClick = (cardId: string) => {
-    if (!startTime) {
-      setStartTime(Date.now());
-    }
-
+    if (!startTime) setStartTime(Date.now());
     const card = cards.find((c) => c.id === cardId);
     if (!card || card.isMatched) return;
     if (selectedCards.length >= 2) return;
@@ -139,26 +129,20 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
           firstCard.type !== secondCard.type;
 
         if (isMatch) {
-          setCards((prevCards) =>
-            prevCards.map((c) =>
-              c.id === firstId || c.id === secondId
-                ? { ...c, isMatched: true }
-                : c,
+          setCards((prev) =>
+            prev.map((c) =>
+              c.id === firstId || c.id === secondId ? { ...c, isMatched: true } : c,
             ),
           );
-
           const newMatchedPairs = new Set(matchedPairs);
           newMatchedPairs.add(firstCard.originalId);
           setMatchedPairs(newMatchedPairs);
           setSelectedCards([]);
-
           if (newMatchedPairs.size === Math.min(flashcards.length, 6)) {
             setEndTime(Date.now());
           }
         } else {
-          setTimeout(() => {
-            setSelectedCards([]);
-          }, 500);
+          setTimeout(() => setSelectedCards([]), 500);
         }
       }
     }
@@ -178,174 +162,164 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
     return `${m}:${s.toString().padStart(2, "0")}`;
   };
 
-  const getCardClassName = (card: MatchingCard) => {
-    const baseClasses =
-      "p-4 rounded-lg border-1 cursor-pointer transition-all duration-200 text-center flex items-center justify-center min-h-[100px]";
+  const getCardStyle = (card: MatchingCard): string => {
+    const base =
+      "p-4 rounded-xl border cursor-pointer transition-all duration-200 text-center flex items-center justify-center min-h-[100px] select-none";
 
     if (card.isMatched) {
-      return `${baseClasses} bg-bg-info border-text-info opacity-50`;
+      return `${base} bg-bg-info/40 border-text-info/40 opacity-60 cursor-default scale-95`;
     }
 
     if (selectedCards.includes(card.id)) {
-      const otherSelectedId = selectedCards.find((id) => id !== card.id);
-      if (otherSelectedId) {
-        const otherCard = cards.find((c) => c.id === otherSelectedId);
+      const otherId = selectedCards.find((id) => id !== card.id);
+      if (otherId) {
+        const other = cards.find((c) => c.id === otherId);
         const isMatch =
-          otherCard &&
-          card.originalId === otherCard.originalId &&
-          card.type !== otherCard.type;
-
-        return `${baseClasses} ${
+          other &&
+          card.originalId === other.originalId &&
+          card.type !== other.type;
+        return `${base} ${
           isMatch
-            ? "bg-bg-info border-text-info scale-105"
+            ? "bg-bg-info border-text-info scale-105 shadow-md"
             : "bg-bg-error border-text-error"
         }`;
       }
-      return `${baseClasses} bg-bg-selected border-text-selected scale-105`;
+      return `${base} bg-card-selected border-text-selected scale-105 shadow-md`;
     }
 
-    return `${baseClasses} bg-card border-border hover:border-blue-400 hover:shadow-md`;
+    return `${base} bg-card border-border hover:border-primary/50 hover:shadow-md hover:-translate-y-0.5`;
   };
 
   const getRankMedal = (rank: number) => {
-    if (rank === 1) return <Medal className='w-5 h-5 text-yellow-500' />;
-    if (rank === 2) return <Medal className='w-5 h-5 text-gray-400' />;
-    if (rank === 3) return <Medal className='w-5 h-5 text-amber-600' />;
-    return <span className='w-5 text-center font-bold text-muted-foreground'>{rank}</span>;
+    const colors = ["text-yellow-500", "text-slate-400", "text-amber-600"];
+    if (rank <= 3)
+      return <Medal className={`w-4 h-4 ${colors[rank - 1]}`} />;
+    return (
+      <span className="w-4 text-center text-xs font-[family-name:var(--font-mono-pl)] text-muted-foreground">
+        {rank}
+      </span>
+    );
   };
 
-  // Game completed
+  // Results screen
   if (endTime && startTime) {
     const totalTime = endTime - startTime;
+    const tabs: GameTab[] = isPublic ? ["ranking", "history"] : ["history"];
+    const tabLabels: Record<GameTab, string> = { ranking: "Ranking", history: "My History" };
 
     return (
-      <div className='max-w-4xl mx-auto px-6 py-8'>
-        <div className='text-center mb-8'>
-          <Trophy className='w-20 h-20 mx-auto mb-4 text-yellow-500' />
-          <h2 className='text-3xl font-bold mb-2'>Congratulations! 🎉</h2>
-          <p className='text-lg text-foreground mb-6'>You completed the matching game!</p>
+      <div className="max-w-3xl mx-auto px-6 py-10">
+        {/* Result hero */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-yellow-500/10 border border-yellow-500/30 mb-5">
+            <Trophy className="w-10 h-10 text-yellow-500" />
+          </div>
+          <h2 className="font-[family-name:var(--font-display)] text-4xl font-medium tracking-tight mb-2">
+            Congratulations!
+          </h2>
+          <p className="text-muted-foreground">You completed the matching game</p>
 
-          <div className='rounded-lg shadow-lg p-6 max-w-xs mx-auto mb-6 bg-card'>
-            <div className='flex items-center justify-center gap-2 mb-1'>
-              <Clock className='w-5 h-5 text-selected' />
-              <span className='text-2xl font-bold text-selected'>{formatTime(totalTime)}</span>
-            </div>
-            <p className='text-sm text-muted-foreground'>Your Time</p>
+          <div className="inline-flex items-center gap-3 mt-6 bg-card border border-border rounded-xl px-8 py-4">
+            <Clock className="w-5 h-5 text-text-selected" />
+            <span className="font-[family-name:var(--font-mono-pl)] text-2xl font-medium text-text-selected">
+              {formatTime(totalTime)}
+            </span>
           </div>
 
-          <div className='flex gap-4 justify-center mb-8'>
+          <div className="flex gap-3 justify-center mt-6">
             <Button
-              variant='default'
-              onClick={() => {
-                setIsGameStarted(false);
-                initializeGame();
-              }}
-              className='px-6 cursor-pointer rounded-lg font-semibold'
+              onClick={() => { setIsGameStarted(false); initializeGame(); }}
+              className="gap-2"
             >
+              <RotateCcw className="w-4 h-4" />
               Play Again
             </Button>
-            <Button
-              variant='outline'
-              onClick={onBack}
-              className='px-6 bg-card cursor-pointer rounded-lg font-semibold'
-            >
+            <Button variant="outline" onClick={onBack} className="gap-2">
+              <ArrowLeft className="w-4 h-4" />
               Back to Home
             </Button>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className='border-b border-border mb-6'>
-          <div className='flex gap-1'>
-            {isPublic && (
-              <button
-                onClick={() => setActiveTab("ranking")}
-                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
-                  activeTab === "ranking"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Ranking
-              </button>
-            )}
+        <div className="border-b border-border mb-6 flex gap-1">
+          {tabs.map((tab) => (
             <button
-              onClick={() => setActiveTab("history")}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
-                activeTab === "history"
-                  ? "border-primary text-primary"
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer -mb-px ${
+                activeTab === tab
+                  ? "border-primary text-foreground"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
-              My History
+              {tabLabels[tab]}
             </button>
-          </div>
+          ))}
         </div>
 
-        {/* Ranking Tab */}
+        {/* Ranking */}
         {activeTab === "ranking" && isPublic && (
-          <div>
+          <div className="space-y-2">
             {!rankingData?.data || rankingData.data.length === 0 ? (
-              <p className='text-center text-muted-foreground py-8'>No rankings yet.</p>
+              <p className="text-center text-muted-foreground py-10 text-sm">
+                No rankings yet. Be the first!
+              </p>
             ) : (
-              <div className='space-y-2'>
-                {rankingData.data.map((item) => (
-                  <div
-                    key={item.userId}
-                    className='flex items-center gap-4 p-3 rounded-lg bg-card border border-border'
-                  >
-                    <div className='flex items-center justify-center w-8'>
-                      {getRankMedal(item.rank)}
-                    </div>
-                    <div className='flex-1'>
-                      <span className='font-medium'>
-                        {item.firstName} {item.lastName}
-                      </span>
-                      <span className='text-xs text-muted-foreground ml-2'>
-                        {item.playCount} {item.playCount === 1 ? "play" : "plays"}
-                      </span>
-                    </div>
-                    <div className='flex items-center gap-1 text-selected font-bold'>
-                      <Clock className='w-4 h-4' />
-                      {formatSeconds(item.bestDuration)}
-                    </div>
+              rankingData.data.map((item) => (
+                <div
+                  key={item.userId}
+                  className="flex items-center gap-4 p-3.5 rounded-xl bg-card border border-border"
+                >
+                  <div className="flex items-center justify-center w-7">
+                    {getRankMedal(item.rank)}
                   </div>
-                ))}
-              </div>
+                  <div className="flex-1 min-w-0">
+                    <span className="font-medium text-sm truncate block">
+                      {item.firstName} {item.lastName}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {item.playCount} {item.playCount === 1 ? "play" : "plays"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-text-selected font-[family-name:var(--font-mono-pl)] text-sm font-medium">
+                    <Clock className="w-3.5 h-3.5" />
+                    {formatSeconds(item.bestDuration)}
+                  </div>
+                </div>
+              ))
             )}
           </div>
         )}
 
-        {/* History Tab */}
+        {/* History */}
         {activeTab === "history" && (
-          <div>
+          <div className="space-y-2">
             {!historyData?.data || historyData.data.length === 0 ? (
-              <p className='text-center text-muted-foreground py-8'>No history yet.</p>
+              <p className="text-center text-muted-foreground py-10 text-sm">
+                No history yet.
+              </p>
             ) : (
-              <div className='space-y-2'>
-                {historyData.data.map((item, idx) => (
-                  <div
-                    key={item.id}
-                    className='flex items-center gap-4 p-3 rounded-lg bg-card border border-border'
-                  >
-                    <span className='w-6 text-center text-sm text-muted-foreground font-medium'>
-                      #{idx + 1}
+              historyData.data.map((item, idx) => (
+                <div
+                  key={item.id}
+                  className="flex items-center gap-4 p-3.5 rounded-xl bg-card border border-border"
+                >
+                  <span className="w-6 text-center text-xs font-[family-name:var(--font-mono-pl)] text-muted-foreground">
+                    #{idx + 1}
+                  </span>
+                  <div className="flex-1">
+                    <span className="text-sm text-muted-foreground">
+                      {new Date(item.completedAt).toLocaleString()}
                     </span>
-                    <div className='flex-1'>
-                      <span className='text-sm text-muted-foreground'>
-                        {new Date(item.completedAt).toLocaleString()}
-                      </span>
-                    </div>
-                    <span className='text-xs text-muted-foreground'>
-                      {item.totalCards} cards
-                    </span>
-                    <div className='flex items-center gap-1 text-selected font-bold'>
-                      <Clock className='w-4 h-4' />
-                      {formatSeconds(item.durationSeconds)}
-                    </div>
                   </div>
-                ))}
-              </div>
+                  <span className="text-xs text-muted-foreground">{item.totalCards} cards</span>
+                  <div className="flex items-center gap-1.5 text-text-selected font-[family-name:var(--font-mono-pl)] text-sm font-medium">
+                    <Clock className="w-3.5 h-3.5" />
+                    {formatSeconds(item.durationSeconds)}
+                  </div>
+                </div>
+              ))
             )}
           </div>
         )}
@@ -353,92 +327,100 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
     );
   }
 
-  // Game not started or no flashcards
+  // Not started / no cards
   if (!isGameStarted || flashcards.length === 0) {
     return (
-      <div className='max-w-4xl mx-auto px-6 py-8'>
-        <div className='text-center py-20'>
-          <Blocks className='w-20 h-20 mx-auto mb-4 text-muted-foreground' />
-          <h2 className='text-2xl font-bold mb-2'>Matching Game</h2>
-          <p className='text-xl text-foreground mb-8'>
-            {flashcards.length === 0
-              ? "No flashcards available"
-              : "Click Start to begin!"}
-          </p>
-          <div className='flex gap-4 justify-center'>
-            {flashcards.length > 0 && (
-              <Button
-                variant='default'
-                onClick={initializeGame}
-                className='px-6 py-3 rounded-lg transition-colors font-semibold cursor-pointer'
-              >
-                Start Game
-              </Button>
-            )}
-            <Button
-              variant='outline'
-              onClick={onBack}
-              className='px-6 py-3 rounded-lg transition-colors font-semibold cursor-pointer'
-            >
-              Back to Home
-            </Button>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 py-10 text-center">
+        <div className="w-20 h-20 rounded-2xl bg-card border border-border flex items-center justify-center mb-6">
+          <div className="grid grid-cols-2 gap-1">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="w-4 h-4 rounded bg-border" />
+            ))}
           </div>
+        </div>
+        <h2 className="font-[family-name:var(--font-display)] text-3xl font-medium tracking-tight mb-2">
+          Matching Game
+        </h2>
+        <p className="text-muted-foreground mb-8 max-w-xs">
+          {flashcards.length === 0
+            ? "No flashcards available to play."
+            : "Match terms with their definitions as fast as you can."}
+        </p>
+        <div className="flex gap-3">
+          {flashcards.length > 0 && (
+            <Button onClick={initializeGame} className="px-6">
+              Start Game
+            </Button>
+          )}
+          <Button variant="outline" onClick={onBack} className="gap-2 px-6">
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
         </div>
       </div>
     );
   }
 
-  // Playing game
+  const totalPairs = Math.min(flashcards.length, 6);
+
+  // Playing
   return (
-    <div className='max-w-4xl mx-auto px-6 py-8'>
+    <div className="max-w-4xl mx-auto px-6 py-8">
       {/* Header */}
-      <div className='flex items-center justify-between mb-8'>
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className='text-3xl font-bold mb-2'>Matching Game</h2>
-          <p className='text-foreground'>Match terms with their definitions</p>
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-medium tracking-tight">
+            Matching Game
+          </h2>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            Match terms with their definitions
+          </p>
         </div>
 
-        <div className='flex items-center gap-6'>
-          <div className='rounded-lg shadow px-6 py-3 bg-card'>
-            <div className='flex items-center gap-2'>
-              <Clock className='w-5 h-5 text-selected' />
-              <span className='text-2xl font-bold text-selected'>
-                {formatTime(timer)}
-              </span>
-            </div>
+        <div className="flex items-center gap-3">
+          {/* Timer */}
+          <div className="flex items-center gap-2 bg-card border border-border rounded-xl px-4 py-2.5">
+            <Clock className="w-4 h-4 text-muted-foreground" />
+            <span className="font-[family-name:var(--font-mono-pl)] text-lg font-medium text-text-selected">
+              {formatTime(timer)}
+            </span>
           </div>
 
-          <div className='rounded-lg shadow px-6 py-3 bg-card'>
-            <div className='flex items-center gap-2'>
-              <Award className='w-5 h-5 text-info' />
-              <span className='text-2xl font-bold text-info'>
-                {matchedPairs.size}/{Math.min(flashcards.length, 6)}
-              </span>
-            </div>
+          {/* Score */}
+          <div className="flex items-center gap-2 bg-card border border-border rounded-xl px-4 py-2.5">
+            <span className="font-[family-name:var(--font-mono-pl)] text-lg font-medium text-text-info">
+              {matchedPairs.size}
+              <span className="text-muted-foreground text-sm">/{totalPairs}</span>
+            </span>
           </div>
         </div>
+      </div>
+
+      {/* Progress bar */}
+      <div className="h-1 bg-border rounded-full overflow-hidden mb-8">
+        <div
+          className="h-full bg-primary transition-all duration-300 rounded-full"
+          style={{ width: `${(matchedPairs.size / totalPairs) * 100}%` }}
+        />
       </div>
 
       {/* Cards Grid */}
-      <div className='grid grid-cols-3 gap-4 mb-8'>
+      <div className="grid grid-cols-3 gap-3 mb-8">
         {cards.map((card) => (
           <div
             key={card.id}
             onClick={() => handleCardClick(card.id)}
-            className={getCardClassName(card)}
+            className={getCardStyle(card)}
           >
-            <p className='text-lg font-medium'>{card.content}</p>
+            <p className="text-sm font-medium leading-snug">{card.content}</p>
           </div>
         ))}
       </div>
 
-      {/* Bottom Actions */}
-      <div className='flex justify-center'>
-        <Button
-          onClick={onBack}
-          variant='outline'
-          className='px-6 py-3 bg-card cursor-pointer rounded-lg transition-colors font-semibold'
-        >
+      {/* Exit */}
+      <div className="flex justify-center">
+        <Button variant="outline" onClick={onBack} className="gap-2">
+          <ArrowLeft className="w-4 h-4" />
           Exit Game
         </Button>
       </div>

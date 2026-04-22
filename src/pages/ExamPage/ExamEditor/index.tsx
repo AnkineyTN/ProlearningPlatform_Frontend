@@ -1,4 +1,4 @@
-import { ArrowLeft, Plus, Save } from "lucide-react";
+import { ArrowLeft, Plus, Save, Clock, Hash } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -19,7 +19,11 @@ import {
   useDeleteQuestion,
   useExamDetail,
 } from "@/hooks/useExams";
-import { apiQuizDetailToExam, uiQuestionToCreateRequest, parseAIGeneratedContent } from "../utils/examMapper";
+import {
+  apiQuizDetailToExam,
+  uiQuestionToCreateRequest,
+  parseAIGeneratedContent,
+} from "../utils/examMapper";
 import type { PrivacyType } from "@/services/types/exam.types";
 
 export type QuestionErrors = {
@@ -56,20 +60,13 @@ export default function ExamEditor() {
     aiContent: locationAIContent,
   } = (location.state as Record<string, unknown>) || {};
 
-  const [title, setTitle] = useState(locationTitle as string || "");
-  const [description, setDescription] = useState(
-    (locationDescription as string) || "",
-  );
+  const [title, setTitle] = useState((locationTitle as string) || "");
+  const [description, setDescription] = useState((locationDescription as string) || "");
   const [timeLimit, setTimeLimit] = useState(60);
   const [questions, setQuestions] = useState<ExamQuestion[]>([emptyQuestion()]);
-  const [draggedQuestionId, setDraggedQuestionId] = useState<
-    string | number | null
-  >(null);
-
+  const [draggedQuestionId, setDraggedQuestionId] = useState<string | number | null>(null);
   const [titleError, setTitleError] = useState(false);
-  const [questionErrors, setQuestionErrors] = useState<
-    Map<string | number, QuestionErrors>
-  >(new Map());
+  const [questionErrors, setQuestionErrors] = useState<Map<string | number, QuestionErrors>>(new Map());
 
   const { data: examDetailData, isLoading: isLoadingDetail } = useExamDetail(
     Number(setId),
@@ -86,12 +83,9 @@ export default function ExamEditor() {
     if (!isUpdateMode) {
       setTitle((locationTitle as string) || "");
       setDescription((locationDescription as string) || "");
-
       if (locationAIContent && typeof locationAIContent === "string") {
         const parsed = parseAIGeneratedContent(locationAIContent);
-        if (parsed.length > 0) {
-          setQuestions(parsed);
-        }
+        if (parsed.length > 0) setQuestions(parsed);
       }
     }
   }, [isUpdateMode, locationTitle, locationDescription, locationAIContent]);
@@ -122,16 +116,7 @@ export default function ExamEditor() {
     if (!isUpdateMode) loadedExamIdRef.current = null;
   }, [isUpdateMode, examId]);
 
-  const handleTitleChange = (value: string) => {
-    setTitle(value);
-    if (value.trim()) setTitleError(false);
-  };
-
-  const clearQuestionError = (
-    qId: string | number,
-    field: keyof QuestionErrors,
-    answerId?: string,
-  ) => {
+  const clearQuestionError = (qId: string | number, field: keyof QuestionErrors, answerId?: string) => {
     setQuestionErrors((prev) => {
       const errs = prev.get(qId);
       if (!errs) return prev;
@@ -140,15 +125,13 @@ export default function ExamEditor() {
         const newSet = new Set(errs.emptyAnswers);
         newSet.delete(answerId);
         if (newSet.size === 0) {
-          const { emptyAnswers: _, ...rest } = errs;
-          void _;
+          const { emptyAnswers: _, ...rest } = errs; void _;
           next.set(qId, rest);
         } else {
           next.set(qId, { ...errs, emptyAnswers: newSet });
         }
       } else {
-        const { [field]: _, ...rest } = errs;
-        void _;
+        const { [field]: _, ...rest } = errs; void _;
         next.set(qId, rest);
       }
       const updated = next.get(qId);
@@ -157,54 +140,29 @@ export default function ExamEditor() {
     });
   };
 
-  const handleAddQuestion = () => {
-    setQuestions([...questions, emptyQuestion()]);
-  };
-
-  const handleUpdateQuestion = (
-    id: string | number,
-    updates: Partial<ExamQuestion>,
-  ) => {
+  const handleUpdateQuestion = (id: string | number, updates: Partial<ExamQuestion>) => {
     setQuestions((prev) =>
       prev.map((q) => {
-        if (q.id === id) {
-          const updated = { ...q, ...updates };
-          if (typeof q.id === "number" && !q._action) {
-            updated._action = "UPDATE";
-          }
-          return updated;
-        }
-        return q;
+        if (q.id !== id) return q;
+        const updated = { ...q, ...updates };
+        if (typeof q.id === "number" && !q._action) updated._action = "UPDATE";
+        return updated;
       }),
     );
-
-    if (updates.questionText !== undefined && updates.questionText.trim()) {
+    if (updates.questionText !== undefined && updates.questionText.trim())
       clearQuestionError(id, "questionText");
-    }
-    if (updates.answers !== undefined) {
-      const hasCorrect = updates.answers.some((a) => a.isCorrect);
-      if (hasCorrect) clearQuestionError(id, "noCorrectAnswer");
-    }
+    if (updates.answers !== undefined && updates.answers.some((a) => a.isCorrect))
+      clearQuestionError(id, "noCorrectAnswer");
   };
 
   const handleDeleteQuestion = (id: string | number) => {
-    if (questions.length === 1) {
-      toast.error(t("exam.editor.minOneQuestion"));
-      return;
-    }
+    if (questions.length === 1) { toast.error(t("exam.editor.minOneQuestion")); return; }
     setQuestions((prev) => {
-      if (typeof id === "number") {
-        return prev.map((q) =>
-          q.id === id ? { ...q, _action: "DELETE" as const } : q,
-        );
-      }
+      if (typeof id === "number")
+        return prev.map((q) => (q.id === id ? { ...q, _action: "DELETE" as const } : q));
       return prev.filter((q) => q.id !== id);
     });
-    setQuestionErrors((prev) => {
-      const next = new Map(prev);
-      next.delete(id);
-      return next;
-    });
+    setQuestionErrors((prev) => { const next = new Map(prev); next.delete(id); return next; });
   };
 
   const handleDragStart = (id: string | number) => setDraggedQuestionId(id);
@@ -216,82 +174,50 @@ export default function ExamEditor() {
     const draggedIndex = questions.findIndex((q) => q.id === draggedQuestionId);
     const targetIndex = questions.findIndex((q) => q.id === targetId);
     if (draggedIndex === -1 || targetIndex === -1) return;
-    const newQuestions = [...questions];
-    const [removed] = newQuestions.splice(draggedIndex, 1);
-    newQuestions.splice(targetIndex, 0, removed);
-    setQuestions(newQuestions);
+    const next = [...questions];
+    const [removed] = next.splice(draggedIndex, 1);
+    next.splice(targetIndex, 0, removed);
+    setQuestions(next);
   };
 
   const calculateTotalScore = () =>
-    questions
-      .filter((q) => q._action !== "DELETE")
-      .reduce((sum, q) => sum + q.score, 0);
+    questions.filter((q) => q._action !== "DELETE").reduce((sum, q) => sum + q.score, 0);
 
   const validate = (): boolean => {
     let valid = true;
     const errors = new Map<string | number, QuestionErrors>();
 
-    if (!title.trim()) {
-      setTitleError(true);
-      valid = false;
-    } else {
-      setTitleError(false);
-    }
+    if (!title.trim()) { setTitleError(true); valid = false; }
+    else setTitleError(false);
 
-    const activeQuestions = questions.filter((q) => q._action !== "DELETE");
-    if (activeQuestions.length === 0) {
-      toast.error(t("exam.editor.minOneQuestion"));
-      return false;
-    }
+    const active = questions.filter((q) => q._action !== "DELETE");
+    if (active.length === 0) { toast.error(t("exam.editor.minOneQuestion")); return false; }
 
-    for (const q of activeQuestions) {
+    for (const q of active) {
       const qErrs: QuestionErrors = {};
-
-      if (!q.questionText.trim()) {
-        qErrs.questionText = true;
-        valid = false;
-      }
-
+      if (!q.questionText.trim()) { qErrs.questionText = true; valid = false; }
       if (q.type !== "ESSAY") {
-        if (!q.answers.some((a) => a.isCorrect)) {
-          qErrs.noCorrectAnswer = true;
-          valid = false;
-        }
+        if (!q.answers.some((a) => a.isCorrect)) { qErrs.noCorrectAnswer = true; valid = false; }
         if (q.type === "MULTIPLE_CHOICE") {
           const empty = new Set<string>();
-          for (const a of q.answers) {
-            if (!a.text.trim()) empty.add(a.id);
-          }
-          if (empty.size > 0) {
-            qErrs.emptyAnswers = empty;
-            valid = false;
-          }
+          for (const a of q.answers) { if (!a.text.trim()) empty.add(a.id); }
+          if (empty.size > 0) { qErrs.emptyAnswers = empty; valid = false; }
         }
       }
-
-      if (Object.keys(qErrs).length > 0) {
-        errors.set(q.id, qErrs);
-      }
+      if (Object.keys(qErrs).length > 0) errors.set(q.id, qErrs);
     }
 
     setQuestionErrors(errors);
-
-    if (!valid) {
-      toast.error(t("exam.editor.fixBeforeSave"));
-    }
-
+    if (!valid) toast.error(t("exam.editor.fixBeforeSave"));
     return valid;
   };
 
   const handleSave = async () => {
     if (!validate()) return;
 
-    const activeQuestions = questions.filter((q) => q._action !== "DELETE");
+    const active = questions.filter((q) => q._action !== "DELETE");
     const privacy: PrivacyType =
-      (locationPrivacy as string)?.toUpperCase() === "PRIVATE"
-        ? "PRIVATE"
-        : "PUBLIC";
-
+      (locationPrivacy as string)?.toUpperCase() === "PRIVATE" ? "PRIVATE" : "PUBLIC";
     const setIdNum = Number(setId);
 
     try {
@@ -299,93 +225,69 @@ export default function ExamEditor() {
         await updateExamMutation.mutateAsync({
           setId: setIdNum,
           examId,
-          data: {
-            title,
-            description,
-            privacy,
-            duration: timeLimit,
-          },
+          data: { title, description, privacy, duration: timeLimit },
         });
 
-        const toDelete = questions.filter(
-          (q) => q._action === "DELETE" && typeof q.id === "number",
-        );
-
-        for (const q of toDelete) {
-          await deleteQuestionMutation.mutateAsync({
-            setId: setIdNum,
-            examId,
-            questionId: q.id,
-          });
+        for (const q of questions.filter((q) => q._action === "DELETE" && typeof q.id === "number")) {
+          await deleteQuestionMutation.mutateAsync({ setId: setIdNum, examId, questionId: q.id });
         }
 
-        const toCreate = activeQuestions.filter(
-          (q) => q._action === "CREATE" || typeof q.id !== "number",
-        );
-        const toUpdate = activeQuestions.filter(
-          (q) => typeof q.id === "number" && q._action === "UPDATE",
-        );
+        const toCreate = active.filter((q) => q._action === "CREATE" || typeof q.id !== "number");
+        const toUpdate = active.filter((q) => typeof q.id === "number" && q._action === "UPDATE");
 
-        if (toCreate.length > 0) {
+        if (toCreate.length > 0)
           await createQuestionsMutation.mutateAsync({
             setId: setIdNum,
             examId,
-            data: toCreate.map((q) =>
-              uiQuestionToCreateRequest(q),
-            ),
+            data: toCreate.map(uiQuestionToCreateRequest),
           });
-        }
-        for (let i = 0; i < toUpdate.length; i++) {
-          const q = toUpdate[i];
+
+        for (const q of toUpdate)
           await updateQuestionMutation.mutateAsync({
             setId: setIdNum,
             examId,
             questionId: q.id,
             data: uiQuestionToCreateRequest(q),
           });
-        }
 
         toast.success(t("exam.editor.successUpdated"));
         navigate(`/sets/${setId}/exams/${examId}`);
       } else {
         const { data } = await createExamMutation.mutateAsync({
           setId: setIdNum,
-          data: {
-            title,
-            description,
-            privacy,
-            duration: timeLimit,
-          },
+          data: { title, description, privacy, duration: timeLimit },
         });
-
         const newExamId = data?.data?.id;
-        if (!newExamId) {
-          toast.error(t("exam.editor.failedCreate"));
-          return;
-        }
+        if (!newExamId) { toast.error(t("exam.editor.failedCreate")); return; }
 
         await createQuestionsMutation.mutateAsync({
           setId: setIdNum,
           examId: newExamId,
-          data: activeQuestions.map((q) => uiQuestionToCreateRequest(q)),
+          data: active.map(uiQuestionToCreateRequest),
         });
 
         toast.success("Exam created successfully");
         navigate(`/sets/${setId}/exams/${newExamId}`);
       }
-    } catch (error) {
-      console.error("Error saving exam:", error);
+    } catch {
       toast.error(t("exam.editor.failedSave"));
     }
   };
 
   const visibleQuestions = questions.filter((q) => q._action !== "DELETE");
+  const isSaving =
+    createExamMutation.isPending ||
+    updateExamMutation.isPending ||
+    createQuestionsMutation.isPending ||
+    updateQuestionMutation.isPending ||
+    deleteQuestionMutation.isPending;
 
   if (isUpdateMode && isLoadingDetail) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">
-          {t("exam.editor.loading")}
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-sm text-muted-foreground">{t("exam.editor.loading")}</p>
         </div>
       </div>
     );
@@ -393,151 +295,151 @@ export default function ExamEditor() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-card border-b border-border sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate(`/sets/${setId}/exams`)}
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                {t("exam.back")}
-              </Button>
-              <h1 className="text-2xl font-bold">
-                {isUpdateMode
-                  ? t("exam.editor.editExam")
-                  : t("exam.editor.createExam")}
-              </h1>
-            </div>
-            <Button
-              onClick={handleSave}
-              className="gap-2"
-              disabled={
-                createExamMutation.isPending ||
-                updateExamMutation.isPending ||
-                createQuestionsMutation.isPending ||
-                updateQuestionMutation.isPending ||
-                deleteQuestionMutation.isPending
-              }
-            >
-              <Save className="w-4 h-4" />
-              {isUpdateMode
+      {/* Sticky header */}
+      <div className="sticky top-0 z-10 bg-card border-b border-border">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center gap-4">
+          <button
+            onClick={() => navigate(`/sets/${setId}/exams`)}
+            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {t("exam.back")}
+          </button>
+          <div className="flex-1 min-w-0">
+            <h1 className="font-[family-name:var(--font-display)] text-xl font-medium tracking-tight truncate">
+              {isUpdateMode ? t("exam.editor.editExam") : t("exam.editor.createExam")}
+            </h1>
+          </div>
+          <Button onClick={handleSave} disabled={isSaving} className="gap-2 flex-shrink-0">
+            <Save className="w-4 h-4" />
+            {isSaving
+              ? "Saving…"
+              : isUpdateMode
                 ? t("exam.editor.updateExam")
                 : t("exam.editor.createExam")}
-            </Button>
-          </div>
+          </Button>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        <div className="bg-card border border-border rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">
+      <div className="max-w-4xl mx-auto px-6 py-8 space-y-6">
+        {/* Exam metadata */}
+        <div className="bg-card border border-border rounded-xl p-6 space-y-5">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground/60">
             {t("exam.editor.examInfo")}
-          </h2>
-          <div className="space-y-4">
+          </p>
+
+          <div>
+            <Label htmlFor="exam-title" className="text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block">
+              {t("exam.editor.titleLabel")} <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="exam-title"
+              value={title}
+              onChange={(e) => { setTitle(e.target.value); if (e.target.value.trim()) setTitleError(false); }}
+              placeholder={t("exam.editor.titlePlaceholder")}
+              className={`text-base bg-background ${titleError ? "border-destructive focus-visible:ring-destructive" : "border-border"}`}
+            />
+            {titleError && (
+              <p className="text-destructive text-xs mt-1">{t("exam.editor.titleRequired")}</p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="exam-desc" className="text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block">
+              {t("exam.editor.descriptionLabel")}
+            </Label>
+            <Textarea
+              id="exam-desc"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder={t("exam.editor.descriptionPlaceholder")}
+              className="min-h-[80px] resize-none bg-background border-border"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label className="text-sm font-medium mb-2 block">
-                {t("exam.editor.titleLabel")}{" "}
-                <span className="text-red-500">*</span>
+              <Label htmlFor="exam-time" className="text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 flex items-center gap-1.5">
+                <Clock className="w-3 h-3" />
+                {t("exam.editor.timeLimitMinutes")}
               </Label>
-              <Input
-                value={title}
-                onChange={(e) => handleTitleChange(e.target.value)}
-                placeholder={t("exam.editor.titlePlaceholder")}
-                className={`w-full ${titleError ? "border-red-500 focus-visible:ring-red-500" : ""}`}
-              />
-              {titleError && (
-                <p className="text-red-500 text-xs mt-1">
-                  {t("exam.editor.titleRequired")}
-                </p>
-              )}
-            </div>
-            <div>
-              <Label className="text-sm font-medium mb-2 block">
-                {t("exam.editor.descriptionLabel")}
-              </Label>
-              <Textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder={t("exam.editor.descriptionPlaceholder")}
-                className="w-full min-h-[80px] resize-none"
-              />
-            </div>
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <Label className="text-sm font-medium mb-2 block">
-                  {t("exam.editor.timeLimitMinutes")}
-                </Label>
+              <div className="flex items-center gap-2">
                 <Input
+                  id="exam-time"
                   type="number"
                   min="1"
                   value={timeLimit}
                   onChange={(e) => setTimeLimit(Number(e.target.value))}
-                  className="w-full"
+                  className="bg-background border-border"
                 />
+                <span className="text-sm text-muted-foreground flex-shrink-0">min</span>
               </div>
-              <div className="flex-1">
-                <Label className="text-sm font-medium mb-2 block">
-                  {t("exam.editor.totalScore")}
-                </Label>
+            </div>
+            <div>
+              <Label className="text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 flex items-center gap-1.5">
+                <Hash className="w-3 h-3" />
+                {t("exam.editor.totalScore")}
+              </Label>
+              <div className="flex items-center gap-2">
                 <Input
-                  type="text"
                   value={calculateTotalScore()}
                   readOnly
-                  className="w-full bg-muted"
+                  className="bg-secondary border-border text-muted-foreground"
                 />
+                <span className="text-sm text-muted-foreground flex-shrink-0">pts</span>
               </div>
             </div>
           </div>
         </div>
 
+        {/* Questions */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">
-              {t("exam.editor.questionsHeading", {
-                count: visibleQuestions.length,
-              })}
-            </h2>
-            <Button
-              onClick={handleAddQuestion}
-              variant="outline"
-              className="gap-2"
-            >
-              <Plus className="w-4 h-4" />
+            <div className="flex items-center gap-2">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground/60">
+                {t("exam.editor.questionsHeading", { count: visibleQuestions.length })}
+              </p>
+            </div>
+            <Button onClick={() => setQuestions([...questions, emptyQuestion()])} variant="outline" size="sm" className="gap-2 text-xs">
+              <Plus className="w-3.5 h-3.5" />
               {t("exam.editor.addQuestion")}
             </Button>
           </div>
 
-          {visibleQuestions.map((question, index) => (
-            <QuestionItem
-              key={question.id}
-              question={question}
-              index={index}
-              errors={questionErrors.get(question.id)}
-              onClearError={(field, answerId) =>
-                clearQuestionError(question.id, field, answerId)
-              }
-              onUpdate={handleUpdateQuestion}
-              onDelete={handleDeleteQuestion}
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
-              onDragOver={handleDragOver}
-              onDrop={handleDrop}
-            />
-          ))}
-
-          {visibleQuestions.length === 0 && (
-            <div className="text-center py-12 bg-card border border-dashed border-border rounded-lg">
-              <p className="text-muted-foreground mb-4">
-                {t("exam.editor.noQuestionsYet")}
-              </p>
-              <Button onClick={handleAddQuestion} variant="outline">
-                <Plus className="w-4 h-4 mr-2" />
+          {visibleQuestions.length === 0 ? (
+            <div className="text-center py-16 bg-card border-2 border-dashed border-border rounded-xl">
+              <p className="text-muted-foreground text-sm mb-4">{t("exam.editor.noQuestionsYet")}</p>
+              <Button onClick={() => setQuestions([emptyQuestion()])} variant="outline" size="sm" className="gap-2">
+                <Plus className="w-4 h-4" />
                 {t("exam.editor.addFirstQuestion")}
               </Button>
             </div>
+          ) : (
+            visibleQuestions.map((question, index) => (
+              <QuestionItem
+                key={question.id}
+                question={question}
+                index={index}
+                errors={questionErrors.get(question.id)}
+                onClearError={(field, answerId) => clearQuestionError(question.id, field, answerId)}
+                onUpdate={handleUpdateQuestion}
+                onDelete={handleDeleteQuestion}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+              />
+            ))
+          )}
+
+          {visibleQuestions.length > 0 && (
+            <button
+              onClick={() => setQuestions([...questions, emptyQuestion()])}
+              className="w-full flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed border-border text-sm text-muted-foreground hover:border-primary/50 hover:text-primary hover:bg-card transition-colors cursor-pointer mt-2"
+            >
+              <Plus className="w-4 h-4" />
+              {t("exam.editor.addQuestion")}
+            </button>
           )}
         </div>
       </div>

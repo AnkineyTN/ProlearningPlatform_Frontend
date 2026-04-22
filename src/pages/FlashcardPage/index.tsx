@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -402,7 +403,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     id: number;
     frontCard: string;
     backCard: string;
-    imageAssetId?: number;
+    imageAssetId?: number | null;
     cardStatus?: "NEW" | "LEARNING" | "KNOWN";
   }) => {
     try {

@@ -1,8 +1,6 @@
-import { GripVertical, Trash2, Plus } from "lucide-react";
+import { GripVertical, Trash2, Plus, CheckSquare, ToggleLeft, AlignLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -14,6 +12,8 @@ import {
 import type { Answer, ExamQuestion, QuestionType } from "../types";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { QuestionErrors } from "./index";
+
+const OPTION_LABELS = ["A", "B", "C", "D", "E", "F"];
 
 interface QuestionItemProps {
   question: ExamQuestion;
@@ -27,6 +27,12 @@ interface QuestionItemProps {
   onDragOver: (e: React.DragEvent, id: string | number) => void;
   onDrop: (e: React.DragEvent, id: string | number) => void;
 }
+
+const typeIcon = (type: QuestionType) => {
+  if (type === "MULTIPLE_CHOICE") return <CheckSquare className="w-3.5 h-3.5" />;
+  if (type === "TRUE_FALSE") return <ToggleLeft className="w-3.5 h-3.5" />;
+  return <AlignLeft className="w-3.5 h-3.5" />;
+};
 
 export default function QuestionItem({
   question,
@@ -56,51 +62,39 @@ export default function QuestionItem({
         { id: "true", text: "True", isCorrect: false },
         { id: "false", text: "False", isCorrect: false },
       ];
-    } else {
-      newAnswers = [];
     }
     onUpdate(question.id, { type, answers: newAnswers });
   };
 
   const handleAddAnswer = () => {
-    if (question.type === "MULTIPLE_CHOICE") {
-      const newAnswer: Answer = {
-        id: crypto.randomUUID(),
-        text: "",
-        isCorrect: false,
-      };
-      onUpdate(question.id, { answers: [...question.answers, newAnswer] });
+    if (question.type === "MULTIPLE_CHOICE" && question.answers.length < 6) {
+      onUpdate(question.id, {
+        answers: [...question.answers, { id: crypto.randomUUID(), text: "", isCorrect: false }],
+      });
     }
   };
 
   const handleAnswerChange = (answerId: string, text: string) => {
-    const updatedAnswers = question.answers.map((ans) =>
-      ans.id === answerId ? { ...ans, text } : ans,
-    );
-    onUpdate(question.id, { answers: updatedAnswers });
-    if (text.trim()) {
-      onClearError("emptyAnswers", answerId);
-    }
+    const updated = question.answers.map((a) => (a.id === answerId ? { ...a, text } : a));
+    onUpdate(question.id, { answers: updated });
+    if (text.trim()) onClearError("emptyAnswers", answerId);
   };
 
   const handleCorrectAnswerChange = (answerId: string) => {
-    const updatedAnswers = question.answers.map((ans) =>
-      ans.id === answerId
-        ? { ...ans, isCorrect: !ans.isCorrect }
+    const updated = question.answers.map((a) =>
+      a.id === answerId
+        ? { ...a, isCorrect: !a.isCorrect }
         : question.type === "TRUE_FALSE"
-          ? { ...ans, isCorrect: false }
-          : ans,
+          ? { ...a, isCorrect: false }
+          : a,
     );
-    onUpdate(question.id, { answers: updatedAnswers });
+    onUpdate(question.id, { answers: updated });
     onClearError("noCorrectAnswer");
   };
 
   const handleDeleteAnswer = (answerId: string) => {
     if (question.answers.length > 2) {
-      const updatedAnswers = question.answers.filter(
-        (ans) => ans.id !== answerId,
-      );
-      onUpdate(question.id, { answers: updatedAnswers });
+      onUpdate(question.id, { answers: question.answers.filter((a) => a.id !== answerId) });
     }
   };
 
@@ -113,171 +107,167 @@ export default function QuestionItem({
       onDragEnd={onDragEnd}
       onDragOver={(e) => onDragOver(e, question.id)}
       onDrop={(e) => onDrop(e, question.id)}
-      className={`bg-card border rounded-lg p-6 mb-4 hover:shadow-md transition-shadow ${
-        hasError ? "border-red-400" : "border-border"
+      className={`bg-card border rounded-xl p-5 mb-3 transition-all ${
+        hasError ? "border-destructive/60 shadow-sm shadow-destructive/10" : "border-border hover:shadow-sm"
       }`}
     >
-      <div className="flex items-start gap-4">
-        <div className="cursor-move pt-2">
-          <GripVertical className="w-5 h-5 text-muted-foreground" />
+      <div className="flex items-start gap-3">
+        {/* Drag handle */}
+        <div
+          className="cursor-grab active:cursor-grabbing pt-1 text-muted-foreground/40 hover:text-muted-foreground transition-colors flex-shrink-0"
+          title="Drag to reorder"
+        >
+          <GripVertical className="w-4 h-4" />
         </div>
+
         <div className="flex-1 space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-lg">
-              {t("exam.editor.questionLabel")} {index + 1}
-            </span>
-            <Button
-              onClick={() => onDelete(question.id)}
-              variant="ghost"
-              size="sm"
-              className="text-red-500 hover:text-red-700 hover:bg-red-50"
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
+          {/* Question header row */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="font-[family-name:var(--font-mono-pl)] text-xs text-muted-foreground/60 uppercase tracking-widest">
+                Q{String(index + 1).padStart(2, "0")}
+              </span>
+              <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                {typeIcon(question.type)}
+                <span>
+                  {question.type === "MULTIPLE_CHOICE"
+                    ? t("exam.common.multipleChoice")
+                    : question.type === "TRUE_FALSE"
+                      ? t("exam.common.trueFalse")
+                      : t("exam.common.essay")}
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              {/* Type selector */}
+              <Select
+                value={question.type}
+                onValueChange={(v) => handleTypeChange(v as QuestionType)}
+              >
+                <SelectTrigger className="h-8 text-xs w-36 bg-background border-border">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="MULTIPLE_CHOICE">{t("exam.common.multipleChoice")}</SelectItem>
+                  <SelectItem value="TRUE_FALSE">{t("exam.common.trueFalse")}</SelectItem>
+                  <SelectItem value="ESSAY">{t("exam.common.essay")}</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Points */}
+              <div className="flex items-center gap-1.5">
+                <Input
+                  type="number"
+                  min="0"
+                  value={question.score}
+                  onChange={(e) => onUpdate(question.id, { score: Number(e.target.value) })}
+                  className="h-8 w-16 text-center text-xs bg-background border-border"
+                />
+                <span className="text-xs text-muted-foreground">pts</span>
+              </div>
+
+              {/* Delete */}
+              <button
+                onClick={() => onDelete(question.id)}
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
+                title="Delete question"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
+
+          {/* Question text */}
           <div>
-            <Label className="text-sm font-medium mb-2 block">
-              {t("exam.editor.questionType")}
-            </Label>
-            <Select
-              value={question.type}
-              onValueChange={(value) => handleTypeChange(value as QuestionType)}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="MULTIPLE_CHOICE">
-                  {t("exam.common.multipleChoice")}
-                </SelectItem>
-                <SelectItem value="TRUE_FALSE">
-                  {t("exam.common.trueFalse")}
-                </SelectItem>
-                <SelectItem value="ESSAY">{t("exam.common.essay")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label className="text-sm font-medium mb-2 block">
-              {t("exam.editor.questionLabel")}{" "}
-              <span className="text-red-500">*</span>
-            </Label>
             <Textarea
               value={question.questionText}
-              onChange={(e) =>
-                onUpdate(question.id, { questionText: e.target.value })
-              }
+              onChange={(e) => onUpdate(question.id, { questionText: e.target.value })}
               placeholder={t("exam.editor.questionPlaceholder")}
-              className={`w-full min-h-[80px] resize-none ${
-                errors?.questionText ? "border-red-500 focus-visible:ring-red-500" : ""
+              className={`w-full min-h-[80px] resize-none bg-background text-sm ${
+                errors?.questionText ? "border-destructive focus-visible:ring-destructive" : "border-border"
               }`}
             />
             {errors?.questionText && (
-              <p className="text-red-500 text-xs mt-1">Question text is required</p>
+              <p className="text-destructive text-xs mt-1">{t("exam.editor.questionRequired") || "Question text is required"}</p>
             )}
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex-1">
-              <Label className="text-sm font-medium mb-2 block">
-                {t("exam.editor.pointsLabel")}
-              </Label>
-              <Input
-                type="number"
-                min="0"
-                value={question.score}
-                onChange={(e) =>
-                  onUpdate(question.id, { score: Number(e.target.value) })
-                }
-                className="w-full"
-              />
-            </div>
-          </div>
+
+          {/* Answers */}
           {question.type !== "ESSAY" && (
-            <div>
-              <Label className="text-sm font-medium mb-2 block">
-                {t("exam.editor.answersLabel")}{" "}
-                {question.type === "MULTIPLE_CHOICE" &&
-                  t("exam.editor.answersHintMcq")}
-                {" "}
-                <span className="text-red-500">*</span>
-              </Label>
+            <div className="space-y-2">
               {errors?.noCorrectAnswer && (
-                <p className="text-red-500 text-xs mb-2">
-                  {t("exam.editor.selectCorrect")}
-                </p>
+                <p className="text-destructive text-xs">{t("exam.editor.selectCorrect")}</p>
               )}
-              <div className="space-y-2">
-                {question.answers.map((answer, idx) => {
-                  const answerHasError = errors?.emptyAnswers?.has(answer.id);
-                  return (
-                    <div
-                      key={answer.id}
-                      className={`flex items-center gap-2 bg-background p-3 rounded border ${
-                        answerHasError ? "border-red-500" : "border-border"
-                      }`}
-                    >
-                      <Checkbox
-                        checked={answer.isCorrect}
-                        onCheckedChange={() =>
-                          handleCorrectAnswerChange(answer.id)
-                        }
-                        className="flex-shrink-0"
-                      />
-                      {question.type === "TRUE_FALSE" ? (
-                        <span className="flex-1 font-medium">{answer.text}</span>
-                      ) : (
-                        <>
-                          <div className="flex-1">
-                            <Input
-                              value={answer.text}
-                              onChange={(e) =>
-                                handleAnswerChange(answer.id, e.target.value)
-                              }
-                              placeholder={t("exam.editor.answerN", {
-                                n: idx + 1,
-                              })}
-                              className={
-                                answerHasError ? "border-red-500 focus-visible:ring-red-500" : ""
-                              }
-                            />
-                            {answerHasError && (
-                              <p className="text-red-500 text-xs mt-1">
-                                {t("exam.editor.answerRequired")}
-                              </p>
-                            )}
-                          </div>
-                          {question.answers.length > 2 && (
-                            <Button
-                              onClick={() => handleDeleteAnswer(answer.id)}
-                              variant="ghost"
-                              size="sm"
-                              className="flex-shrink-0 text-red-500 hover:text-red-700"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          )}
-                        </>
-                      )}
+              {question.answers.map((answer, idx) => {
+                const answerError = errors?.emptyAnswers?.has(answer.id);
+                return (
+                  <div
+                    key={answer.id}
+                    className={`flex items-center gap-2.5 bg-background rounded-lg border px-3 py-2.5 transition-colors ${
+                      answer.isCorrect
+                        ? "border-text-info/50 bg-bg-info/30"
+                        : answerError
+                          ? "border-destructive/60"
+                          : "border-border"
+                    }`}
+                  >
+                    <Checkbox
+                      checked={answer.isCorrect}
+                      onCheckedChange={() => handleCorrectAnswerChange(answer.id)}
+                      className="flex-shrink-0"
+                    />
+                    <div className="flex items-center justify-center w-5 h-5 rounded bg-border/50 flex-shrink-0">
+                      <span className="font-[family-name:var(--font-mono-pl)] text-[10px] font-medium text-muted-foreground">
+                        {OPTION_LABELS[idx]}
+                      </span>
                     </div>
-                  );
-                })}
-                {question.type === "MULTIPLE_CHOICE" &&
-                  question.answers.length < 6 && (
-                    <Button
-                      onClick={handleAddAnswer}
-                      variant="outline"
-                      size="sm"
-                      className="w-full mt-2"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      {t("exam.editor.addAnswer")}
-                    </Button>
-                  )}
-              </div>
+                    {question.type === "TRUE_FALSE" ? (
+                      <span className="flex-1 text-sm font-medium">{answer.text}</span>
+                    ) : (
+                      <>
+                        <div className="flex-1">
+                          <Input
+                            value={answer.text}
+                            onChange={(e) => handleAnswerChange(answer.id, e.target.value)}
+                            placeholder={t("exam.editor.answerN", { n: idx + 1 })}
+                            className={`h-8 text-sm bg-transparent border-0 p-0 focus-visible:ring-0 ${
+                              answerError ? "placeholder:text-destructive/60" : ""
+                            }`}
+                          />
+                          {answerError && (
+                            <p className="text-destructive text-xs mt-0.5">
+                              {t("exam.editor.answerRequired")}
+                            </p>
+                          )}
+                        </div>
+                        {question.answers.length > 2 && (
+                          <button
+                            onClick={() => handleDeleteAnswer(answer.id)}
+                            className="w-6 h-6 rounded flex items-center justify-center text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 transition-colors flex-shrink-0 cursor-pointer"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+
+              {question.type === "MULTIPLE_CHOICE" && question.answers.length < 6 && (
+                <button
+                  onClick={handleAddAnswer}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-dashed border-border text-xs text-muted-foreground hover:border-primary/50 hover:text-primary hover:bg-card transition-colors cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  {t("exam.editor.addAnswer")}
+                </button>
+              )}
             </div>
           )}
+
           {question.type === "ESSAY" && (
-            <div className="bg-muted/50 p-3 rounded text-sm text-muted-foreground">
+            <div className="bg-secondary/50 rounded-lg px-4 py-3 text-xs text-muted-foreground border border-border/50">
               {t("exam.editor.essayGradingNote")}
             </div>
           )}

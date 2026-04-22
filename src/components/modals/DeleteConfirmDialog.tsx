@@ -20,39 +20,36 @@ type Props = {
   itemName?: string;
 };
 
-const DeleteConfirmDialog = ({
-  isOpen,
-  onClose,
-  onConfirm,
-  title,
-  itemName,
-}: Props) => {
+const DeleteConfirmDialog = ({ isOpen, onClose, onConfirm, title, itemName }: Props) => {
   const { t } = useTranslation();
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
-      <AlertDialogContent className='max-w-md'>
+      <AlertDialogContent className="max-w-sm rounded-2xl border-border bg-card">
         <AlertDialogHeader>
-          <div className='flex items-center gap-3 mb-2'>
-            <div className='w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center'>
-              <Trash2 className='w-6 h-6 text-red-600 dark:text-red-500' />
+          <div className="flex flex-col items-center text-center gap-4 mb-1">
+            <div className="w-12 h-12 rounded-full bg-destructive/10 border border-destructive/20 flex items-center justify-center">
+              <Trash2 className="w-5 h-5 text-destructive" />
             </div>
-            <AlertDialogTitle className='text-xl'>{title}</AlertDialogTitle>
+            <div>
+              <AlertDialogTitle className="font-[family-name:var(--font-display)] text-xl font-medium tracking-tight">
+                {title}
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-sm text-muted-foreground mt-1.5">
+                {t("modal.deleteConfirmation")} {itemName ? `"${itemName}"` : ""}?
+                <span className="block mt-1 text-muted-foreground/70">
+                  {t("modal.deleteConfirmationWarning")}
+                </span>
+              </AlertDialogDescription>
+            </div>
           </div>
-          <AlertDialogDescription className='text-base'>
-            {t("modal.deleteConfirmation")} {`${itemName}?`}
-            <br />
-            <span className='text-muted-foreground mt-2 block'>
-              {t("modal.deleteConfirmationWarning")}
-            </span>
-          </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className='gap-2 sm:gap-2'>
-          <AlertDialogCancel className='px-4 py-2 cursor-pointer'>
+        <AlertDialogFooter className="flex gap-2 mt-1">
+          <AlertDialogCancel className="flex-1 cursor-pointer rounded-xl">
             {t("modal.cancel")}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
-            className='px-4 py-2 bg-red-600 cursor-pointer hover:bg-red-700 text-white'
+            className="flex-1 cursor-pointer rounded-xl bg-destructive hover:bg-destructive/90 text-destructive-foreground"
           >
             {t("modal.delete")}
           </AlertDialogAction>
