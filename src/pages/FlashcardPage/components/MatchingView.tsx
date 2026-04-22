@@ -1,13 +1,17 @@
-import { useState, useEffect } from "react";
-import { Trophy, Clock, Medal, ArrowLeft, RotateCcw } from "lucide-react";
-import type { Card } from "@/services/types/flashcard.types";
-import { Button } from "@/components/ui/button";
-import { useGameHistory, useGameRanking, useSaveGameResult } from "@/hooks/useFlashcards";
+import { useState, useEffect } from 'react';
+import { Trophy, Clock, Medal, ArrowLeft, RotateCcw } from 'lucide-react';
+import type { Card } from '@/services/types/flashcard.types';
+import { Button } from '@/components/ui/button';
+import {
+  useGameHistory,
+  useGameRanking,
+  useSaveGameResult,
+} from '@/hooks/useFlashcards';
 
 type Props = {
   setId: number;
   flashcardId: number | string;
-  privacy: "PUBLIC" | "PRIVATE";
+  privacy: 'PUBLIC' | 'PRIVATE';
   flashcards: Card[];
   onBack: () => void;
 };
@@ -15,14 +19,20 @@ type Props = {
 interface MatchingCard {
   id: string;
   content: string;
-  type: "term" | "definition";
+  type: 'term' | 'definition';
   originalId: number;
   isMatched: boolean;
 }
 
-type GameTab = "ranking" | "history";
+type GameTab = 'ranking' | 'history';
 
-const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props) => {
+const MatchingView = ({
+  setId,
+  flashcardId,
+  privacy,
+  flashcards,
+  onBack,
+}: Props) => {
   const [cards, setCards] = useState<MatchingCard[]>([]);
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [matchedPairs, setMatchedPairs] = useState<Set<number>>(new Set());
@@ -31,10 +41,10 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [timer, setTimer] = useState(0);
   const [resultSaved, setResultSaved] = useState(false);
-  const [activeTab, setActiveTab] = useState<GameTab>("history");
+  const [activeTab, setActiveTab] = useState<GameTab>('history');
 
   const saveGameResult = useSaveGameResult();
-  const isPublic = privacy === "PUBLIC";
+  const isPublic = privacy === 'PUBLIC';
 
   const { data: rankingData, refetch: refetchRanking } = useGameRanking(
     Number(setId),
@@ -68,7 +78,11 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
       const totalCards = Math.min(flashcards.length, 6);
       setResultSaved(true);
       saveGameResult.mutate(
-        { setId: Number(setId), flashcardId, data: { totalCards, durationSeconds } },
+        {
+          setId: Number(setId),
+          flashcardId,
+          data: { totalCards, durationSeconds },
+        },
         {
           onSuccess: () => {
             refetchHistory();
@@ -77,7 +91,7 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
         },
       );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [endTime]);
 
   const initializeGame = () => {
@@ -85,14 +99,14 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
     const termCards: MatchingCard[] = selectedFlashcards.map((card) => ({
       id: `term-${card.id}`,
       content: card.frontCard,
-      type: "term" as const,
+      type: 'term' as const,
       originalId: card.id,
       isMatched: false,
     }));
     const definitionCards: MatchingCard[] = selectedFlashcards.map((card) => ({
       id: `def-${card.id}`,
       content: card.backCard,
-      type: "definition" as const,
+      type: 'definition' as const,
       originalId: card.id,
       isMatched: false,
     }));
@@ -131,7 +145,9 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
         if (isMatch) {
           setCards((prev) =>
             prev.map((c) =>
-              c.id === firstId || c.id === secondId ? { ...c, isMatched: true } : c,
+              c.id === firstId || c.id === secondId
+                ? { ...c, isMatched: true }
+                : c,
             ),
           );
           const newMatchedPairs = new Set(matchedPairs);
@@ -153,18 +169,18 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
     const milliseconds = Math.floor((ms % 1000) / 10);
-    return `${minutes}:${seconds.toString().padStart(2, "0")}.${milliseconds.toString().padStart(2, "0")}`;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
   };
 
   const formatSeconds = (seconds: number) => {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
-    return `${m}:${s.toString().padStart(2, "0")}`;
+    return `${m}:${s.toString().padStart(2, '0')}`;
   };
 
   const getCardStyle = (card: MatchingCard): string => {
     const base =
-      "p-4 rounded-xl border cursor-pointer transition-all duration-200 text-center flex items-center justify-center min-h-[100px] select-none";
+      'p-4 rounded-xl border cursor-pointer transition-all duration-200 text-center flex items-center justify-center min-h-[100px] select-none';
 
     if (card.isMatched) {
       return `${base} bg-bg-info/40 border-text-info/40 opacity-60 cursor-default scale-95`;
@@ -180,22 +196,21 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
           card.type !== other.type;
         return `${base} ${
           isMatch
-            ? "bg-bg-info border-text-info scale-105 shadow-md"
-            : "bg-bg-error border-text-error"
+            ? 'bg-bg-info border-text-info scale-105 shadow-md'
+            : 'bg-bg-error border-text-error'
         }`;
       }
       return `${base} bg-card-selected border-text-selected scale-105 shadow-md`;
     }
 
-    return `${base} bg-card border-border hover:border-primary/50 hover:shadow-md hover:-translate-y-0.5`;
+    return `${base} bg-[var(--pl-bg)] border-border hover:border-primary/50 hover:shadow-md hover:-translate-y-0.5`;
   };
 
   const getRankMedal = (rank: number) => {
-    const colors = ["text-yellow-500", "text-slate-400", "text-amber-600"];
-    if (rank <= 3)
-      return <Medal className={`w-4 h-4 ${colors[rank - 1]}`} />;
+    const colors = ['text-yellow-500', 'text-slate-400', 'text-amber-600'];
+    if (rank <= 3) return <Medal className={`w-4 h-4 ${colors[rank - 1]}`} />;
     return (
-      <span className="w-4 text-center text-xs font-[family-name:var(--font-mono-pl)] text-muted-foreground">
+      <span className='w-4 text-center text-xs font-[family-name:var(--font-mono-pl)] text-muted-foreground'>
         {rank}
       </span>
     );
@@ -204,53 +219,61 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
   // Results screen
   if (endTime && startTime) {
     const totalTime = endTime - startTime;
-    const tabs: GameTab[] = isPublic ? ["ranking", "history"] : ["history"];
-    const tabLabels: Record<GameTab, string> = { ranking: "Ranking", history: "My History" };
+    const tabs: GameTab[] = isPublic ? ['ranking', 'history'] : ['history'];
+    const tabLabels: Record<GameTab, string> = {
+      ranking: 'Ranking',
+      history: 'My History',
+    };
 
     return (
-      <div className="max-w-3xl mx-auto px-6 py-10">
+      <div className='max-w-3xl mx-auto px-6 py-10'>
         {/* Result hero */}
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-yellow-500/10 border border-yellow-500/30 mb-5">
-            <Trophy className="w-10 h-10 text-yellow-500" />
+        <div className='text-center mb-10'>
+          <div className='inline-flex items-center justify-center w-20 h-20 rounded-full bg-yellow-500/10 border border-yellow-500/30 mb-5'>
+            <Trophy className='w-10 h-10 text-yellow-500' />
           </div>
-          <h2 className="font-[family-name:var(--font-display)] text-4xl font-medium tracking-tight mb-2">
+          <h2 className='font-[family-name:var(--font-display)] text-4xl font-medium tracking-tight mb-2'>
             Congratulations!
           </h2>
-          <p className="text-muted-foreground">You completed the matching game</p>
+          <p className='text-muted-foreground'>
+            You completed the matching game
+          </p>
 
-          <div className="inline-flex items-center gap-3 mt-6 bg-card border border-border rounded-xl px-8 py-4">
-            <Clock className="w-5 h-5 text-text-selected" />
-            <span className="font-[family-name:var(--font-mono-pl)] text-2xl font-medium text-text-selected">
+          <div className='inline-flex items-center gap-3 mt-6 bg-[var(--pl-bg)] border border-border rounded-xl px-8 py-4'>
+            <Clock className='w-5 h-5 text-text-selected' />
+            <span className='font-[family-name:var(--font-mono-pl)] text-2xl font-medium text-text-selected'>
               {formatTime(totalTime)}
             </span>
           </div>
 
-          <div className="flex gap-3 justify-center mt-6">
+          <div className='flex gap-3 justify-center mt-6'>
             <Button
-              onClick={() => { setIsGameStarted(false); initializeGame(); }}
-              className="gap-2"
+              onClick={() => {
+                setIsGameStarted(false);
+                initializeGame();
+              }}
+              className='gap-2'
             >
-              <RotateCcw className="w-4 h-4" />
+              <RotateCcw className='w-4 h-4' />
               Play Again
             </Button>
-            <Button variant="outline" onClick={onBack} className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
+            <Button variant='outline' onClick={onBack} className='gap-2'>
+              <ArrowLeft className='w-4 h-4' />
               Back to Home
             </Button>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-border mb-6 flex gap-1">
+        <div className='border-b border-border mb-6 flex gap-1'>
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer -mb-px ${
                 activeTab === tab
-                  ? "border-primary text-foreground"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
+                  ? 'border-primary text-foreground'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
             >
               {tabLabels[tab]}
@@ -259,31 +282,31 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
         </div>
 
         {/* Ranking */}
-        {activeTab === "ranking" && isPublic && (
-          <div className="space-y-2">
+        {activeTab === 'ranking' && isPublic && (
+          <div className='space-y-2'>
             {!rankingData?.data || rankingData.data.length === 0 ? (
-              <p className="text-center text-muted-foreground py-10 text-sm">
+              <p className='text-center text-muted-foreground py-10 text-sm'>
                 No rankings yet. Be the first!
               </p>
             ) : (
               rankingData.data.map((item) => (
                 <div
                   key={item.userId}
-                  className="flex items-center gap-4 p-3.5 rounded-xl bg-card border border-border"
+                  className='flex items-center gap-4 p-3.5 rounded-xl bg-[var(--pl-bg)] border border-border'
                 >
-                  <div className="flex items-center justify-center w-7">
+                  <div className='flex items-center justify-center w-7'>
                     {getRankMedal(item.rank)}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="font-medium text-sm truncate block">
+                  <div className='flex-1 min-w-0'>
+                    <span className='font-medium text-sm truncate block'>
                       {item.firstName} {item.lastName}
                     </span>
-                    <span className="text-xs text-muted-foreground">
-                      {item.playCount} {item.playCount === 1 ? "play" : "plays"}
+                    <span className='text-xs text-muted-foreground'>
+                      {item.playCount} {item.playCount === 1 ? 'play' : 'plays'}
                     </span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-text-selected font-[family-name:var(--font-mono-pl)] text-sm font-medium">
-                    <Clock className="w-3.5 h-3.5" />
+                  <div className='flex items-center gap-1.5 text-text-selected font-[family-name:var(--font-mono-pl)] text-sm font-medium'>
+                    <Clock className='w-3.5 h-3.5' />
                     {formatSeconds(item.bestDuration)}
                   </div>
                 </div>
@@ -293,29 +316,31 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
         )}
 
         {/* History */}
-        {activeTab === "history" && (
-          <div className="space-y-2">
+        {activeTab === 'history' && (
+          <div className='space-y-2'>
             {!historyData?.data || historyData.data.length === 0 ? (
-              <p className="text-center text-muted-foreground py-10 text-sm">
+              <p className='text-center text-muted-foreground py-10 text-sm'>
                 No history yet.
               </p>
             ) : (
               historyData.data.map((item, idx) => (
                 <div
                   key={item.id}
-                  className="flex items-center gap-4 p-3.5 rounded-xl bg-card border border-border"
+                  className='flex items-center gap-4 p-3.5 rounded-xl bg-[var(--pl-bg)] border border-border'
                 >
-                  <span className="w-6 text-center text-xs font-[family-name:var(--font-mono-pl)] text-muted-foreground">
+                  <span className='w-6 text-center text-xs font-[family-name:var(--font-mono-pl)] text-muted-foreground'>
                     #{idx + 1}
                   </span>
-                  <div className="flex-1">
-                    <span className="text-sm text-muted-foreground">
+                  <div className='flex-1'>
+                    <span className='text-sm text-muted-foreground'>
                       {new Date(item.completedAt).toLocaleString()}
                     </span>
                   </div>
-                  <span className="text-xs text-muted-foreground">{item.totalCards} cards</span>
-                  <div className="flex items-center gap-1.5 text-text-selected font-[family-name:var(--font-mono-pl)] text-sm font-medium">
-                    <Clock className="w-3.5 h-3.5" />
+                  <span className='text-xs text-muted-foreground'>
+                    {item.totalCards} cards
+                  </span>
+                  <div className='flex items-center gap-1.5 text-text-selected font-[family-name:var(--font-mono-pl)] text-sm font-medium'>
+                    <Clock className='w-3.5 h-3.5' />
                     {formatSeconds(item.durationSeconds)}
                   </div>
                 </div>
@@ -330,30 +355,30 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
   // Not started / no cards
   if (!isGameStarted || flashcards.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 py-10 text-center">
-        <div className="w-20 h-20 rounded-2xl bg-card border border-border flex items-center justify-center mb-6">
-          <div className="grid grid-cols-2 gap-1">
+      <div className='flex flex-col items-center justify-center min-h-[60vh] px-6 py-10 text-center'>
+        <div className='w-20 h-20 rounded-2xl bg-[var(--pl-bg)] border border-border flex items-center justify-center mb-6'>
+          <div className='grid grid-cols-2 gap-1'>
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="w-4 h-4 rounded bg-border" />
+              <div key={i} className='w-4 h-4 rounded bg-border' />
             ))}
           </div>
         </div>
-        <h2 className="font-[family-name:var(--font-display)] text-3xl font-medium tracking-tight mb-2">
+        <h2 className='font-[family-name:var(--font-display)] text-3xl font-medium tracking-tight mb-2'>
           Matching Game
         </h2>
-        <p className="text-muted-foreground mb-8 max-w-xs">
+        <p className='text-muted-foreground mb-8 max-w-xs'>
           {flashcards.length === 0
-            ? "No flashcards available to play."
-            : "Match terms with their definitions as fast as you can."}
+            ? 'No flashcards available to play.'
+            : 'Match terms with their definitions as fast as you can.'}
         </p>
-        <div className="flex gap-3">
+        <div className='flex gap-3'>
           {flashcards.length > 0 && (
-            <Button onClick={initializeGame} className="px-6">
+            <Button onClick={initializeGame} className='px-6'>
               Start Game
             </Button>
           )}
-          <Button variant="outline" onClick={onBack} className="gap-2 px-6">
-            <ArrowLeft className="w-4 h-4" />
+          <Button variant='outline' onClick={onBack} className='gap-2 px-6'>
+            <ArrowLeft className='w-4 h-4' />
             Back
           </Button>
         </div>
@@ -365,62 +390,64 @@ const MatchingView = ({ setId, flashcardId, privacy, flashcards, onBack }: Props
 
   // Playing
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8">
+    <div className='max-w-4xl mx-auto px-6 py-8'>
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className='flex items-center justify-between mb-8'>
         <div>
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-medium tracking-tight">
+          <h2 className='font-[family-name:var(--font-display)] text-2xl font-medium tracking-tight'>
             Matching Game
           </h2>
-          <p className="text-sm text-muted-foreground mt-0.5">
+          <p className='text-sm text-muted-foreground mt-0.5'>
             Match terms with their definitions
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className='flex items-center gap-3'>
           {/* Timer */}
-          <div className="flex items-center gap-2 bg-card border border-border rounded-xl px-4 py-2.5">
-            <Clock className="w-4 h-4 text-muted-foreground" />
-            <span className="font-[family-name:var(--font-mono-pl)] text-lg font-medium text-text-selected">
+          <div className='flex items-center gap-2 bg-[var(--pl-bg)] border border-border rounded-xl px-4 py-2.5'>
+            <Clock className='w-4 h-4 text-muted-foreground' />
+            <span className='font-[family-name:var(--font-mono-pl)] text-lg font-medium text-text-selected'>
               {formatTime(timer)}
             </span>
           </div>
 
           {/* Score */}
-          <div className="flex items-center gap-2 bg-card border border-border rounded-xl px-4 py-2.5">
-            <span className="font-[family-name:var(--font-mono-pl)] text-lg font-medium text-text-info">
+          <div className='flex items-center gap-2 bg-[var(--pl-bg)] border border-border rounded-xl px-4 py-2.5'>
+            <span className='font-[family-name:var(--font-mono-pl)] text-lg font-medium text-text-info'>
               {matchedPairs.size}
-              <span className="text-muted-foreground text-sm">/{totalPairs}</span>
+              <span className='text-muted-foreground text-sm'>
+                /{totalPairs}
+              </span>
             </span>
           </div>
         </div>
       </div>
 
       {/* Progress bar */}
-      <div className="h-1 bg-border rounded-full overflow-hidden mb-8">
+      <div className='h-1 bg-border rounded-full overflow-hidden mb-8'>
         <div
-          className="h-full bg-primary transition-all duration-300 rounded-full"
+          className='h-full bg-primary transition-all duration-300 rounded-full'
           style={{ width: `${(matchedPairs.size / totalPairs) * 100}%` }}
         />
       </div>
 
       {/* Cards Grid */}
-      <div className="grid grid-cols-3 gap-3 mb-8">
+      <div className='grid grid-cols-3 gap-3 mb-8'>
         {cards.map((card) => (
           <div
             key={card.id}
             onClick={() => handleCardClick(card.id)}
             className={getCardStyle(card)}
           >
-            <p className="text-sm font-medium leading-snug">{card.content}</p>
+            <p className='text-sm font-medium leading-snug'>{card.content}</p>
           </div>
         ))}
       </div>
 
       {/* Exit */}
-      <div className="flex justify-center">
-        <Button variant="outline" onClick={onBack} className="gap-2">
-          <ArrowLeft className="w-4 h-4" />
+      <div className='flex justify-center'>
+        <Button variant='outline' onClick={onBack} className='gap-2'>
+          <ArrowLeft className='w-4 h-4' />
           Exit Game
         </Button>
       </div>

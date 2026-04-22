@@ -7,22 +7,22 @@ import {
   Lock,
   LockKeyhole,
   X,
-} from "lucide-react";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { toast } from "react-toastify";
+} from 'lucide-react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
 type Props = {
   type: string;
@@ -47,11 +47,11 @@ const CreateNewModal = ({
   initialData,
   isUpdateMode,
 }: Props) => {
-  const [title, setTitle] = useState(initialData?.title || "");
+  const [title, setTitle] = useState(initialData?.title || '');
   const [description, setDescription] = useState(
-    initialData?.description || "",
+    initialData?.description || '',
   );
-  const [privacy, setPrivacy] = useState(initialData?.privacy || "Public");
+  const [privacy, setPrivacy] = useState(initialData?.privacy || 'Public');
   const [errors, setErrors] = useState<{
     titleEmpty?: boolean;
     titleTooLong?: boolean;
@@ -91,17 +91,17 @@ const CreateNewModal = ({
     // Submit if validation passes
     try {
       await Promise.resolve(onSubmit({ title, description, privacy }));
-      window.dispatchEvent(new Event("prolearning:refresh"));
+      window.dispatchEvent(new Event('prolearning:refresh'));
 
       // Reset form
-      setTitle("");
-      setDescription("");
-      setPrivacy("Public");
+      setTitle('');
+      setDescription('');
+      setPrivacy('Public');
       setErrors({});
       onClose();
     } catch (err) {
-      console.error("CreateNewModal submit error", err);
-      toast.error("Failed to create new item. Please try again.");
+      console.error('CreateNewModal submit error', err);
+      toast.error('Failed to create new item. Please try again.');
     }
   };
 
@@ -109,9 +109,9 @@ const CreateNewModal = ({
     if (onBack) {
       onBack();
     } else {
-      setTitle("");
-      setDescription("");
-      setPrivacy("Public");
+      setTitle('');
+      setDescription('');
+      setPrivacy('Public');
       setErrors({});
       onClose();
     }
@@ -145,17 +145,17 @@ const CreateNewModal = ({
       />
 
       {/* Modal */}
-      <div className='relative bg-background rounded-lg shadow-xl w-full max-w-xl mx-4 p-6'>
+      <div className='relative transition-[background] duration-300 bg-[var(--pl-bg)] border-border rounded-lg shadow-xl w-full max-w-xl mx-4 p-6'>
         {/* Header */}
         <div className='flex justify-between items-center mb-6'>
           <h2 className='text-2xl font-bold'>
             {isUpdateMode
-              ? t("modal.update", { type: typeLower })
-              : t("modal.new", { type: typeLower })}
+              ? t('modal.update', { type: typeLower })
+              : t('modal.new', { type: typeLower })}
           </h2>
           <button
             onClick={handleCancel}
-            className='p-1 hover:bg-card rounded transition-colors cursor-pointer'
+            className='p-1 hover:bg-[var(--pl-bg-hover)] rounded transition-colors cursor-pointer'
           >
             <X className='w-6 h-6' />
           </button>
@@ -167,28 +167,28 @@ const CreateNewModal = ({
           <div>
             <Label className='flex items-center gap-2 font-medium mb-3'>
               <Heading className='w-4 h-4' />
-              {t("modal.title")}
+              {t('modal.title')}
               <span className='text-red-500'>*</span>
             </Label>
             <Input
               type='text'
               value={title}
               onChange={handleTitleChange}
-              className={`w-full px-3 py-2 border rounded-lg bg-card focus:outline-none focus:ring-2 ${
+              className={`w-full px-3 py-2 border rounded-lg bg-[var(--pl-bg)] focus:outline-none focus:ring-2 ${
                 errors.titleEmpty || errors.titleTooLong
-                  ? "border-red-500 focus:ring-red-500"
-                  : "border-border focus:ring-foreground"
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-border focus:ring-foreground'
               }`}
-              placeholder={t("modal.title")}
+              placeholder={t('modal.title')}
             />
             {errors.titleEmpty && (
               <p className='text-red-500 text-sm mt-1'>
-                {t("modal.titleEmpty")}
+                {t('modal.titleEmpty')}
               </p>
             )}
             {errors.titleTooLong && (
               <p className='text-red-500 text-sm mt-1'>
-                {t("modal.titleTooLong")}
+                {t('modal.titleTooLong')}
               </p>
             )}
           </div>
@@ -197,35 +197,35 @@ const CreateNewModal = ({
           <div>
             <Label className='flex items-center gap-2 font-medium mb-3'>
               <Lock className='w-4 h-4' />
-              {t("modal.privacy")}
+              {t('modal.privacy')}
               <span className='text-red-500'>*</span>
             </Label>
             <Select value={privacy} onValueChange={handlePrivacyChange}>
               <SelectTrigger
-                className={`w-full px-3 py-2 border rounded-lg bg-card focus:outline-none focus:ring-2 ${
+                className={`w-full px-3 py-2 border rounded-lg bg-[var(--pl-bg)] focus:outline-none focus:ring-2 ${
                   errors.privacy
-                    ? "border-red-500 focus:ring-red-500"
-                    : "border-border focus:ring-foreground"
+                    ? 'border-red-500 focus:ring-red-500'
+                    : 'border-border focus:ring-foreground'
                 }`}
               >
                 <SelectValue placeholder='Select privacy' />
               </SelectTrigger>
-              <SelectContent className='bg-card'>
+              <SelectContent>
                 <SelectItem value='Public'>
-                  <Earth className='w-4 h-4' /> {t("modal.public")}
+                  <Earth className='w-4 h-4' /> {t('modal.public')}
                 </SelectItem>
                 <SelectItem value='Private'>
-                  <LockKeyhole className='w-4 h-4' /> {t("modal.private")}
+                  <LockKeyhole className='w-4 h-4' /> {t('modal.private')}
                 </SelectItem>
                 <SelectItem value='Unlisted'>
                   <EarthLock className='w-4 h-4' />
-                  {t("modal.unlisted")}
+                  {t('modal.unlisted')}
                 </SelectItem>
               </SelectContent>
             </Select>
             {errors.privacy && (
               <p className='text-red-500 text-sm mt-1'>
-                {t("modal.privacyRequired")}
+                {t('modal.privacyRequired')}
               </p>
             )}
           </div>
@@ -234,14 +234,14 @@ const CreateNewModal = ({
           <div>
             <Label className='flex items-center gap-2 font-medium mb-3'>
               <AlignJustify className='w-4 h-4' />
-              <span>{t("modal.description")}</span>
+              <span>{t('modal.description')}</span>
             </Label>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className='w-full px-3 py-2 border border-border rounded-lg bg-card focus:outline-none focus:ring-2 focus:ring-foreground resize-none'
+              className='w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-foreground resize-none'
               rows={4}
-              placeholder={t("modal.enterDescription")}
+              placeholder={t('modal.enterDescription')}
             />
           </div>
         </div>
@@ -250,16 +250,16 @@ const CreateNewModal = ({
         <div className='flex justify-end gap-3 mt-6'>
           <Button
             onClick={handleCancel}
-            className='px-6 py-2 border border-border rounded-lg bg-background text-foreground hover:bg-card-secondary transition-colors cursor-pointer flex items-center gap-2'
+            className='px-6 py-2 border border-border rounded-lg bg-[var(--pl-bg)] text-foreground hover:bg-[var(--pl-bg-hover)] transition-colors cursor-pointer flex items-center gap-2'
           >
             {onBack && <ArrowLeft className='w-4 h-4' />}
-            {onBack ? t("modal.back") : t("modal.cancel")}
+            {onBack ? t('modal.back') : t('modal.cancel')}
           </Button>
           <Button
             onClick={handleSubmit}
             className='px-6 py-2 bg-foreground text-background rounded-lg cursor-pointer hover:opacity-90 transition-opacity'
           >
-            {isUpdateMode ? t("modal.updateButton") : t("modal.create")}
+            {isUpdateMode ? t('modal.updateButton') : t('modal.create')}
           </Button>
         </div>
       </div>

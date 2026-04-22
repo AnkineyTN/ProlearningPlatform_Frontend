@@ -1,4 +1,4 @@
-import { Shuffle, Settings } from 'lucide-react';
+import { Shuffle, Settings, ChevronRight, ChevronLeft } from 'lucide-react';
 import { useState } from 'react';
 
 import {
@@ -29,9 +29,9 @@ type Props = {
 
 const RECALL_BUTTONS = [
   { label: 'Again', hint: '< 1m', correct: false, color: 'var(--pl-danger)' },
-  { label: 'Hard', hint: '6m', correct: false, color: 'var(--pl-warning)' },
+  // { label: 'Hard', hint: '6m', correct: false, color: 'var(--pl-warning)' },
   { label: 'Good', hint: '1d', correct: true, color: 'var(--pl-accent)' },
-  { label: 'Easy', hint: '3d', correct: true, color: 'var(--pl-success)' },
+  // { label: 'Easy', hint: '3d', correct: true, color: 'var(--pl-success)' },
 ] as const;
 
 const FlipFlashcard = ({
@@ -56,9 +56,9 @@ const FlipFlashcard = ({
   return (
     <>
       {/* Progress bar */}
-      <div className='px-10 pt-5'>
+      <div className='pt-5'>
         <div
-          className='flex justify-between text-[11.5px] mb-2'
+          className='flex justify-between text-xs mb-2'
           style={{
             color: 'var(--pl-text-faint)',
             fontFamily: 'var(--font-mono-pl)',
@@ -86,27 +86,15 @@ const FlipFlashcard = ({
       </div>
 
       {/* Card area */}
-      <div className='flex-1 flex items-center justify-center px-10 py-10 gap-7'>
+      <div className='flex-1 flex items-center justify-center py-10 gap-7'>
         {/* Prev */}
-        <button
+        <Button
           onClick={onPrevious}
           disabled={currentCardIndex === 0}
-          className='w-11 h-11 rounded-full grid place-items-center flex-shrink-0 transition-opacity disabled:opacity-30'
-          style={{
-            border: '1px solid var(--pl-border)',
-            color: 'var(--pl-text-muted)',
-          }}
+          className='h-9 w-9 hover:bg-[var(--pl-bg-hover)] place-items-center rounded-lg border border-[var(--pl-border)] bg-transparent text-[var(--pl-text-muted)] cursor-pointer'
         >
-          <svg width='16' height='16' viewBox='0 0 16 16' fill='none'>
-            <path
-              d='M10 3L5 8L10 13'
-              stroke='currentColor'
-              strokeWidth='1.5'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-            />
-          </svg>
-        </button>
+          <ChevronLeft className='size-6' />
+        </Button>
 
         {/* Flip card */}
         <div className='flex-1 max-w-[720px]' style={{ perspective: '1800px' }}>
@@ -243,7 +231,7 @@ const FlipFlashcard = ({
             >
               How well did you recall this?
             </div>
-            <div className='grid grid-cols-4 gap-[10px]'>
+            <div className='grid grid-cols-2 gap-[10px]'>
               {RECALL_BUTTONS.map((btn, i) => (
                 <button
                   key={btn.label}
@@ -300,25 +288,17 @@ const FlipFlashcard = ({
         </div>
 
         {/* Next */}
-        <button
+        <Button
           onClick={onNext}
           disabled={currentCardIndex >= total - 1}
-          className='w-11 h-11 rounded-full grid place-items-center flex-shrink-0 transition-opacity disabled:opacity-30'
+          className='h-9 w-9 hover:bg-[var(--pl-bg-hover)] place-items-center rounded-lg border border-[var(--pl-border)] bg-transparent text-[var(--pl-text-muted)] cursor-pointer'
           style={{
             border: '1px solid var(--pl-border)',
             color: 'var(--pl-text-muted)',
           }}
         >
-          <svg width='16' height='16' viewBox='0 0 16 16' fill='none'>
-            <path
-              d='M6 3L11 8L6 13'
-              stroke='currentColor'
-              strokeWidth='1.5'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-            />
-          </svg>
-        </button>
+          <ChevronRight className='size-6' />
+        </Button>
       </div>
 
       {/* Bottom toolbar */}

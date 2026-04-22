@@ -26,7 +26,7 @@ const NoteCardSelect = ({ note, onSelected, isSelected }: Props) => {
 
   return (
     <div
-      className={`rounded-xl p-5 shadow-sm cursor-pointer ${checked ? "bg-card-secondary" : "bg-card"}`}
+      className={`rounded-xl p-5 shadow-sm cursor-pointer border ${checked ? 'bg-[var(--pl-bg-hover)] border-[var(--pl-accent-border)]' : 'bg-[var(--pl-bg-elev)] border-[var(--pl-border)]'}`}
       onClick={() => handleCheckedChange(!checked)}
     >
       <div className='flex justify-between items-start mb-3'>

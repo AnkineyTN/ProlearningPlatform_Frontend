@@ -473,16 +473,15 @@ export default function NotificationBell() {
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="ghost"
           size="icon"
           className={cn(
-            "relative size-9 shrink-0 rounded-full",
+            "className='flex h-9 w-9 items-center justify-center hover:bg-[var(--pl-bg-hover)] place-items-center rounded-lg border border-[var(--pl-border)] bg-transparent text-[var(--pl-text-muted)] cursor-pointer",
             open && "bg-accent",
           )}
           title={t("header.notifications")}
           aria-label={t("header.notifications")}
         >
-          <Bell className="size-[1.35rem]" />
+          <Bell className="size-4" />
           {badge && (
             <span className="absolute -right-0.5 -top-0.5 flex min-w-[1.125rem] justify-center rounded-full bg-destructive px-1 text-[10px] font-bold leading-4 text-destructive-foreground shadow-sm">
               {badge}

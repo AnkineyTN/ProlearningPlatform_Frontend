@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, FileText, ChevronLeft, ChevronRight, FileX, Inbox } from 'lucide-react';
+import {
+  BookOpen,
+  FileText,
+  ChevronLeft,
+  ChevronRight,
+  FileX,
+  Inbox,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useFlashcards } from '@/hooks/useFlashcards';
 import { useExams } from '@/hooks/useExams';
@@ -38,13 +45,16 @@ export default function ReviewListPage({ setId }: ReviewListPageProps) {
   const exams = examsData?.data ?? [];
   const examTotalPages = examsData?.metadata?.totalPages ?? 1;
 
-  const noContent = !loadingFC && !loadingExam && flashcards.length === 0 && exams.length === 0;
+  const noContent =
+    !loadingFC && !loadingExam && flashcards.length === 0 && exams.length === 0;
 
   if (noContent) {
     return (
       <div className='flex flex-col items-center justify-center min-h-[300px] gap-3 text-center'>
         <Inbox className='w-16 h-16 text-muted-foreground/40' />
-        <p className='text-muted-foreground font-medium'>Chưa có nội dung ôn tập</p>
+        <p className='text-muted-foreground font-medium'>
+          Chưa có nội dung ôn tập
+        </p>
         <p className='text-sm text-muted-foreground/70 max-w-sm'>
           Tạo Flashcard hoặc Exam từ{' '}
           <a href='/review-bundles' className='text-purple-500 hover:underline'>
@@ -70,7 +80,10 @@ export default function ReviewListPage({ setId }: ReviewListPageProps) {
         {loadingFC ? (
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className='bg-card rounded-xl h-36 animate-pulse' />
+              <div
+                key={i}
+                className='bg-[var(--pl-bg)] rounded-xl h-36 animate-pulse'
+              />
             ))}
           </div>
         ) : flashcards.length === 0 ? (
@@ -89,11 +102,14 @@ export default function ReviewListPage({ setId }: ReviewListPageProps) {
                     title: fc.title,
                     description: fc.description || 'Flashcard ôn tập',
                     time: getTimeAgo(fc.lastStudy),
-                    created_at: new Date(fc.lastStudy).toLocaleDateString('en-GB', {
-                      day: '2-digit',
-                      month: 'short',
-                      year: 'numeric',
-                    }),
+                    created_at: new Date(fc.lastStudy).toLocaleDateString(
+                      'en-GB',
+                      {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                      },
+                    ),
                     privacy: fc.privacy,
                   }}
                   onAccess={(id) => navigate(`/sets/${setId}/flashcards/${id}`)}
@@ -144,7 +160,10 @@ export default function ReviewListPage({ setId }: ReviewListPageProps) {
         {loadingExam ? (
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className='bg-card rounded-xl h-36 animate-pulse' />
+              <div
+                key={i}
+                className='bg-[var(--pl-bg)] rounded-xl h-36 animate-pulse'
+              />
             ))}
           </div>
         ) : exams.length === 0 ? (

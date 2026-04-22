@@ -199,7 +199,6 @@ const AppSidebar = () => {
           )}
         >
           <ColorThemeSwitcher collapsed={collapsed} />
-          {!collapsed && <ModeToggle />}
         </div>
 
         {/* User card */}

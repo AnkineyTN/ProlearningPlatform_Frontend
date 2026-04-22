@@ -5,7 +5,11 @@ import { useReviewBundles } from '@/hooks/useReviewBundles';
 function formatPeriod(from: string, to: string): string {
   const fmt = (iso: string) => {
     const d = new Date(iso);
-    return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    return d.toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
   };
   return `${fmt(from)} – ${fmt(to)}`;
 }
@@ -50,9 +54,12 @@ export default function ReviewBundlesPage() {
         {!isLoading && !isError && bundles.length === 0 && (
           <div className='flex flex-col items-center justify-center min-h-[300px] text-center gap-3'>
             <Inbox className='w-16 h-16 text-muted-foreground/50' />
-            <p className='text-muted-foreground'>Không có bundle nào cần ôn lại.</p>
+            <p className='text-muted-foreground'>
+              Không có bundle nào cần ôn lại.
+            </p>
             <p className='text-sm text-muted-foreground/70'>
-              Hệ thống sẽ tự động tạo bundle khi bạn trả lời sai các thẻ trong tuần.
+              Hệ thống sẽ tự động tạo bundle khi bạn trả lời sai các thẻ trong
+              tuần.
             </p>
           </div>
         )}
@@ -64,7 +71,7 @@ export default function ReviewBundlesPage() {
               <button
                 key={bundle.id}
                 onClick={() => navigate(`/review-bundles/${bundle.id}`)}
-                className='w-full text-left bg-card border border-border rounded-xl p-5 hover:border-purple-500/50 hover:bg-card/80 transition-all cursor-pointer group'
+                className='w-full text-left bg-[var(--pl-bg)] border border-border rounded-xl p-5 hover:border-purple-500/50 hover:bg-card/80 transition-all cursor-pointer group'
               >
                 <div className='flex items-start justify-between gap-4'>
                   <div className='flex items-center gap-3'>
@@ -77,7 +84,9 @@ export default function ReviewBundlesPage() {
                       </p>
                       <div className='flex items-center gap-1 mt-1 text-sm text-muted-foreground'>
                         <CalendarRange className='w-3.5 h-3.5' />
-                        <span>{formatPeriod(bundle.periodFrom, bundle.periodTo)}</span>
+                        <span>
+                          {formatPeriod(bundle.periodFrom, bundle.periodTo)}
+                        </span>
                       </div>
                     </div>
                   </div>

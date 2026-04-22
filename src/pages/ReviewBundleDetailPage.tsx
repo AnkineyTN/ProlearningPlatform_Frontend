@@ -34,7 +34,11 @@ import {
 function formatPeriod(from: string, to: string): string {
   const fmt = (iso: string) => {
     const d = new Date(iso);
-    return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    return d.toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
   };
   return `${fmt(from)} – ${fmt(to)}`;
 }
@@ -113,7 +117,9 @@ export default function ReviewBundleDetailPage() {
   if (isError || !bundle) {
     return (
       <div className='flex flex-col items-center justify-center min-h-screen gap-4'>
-        <p className='text-destructive'>Không tải được bundle. Bundle có thể đã bị xóa.</p>
+        <p className='text-destructive'>
+          Không tải được bundle. Bundle có thể đã bị xóa.
+        </p>
         <Button variant='outline' onClick={() => navigate('/review-bundles')}>
           <ArrowLeft className='w-4 h-4 mr-2' />
           Quay lại
@@ -144,7 +150,9 @@ export default function ReviewBundleDetailPage() {
           <h1 className='text-xl font-bold'>Bundle #{bundle.id}</h1>
           <p className='text-sm text-muted-foreground mt-1'>
             Kỳ: {formatPeriod(bundle.periodFrom, bundle.periodTo)} &middot;{' '}
-            <span className='font-medium text-pink-500'>{bundle.cardCount} thẻ sai</span>
+            <span className='font-medium text-pink-500'>
+              {bundle.cardCount} thẻ sai
+            </span>
           </p>
         </div>
 
@@ -166,19 +174,28 @@ export default function ReviewBundleDetailPage() {
               >
                 {/* Front */}
                 <div
-                  className='absolute inset-0 flex flex-col items-center justify-center bg-card border border-border rounded-2xl p-8 text-center backface-hidden'
+                  className='absolute inset-0 flex flex-col items-center justify-center bg-[var(--pl-bg)] border border-border rounded-2xl p-8 text-center backface-hidden'
                   style={{ backfaceVisibility: 'hidden' }}
                 >
-                  <p className='text-xs text-muted-foreground mb-3 uppercase tracking-wider'>Mặt trước</p>
+                  <p className='text-xs text-muted-foreground mb-3 uppercase tracking-wider'>
+                    Mặt trước
+                  </p>
                   <p className='text-lg font-medium'>{currentCard.frontCard}</p>
-                  <p className='text-xs text-muted-foreground mt-4'>Nhấn để xem đáp án</p>
+                  <p className='text-xs text-muted-foreground mt-4'>
+                    Nhấn để xem đáp án
+                  </p>
                 </div>
                 {/* Back */}
                 <div
                   className='absolute inset-0 flex flex-col items-center justify-center bg-purple-500/10 border border-purple-500/30 rounded-2xl p-8 text-center'
-                  style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                  style={{
+                    backfaceVisibility: 'hidden',
+                    transform: 'rotateY(180deg)',
+                  }}
                 >
-                  <p className='text-xs text-muted-foreground mb-3 uppercase tracking-wider'>Mặt sau</p>
+                  <p className='text-xs text-muted-foreground mb-3 uppercase tracking-wider'>
+                    Mặt sau
+                  </p>
                   <p className='text-lg font-medium'>{currentCard.backCard}</p>
                 </div>
               </div>
@@ -186,13 +203,25 @@ export default function ReviewBundleDetailPage() {
 
             {/* Navigation */}
             <div className='flex items-center justify-center gap-4 mt-4'>
-              <Button variant='ghost' size='sm' onClick={handlePrev} disabled={cardIndex === 0} className='cursor-pointer'>
+              <Button
+                variant='ghost'
+                size='sm'
+                onClick={handlePrev}
+                disabled={cardIndex === 0}
+                className='cursor-pointer'
+              >
                 <ChevronLeft className='w-5 h-5' />
               </Button>
               <span className='text-sm text-muted-foreground'>
                 {cardIndex + 1} / {cards.length}
               </span>
-              <Button variant='ghost' size='sm' onClick={handleNext} disabled={cardIndex >= cards.length - 1} className='cursor-pointer'>
+              <Button
+                variant='ghost'
+                size='sm'
+                onClick={handleNext}
+                disabled={cardIndex >= cards.length - 1}
+                className='cursor-pointer'
+              >
                 <ChevronRight className='w-5 h-5' />
               </Button>
             </div>
@@ -204,7 +233,7 @@ export default function ReviewBundleDetailPage() {
             </div>
           </div>
         ) : (
-          <div className='bg-card border border-border rounded-2xl p-10 text-center mb-8 text-muted-foreground'>
+          <div className='bg-[var(--pl-bg)] border border-border rounded-2xl p-10 text-center mb-8 text-muted-foreground'>
             Bundle này không có thẻ nào.
           </div>
         )}

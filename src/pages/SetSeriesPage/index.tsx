@@ -469,7 +469,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
       <HeaderSetDetails setId={setId} />
 
       {/* Tabs */}
-      <div className='px-10 border-b border-b-[var(--pl-border)] flex gap-0.5 sticky top-0 bg-[var(--pl-bg)] z-10 overflow-x-auto'>
+      <div className='px-10 border-b border-b-[var(--pl-border)] flex gap-0.5 sticky top-0 bg-[var(--pl-bg)] z-10'>
         {tabs.map((tab) => {
           const active = activeTab === tab;
           return (

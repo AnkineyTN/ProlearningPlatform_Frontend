@@ -202,85 +202,85 @@ const AdminDashboardPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-6 md:p-10">
-      <div className="max-w-6xl mx-auto space-y-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className='min-h-screen bg-[var(--pl-bg-sunken)] text-foreground p-6 md:p-10'>
+      <div className='max-w-6xl mx-auto space-y-8'>
+        <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
           <div>
             <Link
-              to="/dashboard"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-2"
+              to='/dashboard'
+              className='inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-2'
             >
-              <ArrowLeft className="w-4 h-4" />
-              {t("adminDashboard.backToDashboard")}
+              <ArrowLeft className='w-4 h-4' />
+              {t('adminDashboard.backToDashboard')}
             </Link>
-            <h1 className="text-2xl font-bold tracking-tight">
-              {t("adminDashboard.title")}
+            <h1 className='text-2xl font-bold tracking-tight'>
+              {t('adminDashboard.title')}
             </h1>
-            <p className="text-muted-foreground text-sm mt-1">
-              {t("adminDashboard.description")}
+            <p className='text-muted-foreground text-sm mt-1'>
+              {t('adminDashboard.description')}
             </p>
           </div>
           <Button
-            variant="outline"
-            size="sm"
+            variant='outline'
+            size='sm'
             onClick={refreshAll}
             disabled={usersQuery.isFetching || analyticsQuery.isFetching}
           >
-            <RefreshCw className="w-4 h-4 mr-2" />
-            {t("adminDashboard.refresh")}
+            <RefreshCw className='w-4 h-4 mr-2' />
+            {t('adminDashboard.refresh')}
           </Button>
         </div>
 
-        <section className="space-y-4">
-          <h2 className="text-lg font-semibold">
-            {t("adminDashboard.usersTitle")}
+        <section className='space-y-4'>
+          <h2 className='text-lg font-semibold'>
+            {t('adminDashboard.usersTitle')}
           </h2>
           {usersQuery.isError && (
-            <p className="text-sm text-destructive">
-              {t("adminDashboard.usersLoadError")}
+            <p className='text-sm text-destructive'>
+              {t('adminDashboard.usersLoadError')}
             </p>
           )}
-          <Card className="p-0 overflow-hidden border border-ring">
+          <Card className='p-0 overflow-hidden border border-ring'>
             {usersQuery.isLoading ? (
-              <div className="p-12 text-center text-muted-foreground text-sm">
-                {t("onboarding.loading")}
+              <div className='p-12 text-center text-muted-foreground text-sm'>
+                {t('onboarding.loading')}
               </div>
             ) : rows.length === 0 ? (
-              <div className="p-12 text-center text-muted-foreground text-sm">
-                {t("adminDashboard.emptyUsers")}
+              <div className='p-12 text-center text-muted-foreground text-sm'>
+                {t('adminDashboard.emptyUsers')}
               </div>
             ) : (
-              <div className="overflow-x-auto">
+              <div className='overflow-x-auto'>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="whitespace-nowrap">
-                        {t("adminDashboard.colId")}
+                      <TableHead className='whitespace-nowrap'>
+                        {t('adminDashboard.colId')}
                       </TableHead>
-                      <TableHead>{t("adminDashboard.colName")}</TableHead>
-                      <TableHead className="min-w-[180px]">
-                        {t("adminDashboard.colEmail")}
+                      <TableHead>{t('adminDashboard.colName')}</TableHead>
+                      <TableHead className='min-w-[180px]'>
+                        {t('adminDashboard.colEmail')}
                       </TableHead>
-                      <TableHead className="hidden lg:table-cell">
-                        {t("adminDashboard.colRoles")}
+                      <TableHead className='hidden lg:table-cell'>
+                        {t('adminDashboard.colRoles')}
                       </TableHead>
-                      <TableHead className="hidden md:table-cell">
-                        {t("adminDashboard.colLanguage")}
+                      <TableHead className='hidden md:table-cell'>
+                        {t('adminDashboard.colLanguage')}
                       </TableHead>
-                      <TableHead className="hidden xl:table-cell">
-                        {t("adminDashboard.colEducation")}
+                      <TableHead className='hidden xl:table-cell'>
+                        {t('adminDashboard.colEducation')}
                       </TableHead>
-                      <TableHead className="hidden xl:table-cell">
-                        {t("adminDashboard.colHearAppFrom")}
+                      <TableHead className='hidden xl:table-cell'>
+                        {t('adminDashboard.colHearAppFrom')}
                       </TableHead>
-                      <TableHead className="hidden md:table-cell">
-                        {t("adminDashboard.colAccountType")}
+                      <TableHead className='hidden md:table-cell'>
+                        {t('adminDashboard.colAccountType')}
                       </TableHead>
-                      <TableHead className="hidden lg:table-cell whitespace-nowrap">
-                        {t("adminDashboard.colOnboardingAt")}
+                      <TableHead className='hidden lg:table-cell whitespace-nowrap'>
+                        {t('adminDashboard.colOnboardingAt')}
                       </TableHead>
-                      <TableHead className="w-[100px] text-right">
-                        {t("adminDashboard.colActions")}
+                      <TableHead className='w-[100px] text-right'>
+                        {t('adminDashboard.colActions')}
                       </TableHead>
                     </TableRow>
                   </TableHeader>
@@ -291,57 +291,58 @@ const AdminDashboardPage = () => {
                         formatDate(row.onboardingSubmittedAt) ?? na;
                       return (
                         <TableRow key={u.id}>
-                          <TableCell className="font-mono text-sm">
+                          <TableCell className='font-mono text-sm'>
                             {u.id}
                           </TableCell>
-                          <TableCell className="text-sm">
+                          <TableCell className='text-sm'>
                             {u.firstName} {u.lastName}
                           </TableCell>
-                          <TableCell className="text-sm">{u.email}</TableCell>
-                          <TableCell className="hidden lg:table-cell text-xs text-muted-foreground max-w-[140px] truncate">
-                            {u.roles.join(", ")}
+                          <TableCell className='text-sm'>{u.email}</TableCell>
+                          <TableCell className='hidden lg:table-cell text-xs text-muted-foreground max-w-[140px] truncate'>
+                            {u.roles.join(', ')}
                           </TableCell>
-                          <TableCell className="hidden md:table-cell text-sm">
+                          <TableCell className='hidden md:table-cell text-sm'>
                             {displayOrDash(u.language)}
                           </TableCell>
-                          <TableCell className="hidden xl:table-cell text-sm">
+                          <TableCell className='hidden xl:table-cell text-sm'>
                             {displayOrDash(u.education)}
                           </TableCell>
-                          <TableCell className="hidden xl:table-cell text-sm">
+                          <TableCell className='hidden xl:table-cell text-sm'>
                             {displayOrDash(u.hearAppFrom)}
                           </TableCell>
-                          <TableCell className="hidden md:table-cell text-sm">
+                          <TableCell className='hidden md:table-cell text-sm'>
                             {displayOrDash(u.accountType)}
                           </TableCell>
-                          <TableCell className="hidden lg:table-cell text-xs whitespace-nowrap text-muted-foreground">
+                          <TableCell className='hidden lg:table-cell text-xs whitespace-nowrap text-muted-foreground'>
                             {submitted}
                           </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex justify-end gap-1">
+                          <TableCell className='text-right'>
+                            <div className='flex justify-end gap-1'>
                               <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8"
+                                type='button'
+                                variant='ghost'
+                                size='icon'
+                                className='h-8 w-8'
                                 onClick={() => openEdit(row)}
-                                aria-label={t("adminDashboard.editUser")}
+                                aria-label={t('adminDashboard.editUser')}
                               >
-                                <Pencil className="w-4 h-4" />
+                                <Pencil className='w-4 h-4' />
                               </Button>
                               <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 text-destructive hover:text-destructive"
+                                type='button'
+                                variant='ghost'
+                                size='icon'
+                                className='h-8 w-8 text-destructive hover:text-destructive'
                                 onClick={() =>
                                   setDeleteTarget({
                                     id: u.id,
-                                    label: `${u.firstName} ${u.lastName}`.trim(),
+                                    label:
+                                      `${u.firstName} ${u.lastName}`.trim(),
                                   })
                                 }
-                                aria-label={t("adminDashboard.deleteUser")}
+                                aria-label={t('adminDashboard.deleteUser')}
                               >
-                                <Trash2 className="w-4 h-4" />
+                                <Trash2 className='w-4 h-4' />
                               </Button>
                             </div>
                           </TableCell>
@@ -354,68 +355,68 @@ const AdminDashboardPage = () => {
             )}
           </Card>
 
-          <div className="flex justify-end gap-2">
+          <div className='flex justify-end gap-2'>
             <Button
-              variant="outline"
-              size="sm"
+              variant='outline'
+              size='sm'
               disabled={page <= 0 || usersQuery.isFetching}
               onClick={() => setPage((p) => Math.max(0, p - 1))}
             >
-              {t("adminDashboard.prevPage")}
+              {t('adminDashboard.prevPage')}
             </Button>
             <Button
-              variant="outline"
-              size="sm"
+              variant='outline'
+              size='sm'
               disabled={rows.length < PAGE_SIZE || usersQuery.isFetching}
               onClick={() => setPage((p) => p + 1)}
             >
-              {t("adminDashboard.nextPage")}
+              {t('adminDashboard.nextPage')}
             </Button>
           </div>
         </section>
 
-        <section className="space-y-4">
-          <h2 className="text-lg font-semibold">
-            {t("adminOnboarding.analyticsTitle")}
+        <section className='space-y-4'>
+          <h2 className='text-lg font-semibold'>
+            {t('adminOnboarding.analyticsTitle')}
           </h2>
           {analyticsQuery.isError && (
-            <p className="text-sm text-destructive">
-              {t("adminOnboarding.analyticsLoadError")}
+            <p className='text-sm text-destructive'>
+              {t('adminOnboarding.analyticsLoadError')}
             </p>
           )}
           {analyticsQuery.isLoading && (
-            <p className="text-sm text-muted-foreground">
-              {t("onboarding.loading")}
+            <p className='text-sm text-muted-foreground'>
+              {t('onboarding.loading')}
             </p>
           )}
           {analytics && (
-            <div className="flex flex-col gap-4">
-              <Card className="p-6 border border-ring">
-                <p className="text-sm text-muted-foreground mb-1">
-                  {t("adminOnboarding.totalRegistered")}
+            <div className='flex flex-col gap-4'>
+              <Card className='p-6 border border-ring'>
+                <p className='text-sm text-muted-foreground mb-1'>
+                  {t('adminOnboarding.totalRegistered')}
                 </p>
-                <p className="text-3xl font-bold tabular-nums">
+                <p className='text-3xl font-bold tabular-nums'>
                   {analytics.totalRegisteredUsers}
                 </p>
               </Card>
 
-              <div className="flex gap-4 w-full flex-col lg:flex-row">
-                <Card className="p-6 border border-ring w-full">
-                  <h3 className="text-sm font-medium mb-4">
-                    {t("adminOnboarding.analyticsEducation")}
+              <div className='flex gap-4 w-full flex-col lg:flex-row'>
+                <Card className='p-6 border border-ring w-full'>
+                  <h3 className='text-sm font-medium mb-4'>
+                    {t('adminOnboarding.analyticsEducation')}
                   </h3>
                   {analytics.education.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">{na}</p>
+                    <p className='text-sm text-muted-foreground'>{na}</p>
                   ) : (
-                    <div className="h-[280px] w-full min-w-0">
-                      <ResponsiveContainer width="100%" height="100%">
+                    <div className='h-[280px] w-full min-w-0'>
+                      <ResponsiveContainer width='100%' height='100%'>
                         <PieChart>
                           <Pie
                             data={analytics.education}
-                            dataKey="count"
-                            nameKey="label"
-                            cx="50%"
-                            cy="50%"
+                            dataKey='count'
+                            nameKey='label'
+                            cx='50%'
+                            cy='50%'
                             outerRadius={100}
                             paddingAngle={1}
                           >
@@ -431,10 +432,10 @@ const AdminDashboardPage = () => {
                               const p = (item.payload as { percent?: number })
                                 ?.percent;
                               const pct =
-                                p != null ? ` (${p.toFixed(1)}%)` : "";
+                                p != null ? ` (${p.toFixed(1)}%)` : '';
                               return [
                                 `${value}${pct}`,
-                                t("adminOnboarding.chartCount"),
+                                t('adminOnboarding.chartCount'),
                               ];
                             }}
                           />
@@ -445,28 +446,28 @@ const AdminDashboardPage = () => {
                   )}
                 </Card>
 
-                <Card className="p-6 border border-ring w-full">
-                  <h3 className="text-sm font-medium mb-4">
-                    {t("adminOnboarding.analyticsPremium")}
+                <Card className='p-6 border border-ring w-full'>
+                  <h3 className='text-sm font-medium mb-4'>
+                    {t('adminOnboarding.analyticsPremium')}
                   </h3>
-                  <div className="h-[220px] w-full min-w-0">
-                    <ResponsiveContainer width="100%" height="100%">
+                  <div className='h-[220px] w-full min-w-0'>
+                    <ResponsiveContainer width='100%' height='100%'>
                       <BarChart data={premiumBarData}>
-                        <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                        <XAxis dataKey="type" tick={{ fontSize: 12 }} />
+                        <CartesianGrid strokeDasharray='3 3' opacity={0.2} />
+                        <XAxis dataKey='type' tick={{ fontSize: 12 }} />
                         <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
                         <Tooltip
                           formatter={(v: number) => [
                             v,
-                            t("adminOnboarding.chartCount"),
+                            t('adminOnboarding.chartCount'),
                           ]}
                         />
-                        <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                        <Bar dataKey='count' radius={[4, 4, 0, 0]}>
                           {premiumBarData.map((entry) => (
                             <Cell
                               key={entry.type}
                               fill={
-                                entry.type === "PRO" ? "#a855f7" : "#64748b"
+                                entry.type === 'PRO' ? '#a855f7' : '#64748b'
                               }
                             />
                           ))}
@@ -474,34 +475,34 @@ const AdminDashboardPage = () => {
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    PRO {analytics.premium.proPercent.toFixed(1)}% ·{" "}
-                    {t("adminOnboarding.chartCount")}: PRO{" "}
-                    {analytics.premium.proCount}, FREE{" "}
+                  <p className='text-xs text-muted-foreground mt-2'>
+                    PRO {analytics.premium.proPercent.toFixed(1)}% ·{' '}
+                    {t('adminOnboarding.chartCount')}: PRO{' '}
+                    {analytics.premium.proCount}, FREE{' '}
                     {analytics.premium.freeCount}
                   </p>
                 </Card>
               </div>
 
-              <Card className="p-6 border border-ring">
-                <h3 className="text-sm font-medium mb-4">
-                  {t("adminOnboarding.analyticsHearAppFrom")}
+              <Card className='p-6 border border-ring'>
+                <h3 className='text-sm font-medium mb-4'>
+                  {t('adminOnboarding.analyticsHearAppFrom')}
                 </h3>
                 {analytics.hearAppFrom.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">{na}</p>
+                  <p className='text-sm text-muted-foreground'>{na}</p>
                 ) : (
-                  <div className="h-[320px] w-full min-w-0">
-                    <ResponsiveContainer width="100%" height="100%">
+                  <div className='h-[320px] w-full min-w-0'>
+                    <ResponsiveContainer width='100%' height='100%'>
                       <BarChart
-                        layout="vertical"
+                        layout='vertical'
                         data={analytics.hearAppFrom}
                         margin={{ left: 8, right: 16, top: 8, bottom: 8 }}
                       >
-                        <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                        <XAxis type="number" tick={{ fontSize: 11 }} />
+                        <CartesianGrid strokeDasharray='3 3' opacity={0.2} />
+                        <XAxis type='number' tick={{ fontSize: 11 }} />
                         <YAxis
-                          dataKey="label"
-                          type="category"
+                          dataKey='label'
+                          type='category'
                           width={120}
                           tick={{ fontSize: 11 }}
                         />
@@ -509,16 +510,16 @@ const AdminDashboardPage = () => {
                           formatter={(value: number, _n, item) => {
                             const p = (item.payload as { percent?: number })
                               ?.percent;
-                            const pct = p != null ? ` (${p.toFixed(1)}%)` : "";
+                            const pct = p != null ? ` (${p.toFixed(1)}%)` : '';
                             return [
                               `${value}${pct}`,
-                              t("adminOnboarding.chartCount"),
+                              t('adminOnboarding.chartCount'),
                             ];
                           }}
                         />
                         <Bar
-                          dataKey="count"
-                          fill="#6366f1"
+                          dataKey='count'
+                          fill='#6366f1'
                           radius={[0, 4, 4, 0]}
                         />
                       </BarChart>
@@ -531,75 +532,78 @@ const AdminDashboardPage = () => {
         </section>
       </div>
 
-      <Dialog open={editRow != null} onOpenChange={(o) => !o && setEditRow(null)}>
+      <Dialog
+        open={editRow != null}
+        onOpenChange={(o) => !o && setEditRow(null)}
+      >
         <DialogContent showCloseButton>
           <DialogHeader>
-            <DialogTitle>{t("adminDashboard.editDialogTitle")}</DialogTitle>
+            <DialogTitle>{t('adminDashboard.editDialogTitle')}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label htmlFor="admin-edit-first">
-                {t("adminDashboard.fieldFirstName")}
+          <div className='space-y-4 py-2'>
+            <div className='space-y-2'>
+              <Label htmlFor='admin-edit-first'>
+                {t('adminDashboard.fieldFirstName')}
               </Label>
               <Input
-                id="admin-edit-first"
+                id='admin-edit-first'
                 value={editFirst}
                 onChange={(e) => setEditFirst(e.target.value)}
-                autoComplete="off"
+                autoComplete='off'
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="admin-edit-last">
-                {t("adminDashboard.fieldLastName")}
+            <div className='space-y-2'>
+              <Label htmlFor='admin-edit-last'>
+                {t('adminDashboard.fieldLastName')}
               </Label>
               <Input
-                id="admin-edit-last"
+                id='admin-edit-last'
                 value={editLast}
                 onChange={(e) => setEditLast(e.target.value)}
-                autoComplete="off"
+                autoComplete='off'
               />
             </div>
-            <div className="space-y-2">
-              <Label>{t("adminDashboard.fieldAccountType")}</Label>
+            <div className='space-y-2'>
+              <Label>{t('adminDashboard.fieldAccountType')}</Label>
               <Select
-                value={editAccountType === "" ? "__unset__" : editAccountType}
+                value={editAccountType === '' ? '__unset__' : editAccountType}
                 onValueChange={(v) =>
-                  setEditAccountType(v === "__unset__" ? "" : v)
+                  setEditAccountType(v === '__unset__' ? '' : v)
                 }
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className='w-full'>
                   <SelectValue
-                    placeholder={t("adminDashboard.accountTypeUnset")}
+                    placeholder={t('adminDashboard.accountTypeUnset')}
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__unset__">
-                    {t("adminDashboard.accountTypeUnset")}
+                  <SelectItem value='__unset__'>
+                    {t('adminDashboard.accountTypeUnset')}
                   </SelectItem>
-                  <SelectItem value="FREE">FREE</SelectItem>
-                  <SelectItem value="PRO">PRO</SelectItem>
+                  <SelectItem value='FREE'>FREE</SelectItem>
+                  <SelectItem value='PRO'>PRO</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           <DialogFooter>
             <Button
-              type="button"
-              variant="outline"
+              type='button'
+              variant='outline'
               onClick={() => setEditRow(null)}
             >
-              {t("adminDashboard.cancel")}
+              {t('adminDashboard.cancel')}
             </Button>
             <Button
-              type="button"
+              type='button'
               onClick={saveEdit}
               disabled={
                 updateMutation.isPending ||
-                editFirst.trim() === "" ||
-                editLast.trim() === ""
+                editFirst.trim() === '' ||
+                editLast.trim() === ''
               }
             >
-              {t("adminDashboard.save")}
+              {t('adminDashboard.save')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -612,19 +616,19 @@ const AdminDashboardPage = () => {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {t("adminDashboard.deleteConfirmTitle")}
+              {t('adminDashboard.deleteConfirmTitle')}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {t("adminDashboard.deleteConfirmDescription", {
-                name: deleteTarget?.label ?? "",
+              {t('adminDashboard.deleteConfirmDescription', {
+                name: deleteTarget?.label ?? '',
               })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("adminDashboard.cancel")}</AlertDialogCancel>
+            <AlertDialogCancel>{t('adminDashboard.cancel')}</AlertDialogCancel>
             <Button
-              type="button"
-              variant="destructive"
+              type='button'
+              variant='destructive'
               disabled={deleteMutation.isPending || deleteTarget == null}
               onClick={() => {
                 if (deleteTarget) {
@@ -632,7 +636,7 @@ const AdminDashboardPage = () => {
                 }
               }}
             >
-              {t("adminDashboard.deleteConfirmAction")}
+              {t('adminDashboard.deleteConfirmAction')}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

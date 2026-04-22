@@ -55,7 +55,10 @@ import type {
 import { examAPI } from '@/services/endpoints/exam';
 import ModeToggle from '@/components/theme/mode-toggle';
 import NotificationBell from '@/components/notifications/NotificationBell';
-import { useExamQuestionStats, useGenerateReviewExam } from '@/hooks/useReviewBundles';
+import {
+  useExamQuestionStats,
+  useGenerateReviewExam,
+} from '@/hooks/useReviewBundles';
 import { toast } from 'react-toastify';
 
 interface ExamResultsProps {
@@ -125,17 +128,20 @@ export default function ExamResults({
 
   // Retry Wrong Answers (Flow 2)
   const [retryOpen, setRetryOpen] = useState(false);
-  const [selectedRetryIds, setSelectedRetryIds] = useState<Set<number>>(new Set());
-  const [retryDone, setRetryDone] = useState(false);
-  const { data: questionStatsData, isLoading: statsLoading } = useExamQuestionStats(
-    setId,
-    examId,
+  const [selectedRetryIds, setSelectedRetryIds] = useState<Set<number>>(
+    new Set(),
   );
+  const [retryDone, setRetryDone] = useState(false);
+  const { data: questionStatsData, isLoading: statsLoading } =
+    useExamQuestionStats(setId, examId);
   const generateReviewExam = useGenerateReviewExam();
 
   const formatAttemptDateTime = (iso: string | null | undefined) => {
     if (!iso) return '—';
-    const normalized = iso.trim().replace(/(\.\d{3})\d+/, '$1').replace(' ', 'T');
+    const normalized = iso
+      .trim()
+      .replace(/(\.\d{3})\d+/, '$1')
+      .replace(' ', 'T');
     const d = new Date(normalized);
     if (Number.isNaN(d.getTime())) return iso;
     return d.toLocaleString(i18n.language, {
@@ -157,9 +163,7 @@ export default function ExamResults({
         const sorted = [...rows].sort((a, b) => {
           const ts = (x: ExamAttemptSummary) => {
             const raw = x.submittedAt ?? x.startedAt;
-            const n = raw
-              .replace(/(\.\d{3})\d+/, '$1')
-              .replace(' ', 'T');
+            const n = raw.replace(/(\.\d{3})\d+/, '$1').replace(' ', 'T');
             const ms = new Date(n).getTime();
             return Number.isNaN(ms) ? 0 : ms;
           };
@@ -519,7 +523,7 @@ export default function ExamResults({
               </div>
 
               {/* Question Review */}
-              <div className='bg-card border border-border rounded-lg p-5'>
+              <div className='bg-[var(--pl-bg)] border border-border rounded-lg p-5'>
                 <div className='flex items-center gap-2 mb-5'>
                   <BarChart3 className='w-5 h-5' />
                   <h3 className='text-lg font-semibold'>
@@ -624,7 +628,8 @@ export default function ExamResults({
 
                             <div className='flex items-center gap-2 flex-shrink-0'>
                               <span className='text-sm font-semibold whitespace-nowrap'>
-                                {score}/{question.score} {t('exam.common.points')}
+                                {score}/{question.score}{' '}
+                                {t('exam.common.points')}
                               </span>
                               <CollapsibleTrigger asChild>
                                 <Button
@@ -709,7 +714,8 @@ export default function ExamResults({
 
                               {/* Essay answer */}
                               {question.type === 'ESSAY' &&
-                                (graded?.studentAnswer || submission?.essayAnswer) && (
+                                (graded?.studentAnswer ||
+                                  submission?.essayAnswer) && (
                                   <div className='bg-background border border-border rounded-lg p-4'>
                                     <p className='text-xs font-medium text-muted-foreground mb-2'>
                                       {t('exam.results.yourAnswerLabel')}
@@ -748,17 +754,17 @@ export default function ExamResults({
                               {/* Action buttons */}
                               <div className='flex items-center gap-2 pt-1'>
                                 {showExplainAi(question.id) && (
-                                <Button
-                                  variant='outline'
-                                  size='sm'
-                                  className='gap-1.5 text-xs h-8'
-                                  onClick={() =>
-                                    handleExplainWithAI(question.id)
-                                  }
-                                >
-                                  <Sparkles className='w-3.5 h-3.5 text-purple-500' />
-                                  {t('exam.results.explainAI')}
-                                </Button>
+                                  <Button
+                                    variant='outline'
+                                    size='sm'
+                                    className='gap-1.5 text-xs h-8'
+                                    onClick={() =>
+                                      handleExplainWithAI(question.id)
+                                    }
+                                  >
+                                    <Sparkles className='w-3.5 h-3.5 text-purple-500' />
+                                    {t('exam.results.explainAI')}
+                                  </Button>
                                 )}
                                 <Button
                                   variant={isReviewed ? 'default' : 'outline'}
@@ -857,12 +863,9 @@ export default function ExamResults({
                 <TableBody>
                   {historyAttempts.map((row) => {
                     const submitted =
-                      row.status === 'SUBMITTED' ||
-                      row.submittedAt != null;
+                      row.status === 'SUBMITTED' || row.submittedAt != null;
                     const scoreLabel =
-                      submitted &&
-                      row.score != null &&
-                      row.totalPoints != null
+                      submitted && row.score != null && row.totalPoints != null
                         ? `${row.score}/${row.totalPoints}`
                         : '—';
                     return (
@@ -932,7 +935,8 @@ export default function ExamResults({
                       {t('exam.results.tableScore')}:{' '}
                     </span>
                     <span className='font-semibold'>
-                      {detailData.score != null && detailData.totalPoints != null
+                      {detailData.score != null &&
+                      detailData.totalPoints != null
                         ? `${detailData.score}/${detailData.totalPoints}`
                         : '—'}
                     </span>
@@ -1037,110 +1041,122 @@ export default function ExamResults({
               </div>
             )}
 
-            {!statsLoading && (!questionStatsData?.data || questionStatsData.data.length === 0) && (
-              <div className='flex flex-col items-center gap-2 py-8 text-muted-foreground text-center'>
-                <AlertCircle className='w-8 h-8' />
-                <p className='text-sm'>Chưa có dữ liệu thống kê câu sai.</p>
-                <p className='text-xs'>Câu essay đang chờ chấm sẽ không hiển thị ở đây.</p>
-              </div>
-            )}
-
-            {!statsLoading && questionStatsData?.data && questionStatsData.data.length > 0 && (
-              <>
-                <p className='text-sm text-muted-foreground'>
-                  Chọn các câu bạn muốn ôn lại. AI sẽ tạo bài kiểm tra mới với câu hỏi biến thể trên cùng chủ đề.
-                </p>
-
-                {/* Select all */}
-                <div className='flex items-center gap-2 pb-1 border-b border-border'>
-                  <input
-                    type='checkbox'
-                    id='select-all-retry'
-                    className='cursor-pointer'
-                    checked={
-                      selectedRetryIds.size === questionStatsData.data.length
-                    }
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSelectedRetryIds(
-                          new Set(questionStatsData.data.map((q) => q.questionId)),
-                        );
-                      } else {
-                        setSelectedRetryIds(new Set());
-                      }
-                    }}
-                  />
-                  <label htmlFor='select-all-retry' className='text-sm font-medium cursor-pointer'>
-                    Chọn tất cả ({questionStatsData.data.length} câu)
-                  </label>
+            {!statsLoading &&
+              (!questionStatsData?.data ||
+                questionStatsData.data.length === 0) && (
+                <div className='flex flex-col items-center gap-2 py-8 text-muted-foreground text-center'>
+                  <AlertCircle className='w-8 h-8' />
+                  <p className='text-sm'>Chưa có dữ liệu thống kê câu sai.</p>
+                  <p className='text-xs'>
+                    Câu essay đang chờ chấm sẽ không hiển thị ở đây.
+                  </p>
                 </div>
+              )}
 
-                <ul className='space-y-2'>
-                  {questionStatsData.data.map((stat) => {
-                    const pct = Math.round(stat.incorrectRate * 100);
-                    const checked = selectedRetryIds.has(stat.questionId);
-                    return (
-                      <li
-                        key={stat.questionId}
-                        className={`flex items-start gap-3 p-3 rounded-lg border transition-colors cursor-pointer ${
-                          checked
-                            ? 'border-orange-400/60 bg-orange-50/40 dark:bg-orange-950/20'
-                            : 'border-border hover:border-muted-foreground/30'
-                        }`}
-                        onClick={() => {
-                          setSelectedRetryIds((prev) => {
-                            const next = new Set(prev);
-                            if (next.has(stat.questionId)) {
-                              next.delete(stat.questionId);
-                            } else {
-                              next.add(stat.questionId);
-                            }
-                            return next;
-                          });
-                        }}
-                      >
-                        <input
-                          type='checkbox'
-                          checked={checked}
-                          onChange={() => {}}
-                          className='mt-0.5 cursor-pointer shrink-0'
-                        />
-                        <div className='flex-1 min-w-0'>
-                          <p className='text-sm font-medium line-clamp-2'>
-                            {stat.questionText}
-                          </p>
-                          <div className='flex items-center gap-3 mt-1.5'>
-                            {/* Incorrect rate bar */}
-                            <div className='flex items-center gap-1.5 flex-1'>
-                              <div className='h-1.5 flex-1 rounded-full bg-muted overflow-hidden'>
-                                <div
-                                  className='h-full rounded-full bg-red-500 transition-all'
-                                  style={{ width: `${pct}%` }}
-                                />
+            {!statsLoading &&
+              questionStatsData?.data &&
+              questionStatsData.data.length > 0 && (
+                <>
+                  <p className='text-sm text-muted-foreground'>
+                    Chọn các câu bạn muốn ôn lại. AI sẽ tạo bài kiểm tra mới với
+                    câu hỏi biến thể trên cùng chủ đề.
+                  </p>
+
+                  {/* Select all */}
+                  <div className='flex items-center gap-2 pb-1 border-b border-border'>
+                    <input
+                      type='checkbox'
+                      id='select-all-retry'
+                      className='cursor-pointer'
+                      checked={
+                        selectedRetryIds.size === questionStatsData.data.length
+                      }
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedRetryIds(
+                            new Set(
+                              questionStatsData.data.map((q) => q.questionId),
+                            ),
+                          );
+                        } else {
+                          setSelectedRetryIds(new Set());
+                        }
+                      }}
+                    />
+                    <label
+                      htmlFor='select-all-retry'
+                      className='text-sm font-medium cursor-pointer'
+                    >
+                      Chọn tất cả ({questionStatsData.data.length} câu)
+                    </label>
+                  </div>
+
+                  <ul className='space-y-2'>
+                    {questionStatsData.data.map((stat) => {
+                      const pct = Math.round(stat.incorrectRate * 100);
+                      const checked = selectedRetryIds.has(stat.questionId);
+                      return (
+                        <li
+                          key={stat.questionId}
+                          className={`flex items-start gap-3 p-3 rounded-lg border transition-colors cursor-pointer ${
+                            checked
+                              ? 'border-orange-400/60 bg-orange-50/40 dark:bg-orange-950/20'
+                              : 'border-border hover:border-muted-foreground/30'
+                          }`}
+                          onClick={() => {
+                            setSelectedRetryIds((prev) => {
+                              const next = new Set(prev);
+                              if (next.has(stat.questionId)) {
+                                next.delete(stat.questionId);
+                              } else {
+                                next.add(stat.questionId);
+                              }
+                              return next;
+                            });
+                          }}
+                        >
+                          <input
+                            type='checkbox'
+                            checked={checked}
+                            onChange={() => {}}
+                            className='mt-0.5 cursor-pointer shrink-0'
+                          />
+                          <div className='flex-1 min-w-0'>
+                            <p className='text-sm font-medium line-clamp-2'>
+                              {stat.questionText}
+                            </p>
+                            <div className='flex items-center gap-3 mt-1.5'>
+                              {/* Incorrect rate bar */}
+                              <div className='flex items-center gap-1.5 flex-1'>
+                                <div className='h-1.5 flex-1 rounded-full bg-muted overflow-hidden'>
+                                  <div
+                                    className='h-full rounded-full bg-red-500 transition-all'
+                                    style={{ width: `${pct}%` }}
+                                  />
+                                </div>
+                                <span
+                                  className={`text-xs font-semibold ${
+                                    pct >= 60
+                                      ? 'text-red-500'
+                                      : pct >= 30
+                                        ? 'text-orange-500'
+                                        : 'text-muted-foreground'
+                                  }`}
+                                >
+                                  {pct}% sai
+                                </span>
                               </div>
-                              <span
-                                className={`text-xs font-semibold ${
-                                  pct >= 60
-                                    ? 'text-red-500'
-                                    : pct >= 30
-                                      ? 'text-orange-500'
-                                      : 'text-muted-foreground'
-                                }`}
-                              >
-                                {pct}% sai
+                              <span className='text-xs text-muted-foreground shrink-0'>
+                                {stat.incorrectCount}/{stat.totalAttempts} lần
                               </span>
                             </div>
-                            <span className='text-xs text-muted-foreground shrink-0'>
-                              {stat.incorrectCount}/{stat.totalAttempts} lần
-                            </span>
                           </div>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </>
-            )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </>
+              )}
           </div>
 
           {/* Footer */}
@@ -1149,7 +1165,11 @@ export default function ExamResults({
               {selectedRetryIds.size} câu được chọn
             </span>
             <div className='flex gap-2'>
-              <Button variant='outline' size='sm' onClick={() => setRetryOpen(false)}>
+              <Button
+                variant='outline'
+                size='sm'
+                onClick={() => setRetryOpen(false)}
+              >
                 Hủy
               </Button>
               <Button
@@ -1168,7 +1188,9 @@ export default function ExamResults({
                       body: { questionIds: Array.from(selectedRetryIds) },
                     });
                     setRetryDone(true);
-                    toast.success('Đã tạo Exam ôn tập! Kiểm tra trong tab Review của Set.');
+                    toast.success(
+                      'Đã tạo Exam ôn tập! Kiểm tra trong tab Review của Set.',
+                    );
                     setTimeout(() => {
                       setRetryOpen(false);
                       navigate(`/sets/${setId}/review`);

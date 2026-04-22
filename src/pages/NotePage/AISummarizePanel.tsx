@@ -1,14 +1,14 @@
-import { Copy, PanelRightClose, Sparkles, X } from "lucide-react";
-import toast from "react-hot-toast";
+import { Copy, PanelRightClose, Sparkles, X } from 'lucide-react';
+import toast from 'react-hot-toast';
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 interface AISummary {
   id: string;
   query: string;
   response: string;
-  type: "text" | "file"; // text for text explanation, file for file summary
+  type: 'text' | 'file'; // text for text explanation, file for file summary
 }
 
 interface AISummarizePanelProps {
@@ -24,7 +24,7 @@ export const AISummarizePanel = ({
 }: AISummarizePanelProps) => {
   const handleCopyResponse = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success("Copied to clipboard");
+    toast.success('Copied to clipboard');
   };
 
   if (summaries.length === 0) {
@@ -67,15 +67,15 @@ export const AISummarizePanel = ({
         {summaries.map((summary) => (
           <Card
             key={summary.id}
-            className='p-4 bg-card hover:shadow-md transition-shadow'
+            className='p-4 bg-[var(--pl-bg)] hover:shadow-md transition-shadow'
           >
             {/* Query Section */}
             <div className='mb-4'>
               <div className='flex items-start justify-between mb-2'>
                 <p className='text-xs font-medium text-foreground/70'>
-                  {summary.type === "file"
-                    ? "Content Summary"
-                    : "Your Question"}
+                  {summary.type === 'file'
+                    ? 'Content Summary'
+                    : 'Your Question'}
                 </p>
                 <Button
                   size='sm'

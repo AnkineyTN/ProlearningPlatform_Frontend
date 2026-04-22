@@ -1,4 +1,13 @@
-import { ArrowLeft, FileText, Link2, Loader2, Upload, X, FileX, Repeat2 } from 'lucide-react';
+import {
+  ArrowLeft,
+  FileText,
+  Link2,
+  Loader2,
+  Upload,
+  X,
+  FileX,
+  Repeat2,
+} from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
@@ -72,9 +81,9 @@ const ExamAISourceModal = ({
   isLoading,
 }: ExamAISourceModalProps) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<'notes' | 'files' | 'web' | 'similar'>(
-    'notes',
-  );
+  const [activeTab, setActiveTab] = useState<
+    'notes' | 'files' | 'web' | 'similar'
+  >('notes');
   const [selectedNotes, setSelectedNotes] = useState<number[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [webUrlsText, setWebUrlsText] = useState('');
@@ -170,7 +179,7 @@ const ExamAISourceModal = ({
     <div className='fixed inset-0 z-50 flex items-center justify-center'>
       <div className='absolute inset-0 bg-black opacity-50' onClick={onClose} />
 
-      <div className='relative bg-background rounded-lg shadow-xl w-full max-w-4xl mx-4 px-10 py-8 max-h-[90vh] overflow-y-auto'>
+      <div className='relative bg-[var(--pl-bg)] rounded-lg shadow-xl w-full max-w-4xl mx-4 px-10 py-8 max-h-[90vh] overflow-y-auto'>
         {/* Header */}
         <div className='flex justify-between items-center mb-6'>
           <h2 className='text-2xl font-bold'>Generate Exam with AI</h2>
@@ -180,7 +189,7 @@ const ExamAISourceModal = ({
             className={`p-1 rounded transition-colors ${
               isLoading
                 ? 'opacity-50 cursor-not-allowed'
-                : 'hover:bg-card cursor-pointer'
+                : 'hover:bg-[var(--pl-bg)] cursor-pointer'
             }`}
           >
             <X className='w-6 h-6' />
@@ -331,7 +340,7 @@ const ExamAISourceModal = ({
                   {uploadedFiles.map((file, index) => (
                     <div
                       key={index}
-                      className='flex items-center justify-between p-2 bg-card rounded border border-border'
+                      className='flex items-center justify-between p-2 bg-[var(--pl-bg)] rounded border border-border'
                     >
                       <span className='text-sm truncate'>{file.name}</span>
                       <button
@@ -411,13 +420,15 @@ const ExamAISourceModal = ({
                           : 'cursor-pointer hover:opacity-90 transition-opacity'
                       }`}
                     >
-                      {t('modal.ai.chooseFile', { defaultValue: 'Choose File' })}
+                      {t('modal.ai.chooseFile', {
+                        defaultValue: 'Choose File',
+                      })}
                     </span>
                   </label>
                 </div>
 
                 {sampleFile && (
-                  <div className='mt-3 flex items-center justify-between p-2 bg-card rounded border border-border'>
+                  <div className='mt-3 flex items-center justify-between p-2 bg-[var(--pl-bg)] rounded border border-border'>
                     <span className='text-sm truncate'>{sampleFile.name}</span>
                     <button
                       onClick={() => setSampleFile(null)}
@@ -453,192 +464,198 @@ const ExamAISourceModal = ({
         </div>
 
         {/* Question Counts, Difficulty, Language, freeText — hidden for Similar Exam tab */}
-        {activeTab !== 'similar' && <>
-        <div className='mb-6'>
-          <Label className='text-sm font-medium mb-3 block'>
-            Number of Questions by Type
-          </Label>
-          <div className='grid grid-cols-3 gap-4'>
-            <div>
-              <label className='text-xs text-muted-foreground mb-1 block'>
-                Multiple Choice
-              </label>
-              <Input
-                type='number'
-                min={0}
-                max={20}
-                value={mcqCount}
-                onChange={(e) =>
-                  setMcqCount(Math.max(0, Number(e.target.value)))
-                }
-                disabled={isLoading}
-              />
+        {activeTab !== 'similar' && (
+          <>
+            <div className='mb-6'>
+              <Label className='text-sm font-medium mb-3 block'>
+                Number of Questions by Type
+              </Label>
+              <div className='grid grid-cols-3 gap-4'>
+                <div>
+                  <label className='text-xs text-muted-foreground mb-1 block'>
+                    Multiple Choice
+                  </label>
+                  <Input
+                    type='number'
+                    min={0}
+                    max={20}
+                    value={mcqCount}
+                    onChange={(e) =>
+                      setMcqCount(Math.max(0, Number(e.target.value)))
+                    }
+                    disabled={isLoading}
+                  />
+                </div>
+                <div>
+                  <label className='text-xs text-muted-foreground mb-1 block'>
+                    True / False
+                  </label>
+                  <Input
+                    type='number'
+                    min={0}
+                    max={20}
+                    value={tfCount}
+                    onChange={(e) =>
+                      setTfCount(Math.max(0, Number(e.target.value)))
+                    }
+                    disabled={isLoading}
+                  />
+                </div>
+                <div>
+                  <label className='text-xs text-muted-foreground mb-1 block'>
+                    Essay
+                  </label>
+                  <Input
+                    type='number'
+                    min={0}
+                    max={10}
+                    value={essCount}
+                    onChange={(e) =>
+                      setEssCount(Math.max(0, Number(e.target.value)))
+                    }
+                    disabled={isLoading}
+                  />
+                </div>
+              </div>
+              <p className='text-xs text-muted-foreground mt-2'>
+                Total: {totalQuestions} question
+                {totalQuestions !== 1 ? 's' : ''}
+              </p>
             </div>
-            <div>
-              <label className='text-xs text-muted-foreground mb-1 block'>
-                True / False
-              </label>
-              <Input
-                type='number'
-                min={0}
-                max={20}
-                value={tfCount}
-                onChange={(e) =>
-                  setTfCount(Math.max(0, Number(e.target.value)))
-                }
-                disabled={isLoading}
-              />
+            {/* Difficulty distribution (must total 100%) */}
+            <div className='mb-6'>
+              <div className='flex flex-wrap items-end justify-between gap-2 mb-2'>
+                <Label className='text-sm font-medium block mb-0'>
+                  {t('modal.ai.difficultyMix', {
+                    defaultValue:
+                      'Difficulty mix (% — Easy + Medium + Hard = 100)',
+                  })}
+                </Label>
+                <button
+                  type='button'
+                  onClick={() => {
+                    setDiffEasy(DEFAULT_DIFFICULTY.Easy);
+                    setDiffMedium(DEFAULT_DIFFICULTY.Medium);
+                    setDiffHard(DEFAULT_DIFFICULTY.Hard);
+                  }}
+                  disabled={isLoading}
+                  className='text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground disabled:opacity-50'
+                >
+                  {t('modal.ai.difficultyReset', {
+                    defaultValue: 'Reset to 50 / 30 / 20',
+                  })}
+                </button>
+              </div>
+              <div className='grid grid-cols-3 gap-4'>
+                <div>
+                  <label className='text-xs text-muted-foreground mb-1 block'>
+                    {t('modal.ai.difficultyEasy', { defaultValue: 'Easy' })}
+                  </label>
+                  <Input
+                    type='number'
+                    min={0}
+                    max={100}
+                    value={diffEasy}
+                    onChange={(e) =>
+                      setDiffEasy(Math.max(0, Number(e.target.value)))
+                    }
+                    disabled={isLoading}
+                  />
+                </div>
+                <div>
+                  <label className='text-xs text-muted-foreground mb-1 block'>
+                    {t('modal.ai.difficultyMedium', { defaultValue: 'Medium' })}
+                  </label>
+                  <Input
+                    type='number'
+                    min={0}
+                    max={100}
+                    value={diffMedium}
+                    onChange={(e) =>
+                      setDiffMedium(Math.max(0, Number(e.target.value)))
+                    }
+                    disabled={isLoading}
+                  />
+                </div>
+                <div>
+                  <label className='text-xs text-muted-foreground mb-1 block'>
+                    {t('modal.ai.difficultyHard', { defaultValue: 'Hard' })}
+                  </label>
+                  <Input
+                    type='number'
+                    min={0}
+                    max={100}
+                    value={diffHard}
+                    onChange={(e) =>
+                      setDiffHard(Math.max(0, Number(e.target.value)))
+                    }
+                    disabled={isLoading}
+                  />
+                </div>
+              </div>
+              <p
+                className={`text-xs mt-2 ${
+                  difficultyValid ? 'text-muted-foreground' : 'text-destructive'
+                }`}
+              >
+                {t('modal.ai.difficultySumHint', {
+                  sum: difficultySum,
+                  defaultValue: 'Current total: {{sum}}% — must equal 100%',
+                })}
+              </p>
             </div>
-            <div>
-              <label className='text-xs text-muted-foreground mb-1 block'>
-                Essay
-              </label>
-              <Input
-                type='number'
-                min={0}
-                max={10}
-                value={essCount}
-                onChange={(e) =>
-                  setEssCount(Math.max(0, Number(e.target.value)))
-                }
-                disabled={isLoading}
-              />
-            </div>
-          </div>
-          <p className='text-xs text-muted-foreground mt-2'>
-            Total: {totalQuestions} question{totalQuestions !== 1 ? 's' : ''}
-          </p>
-        </div>
-        {/* Difficulty distribution (must total 100%) */}
-        <div className='mb-6'>
-          <div className='flex flex-wrap items-end justify-between gap-2 mb-2'>
-            <Label className='text-sm font-medium block mb-0'>
-              {t('modal.ai.difficultyMix', {
-                defaultValue: 'Difficulty mix (% — Easy + Medium + Hard = 100)',
-              })}
-            </Label>
-            <button
-              type='button'
-              onClick={() => {
-                setDiffEasy(DEFAULT_DIFFICULTY.Easy);
-                setDiffMedium(DEFAULT_DIFFICULTY.Medium);
-                setDiffHard(DEFAULT_DIFFICULTY.Hard);
-              }}
-              disabled={isLoading}
-              className='text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground disabled:opacity-50'
-            >
-              {t('modal.ai.difficultyReset', { defaultValue: 'Reset to 50 / 30 / 20' })}
-            </button>
-          </div>
-          <div className='grid grid-cols-3 gap-4'>
-            <div>
-              <label className='text-xs text-muted-foreground mb-1 block'>
-                {t('modal.ai.difficultyEasy', { defaultValue: 'Easy' })}
-              </label>
-              <Input
-                type='number'
-                min={0}
-                max={100}
-                value={diffEasy}
-                onChange={(e) =>
-                  setDiffEasy(Math.max(0, Number(e.target.value)))
-                }
-                disabled={isLoading}
-              />
-            </div>
-            <div>
-              <label className='text-xs text-muted-foreground mb-1 block'>
-                {t('modal.ai.difficultyMedium', { defaultValue: 'Medium' })}
-              </label>
-              <Input
-                type='number'
-                min={0}
-                max={100}
-                value={diffMedium}
-                onChange={(e) =>
-                  setDiffMedium(Math.max(0, Number(e.target.value)))
-                }
-                disabled={isLoading}
-              />
-            </div>
-            <div>
-              <label className='text-xs text-muted-foreground mb-1 block'>
-                {t('modal.ai.difficultyHard', { defaultValue: 'Hard' })}
-              </label>
-              <Input
-                type='number'
-                min={0}
-                max={100}
-                value={diffHard}
-                onChange={(e) =>
-                  setDiffHard(Math.max(0, Number(e.target.value)))
-                }
-                disabled={isLoading}
-              />
-            </div>
-          </div>
-          <p
-            className={`text-xs mt-2 ${
-              difficultyValid ? 'text-muted-foreground' : 'text-destructive'
-            }`}
-          >
-            {t('modal.ai.difficultySumHint', {
-              sum: difficultySum,
-              defaultValue: 'Current total: {{sum}}% — must equal 100%',
-            })}
-          </p>
-        </div>
 
-        <div className='mb-6'>
-          <Label className='text-sm font-medium mb-2 block'>Language</Label>
-          <Select
-            value={language}
-            onValueChange={(v) => setLanguage(v as ExamAILanguage)}
-            disabled={isLoading}
-          >
-            <SelectTrigger className='w-full'>
-              <SelectValue placeholder='Language' />
-            </SelectTrigger>
-            <SelectContent>
-              {EXAM_AI_LANGUAGES.map((lang) => (
-                <SelectItem key={lang} value={lang}>
-                  {lang}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+            <div className='mb-6'>
+              <Label className='text-sm font-medium mb-2 block'>Language</Label>
+              <Select
+                value={language}
+                onValueChange={(v) => setLanguage(v as ExamAILanguage)}
+                disabled={isLoading}
+              >
+                <SelectTrigger className='w-full'>
+                  <SelectValue placeholder='Language' />
+                </SelectTrigger>
+                <SelectContent>
+                  {EXAM_AI_LANGUAGES.map((lang) => (
+                    <SelectItem key={lang} value={lang}>
+                      {lang}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-        {/* freeText — maps to freeText (note/file) or free_text (web) on API */}
-        <div className='mb-6'>
-          <Label className='text-sm font-medium mb-2 block'>
-            {t('modal.ai.freeText', {
-              defaultValue: 'Additional instructions for the AI (optional)',
-            })}
-          </Label>
-          <Textarea
-            value={freeText}
-            onChange={(e) => setFreeText(e.target.value)}
-            placeholder={t('modal.ai.freeTextPlaceholder', {
-              defaultValue:
-                'E.g. focus on definitions, avoid trick questions, align with chapter 3…',
-            })}
-            disabled={isLoading}
-            rows={4}
-            className='resize-y min-h-[100px]'
-          />
-        </div>
-        </>}
+            {/* freeText — maps to freeText (note/file) or free_text (web) on API */}
+            <div className='mb-6'>
+              <Label className='text-sm font-medium mb-2 block'>
+                {t('modal.ai.freeText', {
+                  defaultValue: 'Additional instructions for the AI (optional)',
+                })}
+              </Label>
+              <Textarea
+                value={freeText}
+                onChange={(e) => setFreeText(e.target.value)}
+                placeholder={t('modal.ai.freeTextPlaceholder', {
+                  defaultValue:
+                    'E.g. focus on definitions, avoid trick questions, align with chapter 3…',
+                })}
+                disabled={isLoading}
+                rows={4}
+                className='resize-y min-h-[100px]'
+              />
+            </div>
+          </>
+        )}
 
         {/* Actions */}
         <div className='flex justify-end gap-3'>
           <Button
             onClick={onBack}
             disabled={isLoading}
-            className={`px-6 py-2 border border-border rounded-lg bg-background text-foreground transition-colors flex items-center gap-2 ${
+            className={`px-6 py-2 border border-border rounded-lg bg-[var(--pl-bg)] text-foreground transition-colors flex items-center gap-2 ${
               isLoading
                 ? 'opacity-50 cursor-not-allowed'
-                : 'hover:bg-card cursor-pointer'
+                : 'hover:bg-[var(--pl-bg-hover)] cursor-pointer'
             }`}
           >
             <ArrowLeft className='w-4 h-4' />

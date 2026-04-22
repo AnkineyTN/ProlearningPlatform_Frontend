@@ -1,9 +1,9 @@
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import ModeToggle from "@/components/theme/mode-toggle";
-import LanguageToggle from "@/components/language/language-toggle";
-import NotificationBell from "@/components/notifications/NotificationBell";
-import { useTranslation } from "react-i18next";
+import { Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import ModeToggle from '@/components/theme/mode-toggle';
+import LanguageToggle from '@/components/language/language-toggle';
+import NotificationBell from '@/components/notifications/NotificationBell';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   onSearch?: (query: string) => void;
@@ -13,7 +13,7 @@ const HeaderSet = ({ onSearch }: Props) => {
   const { t } = useTranslation();
   return (
     <div className='flex justify-between items-center mb-8'>
-      <h1 className={`text-4xl font-bold`}>{t("setlist.title")}</h1>
+      <h1 className={`text-4xl font-bold`}>{t('setlist.title')}</h1>
       <div className='flex items-center gap-4'>
         {/* Search Bar */}
         <div className='relative'>
@@ -22,7 +22,7 @@ const HeaderSet = ({ onSearch }: Props) => {
             type='text'
             placeholder='Search...'
             onChange={(e) => onSearch?.(e.target.value)}
-            className='bg-card pl-10 pr-4 py-2 w-80 rounded-full border border-muted-foreground'
+            className='bg-[var(--pl-bg)] pl-10 pr-4 py-2 w-80 rounded-full border border-muted-foreground'
           />
         </div>
 

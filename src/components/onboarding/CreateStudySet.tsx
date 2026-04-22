@@ -4,21 +4,21 @@ import {
   Book,
   Layers,
   Infinity,
-} from "lucide-react";
-import { toast } from "react-toastify";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+} from 'lucide-react';
+import { toast } from 'react-toastify';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useTranslation } from "react-i18next";
-import { useCreateSet } from "@/hooks/useSets";
-import type { CreateSetPayload } from "@/services/types/set.types";
+} from '@/components/ui/select';
+import { useTranslation } from 'react-i18next';
+import { useCreateSet } from '@/hooks/useSets';
+import type { CreateSetPayload } from '@/services/types/set.types';
 
 function studySetToCreatePayload(studySet: {
   name: string;
@@ -26,8 +26,8 @@ function studySetToCreatePayload(studySet: {
   privacy: string;
 }): CreateSetPayload {
   const p = studySet.privacy.toLowerCase();
-  const privacy: CreateSetPayload["privacy"] =
-    p === "public" ? "PUBLIC" : "PRIVATE";
+  const privacy: CreateSetPayload['privacy'] =
+    p === 'public' ? 'PUBLIC' : 'PRIVATE';
   return {
     title: studySet.name.trim(),
     description: studySet.description.trim(),
@@ -57,12 +57,10 @@ const CreateStudySet = ({
 
   const handleCreateSet = async () => {
     try {
-      await createSetMutation.mutateAsync(
-        studySetToCreatePayload(studySet),
-      );
+      await createSetMutation.mutateAsync(studySetToCreatePayload(studySet));
       await onComplete();
     } catch {
-      toast.error(t("onboarding.createStudySet.createFailed"));
+      toast.error(t('onboarding.createStudySet.createFailed'));
     }
   };
 
@@ -73,10 +71,10 @@ const CreateStudySet = ({
       <div className='w-full max-w-5xl'>
         <div className='text-center mb-12'>
           <h1 className='text-4xl font-bold text-foreground mb-3'>
-            {t("onboarding.createStudySet.title")}
+            {t('onboarding.createStudySet.title')}
           </h1>
           <p className='text-muted-foreground'>
-            {t("onboarding.createStudySet.description")}
+            {t('onboarding.createStudySet.description')}
           </p>
         </div>
 
@@ -84,21 +82,21 @@ const CreateStudySet = ({
           <div className='space-y-4'>
             <div>
               <Label
-                className={"block text-sm font-semibold text-foreground mb-2"}
+                className={'block text-sm font-semibold text-foreground mb-2'}
               >
-                {t("onboarding.createStudySet.nameLabel")}{" "}
+                {t('onboarding.createStudySet.nameLabel')}{' '}
                 <span className='text-red-500'>*</span>
               </Label>
               <Input
                 type='text'
-                placeholder={t("onboarding.createStudySet.namePlaceholder")}
+                placeholder={t('onboarding.createStudySet.namePlaceholder')}
                 value={studySet.name}
-                onChange={(e) => onStudySetChange("name", e.target.value)}
+                onChange={(e) => onStudySetChange('name', e.target.value)}
                 className='w-full px-4 py-3 bg-card'
                 maxLength={100}
               />
               <div className='text-right text-xs text-gray-500 mt-1'>
-                {t("onboarding.createStudySet.charCount", {
+                {t('onboarding.createStudySet.charCount', {
                   current: studySet.name.length,
                   max: 100,
                 })}
@@ -107,25 +105,25 @@ const CreateStudySet = ({
 
             <div>
               <Label className='block text-sm font-semibold text-foreground mb-2'>
-                {t("onboarding.createStudySet.descriptionLabel")}{" "}
+                {t('onboarding.createStudySet.descriptionLabel')}{' '}
                 <span className='text-gray-500 font-normal'>
-                  {t("onboarding.createStudySet.optionalTag")}
+                  {t('onboarding.createStudySet.optionalTag')}
                 </span>
               </Label>
               <Textarea
                 placeholder={t(
-                  "onboarding.createStudySet.descriptionPlaceholder",
+                  'onboarding.createStudySet.descriptionPlaceholder',
                 )}
                 value={studySet.description}
                 onChange={(e) =>
-                  onStudySetChange("description", e.target.value)
+                  onStudySetChange('description', e.target.value)
                 }
                 className='w-full px-4 py-3 bg-card'
                 rows={4}
                 maxLength={300}
               />
               <div className='text-right text-xs text-gray-500 mt-1'>
-                {t("onboarding.createStudySet.charCount", {
+                {t('onboarding.createStudySet.charCount', {
                   current: studySet.description.length,
                   max: 300,
                 })}
@@ -134,28 +132,28 @@ const CreateStudySet = ({
 
             <div>
               <Label className='block text-sm font-semibold text-foreground mb-2'>
-                {t("onboarding.createStudySet.privacyLabel")}
+                {t('onboarding.createStudySet.privacyLabel')}
               </Label>
               <Select
                 value={studySet.privacy}
-                onValueChange={(value) => onStudySetChange("privacy", value)}
+                onValueChange={(value) => onStudySetChange('privacy', value)}
               >
-                <SelectTrigger className='w-full px-4 py-3 bg-card appearance-none cursor-pointer'>
+                <SelectTrigger className='w-full px-4 py-3 bg-[var(--pl-bg)] appearance-none cursor-pointer'>
                   <SelectValue
                     placeholder={t(
-                      "onboarding.createStudySet.privacyPlaceholder",
+                      'onboarding.createStudySet.privacyPlaceholder',
                     )}
                   />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value='public'>
-                    🌐 {t("onboarding.createStudySet.privacyPublic")}
+                    🌐 {t('onboarding.createStudySet.privacyPublic')}
                   </SelectItem>
                   <SelectItem value='private'>
-                    🔒 {t("onboarding.createStudySet.privacyPrivate")}
+                    🔒 {t('onboarding.createStudySet.privacyPrivate')}
                   </SelectItem>
                   <SelectItem value='unlisted'>
-                    👁️ {t("onboarding.createStudySet.privacyUnlisted")}
+                    👁️ {t('onboarding.createStudySet.privacyUnlisted')}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -169,15 +167,15 @@ const CreateStudySet = ({
             >
               <span>
                 {busy
-                  ? t("onboarding.submitting")
-                  : `+ ${t("onboarding.createStudySet.createSet")}`}
+                  ? t('onboarding.submitting')
+                  : `+ ${t('onboarding.createStudySet.createSet')}`}
               </span>
             </button>
           </div>
 
           <div className='bg-card-secondary rounded-2xl border-2 border-ring p-6'>
             <h3 className='text-xl font-bold text-foreground mb-6'>
-              {t("onboarding.createStudySet.whatIsStudySet")}
+              {t('onboarding.createStudySet.whatIsStudySet')}
             </h3>
 
             <div className='space-y-4 mb-6'>
@@ -187,7 +185,7 @@ const CreateStudySet = ({
                 </div>
                 <div>
                   <p className='text-foreground'>
-                    {t("onboarding.createStudySet.organizeMaterials")}
+                    {t('onboarding.createStudySet.organizeMaterials')}
                   </p>
                 </div>
               </div>
@@ -198,7 +196,7 @@ const CreateStudySet = ({
                 </div>
                 <div>
                   <p className='text-foreground'>
-                    {t("onboarding.createStudySet.keepMaterialsInOnePlace")}
+                    {t('onboarding.createStudySet.keepMaterialsInOnePlace')}
                   </p>
                 </div>
               </div>
@@ -209,7 +207,7 @@ const CreateStudySet = ({
                 </div>
                 <div>
                   <p className='text-foreground'>
-                    {t("onboarding.createStudySet.makeManyStudySets")}
+                    {t('onboarding.createStudySet.makeManyStudySets')}
                   </p>
                 </div>
               </div>
@@ -219,13 +217,13 @@ const CreateStudySet = ({
               <div className='flex items-start gap-2 mb-3'>
                 <span className='text-lg'>💡</span>
                 <h4 className='font-semibold text-foreground'>
-                  {t("onboarding.createStudySet.quickTips")}
+                  {t('onboarding.createStudySet.quickTips')}
                 </h4>
               </div>
               <ul className='space-y-2 text-sm text-foreground'>
-                <li>💡 {t("onboarding.createStudySet.quickTip1")}</li>
-                <li>💡 {t("onboarding.createStudySet.quickTip2")}</li>
-                <li>💡 {t("onboarding.createStudySet.quickTip3")}</li>
+                <li>💡 {t('onboarding.createStudySet.quickTip1')}</li>
+                <li>💡 {t('onboarding.createStudySet.quickTip2')}</li>
+                <li>💡 {t('onboarding.createStudySet.quickTip3')}</li>
               </ul>
             </div>
           </div>
@@ -236,10 +234,10 @@ const CreateStudySet = ({
             type='button'
             onClick={onBack}
             disabled={busy}
-            className='px-4 py-2 rounded-xl border border-ring bg-card text-foreground hover:bg-card-secondary transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+            className='px-4 py-2 rounded-xl border border-ring bg-[var(--pl-bg)] text-foreground hover:bg-card-secondary transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
           >
             <ChevronLeft className='w-4 h-4' />
-            <span>{t("onboarding.back")}</span>
+            <span>{t('onboarding.back')}</span>
           </button>
           <button
             type='button'
@@ -247,7 +245,7 @@ const CreateStudySet = ({
             disabled={busy}
             className='px-4 py-2 rounded-xl bg-foreground text-background hover:bg-card-hovered transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
           >
-            <span>{t("onboarding.skipForNow")}</span>
+            <span>{t('onboarding.skipForNow')}</span>
             <ChevronRight className='w-4 h-4' />
           </button>
         </div>
