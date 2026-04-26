@@ -26,6 +26,8 @@ import ModeToggle from '@/components/theme/mode-toggle';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import LanguageToggle from '@/components/language/language-toggle';
 import { cn } from '@/lib/utils';
+import ActivityHeatmap from '@/components/cards/ActivityHeatmap';
+import { useStreak, useActivitySummary } from '@/hooks/useActivityLog';
 
 /* ── helpers ─────────────────────────────────────────────── */
 function parseGlobalSearchItems(data: unknown): Record<string, unknown>[] {
@@ -159,67 +161,6 @@ function PanelHead({
       </div>
       {right}
     </div>
-  );
-}
-
-/* ── activity heatmap ────────────────────────────────────── */
-function ActivityHeatmap() {
-  const heat = useMemo(
-    () => Array.from({ length: 84 }, () => Math.floor(Math.random() * 5)),
-    [],
-  );
-  return (
-    <Panel>
-      <PanelHead kicker='12 weeks' title='Study activity' />
-      <div className='px-5 pt-1 pb-[18px]'>
-        <div className='grid grid-cols-12 gap-[3px]'>
-          {Array.from({ length: 12 }).map((_, col) => (
-            <div
-              key={col}
-              style={{
-                display: 'grid',
-                gridTemplateRows: 'repeat(7, 1fr)',
-                gap: 3,
-              }}
-            >
-              {Array.from({ length: 7 }).map((_, row) => {
-                const v = heat[col * 7 + row];
-                return (
-                  <div
-                    key={row}
-                    className='aspect-square rounded-[2px]'
-                    style={{
-                      background:
-                        v === 0
-                          ? 'var(--pl-border)'
-                          : `oklch(var(--pl-accent-l) var(--pl-accent-c) var(--pl-accent-h) / ${0.2 + v * 0.18})`,
-                    }}
-                  />
-                );
-              })}
-            </div>
-          ))}
-        </div>
-        <div className='flex justify-between items-center mt-3 text-[11px] text-[var(--pl-text-faint)]'>
-          <span>Less</span>
-          <div className='flex gap-[3px]'>
-            {[0, 1, 2, 3, 4].map((v) => (
-              <div
-                key={v}
-                className='w-[10px] h-[10px] rounded-[2px]'
-                style={{
-                  background:
-                    v === 0
-                      ? 'var(--pl-border)'
-                      : `oklch(var(--pl-accent-l) var(--pl-accent-c) var(--pl-accent-h) / ${0.2 + v * 0.18})`,
-                }}
-              />
-            ))}
-          </div>
-          <span>More</span>
-        </div>
-      </div>
-    </Panel>
   );
 }
 
@@ -400,6 +341,9 @@ const Dashboard = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
+  const { data: streak } = useStreak();
+  const { data: summary } = useActivitySummary(7);
+
   useEffect(() => {
     const timer = window.setTimeout(
       () => setDebouncedSearch(searchKeyword.trim()),
@@ -464,6 +408,9 @@ const Dashboard = () => {
       toast.error('Failed to update set');
     }
   };
+
+  const weekMinutes = summary?.totalMinutes ?? 0;
+  const weekHours = (weekMinutes / 60).toFixed(1);
 
   return (
     <div className='min-h-screen bg-[var(--pl-bg)] transition-[background] duration-300'>
@@ -560,18 +507,22 @@ const Dashboard = () => {
         <div className='grid grid-cols-4 gap-[14px] mb-6'>
           <StatCard
             kicker='Current streak'
-            value='12'
+            value={streak ? String(streak.currentStreak) : '—'}
             unit='days'
-            trend='+3 vs last week'
+            hint={streak?.studiedToday ? 'Studied today ✓' : 'Not studied yet'}
+            trend={
+              streak && streak.longestStreak > 0
+                ? `Best ${streak.longestStreak}d`
+                : undefined
+            }
             trendDir='up'
             icon={<Flame size={20} />}
           />
           <StatCard
             kicker='Focus this week'
-            value='18.4'
+            value={weekHours}
             unit='h'
-            hint='Target 20h'
-            progress={92}
+            hint={`${summary?.totalSessions ?? 0} sessions`}
             icon={<Timer size={18} />}
           />
           <StatCard
@@ -582,12 +533,14 @@ const Dashboard = () => {
             icon={<Target size={18} />}
           />
           <StatCard
-            kicker='Retention rate'
-            value='87'
+            kicker='Avg exam score'
+            value={
+              summary?.avgExamScore != null
+                ? String(Math.round(summary.avgExamScore))
+                : '—'
+            }
             unit='%'
-            hint='Last 30 days'
-            trend='+4.2%'
-            trendDir='up'
+            hint='Last 7 days'
             icon={<TrendingUp size={18} />}
           />
         </div>
@@ -655,7 +608,7 @@ const Dashboard = () => {
           {/* Right column */}
           <div className='flex flex-col gap-[18px]'>
             <MiniCalendar />
-            <ActivityHeatmap />
+            <ActivityHeatmap months={6} />
 
             {/* Quick start */}
             <Panel>
