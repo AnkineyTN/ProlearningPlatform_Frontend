@@ -1,0 +1,123 @@
+import { useState } from "react";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { X } from "lucide-react";
+import { toast } from "react-toastify";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { todoAPI } from "@/services/endpoints/todo";
+import type { Goal } from "@/services/types/todo.types";
+import { GOAL_PRESET_COLORS } from "./constants";
+
+type GoalModalProps = {
+  open: boolean;
+  onClose: () => void;
+  editGoal?: Goal | null;
+};
+
+const GoalModal = ({ open, onClose, editGoal }: GoalModalProps) => {
+  const qc = useQueryClient();
+  const [title, setTitle] = useState(editGoal?.title ?? "");
+  const [description, setDescription] = useState(editGoal?.description ?? "");
+  const [color, setColor] = useState(editGoal?.color ?? GOAL_PRESET_COLORS[0]);
+  const [targetDate, setTargetDate] = useState(editGoal?.targetDate ?? "");
+
+  const createMutation = useMutation({
+    mutationFn: todoAPI.createGoal,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["goals"] });
+      toast.success("Tạo goal thành công!");
+      onClose();
+    },
+    onError: () => toast.error("Tạo goal thất bại"),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Parameters<typeof todoAPI.updateGoal>[1] }) =>
+      todoAPI.updateGoal(id, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["goals"] });
+      toast.success("Cập nhật goal thành công!");
+      onClose();
+    },
+    onError: () => toast.error("Cập nhật goal thất bại"),
+  });
+
+  if (!open) return null;
+
+  const isLoading = createMutation.isPending || updateMutation.isPending;
+
+  const handleSubmit = () => {
+    if (!title.trim()) return toast.warn("Tên goal không được để trống");
+    const payload = { title, description: description || undefined, color, targetDate: targetDate || undefined };
+    if (editGoal) {
+      updateMutation.mutate({ id: editGoal.id, data: payload });
+    } else {
+      createMutation.mutate(payload);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="bg-[var(--pl-bg)] rounded-2xl p-6 w-full max-w-md shadow-xl">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-foreground">{editGoal ? "Sửa Goal" : "Tạo Goal mới"}</h2>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Tên goal..."
+            className="rounded-xl"
+          />
+          <Input
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Mô tả (tùy chọn)..."
+            className="rounded-xl"
+          />
+          <div>
+            <label className="text-sm text-muted-foreground mb-2 block">Ngày mục tiêu</label>
+            <Input
+              type="date"
+              value={targetDate}
+              onChange={(e) => setTargetDate(e.target.value)}
+              className="rounded-xl"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground mb-2 block">Màu sắc</label>
+            <div className="flex gap-2 flex-wrap">
+              {GOAL_PRESET_COLORS.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setColor(c)}
+                  className={`w-7 h-7 rounded-full border-2 transition-all ${color === c ? "border-foreground scale-110" : "border-transparent"}`}
+                  style={{ backgroundColor: c }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-3 mt-6">
+          <Button variant="outline" className="flex-1 rounded-xl" onClick={onClose}>
+            Hủy
+          </Button>
+          <Button
+            disabled={isLoading}
+            onClick={handleSubmit}
+            className="flex-1 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+          >
+            {editGoal ? "Lưu" : "Tạo"}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default GoalModal;
