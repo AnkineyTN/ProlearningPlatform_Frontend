@@ -2,6 +2,15 @@ import type { ApiMetadata } from "./auth.types";
 
 export type TodoPriority = "LOW" | "MEDIUM" | "HIGH";
 export type GoalStatus = "IN_PROGRESS" | "COMPLETED" | "ARCHIVED";
+export type GoalType = "LONG" | "SHORT";
+export type TodoType = "DAILY" | "WEEKLY";
+export type TodoStatus = "TODO" | "DONE" | "SKIPPED";
+
+export type ResourceRef = {
+  id: number;
+  setId: number | null;
+  title: string | null;
+};
 
 export type Todo = {
   id: number;
@@ -14,6 +23,12 @@ export type Todo = {
   goalId: number | null;
   goalTitle: string | null;
   goalColor: string | null;
+  type: TodoType;
+  status: TodoStatus;
+  setRefs: ResourceRef[];
+  noteRefs: ResourceRef[];
+  flashcardRefs: ResourceRef[];
+  examRefs: ResourceRef[];
   createdAt: string;
   updatedAt: string;
 };
@@ -25,9 +40,12 @@ export type Goal = {
   targetDate: string | null;
   color: string | null;
   status: GoalStatus;
+  type: GoalType;
+  parentGoalId: number | null;
   totalTodos: number;
   completedTodos: number;
   progress: number;
+  shortGoals: Goal[];
   createdAt: string;
   updatedAt: string;
 };
@@ -42,6 +60,12 @@ export type CreateTodoRequest = {
   priority?: TodoPriority;
   dueDate?: string;
   goalId?: number;
+  type?: TodoType;
+  status?: TodoStatus;
+  setRefs?: ResourceRef[];
+  noteRefs?: ResourceRef[];
+  flashcardRefs?: ResourceRef[];
+  examRefs?: ResourceRef[];
 };
 
 export type UpdateTodoRequest = {
@@ -52,6 +76,12 @@ export type UpdateTodoRequest = {
   completed?: boolean;
   goalId?: number;
   clearGoal?: boolean;
+  type?: TodoType;
+  status?: TodoStatus;
+  setRefs?: ResourceRef[];
+  noteRefs?: ResourceRef[];
+  flashcardRefs?: ResourceRef[];
+  examRefs?: ResourceRef[];
 };
 
 export type CreateGoalRequest = {
@@ -59,6 +89,8 @@ export type CreateGoalRequest = {
   description?: string;
   targetDate?: string;
   color?: string;
+  type?: GoalType;
+  parentGoalId?: number;
 };
 
 export type UpdateGoalRequest = {
@@ -67,6 +99,9 @@ export type UpdateGoalRequest = {
   targetDate?: string;
   color?: string;
   status?: GoalStatus;
+  type?: GoalType;
+  parentGoalId?: number;
+  clearParentGoal?: boolean;
 };
 
 export type TodoListResponse = {

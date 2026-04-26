@@ -5,21 +5,26 @@ import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { todoAPI } from "@/services/endpoints/todo";
-import type { Goal } from "@/services/types/todo.types";
-import { GOAL_PRESET_COLORS } from "./constants";
+import type { Goal, GoalType } from "@/services/types/todo.types";
+import { GOAL_PRESET_COLORS, GOAL_TYPE_LABEL } from "./constants";
 
 type GoalModalProps = {
   open: boolean;
   onClose: () => void;
   editGoal?: Goal | null;
+  longGoals?: Goal[];
 };
 
-const GoalModal = ({ open, onClose, editGoal }: GoalModalProps) => {
+const GoalModal = ({ open, onClose, editGoal, longGoals = [] }: GoalModalProps) => {
   const qc = useQueryClient();
   const [title, setTitle] = useState(editGoal?.title ?? "");
   const [description, setDescription] = useState(editGoal?.description ?? "");
   const [color, setColor] = useState(editGoal?.color ?? GOAL_PRESET_COLORS[0]);
   const [targetDate, setTargetDate] = useState(editGoal?.targetDate ?? "");
+  const [type, setType] = useState<GoalType>(editGoal?.type ?? "LONG");
+  const [parentGoalId, setParentGoalId] = useState<number | "">(
+    editGoal?.parentGoalId ?? "",
+  );
 
   const createMutation = useMutation({
     mutationFn: todoAPI.createGoal,
@@ -48,7 +53,15 @@ const GoalModal = ({ open, onClose, editGoal }: GoalModalProps) => {
 
   const handleSubmit = () => {
     if (!title.trim()) return toast.warn("Tên goal không được để trống");
-    const payload = { title, description: description || undefined, color, targetDate: targetDate || undefined };
+    const payload = {
+      title,
+      description: description || undefined,
+      color,
+      targetDate: targetDate || undefined,
+      type,
+      parentGoalId: type === "SHORT" && parentGoalId !== "" ? Number(parentGoalId) : undefined,
+      clearParentGoal: type === "LONG" ? true : undefined,
+    };
     if (editGoal) {
       updateMutation.mutate({ id: editGoal.id, data: payload });
     } else {
@@ -67,6 +80,50 @@ const GoalModal = ({ open, onClose, editGoal }: GoalModalProps) => {
         </div>
 
         <div className="space-y-4">
+          {/* Type selector */}
+          <div>
+            <label className="text-sm text-muted-foreground mb-2 block">Loại goal</label>
+            <div className="grid grid-cols-2 gap-2">
+              {(["LONG", "SHORT"] as GoalType[]).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setType(t)}
+                  className={`rounded-xl px-3 py-2 text-sm border transition-all text-left ${
+                    type === t
+                      ? "border-[var(--pl-accent)] bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)] font-medium"
+                      : "border-[var(--pl-border)] text-muted-foreground"
+                  }`}
+                >
+                  <div className="font-medium">{t === "LONG" ? "Dài hạn" : "Ngắn hạn"}</div>
+                  <div className="text-[11px] opacity-70 mt-0.5">
+                    {t === "LONG" ? "≥ 6 tháng" : "1–6 tháng"}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Parent goal (only for SHORT) */}
+          {type === "SHORT" && longGoals.length > 0 && (
+            <div>
+              <label className="text-sm text-muted-foreground mb-2 block">
+                Thuộc goal dài hạn
+              </label>
+              <select
+                value={parentGoalId}
+                onChange={(e) => setParentGoalId(e.target.value === "" ? "" : Number(e.target.value))}
+                className="w-full rounded-xl border border-[var(--pl-border)] bg-[var(--pl-bg)] text-sm px-3 py-2 text-[var(--pl-text)] outline-none focus:border-[var(--pl-accent)]"
+              >
+                <option value="">-- Không gắn --</option>
+                {longGoals.map((g) => (
+                  <option key={g.id} value={g.id}>
+                    {g.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <Input
             value={title}
             onChange={(e) => setTitle(e.target.value)}

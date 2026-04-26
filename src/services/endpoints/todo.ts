@@ -6,10 +6,13 @@ import type {
   GoalListResponse,
   GoalSingleResponse,
   GoalStatus,
+  GoalType,
   GoalWithTodosResponse,
   TodoListResponse,
   TodoPriority,
   TodoSingleResponse,
+  TodoStatus,
+  TodoType,
   UpdateGoalRequest,
   UpdateTodoRequest,
 } from "../types/todo.types";
@@ -21,6 +24,8 @@ export const todoAPI = {
     completed?: boolean;
     priority?: TodoPriority;
     noGoal?: boolean;
+    type?: TodoType;
+    status?: TodoStatus;
     page?: number;
     size?: number;
   }): Promise<AxiosResponse<TodoListResponse>> =>
@@ -49,6 +54,7 @@ export const todoAPI = {
   // ---- Goals ----
   getGoals: (params?: {
     status?: GoalStatus;
+    type?: GoalType;
     page?: number;
     size?: number;
   }): Promise<AxiosResponse<GoalListResponse>> =>

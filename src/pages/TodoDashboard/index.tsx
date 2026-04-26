@@ -38,7 +38,8 @@ const TodoDashboard = () => {
 
   const todos: Todo[] = todosData?.data?.data ?? [];
   const goals: Goal[] = goalsData?.data?.data ?? [];
-  const completedCount = todos.filter((t) => t.completed).length;
+  const longGoals = goals.filter((g) => g.type === "LONG");
+  const completedCount = todos.filter((t) => t.completed || t.status === "DONE").length;
 
   // ── Mutations ─────────────────────────────────────────────────────────────
 
@@ -91,6 +92,7 @@ const TodoDashboard = () => {
       <GoalModal
         open={goalModalOpen || editingGoal !== null}
         editGoal={editingGoal}
+        longGoals={longGoals}
         onClose={() => {
           setGoalModalOpen(false);
           setEditingGoal(null);
