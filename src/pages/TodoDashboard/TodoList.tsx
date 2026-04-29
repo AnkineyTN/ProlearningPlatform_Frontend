@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { BookOpen, ExternalLink, FileText, FlipHorizontal, GraduationCap, Inbox, Plus, Settings2, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Goal, ResourceRef, Todo } from "@/services/types/todo.types";
-import { PRIORITY_LABEL, TODO_STATUS_COLORS, TODO_STATUS_LABEL, TODO_TYPE_LABEL, type FilterTab, type ResourceType } from "./constants";
+import { TODO_STATUS_COLORS, type FilterTab, type ResourceType } from "./constants";
 import AssignGoalDropdown from "./AssignGoalDropdown";
 import TodoDetailModal from "./TodoDetailModal";
 
@@ -37,13 +38,6 @@ const RESOURCE_COLORS: Record<ResourceType, string> = {
   exam: "oklch(0.72 0.15 40)",
 };
 
-const RESOURCE_LABELS: Record<ResourceType, string> = {
-  set: "Set",
-  note: "Note",
-  flashcard: "Flashcard",
-  exam: "Exam",
-};
-
 const getNavUrl = (type: ResourceType, ref: ResourceRef): string => {
   switch (type) {
     case "set": return `/sets/${ref.id}`;
@@ -54,6 +48,7 @@ const getNavUrl = (type: ResourceType, ref: ResourceRef): string => {
 };
 
 const ResourceChips = ({ todo }: { todo: Todo }) => {
+  const { t } = useTranslation();
   const allRefs: { type: ResourceType; refs: ResourceRef[] }[] = [
     { type: "set", refs: todo.setRefs ?? [] },
     { type: "note", refs: todo.noteRefs ?? [] },
@@ -81,7 +76,7 @@ const ResourceChips = ({ todo }: { todo: Todo }) => {
           >
             {RESOURCE_ICONS[type]}
             <span className="max-w-[80px] truncate">
-              {ref.title ?? `${RESOURCE_LABELS[type]} #${ref.id}`}
+              {ref.title ?? `${t(`todo.resource.${type}`)} #${ref.id}`}
             </span>
             <ExternalLink className="w-2.5 h-2.5 opacity-50 flex-shrink-0" />
           </a>
@@ -104,6 +99,7 @@ const TodoItem = ({
   onDelete: (id: number) => void;
   onOpenDetail: (todo: Todo) => void;
 }) => {
+  const { t } = useTranslation();
   const [hovered, setHovered] = useState(false);
   const accent = PRIORITY_COLORS[todo.priority] ?? "var(--pl-text-faint)";
   const statusColor = TODO_STATUS_COLORS[todo.status];
@@ -163,12 +159,12 @@ const TodoItem = ({
               background: `color-mix(in oklch, ${accent} 12%, transparent)`,
             }}
           >
-            {PRIORITY_LABEL[todo.priority]}
+            {t(`todo.priority.${todo.priority}`)}
           </span>
 
           {/* Type badge */}
           <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)] border border-[var(--pl-border)]">
-            {TODO_TYPE_LABEL[todo.type]}
+            {t(`todo.todoType.${todo.type}`)}
           </span>
 
           {/* Status badge (only if not default TODO) */}
@@ -181,7 +177,7 @@ const TodoItem = ({
                 background: `color-mix(in oklch, ${statusColor} 12%, transparent)`,
               }}
             >
-              {TODO_STATUS_LABEL[todo.status]}
+              {t(`todo.todoStatus.${todo.status}`)}
             </span>
           )}
 
@@ -206,14 +202,14 @@ const TodoItem = ({
         <button
           onClick={() => onOpenDetail(todo)}
           className="p-1.5 rounded-[6px] hover:bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)]"
-          title="Chi tiết / chỉnh sửa"
+          title={t("todo.item.editTitle")}
         >
           <Settings2 className="w-3.5 h-3.5" />
         </button>
         <button
           onClick={() => onDelete(todo.id)}
           className="p-1.5 rounded-[6px] hover:bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)]"
-          title="Xóa"
+          title={t("todo.item.deleteTitle")}
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>
@@ -223,6 +219,7 @@ const TodoItem = ({
 };
 
 const GoalGroupHeader = ({ goal, todos }: { goal: Goal; todos: Todo[] }) => {
+  const { t } = useTranslation();
   const done = todos.filter((t) => t.completed || t.status === "DONE").length;
   return (
     <div className="flex items-center gap-2.5 mb-2.5">
@@ -232,7 +229,7 @@ const GoalGroupHeader = ({ goal, todos }: { goal: Goal; todos: Todo[] }) => {
       </div>
       {goal.type === "SHORT" && (
         <span className="text-[9.5px] px-1.5 py-0.5 rounded-full bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)]">
-          ngắn hạn
+          {t("todo.item.shortBadge")}
         </span>
       )}
       <span className="text-[11px] font-[var(--font-mono-pl)] text-[var(--pl-text-faint)]">
@@ -254,12 +251,13 @@ const TodoList = ({
   onToggle,
   onDelete,
 }: TodoListProps) => {
+  const { t } = useTranslation();
   const [detailTodo, setDetailTodo] = useState<Todo | null>(null);
 
   const placeholder =
     typeof activeFilter === "number"
-      ? `Thêm todo vào "${goals.find((g) => g.id === activeFilter)?.title}"…`
-      : "Nhập nhanh todo… (Enter để tạo)";
+      ? t("todo.todoList.placeholderGoal", { title: goals.find((g) => g.id === activeFilter)?.title ?? "" })
+      : t("todo.todoList.placeholder");
 
   const showGrouped = activeFilter === "all" || activeFilter === "completed";
 
@@ -299,7 +297,7 @@ const TodoList = ({
           className="inline-flex items-center gap-1.5 rounded-[8px] text-[12.5px] px-4 font-medium transition-opacity disabled:opacity-60 bg-[var(--pl-accent)] text-[var(--pl-accent-fg)]"
         >
           <Plus className="w-3.5 h-3.5" />
-          Thêm
+          {t("todo.todoList.add")}
         </button>
       </div>
 
@@ -307,8 +305,8 @@ const TodoList = ({
       {todos.length === 0 ? (
         <div className="text-center rounded-[14px] p-[60px] border border-dashed border-[var(--pl-border)] text-[var(--pl-text-faint)]">
           <Inbox className="w-7 h-7 mx-auto mb-3 opacity-50" />
-          <div className="text-[18px] font-[var(--font-display)]">Chưa có todo nào ở đây.</div>
-          <div className="text-[13px] mt-1">Dùng ô phía trên để thêm nhanh.</div>
+          <div className="text-[18px] font-[var(--font-display)]">{t("todo.todoList.empty")}</div>
+          <div className="text-[13px] mt-1">{t("todo.todoList.emptyHint")}</div>
         </div>
       ) : showGrouped && groupedByGoal ? (
         <>
@@ -334,14 +332,14 @@ const TodoList = ({
               <div className="flex items-center gap-2.5 mb-2.5">
                 <Inbox className="w-3.5 h-3.5 text-[var(--pl-text-faint)]" />
                 <div className="text-[16px] font-medium tracking-tight font-[var(--font-display)] text-[var(--pl-text-muted)]">
-                  Chưa gắn goal
+                  {t("todo.todoList.unassigned")}
                 </div>
                 <span className="text-[11px] font-[var(--font-mono-pl)] text-[var(--pl-text-faint)]">
                   {groupedByGoal.unassigned.length}
                 </span>
                 <div className="flex-1 h-px bg-[var(--pl-border)]" />
                 <span className="text-[11px] italic flex-shrink-0 font-[var(--font-serif)] text-[var(--pl-text-faint)]">
-                  Gắn vào goal khi thấy cần →
+                  {t("todo.todoList.unassignedHint")}
                 </span>
               </div>
               <div className="flex flex-col gap-1.5">

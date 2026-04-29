@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { ChevronDown, ChevronRight, Pencil, Plus, Target, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Goal } from "@/services/types/todo.types";
-import { STATUS_LABEL, type FilterTab } from "./constants";
+import type { FilterTab } from "./constants";
 
 type GoalsSidebarProps = {
   goals: Goal[];
@@ -27,6 +28,7 @@ const GoalCard = ({
   onDeleteGoal: (id: number) => void;
   nested?: boolean;
 }) => {
+  const { t } = useTranslation();
   const [hovered, setHovered] = useState(false);
   const [expanded, setExpanded] = useState(true);
   const active = activeFilter === goal.id;
@@ -63,7 +65,7 @@ const GoalCard = ({
             </span>
             {goal.type === "SHORT" && (
               <span className="text-[9.5px] px-1.5 py-0.5 rounded-full bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)] flex-shrink-0">
-                ngắn
+                {t("todo.goalsSidebar.shortBadge")}
               </span>
             )}
           </div>
@@ -88,7 +90,9 @@ const GoalCard = ({
         <div className="flex justify-between text-[11px] mb-2.5 text-[var(--pl-text-faint)]">
           <span>{goal.completedTodos}/{goal.totalTodos} todos</span>
           {goal.targetDate && (
-            <span className="font-[var(--font-mono-pl)]">đến {goal.targetDate}</span>
+            <span className="font-[var(--font-mono-pl)]">
+              {t("todo.goalsSidebar.until", { date: goal.targetDate })}
+            </span>
           )}
         </div>
 
@@ -108,7 +112,7 @@ const GoalCard = ({
         </div>
 
         <span className="text-[11px] mt-1.5 block text-[var(--pl-text-faint)]">
-          {STATUS_LABEL[goal.status]}
+          {t(`todo.goalStatus.${goal.status}`)}
         </span>
       </div>
 
@@ -139,6 +143,7 @@ const GoalsSidebar = ({
   onEditGoal,
   onDeleteGoal,
 }: GoalsSidebarProps) => {
+  const { t } = useTranslation();
   const longGoals = goals.filter((g) => g.type === "LONG");
   const standaloneShortGoals = goals.filter(
     (g) => g.type === "SHORT" && !g.parentGoalId,
@@ -156,7 +161,7 @@ const GoalsSidebar = ({
         <div className="flex items-center gap-2">
           <Target className="w-3.5 h-3.5 text-[var(--pl-accent-strong)]" />
           <h3 className="text-[17px] font-medium tracking-tight m-0 font-[var(--font-display)] text-[var(--pl-text)]">
-            Goals
+            {t("todo.goalsSidebar.goals")}
           </h3>
           <span className="text-[11px] font-[var(--font-mono-pl)] text-[var(--pl-text-faint)]">
             {goals.length}
@@ -165,7 +170,7 @@ const GoalsSidebar = ({
         <button
           onClick={onNewGoal}
           className="w-[26px] h-[26px] rounded-[7px] grid place-items-center transition-colors border border-[var(--pl-border)] text-[var(--pl-text-muted)]"
-          title="Tạo goal mới"
+          title={t("todo.goalsSidebar.newGoalTitle")}
         >
           <Plus className="w-3 h-3" />
         </button>
@@ -174,12 +179,12 @@ const GoalsSidebar = ({
       {goals.length === 0 ? (
         <div className="text-center py-8 rounded-[12px] border border-dashed border-[var(--pl-border)] text-[var(--pl-text-faint)]">
           <Target className="w-7 h-7 mx-auto mb-2 opacity-40" />
-          <p className="text-[12px]">Chưa có goal nào</p>
+          <p className="text-[12px]">{t("todo.goalsSidebar.empty")}</p>
           <button
             onClick={onNewGoal}
             className="mt-2 text-[12px] hover:underline text-[var(--pl-accent-strong)]"
           >
-            Tạo goal đầu tiên →
+            {t("todo.goalsSidebar.createFirst")}
           </button>
         </div>
       ) : (
@@ -200,7 +205,7 @@ const GoalsSidebar = ({
       {goals.length > 0 && (
         <div className="rounded-[12px] p-[18px] bg-[linear-gradient(135deg,_var(--pl-accent-soft),_color-mix(in_oklch,_var(--pl-accent)_4%,_transparent))] border border-[var(--pl-accent-border)]">
           <div className="text-[11px] tracking-[0.16em] uppercase mb-2 text-[var(--pl-accent-strong)]">
-            Tiến độ tổng
+            {t("todo.goalsSidebar.progressTitle")}
           </div>
           <div className="text-[38px] tracking-tight leading-none mb-3 font-[var(--font-display)] text-[var(--pl-text)]">
             {totalProgress}%
@@ -212,7 +217,7 @@ const GoalsSidebar = ({
             />
           </div>
           <div className="text-[11.5px] italic font-[var(--font-serif)] text-[var(--pl-text-muted)]">
-            {totalDone} done · {totalAll - totalDone} đang chờ
+            {t("todo.goalsSidebar.progressDetail", { done: totalDone, pending: totalAll - totalDone })}
           </div>
         </div>
       )}

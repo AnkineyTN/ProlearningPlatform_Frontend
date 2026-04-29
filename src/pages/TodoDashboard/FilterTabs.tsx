@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { Goal } from "@/services/types/todo.types";
 import type { FilterTab } from "./constants";
 
@@ -8,10 +9,12 @@ type FilterTabsProps = {
 };
 
 const FilterTabs = ({ goals, activeFilter, onFilterChange }: FilterTabsProps) => {
+  const { t } = useTranslation();
+
   const staticTabs = [
-    { label: "Tất cả", value: "all" as FilterTab },
-    { label: "Chưa gắn goal", value: "no-goal" as FilterTab },
-    { label: "Đã xong", value: "completed" as FilterTab },
+    { label: t("todo.filters.all"), value: "all" as FilterTab },
+    { label: t("todo.filters.noGoal"), value: "no-goal" as FilterTab },
+    { label: t("todo.filters.completed"), value: "completed" as FilterTab },
   ];
 
   return (

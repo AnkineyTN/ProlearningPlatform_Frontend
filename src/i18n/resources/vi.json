@@ -575,5 +575,227 @@
             "totalScore": "Tổng điểm:",
             "unansweredWarning": "Cảnh báo: Bạn vẫn còn câu chưa trả lời."
         }
+    },
+    "profile": {
+        "breadcrumb": "Tài khoản",
+        "title": "Hồ sơ của bạn",
+        "subtitle": "Quản lý thông tin, gói và sở thích học tập — chỉ bạn mới thấy được.",
+        "tabs": {
+            "profile": "Hồ sơ",
+            "preferences": "Tuỳ chỉnh",
+            "security": "Bảo mật",
+            "billing": "Gói & thanh toán"
+        },
+        "basicInfo": {
+            "title": "Thông tin cơ bản",
+            "sub": "Tên hiển thị, email, ảnh đại diện.",
+            "firstName": "First name",
+            "lastName": "Last name",
+            "email": "Email",
+            "emailHint": "Dùng để đăng nhập và nhận thông báo.",
+            "accountType": "Account type",
+            "accountTypeHint": "Field này dạng để hiển thị (không sửa).",
+            "bio": "Bio",
+            "bioPlaceholder": "Giới thiệu ngắn về bản thân…"
+        },
+        "learningProfile": {
+            "title": "Hồ sơ học tập",
+            "sub": "Giúp ProLearning gợi ý nội dung phù hợp hơn.",
+            "language": "Language",
+            "languagePlaceholder": "Chọn ngôn ngữ",
+            "education": "Education",
+            "educationPlaceholder": "Chọn học vấn",
+            "hearAppFrom": "Hear app from",
+            "hearAppFromPlaceholder": "Chọn nguồn"
+        },
+        "actions": {
+            "cancel": "Huỷ",
+            "save": "Lưu thay đổi",
+            "saving": "Đang lưu…"
+        },
+        "preferences": {
+            "notifications": {
+                "title": "Thông báo",
+                "sub": "Bạn muốn ProLearning chạm vai bạn lúc nào?",
+                "push": "Push notifications",
+                "pushDesc": "Nhắc học flashcard, deadline goal.",
+                "email": "Email summaries",
+                "emailDesc": "Tổng kết tuần, bundle mới được đề xuất.",
+                "reminders": "Daily streak reminder",
+                "remindersDesc": "Nhắc nhẹ vào 20:00 nếu hôm đó chưa học."
+            },
+            "display": {
+                "title": "Hiển thị",
+                "sub": "Cách bạn nhìn ProLearning.",
+                "weekStart": "Tuần bắt đầu vào",
+                "monday": "Thứ Hai",
+                "sunday": "Chủ Nhật"
+            }
+        },
+        "security": {
+            "changePassword": {
+                "title": "Đổi mật khẩu",
+                "sub": "Mật khẩu mới phải ≥ 8 ký tự, có chữ và số.",
+                "currentPassword": "Current password",
+                "newPassword": "New password",
+                "submit": "Đổi mật khẩu"
+            },
+            "dangerZone": {
+                "title": "Vùng nguy hiểm",
+                "sub": "Hành động không thể hoàn tác.",
+                "deleteAccount": "Xoá tài khoản",
+                "deleteDesc": "Mọi sets, bundles, ghi chú và tiến độ sẽ bị xoá vĩnh viễn.",
+                "deleteBtn": "Xoá tài khoản"
+            }
+        },
+        "billing": {
+            "title": "Gói hiện tại",
+            "sub": "Bạn đang dùng gói {{plan}}.",
+            "planFree": "Miễn phí",
+            "planPro": "Pro",
+            "freeDesc": "Nâng cấp để mở khoá toàn bộ tính năng.",
+            "proDesc": "Cảm ơn bạn đã tin dùng ProLearning.",
+            "upgrade": "Nâng cấp Pro",
+            "features": {
+                "unlimited": "Không giới hạn sets và flashcards",
+                "ai": "AI generate từ note, file, web URL",
+                "sr": "Spaced repetition + interval scheduling",
+                "export": "Xuất dữ liệu sang Markdown / Anki",
+                "support": "Hỗ trợ ưu tiên qua email"
+            }
+        },
+        "toast": {
+            "noUser": "Không tìm thấy thông tin user.",
+            "noChanges": "Không có thay đổi nào để cập nhật.",
+            "updateSuccess": "Cập nhật profile thành công.",
+            "updateFailed": "Cập nhật thất bại. Vui lòng thử lại."
+        }
+    },
+    "todo": {
+        "breadcrumb": "To-Do · Goals",
+        "title": "Hôm nay bạn muốn hoàn thành điều gì?",
+        "subtitle": "Cứ ghi xuống — gắn vào goal khi thấy cần.",
+        "stats": {
+            "completed": "Đã hoàn thành",
+            "pending": "Đang chờ",
+            "total": "Tổng todos",
+            "goals": "Goals đang theo"
+        },
+        "filters": {
+            "all": "Tất cả",
+            "noGoal": "Chưa gắn goal",
+            "completed": "Đã xong"
+        },
+        "todoList": {
+            "add": "Thêm",
+            "placeholder": "Nhập nhanh todo… (Enter để tạo)",
+            "placeholderGoal": "Thêm todo vào \"{{title}}\"…",
+            "empty": "Chưa có todo nào ở đây.",
+            "emptyHint": "Dùng ô phía trên để thêm nhanh.",
+            "unassigned": "Chưa gắn goal",
+            "unassignedHint": "Gắn vào goal khi thấy cần →"
+        },
+        "item": {
+            "editTitle": "Chi tiết / chỉnh sửa",
+            "deleteTitle": "Xóa",
+            "shortBadge": "ngắn hạn"
+        },
+        "priority": {
+            "HIGH": "Cao",
+            "MEDIUM": "Trung bình",
+            "LOW": "Thấp"
+        },
+        "goalStatus": {
+            "IN_PROGRESS": "Đang thực hiện",
+            "COMPLETED": "Hoàn thành",
+            "ARCHIVED": "Lưu trữ"
+        },
+        "goalType": {
+            "LONG": "Dài hạn (≥ 6 tháng)",
+            "SHORT": "Ngắn hạn (1–6 tháng)"
+        },
+        "todoType": {
+            "DAILY": "Hằng ngày",
+            "WEEKLY": "Hằng tuần"
+        },
+        "todoStatus": {
+            "TODO": "Cần làm",
+            "DONE": "Hoàn thành",
+            "SKIPPED": "Bỏ qua"
+        },
+        "resource": {
+            "set": "Set",
+            "note": "Ghi chú",
+            "flashcard": "Flashcard",
+            "exam": "Bài kiểm tra"
+        },
+        "goalsSidebar": {
+            "goals": "Goals",
+            "newGoalTitle": "Tạo goal mới",
+            "empty": "Chưa có goal nào",
+            "createFirst": "Tạo goal đầu tiên →",
+            "progressTitle": "Tiến độ tổng",
+            "progressDetail": "{{done}} done · {{pending}} đang chờ",
+            "shortBadge": "ngắn",
+            "until": "đến {{date}}"
+        },
+        "goalModal": {
+            "createTitle": "Tạo Goal mới",
+            "editTitle": "Sửa Goal",
+            "goalType": "Loại goal",
+            "parentGoal": "Thuộc goal dài hạn",
+            "namePlaceholder": "Tên goal...",
+            "descPlaceholder": "Mô tả (tùy chọn)...",
+            "targetDate": "Ngày mục tiêu",
+            "color": "Màu sắc",
+            "noParent": "-- Không gắn --",
+            "cancel": "Hủy",
+            "save": "Lưu",
+            "create": "Tạo",
+            "longLabel": "Dài hạn",
+            "shortLabel": "Ngắn hạn",
+            "longDesc": "≥ 6 tháng",
+            "shortDesc": "1–6 tháng"
+        },
+        "detailModal": {
+            "title": "Chi tiết Todo",
+            "namePlaceholder": "Tên todo...",
+            "descPlaceholder": "Mô tả (tùy chọn)...",
+            "taskType": "Loại task",
+            "status": "Trạng thái",
+            "priority": "Ưu tiên",
+            "dueDate": "Ngày hết hạn",
+            "goal": "Goal",
+            "noGoal": "-- Không có goal --",
+            "resources": "Tài nguyên liên kết",
+            "addResource": "Thêm {{type}}",
+            "noResources": "Chưa có tài nguyên nào. Dùng các nút trên để thêm.",
+            "displayNamePlaceholder": "Tên hiển thị...",
+            "cancel": "Hủy",
+            "save": "Lưu",
+            "priorityLow": "Thấp",
+            "priorityMedium": "Trung bình",
+            "priorityHigh": "Cao"
+        },
+        "assignGoal": {
+            "noGoal": "Chưa có goal",
+            "unassign": "Không gắn goal"
+        },
+        "toast": {
+            "createFailed": "Tạo todo thất bại",
+            "deleteFailed": "Xóa todo thất bại",
+            "goalDeleted": "Đã xóa goal",
+            "goalDeleteFailed": "Xóa goal thất bại",
+            "goalCreated": "Tạo goal thành công!",
+            "goalCreateFailed": "Tạo goal thất bại",
+            "goalUpdated": "Cập nhật goal thành công!",
+            "goalUpdateFailed": "Cập nhật goal thất bại",
+            "todoUpdated": "Cập nhật todo thành công!",
+            "todoUpdateFailed": "Cập nhật todo thất bại",
+            "goalNameRequired": "Tên goal không được để trống",
+            "todoNameRequired": "Tên todo không được để trống",
+            "invalidId": "ID không hợp lệ",
+            "setIdRequired": "Cần nhập Set ID"
+        }
     }
 }

@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { BookOpen, ExternalLink, FileText, FlipHorizontal, GraduationCap, Plus, Trash2, X } from "lucide-react";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { todoAPI } from "@/services/endpoints/todo";
 import type { Goal, ResourceRef, Todo, TodoPriority, TodoStatus, TodoType } from "@/services/types/todo.types";
-import { TODO_STATUS_LABEL, TODO_TYPE_LABEL, type ResourceType } from "./constants";
+import type { ResourceType } from "./constants";
 
 type TodoDetailModalProps = {
   open: boolean;
@@ -29,21 +30,6 @@ const RESOURCE_COLORS: Record<ResourceType, string> = {
   exam: "oklch(0.72 0.15 40)",
 };
 
-const RESOURCE_LABELS: Record<ResourceType, string> = {
-  set: "Set",
-  note: "Ghi chú",
-  flashcard: "Flashcard",
-  exam: "Bài kiểm tra",
-};
-
-type RefField = "setRefs" | "noteRefs" | "flashcardRefs" | "examRefs";
-const TYPE_TO_FIELD: Record<ResourceType, RefField> = {
-  set: "setRefs",
-  note: "noteRefs",
-  flashcard: "flashcardRefs",
-  exam: "examRefs",
-};
-
 const AddResourceRow = ({
   type,
   onAdd,
@@ -51,15 +37,15 @@ const AddResourceRow = ({
   type: ResourceType;
   onAdd: (ref: ResourceRef) => void;
 }) => {
-  // const [id, setId] = useState("");
+  const { t } = useTranslation();
   const [setId, setSetId] = useState("");
   const [title, setTitle] = useState("");
   const needsSetId = type !== "set";
 
   const handleAdd = () => {
     const parsedId = Number(setId);
-    if (!parsedId) return toast.warn("ID không hợp lệ");
-    if (needsSetId && !setId) return toast.warn("Cần nhập Set ID");
+    if (!parsedId) return toast.warn(t("todo.toast.invalidId"));
+    if (needsSetId && !setId) return toast.warn(t("todo.toast.setIdRequired"));
     onAdd({ id: parsedId, setId: needsSetId ? Number(setId) : null, title: title || null });
     setSetId("");
     setTitle("");
@@ -84,7 +70,7 @@ const AddResourceRow = ({
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Tên hiển thị..."
+        placeholder={t("todo.detailModal.displayNamePlaceholder")}
         className="flex-1 rounded-lg border border-[var(--pl-border)] bg-transparent text-xs px-2 py-1.5 text-[var(--pl-text)] outline-none"
       />
       <button
@@ -98,6 +84,7 @@ const AddResourceRow = ({
 };
 
 const TodoDetailModal = ({ open, todo, goals, onClose }: TodoDetailModalProps) => {
+  const { t } = useTranslation();
   const qc = useQueryClient();
 
   const [title, setTitle] = useState(todo?.title ?? "");
@@ -120,10 +107,10 @@ const TodoDetailModal = ({ open, todo, goals, onClose }: TodoDetailModalProps) =
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["todos"] });
       qc.invalidateQueries({ queryKey: ["goals"] });
-      toast.success("Cập nhật todo thành công!");
+      toast.success(t("todo.toast.todoUpdated"));
       onClose();
     },
-    onError: () => toast.error("Cập nhật todo thất bại"),
+    onError: () => toast.error(t("todo.toast.todoUpdateFailed")),
   });
 
   if (!open || !todo) return null;
@@ -156,7 +143,7 @@ const TodoDetailModal = ({ open, todo, goals, onClose }: TodoDetailModalProps) =
   };
 
   const handleSave = () => {
-    if (!title.trim()) return toast.warn("Tên todo không được để trống");
+    if (!title.trim()) return toast.warn(t("todo.toast.todoNameRequired"));
     updateMutation.mutate({
       title,
       description: description || undefined,
@@ -184,7 +171,7 @@ const TodoDetailModal = ({ open, todo, goals, onClose }: TodoDetailModalProps) =
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-[var(--pl-bg)] rounded-2xl p-6 w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-bold text-foreground">Chi tiết Todo</h2>
+          <h2 className="text-base font-bold text-foreground">{t("todo.detailModal.title")}</h2>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-5 h-5" />
           </button>
@@ -194,38 +181,42 @@ const TodoDetailModal = ({ open, todo, goals, onClose }: TodoDetailModalProps) =
           <Input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Tên todo..."
+            placeholder={t("todo.detailModal.namePlaceholder")}
             className="rounded-xl"
           />
           <Input
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Mô tả (tùy chọn)..."
+            placeholder={t("todo.detailModal.descPlaceholder")}
             className="rounded-xl"
           />
 
           {/* Type + Status row */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-muted-foreground mb-1.5 block">Loại task</label>
+              <label className="text-xs text-muted-foreground mb-1.5 block">
+                {t("todo.detailModal.taskType")}
+              </label>
               <div className="flex gap-1.5">
-                {(["DAILY", "WEEKLY"] as TodoType[]).map((t) => (
+                {(["DAILY", "WEEKLY"] as TodoType[]).map((tt) => (
                   <button
-                    key={t}
-                    onClick={() => setTodoType(t)}
+                    key={tt}
+                    onClick={() => setTodoType(tt)}
                     className={`flex-1 rounded-lg px-2 py-1.5 text-xs border transition-all ${
-                      todoType === t
+                      todoType === tt
                         ? "border-[var(--pl-accent)] bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)] font-medium"
                         : "border-[var(--pl-border)] text-muted-foreground"
                     }`}
                   >
-                    {TODO_TYPE_LABEL[t]}
+                    {t(`todo.todoType.${tt}`)}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label className="text-xs text-muted-foreground mb-1.5 block">Trạng thái</label>
+              <label className="text-xs text-muted-foreground mb-1.5 block">
+                {t("todo.detailModal.status")}
+              </label>
               <div className="flex gap-1">
                 {(["TODO", "DONE", "SKIPPED"] as TodoStatus[]).map((s) => (
                   <button
@@ -237,7 +228,7 @@ const TodoDetailModal = ({ open, todo, goals, onClose }: TodoDetailModalProps) =
                         : "border-[var(--pl-border)] text-muted-foreground"
                     }`}
                   >
-                    {TODO_STATUS_LABEL[s]}
+                    {t(`todo.todoStatus.${s}`)}
                   </button>
                 ))}
               </div>
@@ -247,19 +238,23 @@ const TodoDetailModal = ({ open, todo, goals, onClose }: TodoDetailModalProps) =
           {/* Priority + Due date */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-muted-foreground mb-1.5 block">Ưu tiên</label>
+              <label className="text-xs text-muted-foreground mb-1.5 block">
+                {t("todo.detailModal.priority")}
+              </label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as TodoPriority)}
                 className="w-full rounded-xl border border-[var(--pl-border)] bg-[var(--pl-bg)] text-sm px-3 py-2 text-[var(--pl-text)] outline-none"
               >
-                <option value="LOW">Thấp</option>
-                <option value="MEDIUM">Trung bình</option>
-                <option value="HIGH">Cao</option>
+                <option value="LOW">{t("todo.detailModal.priorityLow")}</option>
+                <option value="MEDIUM">{t("todo.detailModal.priorityMedium")}</option>
+                <option value="HIGH">{t("todo.detailModal.priorityHigh")}</option>
               </select>
             </div>
             <div>
-              <label className="text-xs text-muted-foreground mb-1.5 block">Ngày hết hạn</label>
+              <label className="text-xs text-muted-foreground mb-1.5 block">
+                {t("todo.detailModal.dueDate")}
+              </label>
               <Input
                 type="date"
                 value={dueDate}
@@ -271,13 +266,15 @@ const TodoDetailModal = ({ open, todo, goals, onClose }: TodoDetailModalProps) =
 
           {/* Goal */}
           <div>
-            <label className="text-xs text-muted-foreground mb-1.5 block">Goal</label>
+            <label className="text-xs text-muted-foreground mb-1.5 block">
+              {t("todo.detailModal.goal")}
+            </label>
             <select
               value={goalId}
               onChange={(e) => setGoalId(e.target.value === "" ? "" : Number(e.target.value))}
               className="w-full rounded-xl border border-[var(--pl-border)] bg-[var(--pl-bg)] text-sm px-3 py-2 text-[var(--pl-text)] outline-none"
             >
-              <option value="">-- Không có goal --</option>
+              <option value="">{t("todo.detailModal.noGoal")}</option>
               {goals.map((g) => (
                 <option key={g.id} value={g.id}>{g.title}</option>
               ))}
@@ -287,19 +284,21 @@ const TodoDetailModal = ({ open, todo, goals, onClose }: TodoDetailModalProps) =
           {/* Linked resources */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-medium text-[var(--pl-text)]">Tài nguyên liên kết</label>
+              <label className="text-xs font-medium text-[var(--pl-text)]">
+                {t("todo.detailModal.resources")}
+              </label>
               <div className="flex gap-1">
-                {(["set", "note", "flashcard", "exam"] as ResourceType[]).map((t) => (
+                {(["set", "note", "flashcard", "exam"] as ResourceType[]).map((rt) => (
                   <button
-                    key={t}
-                    onClick={() => setAddingType(addingType === t ? null : t)}
-                    title={`Thêm ${RESOURCE_LABELS[t]}`}
-                    style={{ color: addingType === t ? RESOURCE_COLORS[t] : undefined }}
+                    key={rt}
+                    onClick={() => setAddingType(addingType === rt ? null : rt)}
+                    title={t("todo.detailModal.addResource", { type: t(`todo.resource.${rt}`) })}
+                    style={{ color: addingType === rt ? RESOURCE_COLORS[rt] : undefined }}
                     className={`p-1.5 rounded-lg border transition-all text-[var(--pl-text-faint)] hover:text-[var(--pl-text)] ${
-                      addingType === t ? "border-[var(--pl-accent)] bg-[var(--pl-accent-soft)]" : "border-[var(--pl-border)]"
+                      addingType === rt ? "border-[var(--pl-accent)] bg-[var(--pl-accent-soft)]" : "border-[var(--pl-border)]"
                     }`}
                   >
-                    {RESOURCE_ICONS[t]}
+                    {RESOURCE_ICONS[rt]}
                   </button>
                 ))}
               </div>
@@ -308,7 +307,7 @@ const TodoDetailModal = ({ open, todo, goals, onClose }: TodoDetailModalProps) =
             {addingType && (
               <div className="mb-2 p-2 rounded-xl border border-[var(--pl-border)] bg-[var(--pl-bg-elev)]">
                 <p className="text-[11px] text-muted-foreground mb-1.5">
-                  Thêm {RESOURCE_LABELS[addingType]}
+                  {t("todo.detailModal.addResource", { type: t(`todo.resource.${addingType}`) })}
                 </p>
                 <AddResourceRow type={addingType} onAdd={(ref) => addRef(addingType, ref)} />
               </div>
@@ -336,7 +335,7 @@ const TodoDetailModal = ({ open, todo, goals, onClose }: TodoDetailModalProps) =
                         target="_self"
                         rel="noopener noreferrer"
                       >
-                        {ref.title ?? `${RESOURCE_LABELS[type]} #${ref.id}`}
+                        {ref.title ?? `${t(`todo.resource.${type}`)} #${ref.id}`}
                         <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                       </a>
                       <button
@@ -351,7 +350,7 @@ const TodoDetailModal = ({ open, todo, goals, onClose }: TodoDetailModalProps) =
               )}
               {allRefs.every(({ refs }) => refs.length === 0) && (
                 <p className="text-[11px] text-[var(--pl-text-faint)] italic">
-                  Chưa có tài nguyên nào. Dùng các nút trên để thêm.
+                  {t("todo.detailModal.noResources")}
                 </p>
               )}
             </div>
@@ -360,14 +359,14 @@ const TodoDetailModal = ({ open, todo, goals, onClose }: TodoDetailModalProps) =
 
         <div className="flex gap-3 mt-6">
           <Button variant="outline" className="flex-1 rounded-xl" onClick={onClose}>
-            Hủy
+            {t("todo.detailModal.cancel")}
           </Button>
           <Button
             disabled={updateMutation.isPending}
             onClick={handleSave}
             className="flex-1 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white"
           >
-            Lưu
+            {t("todo.detailModal.save")}
           </Button>
         </div>
       </div>

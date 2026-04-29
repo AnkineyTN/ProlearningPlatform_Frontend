@@ -424,7 +424,12 @@ const Dashboard = () => {
               month: 'long',
             })}
           </div>
-          <h1 className='text-[32px] font-bold tracking-[-0.02em] text-[var(--pl-text)] m-0'>
+          <h1
+            className='text-5xl tracking-[-0.02em] text-[var(--pl-text)] m-0'
+            style={{
+              fontFamily: 'var(--font-display)',
+            }}
+          >
             {t('header.welcome')}
           </h1>
         </div>

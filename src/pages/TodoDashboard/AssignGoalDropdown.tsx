@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { todoAPI } from "@/services/endpoints/todo";
 import type { Goal, Todo } from "@/services/types/todo.types";
 
@@ -10,6 +11,7 @@ type AssignGoalDropdownProps = {
 };
 
 const AssignGoalDropdown = ({ todo, goals }: AssignGoalDropdownProps) => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const qc = useQueryClient();
 
@@ -32,7 +34,7 @@ const AssignGoalDropdown = ({ todo, goals }: AssignGoalDropdownProps) => {
         {todo.goalColor && (
           <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: todo.goalColor }} />
         )}
-        {todo.goalTitle ?? "Chưa có goal"}
+        {todo.goalTitle ?? t("todo.assignGoal.noGoal")}
         <ChevronDown className="w-3 h-3" />
       </button>
 
@@ -42,7 +44,7 @@ const AssignGoalDropdown = ({ todo, goals }: AssignGoalDropdownProps) => {
             onClick={() => assignMutation.mutate({ clearGoal: true })}
             className="w-full text-left px-3 py-2 text-sm hover:bg-card-secondary text-muted-foreground"
           >
-            Không gắn goal
+            {t("todo.assignGoal.unassign")}
           </button>
           {goals.map((g) => (
             <button

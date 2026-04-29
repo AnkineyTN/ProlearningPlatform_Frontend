@@ -575,5 +575,227 @@
             "totalScore": "Total Score:",
             "unansweredWarning": "Warning: You still have unanswered questions."
         }
+    },
+    "profile": {
+        "breadcrumb": "Account",
+        "title": "Your Profile",
+        "subtitle": "Manage your info, plan and learning preferences — only you can see this.",
+        "tabs": {
+            "profile": "Profile",
+            "preferences": "Preferences",
+            "security": "Security",
+            "billing": "Plan & Billing"
+        },
+        "basicInfo": {
+            "title": "Basic Information",
+            "sub": "Display name, email, avatar.",
+            "firstName": "First name",
+            "lastName": "Last name",
+            "email": "Email",
+            "emailHint": "Used for login and notifications.",
+            "accountType": "Account type",
+            "accountTypeHint": "Display only (read-only).",
+            "bio": "Bio",
+            "bioPlaceholder": "A short introduction about yourself…"
+        },
+        "learningProfile": {
+            "title": "Learning Profile",
+            "sub": "Helps ProLearning suggest more relevant content.",
+            "language": "Language",
+            "languagePlaceholder": "Select language",
+            "education": "Education",
+            "educationPlaceholder": "Select education",
+            "hearAppFrom": "Hear app from",
+            "hearAppFromPlaceholder": "Select source"
+        },
+        "actions": {
+            "cancel": "Cancel",
+            "save": "Save changes",
+            "saving": "Saving…"
+        },
+        "preferences": {
+            "notifications": {
+                "title": "Notifications",
+                "sub": "When do you want ProLearning to nudge you?",
+                "push": "Push notifications",
+                "pushDesc": "Reminders for flashcards, goal deadlines.",
+                "email": "Email summaries",
+                "emailDesc": "Weekly recap, new recommended bundles.",
+                "reminders": "Daily streak reminder",
+                "remindersDesc": "A gentle reminder at 8pm if you haven't studied today."
+            },
+            "display": {
+                "title": "Display",
+                "sub": "How you view ProLearning.",
+                "weekStart": "Week starts on",
+                "monday": "Monday",
+                "sunday": "Sunday"
+            }
+        },
+        "security": {
+            "changePassword": {
+                "title": "Change Password",
+                "sub": "New password must be ≥ 8 characters, with letters and numbers.",
+                "currentPassword": "Current password",
+                "newPassword": "New password",
+                "submit": "Change Password"
+            },
+            "dangerZone": {
+                "title": "Danger Zone",
+                "sub": "Actions that cannot be undone.",
+                "deleteAccount": "Delete account",
+                "deleteDesc": "All sets, bundles, notes and progress will be permanently deleted.",
+                "deleteBtn": "Delete account"
+            }
+        },
+        "billing": {
+            "title": "Current Plan",
+            "sub": "You are on the {{plan}} plan.",
+            "planFree": "Free",
+            "planPro": "Pro",
+            "freeDesc": "Upgrade to unlock all features.",
+            "proDesc": "Thank you for using ProLearning.",
+            "upgrade": "Upgrade to Pro",
+            "features": {
+                "unlimited": "Unlimited sets and flashcards",
+                "ai": "AI generate from notes, files, web URLs",
+                "sr": "Spaced repetition + interval scheduling",
+                "export": "Export data to Markdown / Anki",
+                "support": "Priority support via email"
+            }
+        },
+        "toast": {
+            "noUser": "User info not found.",
+            "noChanges": "No changes to update.",
+            "updateSuccess": "Profile updated successfully.",
+            "updateFailed": "Update failed. Please try again."
+        }
+    },
+    "todo": {
+        "breadcrumb": "To-Do · Goals",
+        "title": "What do you want to accomplish today?",
+        "subtitle": "Just write it down — assign to a goal when needed.",
+        "stats": {
+            "completed": "Completed",
+            "pending": "Pending",
+            "total": "Total todos",
+            "goals": "Active goals"
+        },
+        "filters": {
+            "all": "All",
+            "noGoal": "No goal",
+            "completed": "Completed"
+        },
+        "todoList": {
+            "add": "Add",
+            "placeholder": "Quick-add a todo… (Enter to create)",
+            "placeholderGoal": "Add todo to \"{{title}}\"…",
+            "empty": "No todos here yet.",
+            "emptyHint": "Use the input above to add one.",
+            "unassigned": "No goal assigned",
+            "unassignedHint": "Assign to a goal when needed →"
+        },
+        "item": {
+            "editTitle": "Details / edit",
+            "deleteTitle": "Delete",
+            "shortBadge": "short-term"
+        },
+        "priority": {
+            "HIGH": "High",
+            "MEDIUM": "Medium",
+            "LOW": "Low"
+        },
+        "goalStatus": {
+            "IN_PROGRESS": "In Progress",
+            "COMPLETED": "Completed",
+            "ARCHIVED": "Archived"
+        },
+        "goalType": {
+            "LONG": "Long-term (≥ 6 months)",
+            "SHORT": "Short-term (1–6 months)"
+        },
+        "todoType": {
+            "DAILY": "Daily",
+            "WEEKLY": "Weekly"
+        },
+        "todoStatus": {
+            "TODO": "To do",
+            "DONE": "Done",
+            "SKIPPED": "Skipped"
+        },
+        "resource": {
+            "set": "Set",
+            "note": "Note",
+            "flashcard": "Flashcard",
+            "exam": "Exam"
+        },
+        "goalsSidebar": {
+            "goals": "Goals",
+            "newGoalTitle": "Create new goal",
+            "empty": "No goals yet",
+            "createFirst": "Create your first goal →",
+            "progressTitle": "Overall Progress",
+            "progressDetail": "{{done}} done · {{pending}} pending",
+            "shortBadge": "short",
+            "until": "until {{date}}"
+        },
+        "goalModal": {
+            "createTitle": "Create New Goal",
+            "editTitle": "Edit Goal",
+            "goalType": "Goal type",
+            "parentGoal": "Under long-term goal",
+            "namePlaceholder": "Goal name...",
+            "descPlaceholder": "Description (optional)...",
+            "targetDate": "Target date",
+            "color": "Color",
+            "noParent": "-- None --",
+            "cancel": "Cancel",
+            "save": "Save",
+            "create": "Create",
+            "longLabel": "Long-term",
+            "shortLabel": "Short-term",
+            "longDesc": "≥ 6 months",
+            "shortDesc": "1–6 months"
+        },
+        "detailModal": {
+            "title": "Todo Details",
+            "namePlaceholder": "Todo name...",
+            "descPlaceholder": "Description (optional)...",
+            "taskType": "Task type",
+            "status": "Status",
+            "priority": "Priority",
+            "dueDate": "Due date",
+            "goal": "Goal",
+            "noGoal": "-- No goal --",
+            "resources": "Linked resources",
+            "addResource": "Add {{type}}",
+            "noResources": "No resources yet. Use the buttons above to add.",
+            "displayNamePlaceholder": "Display name...",
+            "cancel": "Cancel",
+            "save": "Save",
+            "priorityLow": "Low",
+            "priorityMedium": "Medium",
+            "priorityHigh": "High"
+        },
+        "assignGoal": {
+            "noGoal": "No goal",
+            "unassign": "Remove goal"
+        },
+        "toast": {
+            "createFailed": "Failed to create todo",
+            "deleteFailed": "Failed to delete todo",
+            "goalDeleted": "Goal deleted",
+            "goalDeleteFailed": "Failed to delete goal",
+            "goalCreated": "Goal created successfully!",
+            "goalCreateFailed": "Failed to create goal",
+            "goalUpdated": "Goal updated successfully!",
+            "goalUpdateFailed": "Failed to update goal",
+            "todoUpdated": "Todo updated successfully!",
+            "todoUpdateFailed": "Failed to update todo",
+            "goalNameRequired": "Goal name cannot be empty",
+            "todoNameRequired": "Todo name cannot be empty",
+            "invalidId": "Invalid ID",
+            "setIdRequired": "Set ID is required"
+        }
     }
 }
