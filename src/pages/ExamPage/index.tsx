@@ -7,6 +7,7 @@ import ExamTaking from './components/ExamTaking';
 import ExamResults from './components/ExamResults';
 import type { Exam, ExamResult, ExamSubmission } from './types';
 import { useExamDetail } from '@/hooks/useExams';
+import { useSessionTracker } from '@/hooks/useSessionTracker';
 import { apiQuizDetailToExam } from './utils/examMapper';
 import {
   buildExamAttemptAnswers,
@@ -31,6 +32,11 @@ export default function ExamPage({ setId, examId }: Props) {
     null,
   );
   const [isStartingAttempt, setIsStartingAttempt] = useState(false);
+
+  const { recordItem, flush } = useSessionTracker({
+    contentType: 'EXAM',
+    setId: Number(examId),
+  });
 
   const { data, isLoading, isError } = useExamDetail(Number(setId), examId);
 
@@ -96,6 +102,7 @@ export default function ExamPage({ setId, examId }: Props) {
         submissions,
         timeTaken,
       );
+      await flush(Math.round(mapped.percentage));
       setExamResult(mapped);
       setActiveAttempt(null);
       setViewMode('results');
@@ -187,6 +194,7 @@ export default function ExamPage({ setId, examId }: Props) {
         exam={exam}
         onSubmit={handleSubmitExam}
         onAbandon={handleAbandonAttempt}
+        onRecordItem={recordItem}
       />
     );
   }

@@ -30,6 +30,7 @@ interface ExamTakingProps {
     timeTaken: number,
   ) => void | Promise<void>;
   onAbandon: () => void;
+  onRecordItem?: () => void;
 }
 
 const OPTION_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -38,6 +39,7 @@ export default function ExamTaking({
   exam,
   onSubmit,
   onAbandon,
+  onRecordItem,
 }: ExamTakingProps) {
   const { t } = useTranslation();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -120,12 +122,17 @@ export default function ExamTaking({
       ),
     );
     const next = new Set(answeredQuestions);
-    if (newAnswers.length > 0) next.add(currentQuestionIndex);
-    else next.delete(currentQuestionIndex);
+    if (newAnswers.length > 0) {
+      next.add(currentQuestionIndex);
+      onRecordItem?.();
+    } else {
+      next.delete(currentQuestionIndex);
+    }
     setAnsweredQuestions(next);
   };
 
   const handleEssayChange = (questionId: string | number, text: string) => {
+    const wasEmpty = !submissions.get(questionId)?.essayAnswer?.trim();
     setSubmissions(
       new Map(
         submissions.set(questionId, {
@@ -136,8 +143,12 @@ export default function ExamTaking({
       ),
     );
     const next = new Set(answeredQuestions);
-    if (text.trim()) next.add(currentQuestionIndex);
-    else next.delete(currentQuestionIndex);
+    if (text.trim()) {
+      next.add(currentQuestionIndex);
+      if (wasEmpty) onRecordItem?.();
+    } else {
+      next.delete(currentQuestionIndex);
+    }
     setAnsweredQuestions(next);
   };
 

@@ -17,6 +17,7 @@ import {
   useStartSession,
   useSyncProgress,
 } from "@/hooks/useFlashcardSession";
+import { useSessionTracker } from "@/hooks/useSessionTracker";
 
 import ContinueSessionDialog from "./components/ContinueSessionDialog";
 import FlashcardHeader from "./components/FlashcardHeader";
@@ -48,6 +49,11 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     Array<{ cardId: number; known: boolean }>
   >([]);
   const SYNC_BATCH_SIZE = 1;
+
+  const { recordItem } = useSessionTracker({
+    contentType: "FLASHCARD",
+    setId: Number(flashcardId),
+  });
 
   const updateCardMutation = useUpdateCard();
   const deleteCardMutation = useDeleteCard();
@@ -114,6 +120,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     setIsFlipped(!isFlipped);
     if (!isFlipped) {
       setStudiedCards(new Set(studiedCards).add(currentCardIndex));
+      recordItem();
     }
   };
 
@@ -309,6 +316,8 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
 
   const handleCardAnswer = async (known: boolean) => {
     if (!sessionId) return;
+
+    recordItem();
 
     // Fix #3: Use activeCards so the correct card ID is read after shuffle
     const currentCard = activeCards[currentCardIndex];
