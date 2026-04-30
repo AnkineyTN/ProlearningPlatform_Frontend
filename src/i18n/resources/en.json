@@ -797,5 +797,85 @@
             "invalidId": "Invalid ID",
             "setIdRequired": "Set ID is required"
         }
+    },
+    "common": {
+        "cancel": "Cancel",
+        "close": "Close",
+        "delete": "Delete",
+        "loading": "Loading...",
+        "save": "Save",
+        "saving": "Saving..."
+    },
+    "pomodoro": {
+        "start": "Start",
+        "pause": "Pause",
+        "reset": "Reset",
+        "skip": "Skip",
+        "favorite": "Add to favorites",
+        "unfavorite": "Remove from favorites",
+        "completedToday": "Completed pomodoros: {{count}}",
+        "types": {
+            "POMODORO": "Focus",
+            "SHORT_BREAK": "Short break",
+            "LONG_BREAK": "Long break"
+        },
+        "tabs": {
+            "all": "All",
+            "myUploads": "My uploads",
+            "favorites": "Favorites"
+        },
+        "spaces": {
+            "title": "Background spaces",
+            "button": "Spaces",
+            "searchPlaceholder": "Search spaces...",
+            "uploadName": "Name for new space",
+            "upload": "Upload",
+            "uploading": "Uploading...",
+            "empty": "No spaces found.",
+            "confirmDelete": "Delete this space?"
+        },
+        "sounds": {
+            "title": "Sound mixer",
+            "button": "Sounds",
+            "searchPlaceholder": "Search sounds...",
+            "uploadName": "Name for new sound",
+            "upload": "Upload",
+            "uploading": "Uploading...",
+            "empty": "No sounds found.",
+            "active": "Active",
+            "remove": "Remove",
+            "confirmDelete": "Delete this sound?"
+        },
+        "settings": {
+            "button": "Settings",
+            "title": "Timer settings",
+            "focus": "Focus",
+            "short": "Short break",
+            "long": "Long break",
+            "minutes": "minutes",
+            "longBreakInterval": "Long break interval",
+            "intervalHint": "Pomodoros before a long break",
+            "autoStartBreak": "Auto-start breaks",
+            "autoStartPomodoro": "Auto-start pomodoros",
+            "invalid": "One or more values are out of range."
+        },
+        "stats": {
+            "button": "Stats",
+            "title": "This week",
+            "focusMinutes": "Focus min",
+            "sessions": "Sessions",
+            "completion": "Completion",
+            "streak": "Streak (days)",
+            "daily": "Daily breakdown",
+            "bestDay": "Best day: {{date}} ({{minutes}} min)"
+        },
+        "toast": {
+            "nameRequired": "Please enter a name first.",
+            "invalidSpaceFile": "Please choose an image or video file.",
+            "invalidSoundFile": "Please choose an audio file.",
+            "uploadFailed": "Upload failed. Please try again.",
+            "spaceCreated": "Space created.",
+            "soundCreated": "Sound added."
+        }
     }
 }

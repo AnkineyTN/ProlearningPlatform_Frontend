@@ -1,38 +1,39 @@
 /* eslint-disable no-constant-binary-expression */
 /* eslint-disable react-refresh/only-export-components */
-import { useSelector } from "react-redux";
-import { Navigate, useParams } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import { Navigate, useParams } from 'react-router-dom';
 
-import SignIn from "@/components/auth/SignIn";
-import SignUp from "@/components/auth/SignUp";
-import ForgotPassword from "@/components/auth/ForgotPassword";
-import VerifyEmail from "@/components/auth/VerifyEmail";
-import ResetOtp from "@/components/auth/ResetOtp";
-import ResetPassword from "@/components/auth/ResetPassword";
-import ProtectedLayout from "@/components/ProtectedLayout";
-import ProtectedLayoutNoSidebar from "@/components/ProtectedLayoutNoSidebar";
-import Dashboard from "@/pages/Dashboard";
-import FlashcardPage from "@/pages/FlashcardPage";
-import FlashcardEditor from "@/pages/FlashcardPage/FlashcardEditor";
-import LandingPage from "@/pages/LandingPage";
-import TextEditor from "@/pages/NotePage";
-import OnboardingApp from "@/pages/OnboardingApp.tsx";
-import AdminDashboardPage from "@/pages/AdminDashboardPage";
-import SetListPage from "@/pages/SetListPage";
-import SetSeriesPage from "@/pages/SetSeriesPage";
-import TodoDashboard from "@/pages/TodoDashboard";
-import PDFAnnotator from "@/pages/PDF";
-import ExamPage from "@/pages/ExamPage";
-import ExamEditor from "@/pages/ExamPage/ExamEditor";
-import ProfilePage from "@/pages/ProfilePage";
-import ReviewBundlesPage from "@/pages/ReviewBundlesPage";
-import ReviewBundleDetailPage from "@/pages/ReviewBundleDetailPage";
-import InviteAcceptPage from "@/pages/InviteAcceptPage";
-import ExamInviteAcceptPage from "@/pages/ExamInviteAcceptPage";
-import FlashcardInviteAcceptPage from "@/pages/FlashcardInviteAcceptPage";
-import type { RouteObject } from "react-router-dom";
+import SignIn from '@/components/auth/SignIn';
+import SignUp from '@/components/auth/SignUp';
+import ForgotPassword from '@/components/auth/ForgotPassword';
+import VerifyEmail from '@/components/auth/VerifyEmail';
+import ResetOtp from '@/components/auth/ResetOtp';
+import ResetPassword from '@/components/auth/ResetPassword';
+import ProtectedLayout from '@/components/ProtectedLayout';
+import ProtectedLayoutNoSidebar from '@/components/ProtectedLayoutNoSidebar';
+import Dashboard from '@/pages/Dashboard';
+import FlashcardPage from '@/pages/FlashcardPage';
+import FlashcardEditor from '@/pages/FlashcardPage/FlashcardEditor';
+import LandingPage from '@/pages/LandingPage';
+import TextEditor from '@/pages/NotePage';
+import OnboardingApp from '@/pages/OnboardingApp.tsx';
+import AdminDashboardPage from '@/pages/AdminDashboardPage';
+import SetListPage from '@/pages/SetListPage';
+import SetSeriesPage from '@/pages/SetSeriesPage';
+import TodoDashboard from '@/pages/TodoDashboard';
+import PDFAnnotator from '@/pages/PDF';
+import Pomodoro from '@/pages/Pomodoro';
+import ExamPage from '@/pages/ExamPage';
+import ExamEditor from '@/pages/ExamPage/ExamEditor';
+import ProfilePage from '@/pages/ProfilePage';
+import ReviewBundlesPage from '@/pages/ReviewBundlesPage';
+import ReviewBundleDetailPage from '@/pages/ReviewBundleDetailPage';
+import InviteAcceptPage from '@/pages/InviteAcceptPage';
+import ExamInviteAcceptPage from '@/pages/ExamInviteAcceptPage';
+import FlashcardInviteAcceptPage from '@/pages/FlashcardInviteAcceptPage';
+import type { RouteObject } from 'react-router-dom';
 
-import type { RootState } from "@/store";
+import type { RootState } from '@/store';
 function LandingPageWrapper() {
   const token = useSelector((state: RootState) => state.auth.token);
 
@@ -82,7 +83,7 @@ function ResetPasswordWrapper() {
 // Wrapper component to extract setId from params and pass as prop
 function SetSeriesPageWrapper() {
   const { id } = useParams();
-  return <SetSeriesPage setId={id ?? ""} />;
+  return <SetSeriesPage setId={id ?? ''} />;
 }
 
 function TextEditorWrapper() {
@@ -92,7 +93,7 @@ function TextEditorWrapper() {
 function FlashcardAppWrapper() {
   const { setId, flashcardId } = useParams();
   return (
-    <FlashcardPage flashcardId={flashcardId ?? ""} setId={Number(setId) ?? 0} />
+    <FlashcardPage flashcardId={flashcardId ?? ''} setId={Number(setId) ?? 0} />
   );
 }
 
@@ -113,7 +114,7 @@ function FlashcardUpdateWrapper() {
 
 function ExamPageWrapper() {
   const { setId, examId } = useParams();
-  return <ExamPage setId={Number(setId) ?? 0} examId={examId ?? ""} />;
+  return <ExamPage setId={Number(setId) ?? 0} examId={examId ?? ''} />;
 }
 
 function ExamEditorWrapper() {
@@ -130,7 +131,7 @@ function AdminDashboardRoute() {
   if (!token) {
     return <Navigate to='/login' replace />;
   }
-  const isAdmin = user?.roles?.includes("ROLE_ADMIN") ?? false;
+  const isAdmin = user?.roles?.includes('ROLE_ADMIN') ?? false;
   if (!isAdmin) {
     return <Navigate to='/dashboard' replace />;
   }
@@ -140,167 +141,171 @@ function AdminDashboardRoute() {
 export const routeConfig: RouteObject[] = [
   // Public routes
   {
-    path: "/",
+    path: '/',
     element: <LandingPageWrapper />,
   },
   {
-    path: "/login",
+    path: '/login',
     element: <SignInWrapper />,
   },
   {
-    path: "/signup",
+    path: '/signup',
     element: <SignUpWrapper />,
   },
   {
-    path: "/forgot-password",
+    path: '/forgot-password',
     element: <ForgotPasswordWrapper />,
   },
   {
-    path: "/verify-email",
+    path: '/verify-email',
     element: <VerifyEmailWrapper />,
   },
   {
-    path: "/reset-otp",
+    path: '/reset-otp',
     element: <ResetOtpWrapper />,
   },
   {
-    path: "/reset-password",
+    path: '/reset-password',
     element: <ResetPasswordWrapper />,
   },
   {
-    path: "/onboarding",
+    path: '/onboarding',
     element: <OnboardingApp />,
   },
   {
-    path: "/admin/onboarding",
+    path: '/admin/onboarding',
     element: <Navigate to='/admin' replace />,
   },
   {
-    path: "/admin",
+    path: '/admin',
     element: <AdminDashboardRoute />,
   },
   {
-    path: "/test",
+    path: '/test',
     element: <PDFAnnotator />,
   },
   // Invite accept pages (email links — no auth required by page itself)
   {
-    path: "/invites/accept",
+    path: '/invites/accept',
     element: <InviteAcceptPage />,
   },
   {
-    path: "/exam-invites/accept",
+    path: '/exam-invites/accept',
     element: <ExamInviteAcceptPage />,
   },
   {
-    path: "/flashcard-invites/accept",
+    path: '/flashcard-invites/accept',
     element: <FlashcardInviteAcceptPage />,
   },
   // Protected routes
   {
-    path: "/",
+    path: '/',
     element: <ProtectedLayout />,
     children: [
       {
-        path: "dashboard",
+        path: 'dashboard',
         element: <Dashboard />,
       },
       {
-        path: "todo",
+        path: 'todo',
         element: <TodoDashboard />,
       },
       {
-        path: "sets",
+        path: 'sets',
         element: <SetListPage />,
       },
       // Explicit routes for set tabs so direct navigation works
       {
-        path: "sets/:id/notes",
+        path: 'sets/:id/notes',
         element: <SetSeriesPageWrapper />,
       },
       {
-        path: "sets/:id/flashcards",
+        path: 'sets/:id/flashcards',
         element: <SetSeriesPageWrapper />,
       },
       {
-        path: "sets/:id/mindmaps",
+        path: 'sets/:id/mindmaps',
         element: <SetSeriesPageWrapper />,
       },
       {
-        path: "sets/:id/exams",
+        path: 'sets/:id/exams',
         element: <SetSeriesPageWrapper />,
       },
       {
-        path: "sets/:id/records",
+        path: 'sets/:id/records',
         element: <SetSeriesPageWrapper />,
       },
       {
-        path: "sets/:id/review",
+        path: 'sets/:id/review',
         element: <SetSeriesPageWrapper />,
       },
       {
-        path: "sets/:setId/flashcards/editor",
+        path: 'sets/:setId/flashcards/editor',
         element: <FlashcardEditorWrapper />,
       },
       {
         // Route để UPDATE flashcard (phải đặt trước route detail)
-        path: "sets/:setId/flashcards/:flashcardId/update",
+        path: 'sets/:setId/flashcards/:flashcardId/update',
         element: <FlashcardUpdateWrapper />,
       },
       {
         // Route để VIEW flashcard detail
-        path: "sets/:setId/flashcards/:flashcardId",
+        path: 'sets/:setId/flashcards/:flashcardId',
         element: <FlashcardAppWrapper />,
       },
       {
-        path: "sets/:setId/flashcards/:flashcardId/study",
+        path: 'sets/:setId/flashcards/:flashcardId/study',
         element: <FlashcardAppWrapper />,
       },
       {
-        path: "sets/:setId/flashcards/:flashcardId/matching",
+        path: 'sets/:setId/flashcards/:flashcardId/matching',
         element: <FlashcardAppWrapper />,
       },
       {
-        path: "sets/:setId/flashcards/:flashcardId/results",
+        path: 'sets/:setId/flashcards/:flashcardId/results',
         element: <FlashcardAppWrapper />,
       },
       {
-        path: "sets/:setId/exams/editor",
+        path: 'sets/:setId/exams/editor',
         element: <ExamEditorWrapper />,
       },
       {
-        path: "sets/:setId/exams/:examId/edit",
+        path: 'sets/:setId/exams/:examId/edit',
         element: <ExamUpdateWrapper />,
       },
       {
-        path: "sets/:setId/exams/:examId",
+        path: 'sets/:setId/exams/:examId',
         element: <ExamPageWrapper />,
       },
       // Generic set page (kept after more specific set subroutes)
       {
-        path: "sets/:id",
+        path: 'sets/:id',
         element: <SetSeriesPageWrapper />,
       },
       {
-        path: "profile",
+        path: 'profile',
         element: <ProfilePage />,
       },
       {
-        path: "review-bundles",
+        path: 'review-bundles',
         element: <ReviewBundlesPage />,
       },
       {
-        path: "review-bundles/:bundleId",
+        path: 'review-bundles/:bundleId',
         element: <ReviewBundleDetailPage />,
+      },
+      {
+        path: 'pomodoro',
+        element: <Pomodoro />,
       },
     ],
   },
   {
-    path: "/",
+    path: '/',
     element: <ProtectedLayoutNoSidebar />,
     children: [
       {
-        path: "sets/:setId/notes/:id",
+        path: 'sets/:setId/notes/:id',
         element: <TextEditorWrapper />,
       },
     ],

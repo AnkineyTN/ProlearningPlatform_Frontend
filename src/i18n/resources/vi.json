@@ -797,5 +797,85 @@
             "invalidId": "ID không hợp lệ",
             "setIdRequired": "Cần nhập Set ID"
         }
+    },
+    "common": {
+        "cancel": "Huỷ",
+        "close": "Đóng",
+        "delete": "Xoá",
+        "loading": "Đang tải...",
+        "save": "Lưu",
+        "saving": "Đang lưu..."
+    },
+    "pomodoro": {
+        "start": "Bắt đầu",
+        "pause": "Tạm dừng",
+        "reset": "Đặt lại",
+        "skip": "Bỏ qua",
+        "favorite": "Thêm vào yêu thích",
+        "unfavorite": "Bỏ yêu thích",
+        "completedToday": "Số pomodoro đã hoàn thành: {{count}}",
+        "types": {
+            "POMODORO": "Tập trung",
+            "SHORT_BREAK": "Nghỉ ngắn",
+            "LONG_BREAK": "Nghỉ dài"
+        },
+        "tabs": {
+            "all": "Tất cả",
+            "myUploads": "Của tôi",
+            "favorites": "Yêu thích"
+        },
+        "spaces": {
+            "title": "Không gian nền",
+            "button": "Không gian",
+            "searchPlaceholder": "Tìm không gian...",
+            "uploadName": "Tên không gian mới",
+            "upload": "Tải lên",
+            "uploading": "Đang tải...",
+            "empty": "Không tìm thấy không gian nào.",
+            "confirmDelete": "Xoá không gian này?"
+        },
+        "sounds": {
+            "title": "Trộn âm thanh",
+            "button": "Âm thanh",
+            "searchPlaceholder": "Tìm âm thanh...",
+            "uploadName": "Tên âm thanh mới",
+            "upload": "Tải lên",
+            "uploading": "Đang tải...",
+            "empty": "Không tìm thấy âm thanh nào.",
+            "active": "Đang phát",
+            "remove": "Bỏ",
+            "confirmDelete": "Xoá âm thanh này?"
+        },
+        "settings": {
+            "button": "Cài đặt",
+            "title": "Cài đặt hẹn giờ",
+            "focus": "Tập trung",
+            "short": "Nghỉ ngắn",
+            "long": "Nghỉ dài",
+            "minutes": "phút",
+            "longBreakInterval": "Chu kỳ nghỉ dài",
+            "intervalHint": "Số pomodoro trước khi nghỉ dài",
+            "autoStartBreak": "Tự động bắt đầu nghỉ",
+            "autoStartPomodoro": "Tự động bắt đầu pomodoro",
+            "invalid": "Một hoặc nhiều giá trị không hợp lệ."
+        },
+        "stats": {
+            "button": "Thống kê",
+            "title": "Tuần này",
+            "focusMinutes": "Phút tập trung",
+            "sessions": "Phiên",
+            "completion": "Hoàn thành",
+            "streak": "Streak (ngày)",
+            "daily": "Theo ngày",
+            "bestDay": "Ngày tốt nhất: {{date}} ({{minutes}} phút)"
+        },
+        "toast": {
+            "nameRequired": "Hãy nhập tên trước.",
+            "invalidSpaceFile": "Hãy chọn file ảnh hoặc video.",
+            "invalidSoundFile": "Hãy chọn file âm thanh.",
+            "uploadFailed": "Tải lên thất bại. Hãy thử lại.",
+            "spaceCreated": "Đã tạo không gian.",
+            "soundCreated": "Đã thêm âm thanh."
+        }
     }
 }
