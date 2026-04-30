@@ -887,7 +887,8 @@
             "upload": "Upload",
             "uploading": "Uploading...",
             "empty": "No spaces found.",
-            "confirmDelete": "Delete this space?"
+            "confirmDelete": "Delete this space?",
+            "reset": "Default"
         },
         "sounds": {
             "title": "Sound mixer",
@@ -899,6 +900,7 @@
             "empty": "No sounds found.",
             "active": "Active",
             "remove": "Remove",
+            "clearAll": "Clear all",
             "confirmDelete": "Delete this sound?"
         },
         "settings": {
@@ -986,5 +988,37 @@
             "newRecord": "New record",
             "newItem": "New item"
         }
+    },
+    "reviewBundles": {
+        "breadcrumb": "Review · Weekly bundles",
+        "title": "Revisit what slipped through",
+        "subtitle": "Cards you missed this week — gathered here so you can lock them in.",
+        "stats": {
+            "bundles": "Pending bundles",
+            "bundlesUnit": "bundles",
+            "bundlesHint": "Waiting for review",
+            "cards": "Cards to review",
+            "cardsUnit": "cards",
+            "cardsHint": "Across all bundles",
+            "sets": "Sets affected",
+            "setsUnit": "sets",
+            "setsHint": "Spread your focus"
+        },
+        "list": {
+            "kicker": "Weekly digests",
+            "title": "All bundles",
+            "count_one": "{{count}} bundle",
+            "count_other": "{{count}} bundles"
+        },
+        "item": {
+            "title": "Bundle #{{id}}",
+            "cardCount_one": "{{count}} miss",
+            "cardCount_other": "{{count}} misses"
+        },
+        "empty": {
+            "title": "Nothing to review right now",
+            "hint": "When you miss flashcards during the week, they'll be bundled here automatically — come back later."
+        },
+        "error": "Could not load bundles. Please try again."
     }
 }

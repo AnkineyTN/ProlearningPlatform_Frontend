@@ -887,7 +887,8 @@
             "upload": "Tải lên",
             "uploading": "Đang tải...",
             "empty": "Không tìm thấy không gian nào.",
-            "confirmDelete": "Xoá không gian này?"
+            "confirmDelete": "Xoá không gian này?",
+            "reset": "Mặc định"
         },
         "sounds": {
             "title": "Trộn âm thanh",
@@ -899,6 +900,7 @@
             "empty": "Không tìm thấy âm thanh nào.",
             "active": "Đang phát",
             "remove": "Bỏ",
+            "clearAll": "Bỏ tất cả",
             "confirmDelete": "Xoá âm thanh này?"
         },
         "settings": {
@@ -986,5 +988,37 @@
             "newRecord": "Bản ghi mới",
             "newItem": "Mục mới"
         }
+    },
+    "reviewBundles": {
+        "breadcrumb": "Ôn tập · Tổng hợp tuần",
+        "title": "Ôn lại điều bạn còn quên",
+        "subtitle": "Những thẻ bạn trả lời sai trong tuần — gom lại đây để bạn nắm chắc hơn.",
+        "stats": {
+            "bundles": "Bundle cần ôn",
+            "bundlesUnit": "bundle",
+            "bundlesHint": "Đang chờ bạn ôn lại",
+            "cards": "Thẻ cần ôn",
+            "cardsUnit": "thẻ",
+            "cardsHint": "Tổng các bundle",
+            "sets": "Bộ liên quan",
+            "setsUnit": "bộ",
+            "setsHint": "Phân bổ ôn tập"
+        },
+        "list": {
+            "kicker": "Tổng hợp theo tuần",
+            "title": "Tất cả bundle",
+            "count_one": "{{count}} bundle",
+            "count_other": "{{count}} bundle"
+        },
+        "item": {
+            "title": "Bundle #{{id}}",
+            "cardCount_one": "{{count}} thẻ sai",
+            "cardCount_other": "{{count}} thẻ sai"
+        },
+        "empty": {
+            "title": "Hiện chưa có bundle nào cần ôn",
+            "hint": "Khi bạn trả lời sai các thẻ trong tuần, hệ thống sẽ tự động gom lại tại đây — quay lại sau nhé."
+        },
+        "error": "Không tải được danh sách bundle. Vui lòng thử lại."
     }
 }

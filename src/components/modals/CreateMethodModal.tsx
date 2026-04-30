@@ -1,5 +1,12 @@
-import { X, Pencil, Sparkles } from "lucide-react";
+import { Pencil, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type Props = {
   type: string;
@@ -17,27 +24,15 @@ const CreateMethodModal = ({
   onSelectAI,
 }: Props) => {
   const { t } = useTranslation();
-  if (!isOpen) return null;
 
   return (
-    <div className='fixed inset-0 z-50 flex items-center justify-center'>
-      {/* Backdrop */}
-      <div className='absolute inset-0 bg-black opacity-50' onClick={onClose} />
-
-      {/* Modal */}
-      <div className='relative transition-[background] duration-300 bg-[var(--pl-bg)] rounded-lg shadow-xl w-full max-w-4xl mx-4 px-10 py-8'>
-        {/* Header */}
-        <div className='flex justify-between items-center mb-6'>
-          <h2 className='text-2xl font-bold'>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className='w-full max-w-4xl sm:max-w-4xl px-10 py-8'>
+        <DialogHeader>
+          <DialogTitle className='text-2xl font-bold'>
             {t('modal.method.header', { type })}
-          </h2>
-          <button
-            onClick={onClose}
-            className='p-1 hover:bg-[var(--pl-bg-hover)] rounded transition-colors cursor-pointer'
-          >
-            <X className='w-6 h-6' />
-          </button>
-        </div>
+          </DialogTitle>
+        </DialogHeader>
 
         {/* Options */}
         <div className='grid grid-cols-2 gap-8 mb-2'>
@@ -85,8 +80,8 @@ const CreateMethodModal = ({
             </div>
           </button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

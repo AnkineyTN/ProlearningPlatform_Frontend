@@ -21,13 +21,12 @@ import AdminDashboardPage from '@/pages/AdminDashboardPage';
 import SetListPage from '@/pages/SetListPage';
 import SetSeriesPage from '@/pages/SetSeriesPage';
 import TodoDashboard from '@/pages/TodoDashboard';
-import PDFAnnotator from '@/pages/PDF';
 import Pomodoro from '@/pages/Pomodoro';
 import ExamPage from '@/pages/ExamPage';
 import ExamEditor from '@/pages/ExamPage/ExamEditor';
 import ProfilePage from '@/pages/ProfilePage';
-import ReviewBundlesPage from '@/pages/ReviewBundlesPage';
-import ReviewBundleDetailPage from '@/pages/ReviewBundleDetailPage';
+import ReviewBundlesPage from '@/pages/ReviewBundle/ReviewBundlesPage';
+import ReviewBundlePage from '@/pages/ReviewBundle';
 import InviteAcceptPage from '@/pages/InviteAcceptPage';
 import ExamInviteAcceptPage from '@/pages/ExamInviteAcceptPage';
 import FlashcardInviteAcceptPage from '@/pages/FlashcardInviteAcceptPage';
@@ -180,10 +179,6 @@ export const routeConfig: RouteObject[] = [
     path: '/admin',
     element: <AdminDashboardRoute />,
   },
-  {
-    path: '/test',
-    element: <PDFAnnotator />,
-  },
   // Invite accept pages (email links — no auth required by page itself)
   {
     path: '/invites/accept',
@@ -292,7 +287,7 @@ export const routeConfig: RouteObject[] = [
       },
       {
         path: 'review-bundles/:bundleId',
-        element: <ReviewBundleDetailPage />,
+        element: <ReviewBundlePage />,
       },
       {
         path: 'pomodoro',

@@ -82,7 +82,7 @@ const TodoDashboard = () => {
   };
 
   return (
-    <div className='min-h-screen pt-8 pb-[120px] mx-auto'>
+    <div className='min-h-screen py-8 px-10'>
       <GoalModal
         open={goalModalOpen || editingGoal !== null}
         editGoal={editingGoal}

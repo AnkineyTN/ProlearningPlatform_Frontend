@@ -6,14 +6,11 @@ import {
   LayoutList,
   CheckCheck,
   Hourglass,
-  Book,
-  Heart,
   Settings,
   Inbox,
   LogOut,
   User,
   ChevronRight,
-  Search,
   PanelLeftClose,
   PanelLeftOpen,
 } from 'lucide-react';
@@ -65,8 +62,6 @@ const AppSidebar = () => {
     { title: t('sidebar.setList'), icon: LayoutList, url: '/sets' },
     { title: t('sidebar.todo'), icon: CheckCheck, url: '/todo' },
     { title: t('sidebar.pomodoro'), icon: Hourglass, url: '/pomodoro' },
-    { title: t('sidebar.blog'), icon: Book, url: '/blog' },
-    { title: t('sidebar.socials'), icon: Heart, url: '/socials' },
     {
       title: 'Review Bundles',
       icon: Inbox,
@@ -134,17 +129,6 @@ const AppSidebar = () => {
           </>
         )}
       </div>
-
-      {/* ── Search ── */}
-      {!collapsed && (
-        <div className='px-3 pt-[10px] pb-[6px]'>
-          <button className='w-full flex items-center gap-2 px-[10px] py-[7px] bg-[var(--pl-bg)] border border-[var(--pl-border)] rounded-lg text-[var(--pl-text-faint)] text-[12.5px] cursor-text text-left'>
-            <Search size={13} className='shrink-0' />
-            <span className='flex-1'>Search</span>
-            <span className='text-[10px] opacity-60 whitespace-nowrap'>⌘K</span>
-          </button>
-        </div>
-      )}
 
       {/* ── Nav ── */}
       <nav
@@ -253,7 +237,7 @@ const AppSidebar = () => {
               side='right'
               align='end'
               sideOffset={8}
-              className='min-w-44 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[10px] p-1 shadow-[0_8px_24px_oklch(0_0_0/0.14)]'
+              className='w-full bg-[var(--pl-bg)] mb-2 border border-[var(--pl-border)] rounded-[10px]'
             >
               {[
                 {
@@ -279,13 +263,20 @@ const AppSidebar = () => {
                   key={label}
                   onClick={onClick}
                   className={cn(
-                    'flex items-center gap-2 px-[10px] py-2 rounded-[7px] text-[13px] cursor-pointer',
+                    'flex items-center gap-2 px-[10px] py-2 cursor-pointer ',
                     danger
-                      ? 'text-[oklch(0.65_0.2_25)]'
+                      ? 'text-[oklch(0.65_0.2_25)] focus:text-destructive'
                       : 'text-[var(--pl-text)]',
                   )}
                 >
-                  <Icon size={14} />
+                  <Icon
+                    size={14}
+                    className={
+                      danger
+                        ? 'text-destructive focus:text-destructive'
+                        : 'text-[var(--pl-text)]'
+                    }
+                  />
                   {label}
                 </DropdownMenuItem>
               ))}

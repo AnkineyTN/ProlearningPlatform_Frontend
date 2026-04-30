@@ -139,12 +139,14 @@ const Pomodoro = () => {
   // we just keep IDs and hydrate when SoundMixer is opened.
 
   return (
-    <div className='relative min-h-screen overflow-hidden'>
+    <div className='relative min-h-screen overflow-hidden isolate'>
       <SpaceBackground space={selectedSpace} />
-      <SoundLayer activeSounds={activeSounds} paused={!engine.running} />
+      <SoundLayer activeSounds={activeSounds} />
 
-      {/* Dim overlay over background */}
-      <div className='absolute inset-0 -z-10 bg-black/30' />
+      {/* Dim overlay over background (only when a space is set) */}
+      {selectedSpace && (
+        <div className='absolute inset-0 z-[1] bg-black/30 pointer-events-none' />
+      )}
 
       {/* Top toolbar */}
       <div className='absolute top-3 right-3 z-20 flex flex-wrap gap-2'>
@@ -181,7 +183,7 @@ const Pomodoro = () => {
                 key={tab.type}
                 onClick={() => engine.setType(tab.type)}
                 className={cn(
-                  'flex-1 text-xs sm:text-sm font-medium py-1.5 rounded-md transition-all',
+                  'flex-1 text-xs sm:text-sm font-medium py-1.5 rounded-md transition-all cursor-pointer',
                   engine.type === tab.type
                     ? 'bg-white/95 text-black'
                     : 'text-white/80 hover:bg-white/10',
@@ -271,6 +273,10 @@ const Pomodoro = () => {
           setSelectedSpace(s);
           setSelectedSpaceId(s.id);
         }}
+        onReset={() => {
+          setSelectedSpace(null);
+          setSelectedSpaceId(null);
+        }}
       />
 
       <SoundMixer
@@ -318,7 +324,7 @@ const ToolbarButton = ({
   <button
     onClick={onClick}
     title={label}
-    className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white text-xs hover:bg-black/60"
+    className="cursor-pointer relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white text-xs hover:bg-black/60"
   >
     {icon}
     <span className="hidden sm:inline">{label}</span>

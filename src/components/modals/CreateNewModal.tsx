@@ -6,13 +6,19 @@ import {
   Heading,
   Lock,
   LockKeyhole,
-  X,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -60,10 +66,7 @@ const CreateNewModal = ({
   const { t } = useTranslation();
   const typeLower = type.toLowerCase();
 
-  if (!isOpen) return null;
-
   const handleSubmit = async () => {
-    // Validate fields
     const newErrors: {
       titleEmpty?: boolean;
       titleTooLong?: boolean;
@@ -82,18 +85,15 @@ const CreateNewModal = ({
       newErrors.privacy = true;
     }
 
-    // If there are errors, set them and don't submit
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    // Submit if validation passes
     try {
       await Promise.resolve(onSubmit({ title, description, privacy }));
       window.dispatchEvent(new Event('prolearning:refresh'));
 
-      // Reset form
       setTitle('');
       setDescription('');
       setPrivacy('Public');
@@ -117,7 +117,6 @@ const CreateNewModal = ({
     }
   };
 
-  // Clear error when user starts typin
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
     if (errors.titleEmpty || errors.titleTooLong) {
@@ -137,29 +136,15 @@ const CreateNewModal = ({
   };
 
   return (
-    <div className='fixed inset-0 z-50 flex items-center justify-center'>
-      {/* Backdrop */}
-      <div
-        className='absolute inset-0 bg-black opacity-50'
-        onClick={handleCancel}
-      />
-
-      {/* Modal */}
-      <div className='relative transition-[background] duration-300 bg-[var(--pl-bg)] border-border rounded-lg shadow-xl w-full max-w-xl mx-4 p-6'>
-        {/* Header */}
-        <div className='flex justify-between items-center mb-6'>
-          <h2 className='text-2xl font-bold'>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && handleCancel()}>
+      <DialogContent className='w-full max-w-xl sm:max-w-xl'>
+        <DialogHeader>
+          <DialogTitle className='text-2xl font-bold'>
             {isUpdateMode
               ? t('modal.update', { type: typeLower })
               : t('modal.new', { type: typeLower })}
-          </h2>
-          <button
-            onClick={handleCancel}
-            className='p-1 hover:bg-[var(--pl-bg-hover)] rounded transition-colors cursor-pointer'
-          >
-            <X className='w-6 h-6' />
-          </button>
-        </div>
+          </DialogTitle>
+        </DialogHeader>
 
         {/* Form */}
         <div className='space-y-4'>
@@ -246,24 +231,23 @@ const CreateNewModal = ({
           </div>
         </div>
 
-        {/* Actions */}
-        <div className='flex justify-end gap-3 mt-6'>
+        <DialogFooter>
           <Button
             onClick={handleCancel}
-            className='px-6 py-2 border border-border rounded-lg bg-[var(--pl-bg)] text-foreground hover:bg-[var(--pl-bg-hover)] transition-colors cursor-pointer flex items-center gap-2'
+            variant={"ghost"}
           >
             {onBack && <ArrowLeft className='w-4 h-4' />}
             {onBack ? t('modal.back') : t('modal.cancel')}
           </Button>
           <Button
             onClick={handleSubmit}
-            className='px-6 py-2 bg-foreground text-background rounded-lg cursor-pointer hover:opacity-90 transition-opacity'
+            variant={"default"}
           >
             {isUpdateMode ? t('modal.updateButton') : t('modal.create')}
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

@@ -43,7 +43,7 @@ function formatPeriod(from: string, to: string): string {
   return `${fmt(from)} – ${fmt(to)}`;
 }
 
-export default function ReviewBundleDetailPage() {
+export default function ReviewBundlePage() {
   const { bundleId } = useParams<{ bundleId: string }>();
   const navigate = useNavigate();
 

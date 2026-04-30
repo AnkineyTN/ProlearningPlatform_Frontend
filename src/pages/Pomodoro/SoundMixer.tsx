@@ -107,8 +107,17 @@ const SoundMixer = ({ open, activeSounds, onClose, onChange }: Props) => {
 
         {activeSounds.length > 0 && (
           <div className="border rounded-lg p-3 bg-[var(--pl-bg-sunken)] flex flex-col gap-2">
-            <div className="text-xs font-semibold text-[var(--pl-text-muted)] tracking-wide uppercase">
-              {t("pomodoro.sounds.active")}
+            <div className="flex items-center justify-between">
+              <div className="text-xs font-semibold text-[var(--pl-text-muted)] tracking-wide uppercase">
+                {t("pomodoro.sounds.active")}
+              </div>
+              <button
+                type="button"
+                onClick={() => onChange([])}
+                className="text-xs text-[var(--pl-text-faint)] hover:text-[var(--pl-text)] underline-offset-2 hover:underline"
+              >
+                {t("pomodoro.sounds.clearAll")}
+              </button>
             </div>
             {activeSounds.map(({ sound, volume }) => (
               <div key={sound.id} className="flex items-center gap-3">

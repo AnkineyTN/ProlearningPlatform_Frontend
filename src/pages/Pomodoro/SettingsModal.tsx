@@ -60,59 +60,67 @@ const SettingsModal = ({ open, setting, onClose, onSave, saving }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className='sm:max-w-md'>
         <DialogHeader>
-          <DialogTitle>{t("pomodoro.settings.title")}</DialogTitle>
+          <DialogTitle
+            style={{
+              fontFamily: 'var(--font-display)',
+            }}
+          >
+            {t('pomodoro.settings.title')}
+          </DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-3 gap-3">
-          <div className="flex flex-col gap-1">
-            <Label className="text-xs">{t("pomodoro.settings.focus")}</Label>
+        <div className='grid grid-cols-3 gap-3'>
+          <div className='flex flex-col gap-1'>
+            <Label className='text-xs'>{t('pomodoro.settings.focus')}</Label>
             <Input
-              type="number"
+              type='number'
               min={1}
               max={120}
               value={minutesField(draft.pomodoroDuration)}
-              onChange={(e) => setMinutes("pomodoroDuration", Number(e.target.value))}
+              onChange={(e) =>
+                setMinutes('pomodoroDuration', Number(e.target.value))
+              }
             />
-            <span className="text-[10px] text-[var(--pl-text-faint)]">
-              {t("pomodoro.settings.minutes")}
+            <span className='text-[10px] text-[var(--pl-text-faint)]'>
+              {t('pomodoro.settings.minutes')}
             </span>
           </div>
-          <div className="flex flex-col gap-1">
-            <Label className="text-xs">{t("pomodoro.settings.short")}</Label>
+          <div className='flex flex-col gap-1'>
+            <Label className='text-xs'>{t('pomodoro.settings.short')}</Label>
             <Input
-              type="number"
+              type='number'
               min={1}
               max={60}
               value={minutesField(draft.shortBreak)}
-              onChange={(e) => setMinutes("shortBreak", Number(e.target.value))}
+              onChange={(e) => setMinutes('shortBreak', Number(e.target.value))}
             />
-            <span className="text-[10px] text-[var(--pl-text-faint)]">
-              {t("pomodoro.settings.minutes")}
+            <span className='text-[10px] text-[var(--pl-text-faint)]'>
+              {t('pomodoro.settings.minutes')}
             </span>
           </div>
-          <div className="flex flex-col gap-1">
-            <Label className="text-xs">{t("pomodoro.settings.long")}</Label>
+          <div className='flex flex-col gap-1'>
+            <Label className='text-xs'>{t('pomodoro.settings.long')}</Label>
             <Input
-              type="number"
+              type='number'
               min={1}
               max={60}
               value={minutesField(draft.longBreak)}
-              onChange={(e) => setMinutes("longBreak", Number(e.target.value))}
+              onChange={(e) => setMinutes('longBreak', Number(e.target.value))}
             />
-            <span className="text-[10px] text-[var(--pl-text-faint)]">
-              {t("pomodoro.settings.minutes")}
+            <span className='text-[10px] text-[var(--pl-text-faint)]'>
+              {t('pomodoro.settings.minutes')}
             </span>
           </div>
         </div>
 
-        <div className="flex flex-col gap-1">
-          <Label className="text-xs">
-            {t("pomodoro.settings.longBreakInterval")}
+        <div className='flex flex-col gap-1'>
+          <Label className='text-xs'>
+            {t('pomodoro.settings.longBreakInterval')}
           </Label>
           <Input
-            type="number"
+            type='number'
             min={1}
             max={10}
             value={draft.longBreakInterval}
@@ -120,26 +128,24 @@ const SettingsModal = ({ open, setting, onClose, onSave, saving }: Props) => {
               setDraft({ ...draft, longBreakInterval: Number(e.target.value) })
             }
           />
-          <span className="text-[10px] text-[var(--pl-text-faint)]">
-            {t("pomodoro.settings.intervalHint")}
+          <span className='text-[10px] text-[var(--pl-text-faint)]'>
+            {t('pomodoro.settings.intervalHint')}
           </span>
         </div>
 
-        <div className="flex items-center justify-between">
-          <Label className="text-sm">
-            {t("pomodoro.settings.autoStartBreak")}
+        <div className='flex items-center justify-between'>
+          <Label className='text-sm'>
+            {t('pomodoro.settings.autoStartBreak')}
           </Label>
           <Switch
             checked={draft.autoStartBreak}
-            onCheckedChange={(v) =>
-              setDraft({ ...draft, autoStartBreak: v })
-            }
+            onCheckedChange={(v) => setDraft({ ...draft, autoStartBreak: v })}
           />
         </div>
 
-        <div className="flex items-center justify-between">
-          <Label className="text-sm">
-            {t("pomodoro.settings.autoStartPomodoro")}
+        <div className='flex items-center justify-between'>
+          <Label className='text-sm'>
+            {t('pomodoro.settings.autoStartPomodoro')}
           </Label>
           <Switch
             checked={draft.autoStartPomodoro}
@@ -149,12 +155,12 @@ const SettingsModal = ({ open, setting, onClose, onSave, saving }: Props) => {
           />
         </div>
 
-        <div className="flex justify-end gap-2 pt-2">
-          <Button variant="ghost" onClick={onClose}>
-            {t("common.cancel")}
+        <div className='flex justify-end gap-2 pt-2'>
+          <Button variant='ghost' onClick={onClose}>
+            {t('common.cancel')}
           </Button>
           <Button onClick={handleSave} disabled={saving}>
-            {saving ? t("common.saving") : t("common.save")}
+            {saving ? t('common.saving') : t('common.save')}
           </Button>
         </div>
       </DialogContent>

@@ -8,10 +8,9 @@ export interface ActiveSound {
 
 interface Props {
   activeSounds: ActiveSound[];
-  paused: boolean;
 }
 
-const SoundLayer = ({ activeSounds, paused }: Props) => {
+const SoundLayer = ({ activeSounds }: Props) => {
   const audioRefs = useRef<Map<number, HTMLAudioElement>>(new Map());
 
   useEffect(() => {
@@ -25,16 +24,6 @@ const SoundLayer = ({ activeSounds, paused }: Props) => {
     });
   }, [activeSounds]);
 
-  useEffect(() => {
-    audioRefs.current.forEach((el) => {
-      if (paused) {
-        el.pause();
-      } else if (el.paused) {
-        el.play().catch(() => {});
-      }
-    });
-  }, [paused, activeSounds]);
-
   return (
     <>
       {activeSounds.map(({ sound, volume }) => (
@@ -44,14 +33,13 @@ const SoundLayer = ({ activeSounds, paused }: Props) => {
             if (!el) return;
             audioRefs.current.set(sound.id, el);
             el.volume = volume;
-            if (!paused && el.paused) {
+            if (el.paused) {
               el.play().catch(() => {});
             }
           }}
           src={sound.assetUrl}
           loop
           preload="auto"
-          // The volume prop here only sets initial volume — keep ref updated below.
         />
       ))}
       <VolumeSync activeSounds={activeSounds} audioRefs={audioRefs} />

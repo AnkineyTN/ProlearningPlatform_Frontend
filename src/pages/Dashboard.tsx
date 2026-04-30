@@ -415,7 +415,7 @@ const Dashboard = () => {
   return (
     <div className='min-h-screen bg-[var(--pl-bg)] transition-[background] duration-300'>
       {/* Top bar */}
-      <div className='px-9 pt-5 flex justify-between items-center'>
+      <div className='px-10 pt-5 flex justify-between items-center'>
         <div>
           <div className='text-[11px] tracking-[0.14em] uppercase text-[var(--pl-text-faint)] mb-1'>
             {new Date().toLocaleDateString('en-GB', {
@@ -453,7 +453,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className='px-9 pt-6 pb-[60px]'>
+      <div className='px-10 pt-6 pb-[60px]'>
         {/* Search results overlay */}
         {debouncedSearch.length > 0 && (
           <div className='mb-6 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[12px] p-4'>

@@ -1,6 +1,16 @@
-import { ChevronDown, Search, ArrowUpDown } from 'lucide-react';
+import { Search, ArrowUpDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+
+const ALL_SENTINEL = '__all__';
 
 export type ListPrivacyFilter = '' | 'PUBLIC' | 'PRIVATE';
 export type ListCreateMethodFilter = '' | 'MANUAL' | 'AI' | 'REVIEW';
@@ -24,6 +34,7 @@ function PillSelect<T extends string>({
   value,
   onChange,
   options,
+  icon,
 }: {
   value: T;
   onChange: (v: T) => void;
@@ -31,22 +42,27 @@ function PillSelect<T extends string>({
   icon?: React.ReactNode;
 }) {
   return (
-    <div className="relative inline-block">
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value as T)}
-        className="appearance-none py-[7px] pl-[10px] pr-8 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-lg text-[12.5px] text-[var(--pl-text-muted)] cursor-pointer outline-none font-[inherit] min-w-[120px] focus:border-[var(--pl-accent-border)]"
+    <Select
+      value={value === '' ? ALL_SENTINEL : value}
+      onValueChange={(v) => onChange((v === ALL_SENTINEL ? '' : v) as T)}
+    >
+      <SelectTrigger
+        size='sm'
+        className='min-w-[120px] bg-[var(--pl-bg-elev)] border-[var(--pl-border)] rounded-lg text-[12.5px] text-[var(--pl-text-muted)] focus-visible:border-[var(--pl-accent-border)] focus-visible:ring-0'
       >
+        <span className='flex items-center gap-1.5'>
+          {icon}
+          <SelectValue />
+        </span>
+      </SelectTrigger>
+      <SelectContent>
         {options.map((o) => (
-          <option key={o.value} value={o.value}>
+          <SelectItem key={o.value} value={o.value === '' ? ALL_SENTINEL : o.value}>
             {o.label}
-          </option>
+          </SelectItem>
         ))}
-      </select>
-      <span className="absolute right-[9px] top-1/2 -translate-y-1/2 pointer-events-none text-[var(--pl-text-faint)] flex items-center">
-        <ChevronDown size={12} />
-      </span>
-    </div>
+      </SelectContent>
+    </Select>
   );
 }
 

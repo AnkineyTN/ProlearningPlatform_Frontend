@@ -14,6 +14,13 @@ import { toast } from 'react-toastify';
 
 import NoteCardSelect from '@/components/cards/NoteCardSelect';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -102,8 +109,6 @@ const ExamAISourceModal = ({
   const { data: notesData } = useNotesBySet(setId, { page: 0, size: 20 });
   const notes = notesData?.items || [];
 
-  if (!isOpen) return null;
-
   const handleNoteSelect = (noteId: number) => {
     setSelectedNotes((prev) =>
       prev.includes(noteId)
@@ -176,28 +181,30 @@ const ExamAISourceModal = ({
   };
 
   return (
-    <div className='fixed inset-0 z-50 flex items-center justify-center'>
-      <div className='absolute inset-0 bg-black opacity-50' onClick={onClose} />
-
-      <div className='relative bg-[var(--pl-bg)] rounded-lg shadow-xl w-full max-w-4xl mx-4 px-10 py-8 max-h-[90vh] overflow-y-auto'>
-        {/* Header */}
-        <div className='flex justify-between items-center mb-6'>
-          <h2 className='text-2xl font-bold'>Generate Exam with AI</h2>
-          <button
-            onClick={onClose}
-            disabled={isLoading}
-            className={`p-1 rounded transition-colors ${
-              isLoading
-                ? 'opacity-50 cursor-not-allowed'
-                : 'hover:bg-[var(--pl-bg)] cursor-pointer'
-            }`}
-          >
-            <X className='w-6 h-6' />
-          </button>
-        </div>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open && !isLoading) onClose();
+      }}
+    >
+      <DialogContent
+        className='w-full max-w-4xl sm:max-w-4xl px-10 py-8 max-h-[90vh] overflow-y-auto'
+        showCloseButton={!isLoading}
+        onEscapeKeyDown={(e) => {
+          if (isLoading) e.preventDefault();
+        }}
+        onPointerDownOutside={(e) => {
+          if (isLoading) e.preventDefault();
+        }}
+      >
+        <DialogHeader>
+          <DialogTitle className='text-2xl font-bold'>
+            Generate Exam with AI
+          </DialogTitle>
+        </DialogHeader>
 
         {/* Tabs */}
-        <div className='flex gap-2 mb-6 border-b border-border'>
+        <div className='flex gap-2 mb-2 border-b border-border'>
           <button
             onClick={() => setActiveTab('notes')}
             className={`px-4 py-2 font-medium transition-colors cursor-pointer ${
@@ -647,16 +654,11 @@ const ExamAISourceModal = ({
           </>
         )}
 
-        {/* Actions */}
-        <div className='flex justify-end gap-3'>
+        <DialogFooter>
           <Button
             onClick={onBack}
+            variant={'ghost'}
             disabled={isLoading}
-            className={`px-6 py-2 border border-border rounded-lg bg-[var(--pl-bg)] text-foreground transition-colors flex items-center gap-2 ${
-              isLoading
-                ? 'opacity-50 cursor-not-allowed'
-                : 'hover:bg-[var(--pl-bg-hover)] cursor-pointer'
-            }`}
           >
             <ArrowLeft className='w-4 h-4' />
             {t('modal.back')}
@@ -664,7 +666,7 @@ const ExamAISourceModal = ({
           <Button
             onClick={handleSubmit}
             disabled={!canSubmit || isLoading}
-            className='px-6 py-2 bg-foreground text-background rounded-lg transition-opacity disabled:opacity-50 disabled:cursor-not-allowed'
+            variant={"default"}
           >
             {isLoading ? (
               <>
@@ -675,9 +677,9 @@ const ExamAISourceModal = ({
               <>{t('modal.generateWithAI')}</>
             )}
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
