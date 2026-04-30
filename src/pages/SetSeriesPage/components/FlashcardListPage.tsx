@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useFlashcards } from '@/hooks/useFlashcards';
 import FlashCard, { type Flashcard } from '@/components/cards/FlashCard';
@@ -14,7 +15,7 @@ import {
   EmptyState,
   Pagination,
 } from '@/components/lists/ListShared';
-import { getTimeAgo } from '@/lib/utils';
+import { formatDate, getTimeAgo } from '@/lib/utils';
 
 type FlashcardListPageProps = {
   setId: number;
@@ -27,6 +28,7 @@ const FlashcardListPage = ({
   onUpdate,
   onDelete,
 }: FlashcardListPageProps) => {
+  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(0);
   const [listSearch, setListSearch] = useState('');
   const [debouncedQ, setDebouncedQ] = useState('');
@@ -85,8 +87,10 @@ const FlashcardListPage = ({
       <div>
         {filters}
         <div className='py-10 text-center text-[oklch(0.65_0.2_25)] text-[13px]'>
-          Error loading flashcards:{' '}
-          {error instanceof Error ? error.message : 'Unknown error'}
+          {t('list.flashcards.error', {
+            message:
+              error instanceof Error ? error.message : t('list.unknownError'),
+          })}
         </div>
       </div>
     );
@@ -95,7 +99,7 @@ const FlashcardListPage = ({
     return (
       <div>
         {filters}
-        <EmptyState label='No flashcards found' />
+        <EmptyState label={t('list.flashcards.empty')} />
       </div>
     );
   }
@@ -112,16 +116,9 @@ const FlashcardListPage = ({
             flashcard={{
               id: flashcard.id,
               title: flashcard.title,
-              description: flashcard.description || 'No description available…',
+              description: flashcard.description || t('list.noDescription'),
               time: getTimeAgo(flashcard.lastStudy),
-              created_at: new Date(flashcard.lastStudy).toLocaleDateString(
-                'en-GB',
-                {
-                  day: '2-digit',
-                  month: 'short',
-                  year: 'numeric',
-                },
-              ),
+              created_at: formatDate(flashcard.lastStudy),
               privacy: flashcard.privacy,
             }}
             onAccess={handleAccess}

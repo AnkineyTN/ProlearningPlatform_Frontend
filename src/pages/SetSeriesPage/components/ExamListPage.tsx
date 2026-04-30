@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import ExamCard, { type ExamCardData } from '@/components/cards/ExamCard';
 import {
@@ -26,6 +27,7 @@ export default function ExamListPage({
   onUpdate,
   onDelete,
 }: ExamListPageProps) {
+  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(0);
   const [listSearch, setListSearch] = useState('');
   const [debouncedQ, setDebouncedQ] = useState('');
@@ -86,7 +88,7 @@ export default function ExamListPage({
       <div>
         {filters}
         <div className='py-10 text-center text-[oklch(0.65_0.2_25)] text-[13px]'>
-          Failed to load exams. Please try again.
+          {t('list.exams.error')}
         </div>
       </div>
     );
@@ -95,7 +97,7 @@ export default function ExamListPage({
     return (
       <div>
         {filters}
-        <EmptyState label='No exams found' />
+        <EmptyState label={t('list.exams.empty')} />
       </div>
     );
 

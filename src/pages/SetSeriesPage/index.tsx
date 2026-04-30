@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
+import { Plus } from 'lucide-react'
 import AISourceModal from '@/components/modals/AISourceModal';
 import ExamAISourceModal from '@/components/modals/ExamAISourceModal';
 import CreateMethodModal from '@/components/modals/CreateMethodModal';
@@ -29,7 +30,6 @@ import FlashcardListPage from './components/FlashcardListPage';
 import HeaderSetDetails from './components/HeaderSetDetails';
 import MindmapListPage from './components/MindmapListPage';
 import NoteListPage from './components/NoteListPage';
-import RecordListPage from './components/RecordListPage';
 import ExamListPage from './components/ExamListPage';
 
 import type { Note } from '@/components/cards/NoteCard';
@@ -42,6 +42,7 @@ interface SetSeriesPageProps {
 }
 
 export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -88,7 +89,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
   const [isAISourceModalOpen, setIsAISourceModalOpen] = useState(false);
   const [isExamAISourceModalOpen, setIsExamAISourceModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-  const tabs = ['Notes', 'Flashcards', 'Exams', 'Mindmaps', 'Records'];
+  const tabs = ['Notes', 'Flashcards', 'Exams', 'Mindmaps'];
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
@@ -491,28 +492,25 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
           onClick={handleCreateButtonClick}
           disabled={createNoteMutation.isPending || isGenerating}
           className={cn(
-            'flex items-center gap-2 px-[18px] py-[9px] bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] rounded-full font-semibold text-[13px] border-0 cursor-pointer transition-[opacity] duration-150',
+            'flex items-center gap-1 px-[18px] py-[9px] bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] rounded-full font-semibold text-[13px] border-0 cursor-pointer transition-[opacity] duration-150',
             (createNoteMutation.isPending || isGenerating) &&
               'opacity-55 cursor-not-allowed',
           )}
         >
-          <svg
-            width='13'
-            height='13'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='2.5'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          >
-            <path d='M12 5v14M5 12h14' />
-          </svg>
+          <Plus className='size-4'/>  
           {isGenerating
-            ? 'Generating with AI…'
+            ? t('set.actions.generating')
             : createNoteMutation.isPending
-              ? 'Creating…'
-              : `New ${activeTab.slice(0, -1).toLowerCase()}`}
+              ? t('set.actions.creating')
+              : t(
+                  `set.actions.new${activeTab.slice(0, -1)}` as
+                    | 'set.actions.newNote'
+                    | 'set.actions.newFlashcard'
+                    | 'set.actions.newExam'
+                    | 'set.actions.newMindmap'
+                    | 'set.actions.newRecord',
+                  { defaultValue: t('set.actions.newItem') },
+                )}
         </button>
       </div>
 
@@ -540,7 +538,6 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
             onDelete={handleDeleteExam}
           />
         )}
-        {activeTab === 'Records' && <RecordListPage />}
       </div>
 
       {/* Modals */}

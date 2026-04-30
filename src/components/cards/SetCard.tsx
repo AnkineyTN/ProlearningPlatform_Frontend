@@ -51,13 +51,13 @@ const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showMenu]);
 
-  const progress = Math.min(100, Math.max(0, set.progress ?? 0));
-  const progressColor =
-    progress >= 75
-      ? 'var(--pl-success)'
-      : progress >= 40
-        ? 'var(--pl-accent)'
-        : 'var(--pl-warning)';
+  // const progress = Math.min(100, Math.max(0, set.progress ?? 0));
+  // const progressColor =
+  //   progress >= 75
+  //     ? 'var(--pl-success)'
+  //     : progress >= 40
+  //       ? 'var(--pl-accent)'
+  //       : 'var(--pl-warning)';
 
   return (
     <div
@@ -143,7 +143,7 @@ const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
       </div>
 
       {/* Progress bar */}
-      <div className='mb-[14px]'>
+      {/* <div className='mb-[14px]'>
         <div
           className='flex justify-between text-[10.5px] mb-[5px]'
           style={{
@@ -171,7 +171,7 @@ const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
             style={{ width: `${progress}%`, background: progressColor }}
           />
         </div>
-      </div>
+      </div> */}
 
       {/* Stats + Footer */}
       <div

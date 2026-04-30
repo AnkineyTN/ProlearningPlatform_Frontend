@@ -98,7 +98,7 @@ const HeaderSetDetails = ({ setId }: Props) => {
           onClick={() => navigate('/sets')}
           className='bg-transparent border-0 cursor-pointer text-[12px] text-[var(--pl-text-faint)] hover:text-[var(--pl-text-muted)]'
         >
-          Set Library
+          {t('set.breadcrumb')}
         </button>
         <ChevronRight size={11} />
         <span className='text-[var(--pl-text-muted)]'>
@@ -161,9 +161,9 @@ const HeaderSetDetails = ({ setId }: Props) => {
                   )}
                 >
                   {[
-                    { value: numNotes, label: 'Notes' },
-                    { value: numCards, label: 'Cards' },
-                    { value: `${mastery}%`, label: 'Mastery' },
+                    { value: numNotes, label: t('set.header.notes') },
+                    { value: numCards, label: t('set.header.cards') },
+                    { value: `${mastery}%`, label: t('set.header.mastery') },
                   ].map((stat, i, arr) => (
                     <div key={stat.label} className='flex items-center gap-6'>
                       <div>
@@ -187,7 +187,7 @@ const HeaderSetDetails = ({ setId }: Props) => {
                         7
                       </div>
                       <div className='text-[10px] tracking-[0.14em] uppercase text-[var(--pl-text-faint)] mt-[3px]'>
-                        Streak
+                        {t('set.header.streak')}
                       </div>
                     </div>
                   </div>
@@ -227,7 +227,7 @@ const HeaderSetDetails = ({ setId }: Props) => {
                       className='w-full flex items-center gap-2 px-3 py-2 rounded-[7px] text-[13px] text-[oklch(0.65_0.2_25)] bg-transparent border-0 cursor-pointer text-left hover:bg-[oklch(0.65_0.2_25/0.1)]'
                     >
                       <Trash2 size={14} />
-                      Delete set
+                      {t('set.header.deleteSet')}
                     </button>
                   </div>
                 )}
@@ -238,7 +238,7 @@ const HeaderSetDetails = ({ setId }: Props) => {
             {!isLoading && !isError && setDetail && (
               <button className='mt-1 px-5 py-[10px] bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] rounded-full font-semibold text-[13px] flex items-center gap-2 border-0 cursor-pointer transition-[opacity] duration-150 hover:opacity-[0.88]'>
                 <Play size={12} strokeWidth={2.5} />
-                Continue learning
+                {t('set.header.continueLearning')}
               </button>
             )}
           </div>

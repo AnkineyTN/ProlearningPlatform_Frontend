@@ -72,17 +72,17 @@ export function ResourceFiltersBar({
   ];
 
   const methodOptions: { value: ListCreateMethodFilter; label: string }[] = [
-    { value: '', label: 'All methods' },
-    { value: 'MANUAL', label: 'Manual' },
-    { value: 'AI', label: 'AI generated' },
-    { value: 'REVIEW', label: 'Review' },
+    { value: '', label: t('list.filter.methodAll', { defaultValue: 'All methods' }) },
+    { value: 'MANUAL', label: t('list.filter.methodManual', { defaultValue: 'Manual' }) },
+    { value: 'AI', label: t('list.filter.methodAI', { defaultValue: 'AI generated' }) },
+    { value: 'REVIEW', label: t('list.filter.methodReview', { defaultValue: 'Review' }) },
   ];
 
   const sortOptions: { value: ListSortOption; label: string }[] = [
-    { value: 'id,DESC', label: 'Newest first' },
-    { value: 'id,ASC', label: 'Oldest first' },
-    { value: 'title,ASC', label: 'Title A → Z' },
-    { value: 'title,DESC', label: 'Title Z → A' },
+    { value: 'id,DESC', label: t('list.filter.sortNewest', { defaultValue: 'Newest first' }) },
+    { value: 'id,ASC', label: t('list.filter.sortOldest', { defaultValue: 'Oldest first' }) },
+    { value: 'title,ASC', label: t('list.filter.sortTitleAsc', { defaultValue: 'Title A → Z' }) },
+    { value: 'title,DESC', label: t('list.filter.sortTitleDesc', { defaultValue: 'Title Z → A' }) },
   ];
 
   return (

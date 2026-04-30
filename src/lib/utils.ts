@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import i18n from "@/i18n/config"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -47,12 +48,21 @@ export function getTimeAgo(dateString: string): string {
   const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
 
   if (diffInHours < 1) {
-    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
-    return `${diffInMinutes} minute${diffInMinutes !== 1 ? 's' : ''} ago`;
+    const diffInMinutes = Math.max(0, Math.floor(diffInMs / (1000 * 60)));
+    return i18n.t('common.timeAgo.minutes', { count: diffInMinutes });
   } else if (diffInHours < 24) {
-    return `${diffInHours} hour${diffInHours !== 1 ? 's' : ''} ago`;
+    return i18n.t('common.timeAgo.hours', { count: diffInHours });
   } else {
     const diffInDays = Math.floor(diffInHours / 24);
-    return `${diffInDays} day${diffInDays !== 1 ? 's' : ''} ago`;
+    return i18n.t('common.timeAgo.days', { count: diffInDays });
   }
+}
+
+export function formatDate(dateString: string | number | Date): string {
+  const locale = i18n.language?.startsWith('vi') ? 'vi-VN' : 'en-GB';
+  return new Date(dateString).toLocaleDateString(locale, {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
 }

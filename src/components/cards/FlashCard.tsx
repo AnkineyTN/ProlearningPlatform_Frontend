@@ -2,6 +2,7 @@ import { SwatchBook, MoreVertical, Clock, Pencil, Trash2 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export interface Flashcard {
   id: number | string;
@@ -20,6 +21,7 @@ type Props = {
 };
 
 const FlashCard = ({ flashcard, onAccess, onUpdate, onDelete }: Props) => {
+  const { t } = useTranslation();
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -38,13 +40,13 @@ const FlashCard = ({ flashcard, onAccess, onUpdate, onDelete }: Props) => {
     if (!showMenu && !showDeleteDialog) onAccess(flashcard.id);
   };
 
-  const mastery = 72;
-  const masteryColor =
-    mastery > 75
-      ? 'oklch(0.72 0.15 155)'
-      : mastery > 50
-        ? 'var(--pl-accent)'
-        : 'oklch(0.78 0.15 75)';
+  // const mastery = 72;
+  // const masteryColor =
+  //   mastery > 75
+  //     ? 'oklch(0.72 0.15 155)'
+  //     : mastery > 50
+  //       ? 'var(--pl-accent)'
+  //       : 'oklch(0.78 0.15 75)';
 
   return (
     <div
@@ -76,7 +78,7 @@ const FlashCard = ({ flashcard, onAccess, onUpdate, onDelete }: Props) => {
             <div className='absolute top-[calc(100%+4px)] right-0 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[10px] p-1 z-50 min-w-[130px] shadow-[0_8px_20px_oklch(0_0_0/0.12)]'>
               {[
                 {
-                  label: 'Edit',
+                  label: t('common.edit'),
                   icon: Pencil,
                   action: (e: React.MouseEvent) => {
                     e.stopPropagation();
@@ -86,7 +88,7 @@ const FlashCard = ({ flashcard, onAccess, onUpdate, onDelete }: Props) => {
                   danger: false,
                 },
                 {
-                  label: 'Delete',
+                  label: t('common.delete'),
                   icon: Trash2,
                   action: (e: React.MouseEvent) => {
                     e.stopPropagation();
@@ -122,9 +124,24 @@ const FlashCard = ({ flashcard, onAccess, onUpdate, onDelete }: Props) => {
       <div className='text-[12.5px] text-[var(--pl-text-muted)] mb-[14px] overflow-hidden text-ellipsis whitespace-nowrap'>
         {flashcard.description}
       </div>
+      {/* Privacy badge */}
+      <div className='mb-3'>
+        <span
+          className={cn(
+            'text-[10px] font-semibold tracking-[0.1em] uppercase px-2 py-[3px] rounded-full',
+            flashcard.privacy === 'PUBLIC'
+              ? 'bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]'
+              : 'bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)]',
+          )}
+        >
+          {flashcard.privacy === 'PUBLIC'
+            ? t('list.filter.public')
+            : t('list.filter.private')}
+        </span>
+      </div>
 
       {/* Mastery bar */}
-      <div className='mb-[14px]'>
+      {/* <div className='mb-[14px]'>
         <div className='flex justify-between text-[10px] text-[var(--pl-text-faint)] mb-[5px] tracking-[0.1em] uppercase'>
           <span>Mastery</span>
           <span className='tabular-nums text-[var(--pl-text-muted)]'>
@@ -137,7 +154,7 @@ const FlashCard = ({ flashcard, onAccess, onUpdate, onDelete }: Props) => {
             style={{ width: `${mastery}%`, background: masteryColor }}
           />
         </div>
-      </div>
+      </div> */}
 
       {/* Footer */}
       <div className='flex justify-between items-center pt-3 border-t border-t-[var(--pl-border)] text-[11px] text-[var(--pl-text-faint)] tabular-nums'>

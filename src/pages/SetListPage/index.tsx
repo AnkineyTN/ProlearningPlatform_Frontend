@@ -8,6 +8,8 @@ import {
   ChevronRight,
   FolderX,
   ChevronDown,
+  List,
+  Grid2x2,
 } from 'lucide-react';
 import SetCard from '@/components/cards/SetCard';
 import CreateNewModal from '@/components/modals/CreateNewModal';
@@ -149,7 +151,7 @@ export default function SetListPage() {
               className='text-[11px] uppercase tracking-[0.16em] mb-2'
               style={{ color: 'var(--pl-text-faint)' }}
             >
-              Your workspace
+              {t('setlist.your_workspace')}
             </p>
             <h1
               className='text-[42px] font-[400] leading-none'
@@ -159,7 +161,7 @@ export default function SetListPage() {
                 color: 'var(--pl-text)',
               }}
             >
-              Set Library
+              {t('sidebar.setList')}
             </h1>
           </div>
           <button
@@ -235,7 +237,9 @@ export default function SetListPage() {
             <input
               value={listSearch}
               onChange={(e) => setListSearch(e.target.value)}
-              placeholder='Search sets…'
+              placeholder={t('setlist.searchPlaceholder', {
+                defaultValue: 'Search sets…',
+              })}
               className='bg-transparent outline-none flex-1 text-[12.5px]'
               style={{ color: 'var(--pl-text)' }}
             />
@@ -250,7 +254,7 @@ export default function SetListPage() {
               color: 'var(--pl-text-muted)',
             }}
           >
-            Newest first <ChevronDown size={11} />
+            {t('list.filter.sortNewest')} <ChevronDown size={11} />
           </button>
 
           {/* View toggle */}
@@ -273,40 +277,7 @@ export default function SetListPage() {
                     : 'var(--pl-text-faint)',
               }}
             >
-              <svg width='13' height='13' viewBox='0 0 13 13' fill='none'>
-                <rect
-                  x='0'
-                  y='0'
-                  width='5.5'
-                  height='5.5'
-                  rx='1.5'
-                  fill='currentColor'
-                />
-                <rect
-                  x='7.5'
-                  y='0'
-                  width='5.5'
-                  height='5.5'
-                  rx='1.5'
-                  fill='currentColor'
-                />
-                <rect
-                  x='0'
-                  y='7.5'
-                  width='5.5'
-                  height='5.5'
-                  rx='1.5'
-                  fill='currentColor'
-                />
-                <rect
-                  x='7.5'
-                  y='7.5'
-                  width='5.5'
-                  height='5.5'
-                  rx='1.5'
-                  fill='currentColor'
-                />
-              </svg>
+              <Grid2x2 className='size-4' />
             </button>
             <button
               onClick={() => setViewMode('list')}
@@ -320,32 +291,7 @@ export default function SetListPage() {
                     : 'var(--pl-text-faint)',
               }}
             >
-              <svg width='13' height='13' viewBox='0 0 13 13' fill='none'>
-                <rect
-                  x='0'
-                  y='1'
-                  width='13'
-                  height='2'
-                  rx='1'
-                  fill='currentColor'
-                />
-                <rect
-                  x='0'
-                  y='5.5'
-                  width='13'
-                  height='2'
-                  rx='1'
-                  fill='currentColor'
-                />
-                <rect
-                  x='0'
-                  y='10'
-                  width='13'
-                  height='2'
-                  rx='1'
-                  fill='currentColor'
-                />
-              </svg>
+              <List className='size-4' />
             </button>
           </div>
         </div>

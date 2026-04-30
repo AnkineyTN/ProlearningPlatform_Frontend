@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import NoteCard, { type Note } from '@/components/cards/NoteCard';
 import {
   ResourceFiltersBar,
@@ -12,7 +13,7 @@ import {
 } from '@/components/lists/ListShared';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useNotesBySet } from '@/hooks/useNotes';
-import { getTimeAgo } from '@/lib/utils';
+import { formatDate, getTimeAgo } from '@/lib/utils';
 
 type Props = {
   setId?: number;
@@ -21,6 +22,7 @@ type Props = {
 };
 
 const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
+  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(0);
   const [listSearch, setListSearch] = useState('');
   const [debouncedQ, setDebouncedQ] = useState('');
@@ -57,8 +59,8 @@ const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
 
   if (!setId)
     return (
-      <div className='py-10 text-center text-[oklch(0.65_0.2_25)] text-[13px]'>
-        Invalid set ID
+      <div className='py-10 text-center text-red-500 text-[13px]'>
+        {t('list.invalidSetId')}
       </div>
     );
 
@@ -83,8 +85,8 @@ const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
     return (
       <div>
         {filters}
-        <div className='py-10 text-center text-[oklch(0.65_0.2_25)] text-[13px]'>
-          Error loading notes. Please try again.
+        <div className='py-10 text-center text-red-500 text-[13px]'>
+          {t('list.notes.error')}
         </div>
       </div>
     );
@@ -93,7 +95,7 @@ const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
     return (
       <div>
         {filters}
-        <EmptyState label='No notes found — create your first note!' />
+        <EmptyState label={t('list.notes.empty')} />
       </div>
     );
 
@@ -105,14 +107,10 @@ const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
           const noteForUI: Note = {
             id: note.id,
             title: note.title,
-            description: note.description || 'No description available…',
+            description: note.description || t('list.noDescription'),
             privacy: note.privacy,
             timeAgo: getTimeAgo(note.updated_at),
-            created_at: new Date(note.created_at).toLocaleDateString('en-GB', {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric',
-            }),
+            created_at: formatDate(note.created_at),
           };
           return (
             <NoteCard

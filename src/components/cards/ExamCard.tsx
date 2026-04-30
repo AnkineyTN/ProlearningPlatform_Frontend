@@ -7,8 +7,9 @@ import {
   Trash2,
 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
-import { cn } from '@/lib/utils';
+import { cn, formatDate } from '@/lib/utils';
 
 export type ExamCardData = {
   id: number | string;
@@ -28,6 +29,7 @@ type Props = {
 };
 
 const ExamCard = ({ exam, onAccess, onUpdate, onDelete }: Props) => {
+  const { t } = useTranslation();
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -45,13 +47,7 @@ const ExamCard = ({ exam, onAccess, onUpdate, onDelete }: Props) => {
     if (!showMenu && !showDeleteDialog) onAccess(String(exam.id));
   };
 
-  const date = exam.createdAt
-    ? new Date(exam.createdAt).toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      })
-    : '—';
+  const date = exam.createdAt ? formatDate(exam.createdAt) : '—';
 
   const numQ = exam.numQuestions ?? 0;
   const dur = exam.duration ?? 30;
@@ -86,7 +82,7 @@ const ExamCard = ({ exam, onAccess, onUpdate, onDelete }: Props) => {
             <div className='absolute top-[calc(100%+4px)] right-0 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[10px] p-1 z-50 min-w-[130px] shadow-[0_8px_20px_oklch(0_0_0/0.12)]'>
               {[
                 {
-                  label: 'Edit',
+                  label: t('common.edit'),
                   icon: Pencil,
                   action: (e: React.MouseEvent) => {
                     e.stopPropagation();
@@ -96,7 +92,7 @@ const ExamCard = ({ exam, onAccess, onUpdate, onDelete }: Props) => {
                   danger: false,
                 },
                 {
-                  label: 'Delete',
+                  label: t('common.delete'),
                   icon: Trash2,
                   action: (e: React.MouseEvent) => {
                     e.stopPropagation();
@@ -143,11 +139,11 @@ const ExamCard = ({ exam, onAccess, onUpdate, onDelete }: Props) => {
       >
         <span className='flex items-center gap-[5px] text-[11px] font-semibold px-[10px] py-1 rounded-full bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)] tabular-nums'>
           <HelpCircle size={11} />
-          {numQ} questions
+          {t('card.exam.questions', { count: numQ })}
         </span>
         <span className='flex items-center gap-[5px] text-[11px] font-semibold px-[10px] py-1 rounded-full bg-[var(--pl-bg-hover)] text-[var(--pl-text-muted)]'>
           <Clock size={11} />
-          {dur} min
+          {t('card.exam.minutes', { count: dur })}
         </span>
       </div>
 
@@ -161,7 +157,9 @@ const ExamCard = ({ exam, onAccess, onUpdate, onDelete }: Props) => {
               : 'bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)]',
           )}
         >
-          {exam.privacy === 'PUBLIC' ? 'Public' : 'Private'}
+          {exam.privacy === 'PUBLIC'
+            ? t('list.filter.public')
+            : t('list.filter.private')}
         </span>
         <span>{date}</span>
       </div>
@@ -173,7 +171,7 @@ const ExamCard = ({ exam, onAccess, onUpdate, onDelete }: Props) => {
           onDelete(exam.id);
           setShowDeleteDialog(false);
         }}
-        title='Delete Exam'
+        title={t('card.exam.deleteTitle')}
         itemName={`"${exam.title}"`}
       />
     </div>

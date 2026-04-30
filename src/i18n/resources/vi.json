@@ -98,6 +98,12 @@
         "checklist": {
             "seeMore": "Xem thêm",
             "title": "Danh sách kiểm tra của bạn hôm nay!"
+        },
+        "exam": {
+            "questions_one": "{{count}} câu hỏi",
+            "questions_other": "{{count}} câu hỏi",
+            "minutes": "{{count}} phút",
+            "deleteTitle": "Xoá bài thi"
         }
     },
     "dashboard": {
@@ -356,14 +362,16 @@
         }
     },
     "setlist": {
-        "all": "Tất cả",
-        "completed": "Đã hoàn thành",
-        "creating": "Đang tạo...",
-        "in_progress": "Đang tiến hành",
-        "new_set": "Bộ học tập mới",
-        "set": "Bộ học tập",
-        "title": "Danh sách tài liệu",
-        "your_set": "Bộ học tập của bạn"
+      "all": "Tất cả",
+      "completed": "Đã hoàn thành",
+      "creating": "Đang tạo...",
+      "in_progress": "Đang tiến hành",
+      "new_set": "Bộ học tập mới",
+      "set": "Bộ học tập",
+      "title": "Danh sách tài liệu",
+      "your_set": "Bộ học tập của bạn",
+      "your_workspace": "Không gian của bạn",
+      "searchPlaceholder": "Tìm bộ học…"
     },
     "sidebar": {
         "blog": "Blog",
@@ -804,7 +812,16 @@
         "delete": "Xoá",
         "loading": "Đang tải...",
         "save": "Lưu",
-        "saving": "Đang lưu..."
+        "saving": "Đang lưu...",
+        "timeAgo": {
+            "minutes_one": "{{count}} phút trước",
+            "minutes_other": "{{count}} phút trước",
+            "hours_one": "{{count}} giờ trước",
+            "hours_other": "{{count}} giờ trước",
+            "days_one": "{{count}} ngày trước",
+            "days_other": "{{count}} ngày trước"
+        },
+        "edit": "Sửa"
     },
     "pomodoro": {
         "start": "Bắt đầu",
@@ -876,6 +893,60 @@
             "uploadFailed": "Tải lên thất bại. Hãy thử lại.",
             "spaceCreated": "Đã tạo không gian.",
             "soundCreated": "Đã thêm âm thanh."
+        }
+    },
+    "list": {
+        "filter": {
+            "searchPlaceholder": "Tìm kiếm…",
+            "privacyAll": "Tất cả",
+            "public": "Công khai",
+            "private": "Riêng tư",
+            "methodAll": "Tất cả phương thức",
+            "methodManual": "Thủ công",
+            "methodAI": "Tạo bởi AI",
+            "methodReview": "Ôn tập",
+            "sortNewest": "Mới nhất trước",
+            "sortOldest": "Cũ nhất trước",
+            "sortTitleAsc": "Tiêu đề A → Z",
+            "sortTitleDesc": "Tiêu đề Z → A"
+        },
+        "noDescription": "Chưa có mô tả…",
+        "invalidSetId": "ID bộ học không hợp lệ",
+        "unknownError": "Lỗi không xác định",
+        "notes": {
+            "error": "Lỗi khi tải ghi chú. Vui lòng thử lại.",
+            "empty": "Chưa có ghi chú — hãy tạo ghi chú đầu tiên!"
+        },
+        "flashcards": {
+            "error": "Lỗi khi tải flashcard: {{message}}",
+            "empty": "Không tìm thấy flashcard nào"
+        },
+        "exams": {
+            "error": "Không thể tải bài thi. Vui lòng thử lại.",
+            "empty": "Không tìm thấy bài thi nào"
+        }
+    },
+    "set": {
+        "breadcrumb": "Thư viện bộ học",
+        "thisSet": "bộ này",
+        "header": {
+            "loadError": "Không thể tải chi tiết bộ học.",
+            "notes": "Ghi chú",
+            "cards": "Thẻ",
+            "mastery": "Thành thạo",
+            "streak": "Streak",
+            "deleteSet": "Xoá bộ học",
+            "continueLearning": "Tiếp tục học"
+        },
+        "actions": {
+            "generating": "Đang tạo với AI…",
+            "creating": "Đang tạo…",
+            "newNote": "Ghi chú mới",
+            "newFlashcard": "Flashcard mới",
+            "newExam": "Bài thi mới",
+            "newMindmap": "Sơ đồ tư duy mới",
+            "newRecord": "Bản ghi mới",
+            "newItem": "Mục mới"
         }
     }
 }

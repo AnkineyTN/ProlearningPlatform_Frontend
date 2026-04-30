@@ -98,6 +98,12 @@
         "checklist": {
             "seeMore": "See more",
             "title": "Your checklist today!"
+        },
+        "exam": {
+            "questions_one": "{{count}} question",
+            "questions_other": "{{count}} questions",
+            "minutes": "{{count}} min",
+            "deleteTitle": "Delete Exam"
         }
     },
     "dashboard": {
@@ -362,7 +368,9 @@
         "in_progress": "In Progress",
         "new_set": "New Set",
         "title": "Set Library",
-        "your_set": "Your Set"
+        "your_set": "Your Set",
+        "your_workspace": "Your workspace",
+        "searchPlaceholder": "Search sets…"
     },
     "sidebar": {
         "blog": "Blog",
@@ -804,7 +812,16 @@
         "delete": "Delete",
         "loading": "Loading...",
         "save": "Save",
-        "saving": "Saving..."
+        "saving": "Saving...",
+        "timeAgo": {
+            "minutes_one": "{{count}} minute ago",
+            "minutes_other": "{{count}} minutes ago",
+            "hours_one": "{{count}} hour ago",
+            "hours_other": "{{count}} hours ago",
+            "days_one": "{{count}} day ago",
+            "days_other": "{{count}} days ago"
+        },
+        "edit": "Edit"
     },
     "pomodoro": {
         "start": "Start",
@@ -876,6 +893,60 @@
             "uploadFailed": "Upload failed. Please try again.",
             "spaceCreated": "Space created.",
             "soundCreated": "Sound added."
+        }
+    },
+    "list": {
+        "filter": {
+            "searchPlaceholder": "Search…",
+            "privacyAll": "All privacy",
+            "public": "Public",
+            "private": "Private",
+            "methodAll": "All methods",
+            "methodManual": "Manual",
+            "methodAI": "AI generated",
+            "methodReview": "Review",
+            "sortNewest": "Newest first",
+            "sortOldest": "Oldest first",
+            "sortTitleAsc": "Title A → Z",
+            "sortTitleDesc": "Title Z → A"
+        },
+        "noDescription": "No description available…",
+        "invalidSetId": "Invalid set ID",
+        "unknownError": "Unknown error",
+        "notes": {
+            "error": "Error loading notes. Please try again.",
+            "empty": "No notes found — create your first note!"
+        },
+        "flashcards": {
+            "error": "Error loading flashcards: {{message}}",
+            "empty": "No flashcards found"
+        },
+        "exams": {
+            "error": "Failed to load exams. Please try again.",
+            "empty": "No exams found"
+        }
+    },
+    "set": {
+        "breadcrumb": "Set Library",
+        "thisSet": "this set",
+        "header": {
+            "loadError": "Could not load set details.",
+            "notes": "Notes",
+            "cards": "Cards",
+            "mastery": "Mastery",
+            "streak": "Streak",
+            "deleteSet": "Delete set",
+            "continueLearning": "Continue learning"
+        },
+        "actions": {
+            "generating": "Generating with AI…",
+            "creating": "Creating…",
+            "newNote": "New note",
+            "newFlashcard": "New flashcard",
+            "newExam": "New exam",
+            "newMindmap": "New mindmap",
+            "newRecord": "New record",
+            "newItem": "New item"
         }
     }
 }

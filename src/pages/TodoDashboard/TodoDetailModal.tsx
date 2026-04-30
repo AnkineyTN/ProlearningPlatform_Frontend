@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { BookOpen, ExternalLink, FileText, FlipHorizontal, GraduationCap, Plus, Trash2, X } from "lucide-react";
+import { BookOpen, ExternalLink, FileText, FlipHorizontal, GraduationCap, Plus, X } from "lucide-react";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
