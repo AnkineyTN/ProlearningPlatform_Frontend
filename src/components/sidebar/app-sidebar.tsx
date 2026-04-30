@@ -22,6 +22,9 @@ import { logout } from '@/store/authSlice.ts';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { useReviewBundles } from '@/hooks/useReviewBundles';
 import ColorThemeSwitcher from '@/components/theme/color-theme-switcher';
+import ModeToggle from '@/components/theme/mode-toggle';
+import LanguageToggle from '@/components/language/language-toggle';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -198,6 +201,10 @@ const AppSidebar = () => {
           )}
         >
           <ColorThemeSwitcher collapsed={collapsed} />
+          <div className='flex gap-2'>
+            <ModeToggle />
+            <LanguageToggle />
+          </div>
         </div>
 
         {/* User card */}

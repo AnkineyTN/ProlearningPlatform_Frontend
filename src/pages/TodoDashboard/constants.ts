@@ -1,7 +1,5 @@
 import type { GoalStatus, GoalType, TodoPriority, TodoStatus, TodoType } from "@/services/types/todo.types";
 
-export type FilterTab = "all" | "no-goal" | "completed" | number;
-
 export const PRIORITY_COLORS: Record<TodoPriority, string> = {
   HIGH: "bg-bg-error text-text-error",
   MEDIUM: "bg-bg-warning text-text-warning",

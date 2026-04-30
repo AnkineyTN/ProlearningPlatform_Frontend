@@ -789,6 +789,44 @@
             "noGoal": "No goal",
             "unassign": "Remove goal"
         },
+        "today": {
+            "label": "TODAY",
+            "headline_one": "{{count}} task to ship",
+            "headline_other": "{{count}} tasks to ship",
+            "emptyHeadline": "Nothing scheduled today",
+            "done": "done",
+            "pending": "pending",
+            "empty": "No tasks for today — add one above.",
+            "quickAddPlaceholder": "Quick-add a todo for today..."
+        },
+        "overall": {
+            "title": "Overall Progress",
+            "newGoal": "New goal",
+            "detail": "{{done}} done · {{pending}} pending across {{count}} goals",
+            "longHeader": "Long-term",
+            "shortHeader": "Short-term",
+            "emptyLong": "No long-term goals yet.",
+            "emptyShort": "No short-term goals yet."
+        },
+        "week": {
+            "title": "This Week",
+            "planned_one": "{{count}} planned",
+            "planned_other": "{{count}} planned",
+            "today": "Today",
+            "selectedHeader": "SELECTED DAY",
+            "dayEmpty": "No tasks scheduled for this day.",
+            "more_one": "+ {{count}} more",
+            "more_other": "+ {{count}} more",
+            "addPlaceholder": "Quick-add a todo for {{date}}..."
+        },
+        "year": {
+            "title": "Goals × Year",
+            "subtitle_one": "{{count}} goal scheduled",
+            "subtitle_other": "{{count}} goals scheduled",
+            "progressHint": "Progress: {{progress}}%",
+            "undatedHeader_one": "Undated · {{count}} goal",
+            "undatedHeader_other": "Undated · {{count}} goals"
+        },
         "toast": {
             "createFailed": "Failed to create todo",
             "deleteFailed": "Failed to delete todo",

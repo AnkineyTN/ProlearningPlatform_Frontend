@@ -4,33 +4,25 @@ import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { todoAPI } from "@/services/endpoints/todo";
 import type { Goal, Todo } from "@/services/types/todo.types";
-import { type FilterTab } from "./constants";
 import GoalModal from "./GoalModal";
 import TodoStats from "./TodoStats";
-import FilterTabs from "./FilterTabs";
-import TodoList from "./TodoList";
-import GoalsSidebar from "./GoalsSidebar";
+import TodaySection from "./TodaySection";
+import WeekSection from "./WeekSection";
+import YearSection from "./YearSection";
+import TodoDetailModal from "./TodoDetailModal";
+import { todayIso } from "./dateHelpers";
 
 const TodoDashboard = () => {
   const { t } = useTranslation();
   const qc = useQueryClient();
   const [newTask, setNewTask] = useState("");
-  const [activeFilter, setActiveFilter] = useState<FilterTab>("all");
   const [goalModalOpen, setGoalModalOpen] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
-
-  // ── Queries ───────────────────────────────────────────────────────────────
-
-  const todosParams = (() => {
-    if (activeFilter === "completed") return { completed: true };
-    if (activeFilter === "no-goal") return { noGoal: true };
-    if (typeof activeFilter === "number") return { goalId: activeFilter };
-    return {};
-  })();
+  const [detailTodo, setDetailTodo] = useState<Todo | null>(null);
 
   const { data: todosData } = useQuery({
-    queryKey: ["todos", todosParams],
-    queryFn: () => todoAPI.getTodos({ ...todosParams, size: 100 }),
+    queryKey: ["todos", "all"],
+    queryFn: () => todoAPI.getTodos({ size: 200 }),
   });
 
   const { data: goalsData } = useQuery({
@@ -41,9 +33,7 @@ const TodoDashboard = () => {
   const todos: Todo[] = todosData?.data?.data ?? [];
   const goals: Goal[] = goalsData?.data?.data ?? [];
   const longGoals = goals.filter((g) => g.type === "LONG");
-  const completedCount = todos.filter((t) => t.completed || t.status === "DONE").length;
-
-  // ── Mutations ─────────────────────────────────────────────────────────────
+  const completedCount = todos.filter((td) => td.completed || td.status === "DONE").length;
 
   const createTodo = useMutation({
     mutationFn: todoAPI.createTodo,
@@ -77,16 +67,18 @@ const TodoDashboard = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["goals"] });
       qc.invalidateQueries({ queryKey: ["todos"] });
-      if (typeof activeFilter === "number") setActiveFilter("all");
       toast.success(t("todo.toast.goalDeleted"));
     },
     onError: () => toast.error(t("todo.toast.goalDeleteFailed")),
   });
 
-  const handleAddTask = () => {
+  const handleAddTodayTask = () => {
     if (!newTask.trim()) return;
-    const goalId = typeof activeFilter === "number" ? activeFilter : undefined;
-    createTodo.mutate({ title: newTask.trim(), goalId });
+    createTodo.mutate({ title: newTask.trim(), dueDate: todayIso() });
+  };
+
+  const handleCreateForDate = (title: string, date: string) => {
+    createTodo.mutate({ title, dueDate: date });
   };
 
   return (
@@ -99,6 +91,13 @@ const TodoDashboard = () => {
           setGoalModalOpen(false);
           setEditingGoal(null);
         }}
+      />
+
+      <TodoDetailModal
+        open={detailTodo !== null}
+        todo={detailTodo}
+        goals={goals}
+        onClose={() => setDetailTodo(null)}
       />
 
       {/* Page header */}
@@ -125,35 +124,35 @@ const TodoDashboard = () => {
         goalsCount={goals.length}
       />
 
-      <div className='grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-7'>
-        <div className='min-w-0 space-y-4'>
-          <FilterTabs
-            goals={goals}
-            activeFilter={activeFilter}
-            onFilterChange={setActiveFilter}
-          />
-          <TodoList
-            todos={todos}
-            goals={goals}
-            activeFilter={activeFilter}
-            newTask={newTask}
-            isCreating={createTodo.isPending}
-            onNewTaskChange={setNewTask}
-            onAddTask={handleAddTask}
-            onToggle={(id) => toggleTodo.mutate(id)}
-            onDelete={(id) => deleteTodo.mutate(id)}
-          />
-        </div>
+      <TodaySection
+        todos={todos}
+        goals={goals}
+        newTask={newTask}
+        isCreating={createTodo.isPending}
+        onNewTaskChange={setNewTask}
+        onAddTask={handleAddTodayTask}
+        onToggleTodo={(id) => toggleTodo.mutate(id)}
+        onDeleteTodo={(id) => deleteTodo.mutate(id)}
+        onOpenTodo={setDetailTodo}
+        onNewGoal={() => setGoalModalOpen(true)}
+        onEditGoal={setEditingGoal}
+        onDeleteGoal={(id) => deleteGoal.mutate(id)}
+      />
 
-        <GoalsSidebar
-          goals={goals}
-          activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
-          onNewGoal={() => setGoalModalOpen(true)}
-          onEditGoal={setEditingGoal}
-          onDeleteGoal={(id) => deleteGoal.mutate(id)}
-        />
-      </div>
+      <WeekSection
+        todos={todos}
+        isCreating={createTodo.isPending}
+        onToggleTodo={(id) => toggleTodo.mutate(id)}
+        onDeleteTodo={(id) => deleteTodo.mutate(id)}
+        onOpenTodo={setDetailTodo}
+        onCreateTodoForDate={handleCreateForDate}
+      />
+
+      <YearSection
+        goals={goals}
+        onEditGoal={setEditingGoal}
+        onNewGoal={() => setGoalModalOpen(true)}
+      />
     </div>
   );
 };

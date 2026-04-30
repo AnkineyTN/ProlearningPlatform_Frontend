@@ -789,6 +789,44 @@
             "noGoal": "Chưa có goal",
             "unassign": "Không gắn goal"
         },
+        "today": {
+            "label": "HÔM NAY",
+            "headline_one": "{{count}} task cần xử lý",
+            "headline_other": "{{count}} tasks cần xử lý",
+            "emptyHeadline": "Hôm nay chưa có task nào",
+            "done": "đã xong",
+            "pending": "còn lại",
+            "empty": "Chưa có task nào cho hôm nay — thêm bên trên.",
+            "quickAddPlaceholder": "Thêm nhanh todo cho hôm nay..."
+        },
+        "overall": {
+            "title": "Tiến độ tổng",
+            "newGoal": "Goal mới",
+            "detail": "{{done}} xong · {{pending}} còn lại trên {{count}} goals",
+            "longHeader": "Dài hạn",
+            "shortHeader": "Ngắn hạn",
+            "emptyLong": "Chưa có goal dài hạn.",
+            "emptyShort": "Chưa có goal ngắn hạn."
+        },
+        "week": {
+            "title": "Tuần này",
+            "planned_one": "{{count}} task",
+            "planned_other": "{{count}} tasks",
+            "today": "Hôm nay",
+            "selectedHeader": "NGÀY ĐANG CHỌN",
+            "dayEmpty": "Ngày này chưa có task nào.",
+            "more_one": "+ {{count}} nữa",
+            "more_other": "+ {{count}} nữa",
+            "addPlaceholder": "Thêm nhanh todo cho {{date}}..."
+        },
+        "year": {
+            "title": "Goals × Năm",
+            "subtitle_one": "{{count}} goal có lịch",
+            "subtitle_other": "{{count}} goals có lịch",
+            "progressHint": "Tiến độ: {{progress}}%",
+            "undatedHeader_one": "Chưa có ngày · {{count}} goal",
+            "undatedHeader_other": "Chưa có ngày · {{count}} goals"
+        },
         "toast": {
             "createFailed": "Tạo todo thất bại",
             "deleteFailed": "Xóa todo thất bại",
