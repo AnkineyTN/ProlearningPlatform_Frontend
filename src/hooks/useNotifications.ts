@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   useInfiniteQuery,
   useMutation,
@@ -7,7 +8,9 @@ import {
 import { useAppSelector } from "@/hooks/redux";
 import { notificationAPI } from "@/services/endpoints/notification";
 import type {
+  GlobalNotificationPreferences,
   NotificationListResponse,
+  SetNotificationPreferences,
   UserNotificationItem,
 } from "@/services/types/notification.types";
 
@@ -76,7 +79,7 @@ export function useUnreadNotificationCount() {
   });
 }
 
-export type NotificationTab = "all" | "unread";
+export type NotificationTab = "all" | "unread" | "invites";
 
 export function useNotificationsInfinite(tab: NotificationTab, open: boolean) {
   const token = useAppSelector((s) => s.auth.token);
@@ -85,10 +88,12 @@ export function useNotificationsInfinite(tab: NotificationTab, open: boolean) {
     initialPageParam: 0,
     enabled: !!token && open,
     queryFn: async ({ pageParam }) => {
+      // The "invites" tab reuses the all-notifications endpoint; the client
+      // filters down to invite types when rendering.
       const res =
-        tab === "all"
-          ? await notificationAPI.getNotifications(pageParam, PAGE_SIZE)
-          : await notificationAPI.getUnreadNotifications(pageParam, PAGE_SIZE);
+        tab === "unread"
+          ? await notificationAPI.getUnreadNotifications(pageParam, PAGE_SIZE)
+          : await notificationAPI.getNotifications(pageParam, PAGE_SIZE);
       return res.data;
     },
     getNextPageParam: (lastPage) => {
@@ -206,6 +211,110 @@ export function useMarkAllNotificationsRead() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    },
+  });
+}
+
+// ─── Per-user (global) notification preferences ──────────────────────────────
+
+const GLOBAL_PREFS_KEY = ["notifications", "preferences"] as const;
+
+export function useGlobalNotificationPreferences() {
+  const token = useAppSelector((s) => s.auth.token);
+  return useQuery({
+    queryKey: GLOBAL_PREFS_KEY,
+    enabled: !!token,
+    staleTime: 5 * 60_000,
+    queryFn: async () => {
+      const res = await notificationAPI.getGlobalNotificationPreferences();
+      return res.data.data;
+    },
+  });
+}
+
+/**
+ * Send only the changed fields. Spec: each toggle calls
+ * `updatePreferencesMutation.mutate({ <field>: val })`; backend strips undefined.
+ */
+export function useUpdateGlobalNotificationPreferences() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (partial: Partial<GlobalNotificationPreferences>) =>
+      notificationAPI.updateGlobalNotificationPreferences(
+        partial as Parameters<
+          typeof notificationAPI.updateGlobalNotificationPreferences
+        >[0],
+      ),
+    onMutate: async (partial) => {
+      await queryClient.cancelQueries({ queryKey: GLOBAL_PREFS_KEY });
+      const prev = queryClient.getQueryData<GlobalNotificationPreferences>(
+        GLOBAL_PREFS_KEY,
+      );
+      if (prev) {
+        queryClient.setQueryData<GlobalNotificationPreferences>(
+          GLOBAL_PREFS_KEY,
+          { ...prev, ...partial },
+        );
+      }
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) queryClient.setQueryData(GLOBAL_PREFS_KEY, ctx.prev);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: GLOBAL_PREFS_KEY });
+    },
+  });
+}
+
+// ─── Per-set notification preferences (weekly review reminder) ───────────────
+
+const setPrefsKey = (setId: number | string) =>
+  ["notifications", "set-preferences", String(setId)] as const;
+
+export function useSetNotificationPreferences(
+  setId: number | string | undefined,
+  enabled = true,
+) {
+  const token = useAppSelector((s) => s.auth.token);
+  return useQuery({
+    queryKey: setPrefsKey(setId ?? ""),
+    enabled: !!token && !!setId && enabled,
+    staleTime: 5 * 60_000,
+    queryFn: async () => {
+      const res = await notificationAPI.getSetNotificationPreferences(setId!);
+      return res.data.data;
+    },
+  });
+}
+
+export function useUpdateSetNotificationPreferences(setId: number | string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (partial: Partial<SetNotificationPreferences>) =>
+      notificationAPI.updateSetNotificationPreferences(
+        setId,
+        partial as Parameters<
+          typeof notificationAPI.updateSetNotificationPreferences
+        >[1],
+      ),
+    onMutate: async (partial) => {
+      const key = setPrefsKey(setId);
+      await queryClient.cancelQueries({ queryKey: key });
+      const prev = queryClient.getQueryData<SetNotificationPreferences>(key);
+      if (prev) {
+        queryClient.setQueryData<SetNotificationPreferences>(key, {
+          ...prev,
+          ...partial,
+        });
+      }
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) queryClient.setQueryData(setPrefsKey(setId), ctx.prev);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: setPrefsKey(setId) });
     },
   });
 }

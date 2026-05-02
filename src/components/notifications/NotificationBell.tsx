@@ -3,11 +3,21 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Bell,
+  BookOpen,
+  Calendar,
   Check,
+  ChevronRight,
+  ClipboardCheck,
+  FileText,
   Layers,
   Loader2,
   MoreHorizontal,
-  Shield,
+  Award,
+  AlertTriangle,
+  Megaphone,
+  ShieldAlert,
+  StickyNote,
+  Sparkles,
   X,
 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -22,7 +32,6 @@ import {
   type NotificationTab,
 } from "@/hooks/useNotifications";
 import type { UserNotificationItem } from "@/services/types/notification.types";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -37,22 +46,16 @@ function compactRelativeTime(iso: string): string {
   const then = new Date(iso).getTime();
   if (Number.isNaN(then)) return "";
   const seconds = Math.floor((Date.now() - then) / 1000);
-  if (seconds < 45) return "now";
+  if (seconds < 60) return "Just now";
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m`;
+  if (minutes < 60) return `${minutes} minutes ago`;
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h`;
+  if (hours < 24) return `${hours} hours ago`;
   const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d`;
-  const weeks = Math.floor(days / 7);
-  if (weeks < 5) return `${weeks}w`;
+  if (days < 30) return `${days} days ago`;
   const months = Math.floor(days / 30);
-  if (months < 12) return `${months}mo`;
-  return `${Math.floor(days / 365)}y`;
-}
-
-function isSystemLikeType(type: string): boolean {
-  return /SYSTEM|SECURITY|ADMIN/i.test(type);
+  if (months < 12) return `${months} months ago`;
+  return `${Math.floor(days / 365)} years ago`;
 }
 
 const INVITE_TYPES: Record<string, ResourceType> = {
@@ -63,6 +66,115 @@ const INVITE_TYPES: Record<string, ResourceType> = {
 
 function isInviteType(type: string): type is keyof typeof INVITE_TYPES {
   return type in INVITE_TYPES;
+}
+
+type TypeConfig = {
+  icon: React.ComponentType<{ className?: string; size?: number }>;
+  iconColor: string;
+  bgColor: string;
+  borderColor: string;
+  dotColor: string;
+};
+
+// Mirrors NOTIFICATION_TYPE_CONFIG from mobile app/notifications.tsx.
+// Border/dot colors are spelled out so Tailwind's JIT can see them statically.
+const NOTIFICATION_TYPE_CONFIG: Record<string, TypeConfig> = {
+  CARD_DUE_REMINDER: {
+    icon: BookOpen,
+    iconColor: "text-amber-500",
+    bgColor: "bg-amber-500/10",
+    borderColor: "border-amber-500",
+    dotColor: "bg-amber-500",
+  },
+  STUDY_SESSION_REMINDER: {
+    icon: Calendar,
+    iconColor: "text-blue-500",
+    bgColor: "bg-blue-500/10",
+    borderColor: "border-blue-500",
+    dotColor: "bg-blue-500",
+  },
+  STUDY_STREAK: {
+    icon: Sparkles,
+    iconColor: "text-orange-500",
+    bgColor: "bg-orange-500/10",
+    borderColor: "border-orange-500",
+    dotColor: "bg-orange-500",
+  },
+  ACHIEVEMENT_UNLOCKED: {
+    icon: Award,
+    iconColor: "text-yellow-500",
+    bgColor: "bg-yellow-500/10",
+    borderColor: "border-yellow-500",
+    dotColor: "bg-yellow-500",
+  },
+  SYSTEM_ANNOUNCEMENT: {
+    icon: Megaphone,
+    iconColor: "text-purple-500",
+    bgColor: "bg-purple-500/10",
+    borderColor: "border-purple-500",
+    dotColor: "bg-purple-500",
+  },
+  ACCOUNT_ACTIVITY: {
+    icon: ShieldAlert,
+    iconColor: "text-red-500",
+    bgColor: "bg-red-500/10",
+    borderColor: "border-red-500",
+    dotColor: "bg-red-500",
+  },
+  WEEKLY_SUMMARY: {
+    icon: ClipboardCheck,
+    iconColor: "text-pink-500",
+    bgColor: "bg-pink-500/10",
+    borderColor: "border-pink-500",
+    dotColor: "bg-pink-500",
+  },
+  NOTE_INVITE: {
+    icon: StickyNote,
+    iconColor: "text-emerald-500",
+    bgColor: "bg-emerald-500/10",
+    borderColor: "border-emerald-500",
+    dotColor: "bg-emerald-500",
+  },
+  NOTE_INVITE_ACCEPTED: {
+    icon: Check,
+    iconColor: "text-emerald-500",
+    bgColor: "bg-emerald-500/10",
+    borderColor: "border-emerald-500",
+    dotColor: "bg-emerald-500",
+  },
+  FLASHCARD_INVITE: {
+    icon: BookOpen,
+    iconColor: "text-cyan-500",
+    bgColor: "bg-cyan-500/10",
+    borderColor: "border-cyan-500",
+    dotColor: "bg-cyan-500",
+  },
+  EXAM_INVITE: {
+    icon: FileText,
+    iconColor: "text-indigo-500",
+    bgColor: "bg-indigo-500/10",
+    borderColor: "border-indigo-500",
+    dotColor: "bg-indigo-500",
+  },
+  GENERAL: {
+    icon: Bell,
+    iconColor: "text-muted-foreground",
+    bgColor: "bg-muted",
+    borderColor: "border-muted-foreground",
+    dotColor: "bg-muted-foreground",
+  },
+};
+
+const DEFAULT_TYPE_CONFIG: TypeConfig = {
+  icon: Bell,
+  iconColor: "text-muted-foreground",
+  bgColor: "bg-muted",
+  borderColor: "border-muted-foreground",
+  dotColor: "bg-muted-foreground",
+};
+
+function getTypeConfig(type: string): TypeConfig {
+  return NOTIFICATION_TYPE_CONFIG[type] ?? DEFAULT_TYPE_CONFIG;
 }
 
 type InviteLocalStatus = "accepted" | "declined" | null;
@@ -93,7 +205,6 @@ function InviteActions({
   const setId = data?.setId;
   const expiresAt = data?.expiresAt;
 
-  // Track accept/decline within this session
   const [localStatus, setLocalStatus] = useState<InviteLocalStatus>(null);
 
   const acceptMutation = useAcceptInvite();
@@ -143,7 +254,6 @@ function InviteActions({
 
   const isBusy = acceptMutation.isPending || declineMutation.isPending;
 
-  // ── Vừa accept trong session này ──────────────────────────────────────────
   if (localStatus === "accepted") {
     return (
       <div className="mt-2 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
@@ -162,7 +272,6 @@ function InviteActions({
     );
   }
 
-  // ── Vừa decline trong session này ────────────────────────────────────────
   if (localStatus === "declined") {
     return (
       <div className="mt-2" onClick={(e) => e.stopPropagation()}>
@@ -174,7 +283,6 @@ function InviteActions({
     );
   }
 
-  // ── Đã read từ session trước (không biết accepted hay declined) ───────────
   if (item.isRead && !isExpired) {
     return (
       <div className="mt-2" onClick={(e) => e.stopPropagation()}>
@@ -189,16 +297,18 @@ function InviteActions({
     );
   }
 
-  // ── Link hết hạn ─────────────────────────────────────────────────────────
+  // Expired invite badge
   if (isExpired) {
     return (
       <div className="mt-2">
-        <span className="text-xs text-muted-foreground">Link expired</span>
+        <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+          <AlertTriangle className="size-3" />
+          Invitation expired
+        </span>
       </div>
     );
   }
 
-  // ── Chưa xử lý — hiện Accept / Decline ───────────────────────────────────
   return (
     <div className="mt-2 flex gap-2" onClick={(e) => e.stopPropagation()}>
       <Button
@@ -233,7 +343,6 @@ function InviteActions({
   );
 }
 
-/** Build a resource URL from an invite notification's data field */
 function buildInviteDestUrl(item: UserNotificationItem): string | null {
   const resourceType = INVITE_TYPES[item.type];
   if (!resourceType) return null;
@@ -256,6 +365,12 @@ function buildInviteDestUrl(item: UserNotificationItem): string | null {
   return `/sets/${setId}/flashcards/${resourceId}`;
 }
 
+function buildBundleDestUrl(item: UserNotificationItem): string | null {
+  const data = item.data as { bundleId?: number | string } | undefined;
+  if (!data?.bundleId) return null;
+  return `/review-bundles/${data.bundleId}`;
+}
+
 function NotificationRow({
   item,
   onActivate,
@@ -270,9 +385,11 @@ function NotificationRow({
   onRefresh?: () => void;
 }) {
   const { t } = useTranslation();
-  const systemLike = isSystemLikeType(item.type);
-  const initial = (item.title?.trim()?.[0] ?? item.message?.trim()?.[0] ?? "N")
-    .toUpperCase();
+  const navigate = useNavigate();
+  const config = getTypeConfig(item.type);
+  const Icon = config.icon;
+  const isWeeklySummary = item.type === "WEEKLY_SUMMARY";
+  const bundleDestUrl = isWeeklySummary ? buildBundleDestUrl(item) : null;
 
   return (
     <div
@@ -288,31 +405,21 @@ function NotificationRow({
       className={cn(
         'flex w-full gap-3 rounded-lg px-2 py-2.5 text-left transition-colors',
         'hover:bg-[var(--pl-accent-soft)]',
-        !item.isRead && 'bg-primary/5',
+        // Unread items get a 3px left border in the type's icon color and a bg tint.
+        !item.isRead && cn('bg-primary/5 border-l-[3px]', config.borderColor),
         isActivating && 'pointer-events-none opacity-70',
       )}
     >
-      <div className='relative shrink-0'>
-        <Avatar className='size-11 border border-border/60'>
-          <AvatarFallback
-            className={cn(
-              'text-sm font-semibold',
-              systemLike
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-muted text-foreground',
-            )}
-          >
-            {initial}
-          </AvatarFallback>
-        </Avatar>
-        {systemLike && (
-          <span
-            className='absolute -bottom-0.5 -right-0.5 flex size-5 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm ring-2 ring-popover'
-            aria-hidden
-          >
-            <Shield className='size-3' />
-          </span>
-        )}
+      <div className='shrink-0 self-start'>
+        <span
+          className={cn(
+            'flex size-10 items-center justify-center rounded-full',
+            config.bgColor,
+            config.iconColor,
+          )}
+        >
+          <Icon className='size-5' />
+        </span>
       </div>
       <div className='min-w-0 flex-1'>
         <p className='text-sm font-medium leading-snug text-foreground line-clamp-2'>
@@ -324,6 +431,22 @@ function NotificationRow({
         <p className='mt-1 text-xs font-medium text-primary/90'>
           {compactRelativeTime(item.createdAt)}
         </p>
+
+        {/* WEEKLY_SUMMARY chip */}
+        {bundleDestUrl && (
+          <button
+            type='button'
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(bundleDestUrl);
+            }}
+            className='mt-2 inline-flex items-center gap-1 rounded-full bg-pink-500/10 px-2.5 py-1 text-xs font-medium text-pink-500 hover:bg-pink-500/20'
+          >
+            View review bundle
+            <ChevronRight className='size-3' />
+          </button>
+        )}
+
         {isInviteType(item.type) && (
           <InviteActions item={item} onDone={() => onRefresh?.()} />
         )}
@@ -344,7 +467,9 @@ function NotificationRow({
             aria-label={t('notificationsPanel.markAsRead')}
             title={t('notificationsPanel.markAsRead')}
           >
-            <span className='size-2.5 rounded-full bg-primary shadow-sm' />
+            <span
+              className={cn('size-2.5 rounded-full shadow-sm', config.dotColor)}
+            />
           </button>
         )}
       </div>
@@ -387,10 +512,17 @@ export default function NotificationBell() {
   const markRead = useMarkNotificationRead();
   const markAllRead = useMarkAllNotificationsRead();
 
+  const allItems = useMemo(
+    () => listQuery.data?.pages.flatMap((p) => p.data.notifications) ?? [],
+    [listQuery.data?.pages],
+  );
+
   const items = useMemo(
     () =>
-      listQuery.data?.pages.flatMap((p) => p.data.notifications) ?? [],
-    [listQuery.data?.pages],
+      tab === "invites"
+        ? allItems.filter((n) => isInviteType(n.type))
+        : allItems,
+    [tab, allItems],
   );
 
   const handleActivate = useCallback(
@@ -404,7 +536,15 @@ export default function NotificationBell() {
             /* still allow navigation */
           }
         }
-        // For invite notifications that are read → navigate to the resource directly
+        // WEEKLY_SUMMARY → deep-link to the bundle.
+        if (n.type === "WEEKLY_SUMMARY") {
+          const bundleUrl = buildBundleDestUrl(n);
+          if (bundleUrl) {
+            navigate(bundleUrl);
+            return;
+          }
+        }
+        // Invite notifications already-read → navigate to the resource directly.
         if (isInviteType(n.type)) {
           const destUrl = buildInviteDestUrl(n);
           if (destUrl) {
@@ -451,7 +591,6 @@ export default function NotificationBell() {
         message: `Generated at ${now.toISOString()}`,
       });
       setMoreOpen(false);
-      // Refresh list + badge
       void listQuery.refetch();
     } finally {
       setCreatingTest(false);
@@ -468,6 +607,8 @@ export default function NotificationBell() {
   const isLoadingFirst =
     listQuery.isPending && items.length === 0 && open;
   const loadError = listQuery.isError && items.length === 0;
+
+  const tabKeys: NotificationTab[] = ["all", "unread", "invites"];
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -553,23 +694,31 @@ export default function NotificationBell() {
             </div>
           </div>
           <div className='mt-3 flex gap-1 rounded-full bg-[var(--pl-bg-sunken)] p-1'>
-            {(['all', 'unread'] as const).map((key) => (
-              <button
-                key={key}
-                type='button'
-                onClick={() => setTab(key)}
-                className={cn(
-                  'flex-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors',
-                  tab === key
-                    ? 'bg-primary/20 text-primary'
-                    : 'text-muted-foreground hover:text-foreground',
-                )}
-              >
-                {key === 'all'
+            {tabKeys.map((key) => {
+              const label =
+                key === 'all'
                   ? t('notificationsPanel.tabAll')
-                  : t('notificationsPanel.tabUnread')}
-              </button>
-            ))}
+                  : key === 'unread'
+                    ? t('notificationsPanel.tabUnread')
+                    : t('notificationsPanel.tabInvites', {
+                        defaultValue: 'Invites',
+                      });
+              return (
+                <button
+                  key={key}
+                  type='button'
+                  onClick={() => setTab(key)}
+                  className={cn(
+                    'flex-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors',
+                    tab === key
+                      ? 'bg-primary/20 text-primary'
+                      : 'text-muted-foreground hover:text-foreground',
+                  )}
+                >
+                  {label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -608,7 +757,11 @@ export default function NotificationBell() {
               <Bell className='size-10 opacity-40' />
               {tab === 'unread'
                 ? t('notificationsPanel.emptyUnread')
-                : t('notificationsPanel.empty')}
+                : tab === 'invites'
+                  ? t('notificationsPanel.emptyInvites', {
+                      defaultValue: 'No pending invitations',
+                    })
+                  : t('notificationsPanel.empty')}
             </div>
           )}
 

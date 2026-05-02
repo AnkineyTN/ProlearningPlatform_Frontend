@@ -4,6 +4,7 @@ import {
   ArrowRight,
   CalendarRange,
   Inbox,
+  Info,
   Layers,
   Loader2,
   Sparkles,
@@ -137,6 +138,24 @@ export default function ReviewBundlesPage() {
             {t('reviewBundles.subtitle')}
           </p>
         </div>
+      </div>
+
+      {/* Info banner */}
+      <div
+        className='mb-4 flex items-start gap-3 rounded-[14px] border px-4 py-3 text-[13px]'
+        style={{
+          background: 'var(--pl-accent-soft)',
+          borderColor: 'var(--pl-accent-border)',
+          color: 'var(--pl-accent-strong)',
+        }}
+      >
+        <Info size={16} className='mt-0.5 shrink-0' />
+        <span>
+          {t('reviewBundles.infoBanner', {
+            defaultValue:
+              'Each bundle contains the cards you answered incorrectly in a week. Review, save flashcards, or create a test from them.',
+          })}
+        </span>
       </div>
 
       {/* Stat cards */}

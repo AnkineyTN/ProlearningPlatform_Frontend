@@ -1,10 +1,10 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router-dom";
-import { signupSchema, type SignupFormData } from "@/schemas/auth";
-import { authAPI } from "@/services/endpoints/auth";
-import { loginStart, loginFailure, loginSuccess } from "@/store/authSlice";
-import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Link, useNavigate } from 'react-router-dom';
+import { signupSchema, type SignupFormData } from '@/schemas/auth';
+import { authAPI } from '@/services/endpoints/auth';
+import { loginStart, loginFailure, loginSuccess } from '@/store/authSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import {
   AlertCircleIcon,
   Lock,
@@ -14,14 +14,14 @@ import {
   EyeOff,
   RefreshCw,
   CircleDot,
-} from "lucide-react";
-import { useState } from "react";
-import { toast } from "react-toastify";
-import { useTranslation } from "react-i18next";
-import LogoFG from "@/assets/logo_fg";
-import { Label } from "../ui/label";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+} from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
+import LogoFG from '@/assets/logo_fg';
+import { cn } from '@/lib/utils';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
 
 const SignUp = () => {
   const dispatch = useAppDispatch();
@@ -38,7 +38,7 @@ const SignUp = () => {
     formState: { errors },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchemaInstance),
-    defaultValues: { role: "ROLE_USER" },
+    defaultValues: { role: 'ROLE_USER' },
   });
 
   const handleGoogleLogin = async () => {
@@ -46,7 +46,7 @@ const SignUp = () => {
       const response = await authAPI.googleAuth();
       window.location.href = response.data.data.authorizationUrl;
     } catch {
-      toast.error(t("signin.failedGoogleConnect"));
+      toast.error(t('signin.failedGoogleConnect'));
     }
   };
 
@@ -58,10 +58,10 @@ const SignUp = () => {
         lastName: data.lastName,
         email: data.email,
         password: data.password,
-        role: "ROLE_USER",
+        role: 'ROLE_USER',
       });
-      toast.success("🎉 " + t("signup.success"), {
-        position: "top-right",
+      toast.success('🎉 ' + t('signup.success'), {
+        position: 'top-right',
         autoClose: 2000,
       });
       const loginResponse = await authAPI.login({
@@ -74,40 +74,66 @@ const SignUp = () => {
           token: loginResponse.data.data.accessToken,
         }),
       );
-      navigate("/verify-email", { state: { email: data.email, after: "signup" } });
+      navigate('/verify-email', {
+        state: { email: data.email, after: 'signup' },
+      });
     } catch {
-      dispatch(loginFailure(t("signup.failed")));
+      dispatch(loginFailure(t('signup.failed')));
     }
   };
 
-  const InpuClass = (hasError: boolean) =>
-    `w-full bg-white/5 border pl-10 pr-3.5 py-2.5 text-sm placeholder:text-muted-foreground outline-none transition-all focus:border-violet-500/60 focus:bg-white/[0.07] ${hasError ? "border-red-400/60" : "border-ring"}`;
+  const inputClass = (hasError: boolean) =>
+    cn(
+      'w-full pl-10 pr-3.5 py-2.5 text-[13.5px] outline-none transition-colors',
+      'bg-[var(--pl-bg)] border rounded-[10px]',
+      'placeholder:text-[var(--pl-text-faint)]',
+      'focus:border-[var(--pl-accent-border)] focus:bg-[var(--pl-bg-hover)]',
+      hasError
+        ? 'border-[var(--pl-danger,oklch(0.65_0.2_25))]'
+        : 'border-[var(--pl-border-strong)]',
+    );
 
   return (
-    <div className='min-h-screen w-screen flex items-center justify-center relative overflow-hidden'>
+    <div className='min-h-screen w-screen flex items-center justify-center text-[var(--pl-text)] px-6 py-10 relative overflow-hidden'>
       {/* Gradient orbs */}
-      <div className='absolute -top-40 -right-10 w-[650px] h-[650px] rounded-full bg-[radial-gradient(circle,rgba(236,72,153,0.3)_0%,rgba(168,85,247,0.15)_50%,transparent_70%)] blur-[70px] pointer-events-none' />
-      <div className='absolute -bottom-32 -left-20 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.35)_0%,rgba(59,130,246,0.15)_50%,transparent_70%)] blur-[60px] pointer-events-none' />
-      <div className='absolute top-1/2 left-1/3 w-[450px] h-[450px] rounded-full bg-[radial-gradient(circle,rgba(139,92,246,0.15)_0%,transparent_70%)] blur-[50px] pointer-events-none' />
+      <div className='absolute -top-40 -right-10 w-[650px] h-[650px] rounded-full bg-[radial-gradient(circle,var(--pl-accent-border)_0%,var(--pl-accent-soft)_50%,transparent_70%)] blur-[70px] pointer-events-none' />
+      <div className='absolute -bottom-32 -left-20 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,var(--pl-accent-soft)_0%,var(--pl-accent-soft)_50%,transparent_70%)] blur-[60px] pointer-events-none' />
+      <div className='absolute top-1/2 left-1/3 w-[450px] h-[450px] rounded-full bg-[radial-gradient(circle,var(--pl-accent-soft)_0%,transparent_70%)] blur-[50px] pointer-events-none' />
 
       {/* Logo */}
-      <a href='/dashboard' className='absolute top-8 left-20'>
-        <div className='w-10 h-10 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(139,92,246,0.5)]'>
+      <a
+        href='/dashboard'
+        className='absolute top-8 left-8 flex items-center gap-2'
+      >
+        <div className='w-8 h-8 grid place-items-center'>
           <LogoFG />
         </div>
+        <span
+          className='text-[16px] font-semibold tracking-[-0.015em] text-[var(--pl-text)]'
+          style={{ fontFamily: 'var(--font-display)' }}
+        >
+          ProLearning
+        </span>
       </a>
 
       {/* Card */}
-      <div className='relative z-10 w-[460px] my-10 bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-3xl px-10 py-11 shadow-[0_25px_60px_rgba(0,0,0,0.5)]'>
-        {/* Top shimmer line */}
-        <div className='absolute top-0 left-[15%] right-[15%] h-px bg-gradient-to-r from-transparent via-pink-500 to-transparent' />
-
+      <div className='relative w-[460px] max-w-full bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[14px] px-9 py-9 my-10'>
+        {/* Header */}
         <div className='mb-7'>
-          <h1 className='text-[28px] font-bold tracking-tight mb-2'>
-            {t("signup.title")}
+          <div className='text-[10px] tracking-[0.18em] uppercase mb-2 text-[var(--pl-text-faint)]'>
+            {t('signup.createAccount')}
+          </div>
+          <h1
+            className='text-[32px] tracking-[-0.02em] leading-[1.1] m-0 mb-2 text-[var(--pl-text)]'
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            {t('signup.title')}
           </h1>
-          <p className='text-muted-foreground text-sm'>
-            {t("signup.description")}
+          <p
+            className='text-[15px] italic m-0 text-[var(--pl-text-muted)]'
+            style={{ fontFamily: 'var(--font-serif)' }}
+          >
+            {t('signup.description')}
           </p>
         </div>
 
@@ -115,46 +141,48 @@ const SignUp = () => {
           onSubmit={handleSubmit(onSubmit)}
           className='flex flex-col gap-3.5'
         >
-          {/* First + Last name */}
+          {/* First + Last */}
           <div className='flex gap-3'>
             <div className='flex-1'>
-              <Label className='block text-[13px] font-semibold text-foreground mb-2 tracking-wide'>
-                {t("signup.firstName")} <span className='text-pink-400'>*</span>
+              <Label className='block text-[11px] font-semibold tracking-[0.12em] uppercase text-[var(--pl-text-muted)] mb-2'>
+                {t('signup.firstName')}{' '}
+                <span className='text-[var(--pl-accent-strong)]'>*</span>
               </Label>
               <div className='relative'>
-                <span className='absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground'>
-                  <User size={15} />
+                <span className='absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--pl-text-faint)]'>
+                  <User size={14} />
                 </span>
                 <Input
                   type='text'
-                  {...register("firstName")}
-                  placeholder={t("signup.firstNamePlaceholder")}
-                  className={InpuClass(!!errors.firstName)}
+                  {...register('firstName')}
+                  placeholder={t('signup.firstNamePlaceholder')}
+                  className={inputClass(!!errors.firstName)}
                 />
               </div>
               {errors.firstName && (
-                <p className='text-red-400 text-xs mt-1'>
+                <p className='text-[var(--pl-danger,oklch(0.65_0.2_25))] text-[11.5px] mt-1.5'>
                   {errors.firstName.message}
                 </p>
               )}
             </div>
             <div className='flex-1'>
-              <Label className='block text-[13px] font-semibold text-foreground mb-2 tracking-wide'>
-                {t("signup.lastName")} <span className='text-pink-400'>*</span>
+              <Label className='block text-[11px] font-semibold tracking-[0.12em] uppercase text-[var(--pl-text-muted)] mb-2'>
+                {t('signup.lastName')}{' '}
+                <span className='text-[var(--pl-accent-strong)]'>*</span>
               </Label>
               <div className='relative'>
-                <span className='absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground'>
-                  <User size={15} />
+                <span className='absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--pl-text-faint)]'>
+                  <User size={14} />
                 </span>
                 <Input
                   type='text'
-                  {...register("lastName")}
-                  placeholder={t("signup.lastNamePlaceholder")}
-                  className={InpuClass(!!errors.lastName)}
+                  {...register('lastName')}
+                  placeholder={t('signup.lastNamePlaceholder')}
+                  className={inputClass(!!errors.lastName)}
                 />
               </div>
               {errors.lastName && (
-                <p className='text-red-400 text-xs mt-1'>
+                <p className='text-[var(--pl-danger,oklch(0.65_0.2_25))] text-[11.5px] mt-1.5'>
                   {errors.lastName.message}
                 </p>
               )}
@@ -163,22 +191,22 @@ const SignUp = () => {
 
           {/* Email */}
           <div>
-            <Label className='block text-[13px] font-semibold text-foreground mb-2 tracking-wide'>
-              {t("signup.email")}
+            <Label className='block text-[11px] font-semibold tracking-[0.12em] uppercase text-[var(--pl-text-muted)] mb-2'>
+              {t('signup.email')}
             </Label>
             <div className='relative'>
-              <span className='absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground'>
-                <Mail size={15} />
+              <span className='absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--pl-text-faint)]'>
+                <Mail size={14} />
               </span>
               <Input
                 type='email'
-                {...register("email")}
-                placeholder={t("signup.emailPlaceholder")}
-                className={InpuClass(!!errors.email)}
+                {...register('email')}
+                placeholder={t('signup.emailPlaceholder')}
+                className={inputClass(!!errors.email)}
               />
             </div>
             {errors.email && (
-              <p className='text-red-400 text-xs mt-1'>
+              <p className='text-[var(--pl-danger,oklch(0.65_0.2_25))] text-[11.5px] mt-1.5'>
                 {errors.email.message}
               </p>
             )}
@@ -186,63 +214,64 @@ const SignUp = () => {
 
           {/* Password */}
           <div>
-            <Label className='block text-[13px] font-semibold text-foreground mb-2 tracking-wide'>
-              {t("signup.password")} <span className='text-pink-400'>*</span>
+            <Label className='block text-[11px] font-semibold tracking-[0.12em] uppercase text-[var(--pl-text-muted)] mb-2'>
+              {t('signup.password')}{' '}
+              <span className='text-[var(--pl-accent-strong)]'>*</span>
             </Label>
             <div className='relative'>
-              <span className='absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground'>
-                <Lock size={15} />
+              <span className='absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--pl-text-faint)]'>
+                <Lock size={14} />
               </span>
               <Input
-                type={showPassword ? "text" : "password"}
-                {...register("password")}
+                type={showPassword ? 'text' : 'password'}
+                {...register('password')}
                 placeholder='••••••••'
-                className={`${InpuClass(!!errors.password)} pr-10`}
+                className={cn(inputClass(!!errors.password), 'pr-10')}
               />
               <span
                 onClick={() => setShowPassword(!showPassword)}
-                className='absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer hover:text-foreground transition-colors'
+                className='absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--pl-text-faint)] cursor-pointer hover:text-[var(--pl-text)] transition-colors'
               >
-                {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
               </span>
             </div>
             {errors.password ? (
-              <p className='text-red-400 text-xs mt-1'>
+              <p className='text-[var(--pl-danger,oklch(0.65_0.2_25))] text-[11.5px] mt-1.5'>
                 {errors.password.message}
               </p>
             ) : (
-              <div className='flex items-center gap-1.5 mt-1.5 text-muted-foreground text-xs'>
-                <CircleDot size={12} />
-                {t("signup.passwordRequirement")}
+              <div className='flex items-center gap-1.5 mt-1.5 text-[11.5px] text-[var(--pl-text-faint)]'>
+                <CircleDot size={11} />
+                {t('signup.passwordRequirement')}
               </div>
             )}
           </div>
 
-          {/* Confirm Password */}
+          {/* Confirm */}
           <div>
-            <Label className='block text-[13px] font-semibold text-foreground mb-2 tracking-wide'>
-              {t("signup.confirmPassword")}{" "}
-              <span className='text-pink-400'>*</span>
+            <Label className='block text-[11px] font-semibold tracking-[0.12em] uppercase text-[var(--pl-text-muted)] mb-2'>
+              {t('signup.confirmPassword')}{' '}
+              <span className='text-[var(--pl-accent-strong)]'>*</span>
             </Label>
             <div className='relative'>
-              <span className='absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground'>
-                <Lock size={15} />
+              <span className='absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--pl-text-faint)]'>
+                <Lock size={14} />
               </span>
               <Input
-                type={showConfirmPassword ? "text" : "password"}
-                {...register("confirmPassword")}
+                type={showConfirmPassword ? 'text' : 'password'}
+                {...register('confirmPassword')}
                 placeholder='••••••••'
-                className={`${InpuClass(!!errors.confirmPassword)} pr-10`}
+                className={cn(inputClass(!!errors.confirmPassword), 'pr-10')}
               />
               <span
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className='absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer hover:text-foreground transition-colors'
+                className='absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--pl-text-faint)] cursor-pointer hover:text-[var(--pl-text)] transition-colors'
               >
-                {showConfirmPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                {showConfirmPassword ? <EyeOff size={14} /> : <Eye size={14} />}
               </span>
             </div>
             {errors.confirmPassword && (
-              <p className='text-red-400 text-xs mt-1'>
+              <p className='text-[var(--pl-danger,oklch(0.65_0.2_25))] text-[11.5px] mt-1.5'>
                 {errors.confirmPassword.message}
               </p>
             )}
@@ -250,61 +279,60 @@ const SignUp = () => {
 
           {/* API error */}
           {error && (
-            <div className='flex items-center gap-2 px-3.5 py-2.5 bg-red-400/10 border border-red-400/20 rounded-xl text-red-400 text-[13px]'>
+            <div className='flex items-center gap-2 px-3.5 py-2.5 rounded-[10px] border border-[var(--pl-danger,oklch(0.65_0.2_25))]/30 bg-[var(--pl-danger,oklch(0.65_0.2_25))]/10 text-[var(--pl-danger,oklch(0.65_0.2_25))] text-[12.5px]'>
               <AlertCircleIcon size={14} />
-              <p>{error}</p>
+              <p className='m-0'>{error}</p>
             </div>
           )}
 
           {/* Submit */}
-          <Button
+          <button
             type='submit'
             disabled={isLoading}
             data-testid='create-btn'
-            className='w-full mt-1 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-sm font-bold tracking-wide flex items-center justify-center gap-2 shadow-[0_4px_20px_rgba(168,85,247,0.4)] hover:shadow-[0_4px_30px_rgba(168,85,247,0.6)] hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer'
+            className='w-full mt-1 py-3 rounded-full text-[13.5px] font-semibold inline-flex items-center justify-center gap-2 bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity cursor-pointer'
           >
-            {isLoading && <RefreshCw size={14} className='animate-spin' />}
-            {t("signup.createAccount")}
-          </Button>
+            {isLoading && <RefreshCw size={13} className='animate-spin' />}
+            {t('signup.createAccount')}
+          </button>
 
           {/* Divider */}
           <div className='flex items-center gap-3 my-1'>
-            <div className='flex-1 h-px bg-ring' />
-            <span className='text-xs text-muted-foreground'>
-              {t("signin.orContinueWith")}
+            <div className='flex-1 h-px bg-[var(--pl-border)]' />
+            <span className='text-[10px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)]'>
+              {t('signin.orContinueWith')}
             </span>
-            <div className='flex-1 h-px bg-ring' />
+            <div className='flex-1 h-px bg-[var(--pl-border)]' />
           </div>
 
           {/* Google */}
-          <Button
+          <button
             type='button'
-            variant={"default"}
             onClick={handleGoogleLogin}
-            className='w-full py-2.5 text-sm font-medium flex items-center justify-center gap-2.5 cursor-pointer transition-all'
+            className='w-full py-2.5 rounded-full border border-[var(--pl-border-strong)] bg-transparent text-[13.5px] font-medium text-[var(--pl-text)] inline-flex items-center justify-center gap-2.5 hover:bg-[var(--pl-bg-hover)] transition-colors cursor-pointer'
           >
-            <svg width='16' height='16' viewBox='0 0 24 24'>
+            <svg width='14' height='14' viewBox='0 0 24 24'>
               <path
                 d='M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z'
                 fill='currentColor'
               />
             </svg>
             Google
-          </Button>
+          </button>
         </form>
 
-        <p className='mt-5 text-center text-[13px] text-muted-foreground'>
-          {t("signup.haveAccount")}
+        <p className='mt-6 text-center text-[12.5px] text-[var(--pl-text-muted)]'>
+          {t('signup.haveAccount')}
           <Link
             to='/login'
-            className='ml-1 text-violet-400/90 font-semibold hover:text-violet-300 transition-colors'
+            className='ml-1 font-semibold text-[var(--pl-accent-strong)] hover:opacity-80 transition-opacity'
           >
-            {t("signup.signIn")}
+            {t('signup.signIn')}
           </Link>
         </p>
       </div>
     </div>
   );
-}
+};
 
 export default SignUp;

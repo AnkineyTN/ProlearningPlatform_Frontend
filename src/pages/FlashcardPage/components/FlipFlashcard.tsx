@@ -1,4 +1,4 @@
-import { Shuffle, Settings, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Shuffle, Settings, ChevronRight, ChevronLeft, Info } from 'lucide-react';
 import { useState } from 'react';
 
 import {
@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useFlashcardStudySettings } from '@/hooks/useFlashcardStudySettings';
 
 type Props = {
   isFlipped: boolean;
@@ -25,13 +26,12 @@ type Props = {
   onNext: () => void;
   onShuffle: () => void;
   onCardAnswer: (isCorrect: boolean) => void;
+  reviewBannerMessage?: string;
 };
 
 const RECALL_BUTTONS = [
   { label: 'Again', hint: '< 1m', correct: false, color: 'var(--pl-danger)' },
-  // { label: 'Hard', hint: '6m', correct: false, color: 'var(--pl-warning)' },
   { label: 'Good', hint: '1d', correct: true, color: 'var(--pl-accent)' },
-  // { label: 'Easy', hint: '3d', correct: true, color: 'var(--pl-success)' },
 ] as const;
 
 const FlipFlashcard = ({
@@ -43,18 +43,42 @@ const FlipFlashcard = ({
   onNext,
   onShuffle,
   onCardAnswer,
+  reviewBannerMessage,
 }: Props) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [trackProgress, setTrackProgress] = useState(true);
-  const [cardSide, setCardSide] = useState<'term' | 'definition'>('term');
+  const {
+    isFrontCardTerm,
+    isProgressTrackingEnabled,
+    setIsFrontCardTerm,
+    setIsProgressTrackingEnabled,
+  } = useFlashcardStudySettings();
   const [hoveredBtn, setHoveredBtn] = useState<number | null>(null);
 
   const total = flashcards.length;
   const progress = ((currentCardIndex + 1) / total) * 100;
   const current = flashcards[currentCardIndex];
 
+  // When isFrontCardTerm = false, swap which side is the "front".
+  const frontText = isFrontCardTerm ? current.frontCard : current.backCard;
+  const backText = isFrontCardTerm ? current.backCard : current.frontCard;
+
   return (
     <>
+      {/* REVIEW-mode banner (server-issued message) */}
+      {reviewBannerMessage && (
+        <div
+          className='mx-10 mt-4 flex items-start gap-2 rounded-lg border px-4 py-3 text-sm'
+          style={{
+            background: 'var(--pl-accent-soft)',
+            borderColor: 'var(--pl-accent-border)',
+            color: 'var(--pl-accent-strong)',
+          }}
+        >
+          <Info size={16} className='mt-0.5 shrink-0' />
+          <span>{reviewBannerMessage}</span>
+        </div>
+      )}
+
       {/* Progress bar */}
       <div className='pt-5'>
         <div
@@ -67,12 +91,14 @@ const FlipFlashcard = ({
           <span>
             {String(currentCardIndex + 1).padStart(2, '0')} / {total}
           </span>
-          <span>
-            Mastery ·{' '}
-            <span style={{ color: 'var(--pl-text)' }}>
-              {Math.round(progress)}%
+          {isProgressTrackingEnabled && (
+            <span>
+              Mastery ·{' '}
+              <span style={{ color: 'var(--pl-text)' }}>
+                {Math.round(progress)}%
+              </span>
             </span>
-          </span>
+          )}
         </div>
         <div
           className='h-[2px] rounded-full overflow-hidden'
@@ -124,7 +150,7 @@ const FlipFlashcard = ({
                   className='text-[11px] uppercase tracking-[0.16em]'
                   style={{ color: 'var(--pl-text-faint)' }}
                 >
-                  Question · Tap to reveal
+                  {isFrontCardTerm ? 'Term' : 'Definition'} · Tap to reveal
                 </span>
                 <span
                   className='text-[10.5px] px-[10px] py-[3px] rounded-full uppercase tracking-[0.08em] font-[500]'
@@ -148,6 +174,8 @@ const FlipFlashcard = ({
                   >
                     Q·{String(currentCardIndex + 1).padStart(2, '0')}
                   </div>
+                  {/* Per spec: image rides with the side that has hasImage = true.
+                      When front is the definition, the image stays on the front. */}
                   {current.imageUrl && (
                     <img
                       src={current.imageUrl}
@@ -163,7 +191,7 @@ const FlipFlashcard = ({
                       color: 'var(--pl-text)',
                     }}
                   >
-                    {current.frontCard}
+                    {frontText}
                   </div>
                 </div>
               </div>
@@ -206,7 +234,7 @@ const FlipFlashcard = ({
                 className='text-[11px] uppercase tracking-[0.16em] mb-5'
                 style={{ color: 'var(--pl-accent-strong)' }}
               >
-                Answer
+                {isFrontCardTerm ? 'Definition' : 'Term'}
               </div>
               <div className='flex-1 overflow-auto'>
                 <div
@@ -217,7 +245,7 @@ const FlipFlashcard = ({
                     color: 'var(--pl-text)',
                   }}
                 >
-                  {current.backCard}
+                  {backText}
                 </div>
               </div>
             </div>
@@ -340,8 +368,8 @@ const FlipFlashcard = ({
                 </div>
               </div>
               <Switch
-                checked={trackProgress}
-                onCheckedChange={setTrackProgress}
+                checked={isProgressTrackingEnabled}
+                onCheckedChange={setIsProgressTrackingEnabled}
                 className='cursor-pointer'
               />
             </div>
@@ -352,8 +380,8 @@ const FlipFlashcard = ({
                   <Input
                     type='radio'
                     name='cardSide'
-                    checked={cardSide === 'term'}
-                    onChange={() => setCardSide('term')}
+                    checked={isFrontCardTerm}
+                    onChange={() => setIsFrontCardTerm(true)}
                     className='w-4 h-4'
                   />
                   <span>Term</span>
@@ -362,8 +390,8 @@ const FlipFlashcard = ({
                   <Input
                     type='radio'
                     name='cardSide'
-                    checked={cardSide === 'definition'}
-                    onChange={() => setCardSide('definition')}
+                    checked={!isFrontCardTerm}
+                    onChange={() => setIsFrontCardTerm(false)}
                     className='w-4 h-4'
                   />
                   <span>Definition</span>

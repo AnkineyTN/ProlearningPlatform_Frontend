@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
+import SetNotificationSettingsDialog from '@/components/notifications/SetNotificationSettingsDialog';
 import { Button } from '../ui/button';
 import DropdownMenu from './DropdownMenu';
 
@@ -40,6 +41,7 @@ const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showNotifDialog, setShowNotifDialog] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -78,7 +80,8 @@ const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
         (e.currentTarget as HTMLDivElement).style.transform = 'none';
       }}
       onClick={() => {
-        if (!showMenu && !showDeleteDialog) onAccess(set.id);
+        if (!showMenu && !showDeleteDialog && !showNotifDialog)
+          onAccess(set.id);
       }}
     >
       {/* Top row */}
@@ -107,6 +110,12 @@ const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
           </Button>
           {showMenu && (
             <DropdownMenu
+              onNotificationSettings={(e) => {
+                e.stopPropagation();
+                setShowMenu(false);
+                // Wait one tick so the menu close doesn't swallow the open.
+                setTimeout(() => setShowNotifDialog(true), 0);
+              }}
               onUpdate={(e) => {
                 e.stopPropagation();
                 setShowMenu(false);
@@ -218,6 +227,13 @@ const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
         }}
         title={t('modal.deleteConfirmationTitle')}
         itemName={`"${set.title}"`}
+      />
+
+      <SetNotificationSettingsDialog
+        open={showNotifDialog}
+        setId={set.id}
+        setTitle={set.title}
+        onOpenChange={setShowNotifDialog}
       />
     </div>
   );

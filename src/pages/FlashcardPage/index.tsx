@@ -17,7 +17,10 @@ import {
   useStartSession,
   useSyncProgress,
 } from "@/hooks/useFlashcardSession";
+import { useFlashcardStudySettings } from "@/hooks/useFlashcardStudySettings";
 import { useSessionTracker } from "@/hooks/useSessionTracker";
+
+import type { StudyMode } from "@/services/types/flashcard-session.types";
 
 import ContinueSessionDialog from "./components/ContinueSessionDialog";
 import FlashcardHeader from "./components/FlashcardHeader";
@@ -48,7 +51,11 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
   const [unsyncedReviews, setUnsyncedReviews] = useState<
     Array<{ cardId: number; known: boolean }>
   >([]);
-  const SYNC_BATCH_SIZE = 1;
+  // Per spec: mobile flushes the buffer at SYNC_BATCH_SIZE = 5.
+  const SYNC_BATCH_SIZE = 5;
+  const [studyMode, setStudyMode] = useState<StudyMode | null>(null);
+  const [reviewBannerMessage, setReviewBannerMessage] = useState<string>("");
+  const { isProgressTrackingEnabled } = useFlashcardStudySettings();
 
   const { recordItem } = useSessionTracker({
     contentType: "FLASHCARD",
@@ -238,6 +245,10 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       const sessionData = response.data.data;
       setSessionId(sessionData.id);
       setSessionCards(sessionData.cards ?? []);
+      setStudyMode(sessionData.studyMode ?? null);
+      setReviewBannerMessage(
+        sessionData.studyMode === "REVIEW" ? sessionData.message ?? "" : "",
+      );
       setCurrentCardIndex(0);
       setIsFlipped(false);
       setCardReviews([]);
@@ -259,6 +270,13 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         const sessionData = response.data.data;
         setSessionId(sessionData.id);
         setSessionCards(sessionData.cards ?? []);
+        // Spec: preserve any studyMode from the existing session if present;
+        // otherwise fall back to the start response.
+        setStudyMode(pendingSessionData.studyMode ?? sessionData.studyMode ?? null);
+        const effectiveMode = pendingSessionData.studyMode ?? sessionData.studyMode;
+        setReviewBannerMessage(
+          effectiveMode === "REVIEW" ? sessionData.message ?? "" : "",
+        );
         setCurrentCardIndex(0);
         setIsFlipped(false);
         setShowContinueDialog(false);
@@ -530,6 +548,9 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           onShuffle={handleShuffle}
           onCardAnswer={handleCardAnswer}
           sessionProgress={sessionStatus?.data?.[0]}
+          reviewBannerMessage={
+            studyMode === "REVIEW" ? reviewBannerMessage : undefined
+          }
         />
       )}
 
@@ -542,8 +563,14 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           onContinue={() =>
             navigate(`/sets/${setId}/flashcards/${flashcardId}/study`)
           }
+          onPracticeWithExam={handlePracticeWithExam}
+          onMatching={() =>
+            navigate(`/sets/${setId}/flashcards/${flashcardId}/matching`)
+          }
           onReset={resetFlashcards}
           sessionResult={sessionResult?.data}
+          isProgressTrackingEnabled={isProgressTrackingEnabled}
+          isPracticeWithExamLoading={generateExamMutation.isPending}
         />
       )}
 

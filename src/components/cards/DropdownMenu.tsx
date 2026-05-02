@@ -1,4 +1,4 @@
-import { Edit, Trash2 } from 'lucide-react';
+import { Bell, Edit, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
@@ -6,12 +6,29 @@ import { Button } from '@/components/ui/button';
 type Props = {
   onUpdate: (e: React.MouseEvent) => void;
   onDelete: (e: React.MouseEvent) => void;
+  onNotificationSettings?: (e: React.MouseEvent) => void;
 };
 
-const DropdownMenu = ({ onUpdate, onDelete }: Props) => {
+const DropdownMenu = ({
+  onUpdate,
+  onDelete,
+  onNotificationSettings,
+}: Props) => {
   const { t } = useTranslation();
   return (
-    <div className='absolute right-0 mt-1 w-30 bg-[var(--pl-bg)] border border-border rounded-lg shadow-lg z-10 overflow-hidden'>
+    <div className='absolute right-0 mt-1 w-48 bg-[var(--pl-bg)] border border-border rounded-lg shadow-lg z-10 overflow-hidden'>
+      {onNotificationSettings && (
+        <Button
+          variant='ghost'
+          onClick={onNotificationSettings}
+          className='w-full transition-colors cursor-pointer flex justify-start pl-3 items-center gap-2'
+        >
+          <Bell className='w-4 h-4' />
+          {t('setCard.notificationSettings', {
+            defaultValue: 'Notification settings',
+          })}
+        </Button>
+      )}
       <Button
         variant='ghost'
         onClick={onUpdate}

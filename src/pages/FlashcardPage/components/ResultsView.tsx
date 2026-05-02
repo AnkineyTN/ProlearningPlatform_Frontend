@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Loader2 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -12,6 +13,11 @@ type ResultsViewProps = {
   onHome: () => void;
   onContinue: () => void;
   onReset: () => void;
+  onPracticeWithExam?: () => void;
+  onMatching?: () => void;
+  isPracticeWithExamLoading?: boolean;
+  /** When false, mirror mobile and report all cards as known. */
+  isProgressTrackingEnabled?: boolean;
   sessionResult?: {
     sessionId?: number;
     correctCount?: number;
@@ -28,10 +34,27 @@ const ResultsView = ({
   onHome,
   onContinue,
   onReset,
+  onPracticeWithExam,
+  onMatching,
+  isPracticeWithExamLoading,
+  isProgressTrackingEnabled = true,
   sessionResult,
 }: ResultsViewProps) => {
-  const correct = sessionResult?.correctCount ?? 0;
-  const incorrect = sessionResult?.incorrectCount ?? 0;
+  const rawCorrect = sessionResult?.correctCount ?? 0;
+  const rawIncorrect = sessionResult?.incorrectCount ?? 0;
+
+  // Spec: when progress tracking is disabled, the result screen reports
+  // knownCards = totalCards, learningCards = 0, remainingCards = 0.
+  const knownCards = isProgressTrackingEnabled ? rawCorrect : totalCards;
+  const learningCards = isProgressTrackingEnabled ? rawIncorrect : 0;
+  const remainingCards = isProgressTrackingEnabled
+    ? Math.max(0, totalCards - knownCards - learningCards)
+    : 0;
+
+  // Circular progress = knownCards / totalCards * 100 (clamped 0-100, NaN-guarded).
+  const rawPct = totalCards > 0 ? (knownCards / totalCards) * 100 : 0;
+  const pct = Number.isFinite(rawPct) ? Math.max(0, Math.min(100, rawPct)) : 0;
+
   const finishedAt = sessionResult?.finishedAt
     ? new Date(sessionResult.finishedAt).toLocaleString()
     : undefined;
@@ -42,111 +65,161 @@ const ResultsView = ({
     return found ? found.frontCard : String(cardId);
   };
 
+  // Geometry for the SVG ring
+  const radius = 52;
+  const circumference = 2 * Math.PI * radius;
+  const dash = (pct / 100) * circumference;
+
   return (
     <div className='max-w-4xl mx-auto px-6 py-8'>
       <div className='min-h-[70vh] flex items-center justify-center'>
         <Card className='max-w-2xl w-full'>
           <CardContent className='p-8 text-center'>
-            <div className='mb-6'>
-              <div className='w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4'>
-                <svg
-                  className='w-10 h-10 text-green-600 dark:text-green-400'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                >
-                  <path
+            <div className='mb-6 flex flex-col items-center'>
+              <div className='relative mb-4'>
+                <svg width={140} height={140} viewBox='0 0 140 140'>
+                  <circle
+                    cx={70}
+                    cy={70}
+                    r={radius}
+                    fill='none'
+                    strokeWidth={10}
+                    style={{ stroke: 'var(--pl-border)' }}
+                  />
+                  <circle
+                    cx={70}
+                    cy={70}
+                    r={radius}
+                    fill='none'
+                    strokeWidth={10}
                     strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M5 13l4 4L19 7'
+                    strokeDasharray={`${dash} ${circumference - dash}`}
+                    transform='rotate(-90 70 70)'
+                    style={{ stroke: 'var(--pl-accent)' }}
                   />
                 </svg>
+                <div className='absolute inset-0 flex flex-col items-center justify-center'>
+                  <div className='text-3xl font-semibold'>{Math.round(pct)}%</div>
+                  <div className='text-xs text-muted-foreground mt-0.5'>
+                    {knownCards} / {totalCards}
+                  </div>
+                </div>
               </div>
               <h2 className='text-2xl font-bold mb-1'>Great job!</h2>
               <p className='text-muted-foreground'>
                 You've completed this study session
               </p>
-              <p className='text-sm text-muted-foreground mt-1'>
-                Studied {studiedCards} of {totalCards} cards
+              {totalCards !== studiedCards && (
+                <p className='text-sm text-muted-foreground mt-1'>
+                  Studied {studiedCards} of {totalCards} cards
+                </p>
+              )}
+            </div>
+
+            <div
+              className={`grid ${isProgressTrackingEnabled ? 'grid-cols-3' : 'grid-cols-1'} gap-4 mb-6`}
+            >
+              <div className='p-4 bg-muted rounded-lg'>
+                <div className='text-3xl font-bold mb-1'>{knownCards}</div>
+                <div className='text-sm text-muted-foreground'>Known</div>
+              </div>
+              {isProgressTrackingEnabled && (
+                <>
+                  <div className='p-4 bg-muted rounded-lg'>
+                    <div className='text-3xl font-bold text-destructive mb-1'>
+                      {learningCards}
+                    </div>
+                    <div className='text-sm text-muted-foreground'>Learning</div>
+                  </div>
+                  <div className='p-4 bg-muted rounded-lg'>
+                    <div className='text-3xl font-bold mb-1'>{remainingCards}</div>
+                    <div className='text-sm text-muted-foreground'>Remaining</div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {finishedAt && (
+              <p className='text-xs text-muted-foreground mb-4'>
+                Finished at {finishedAt}
               </p>
-            </div>
+            )}
 
-            <div className='grid grid-cols-3 gap-4 mb-6'>
-              <div className='p-4 bg-muted rounded-lg'>
-                <div className='text-3xl font-bold text-foreground mb-1'>
-                  {correct}
-                </div>
-                <div className='text-sm text-muted-foreground'>Correct</div>
-              </div>
-              <div className='p-4 bg-muted rounded-lg'>
-                <div className='text-3xl font-bold text-destructive mb-1'>
-                  {incorrect}
-                </div>
-                <div className='text-sm text-muted-foreground'>Incorrect</div>
-              </div>
-              <div className='p-4 bg-muted rounded-lg'>
-                <div className='text-sm text-muted-foreground mb-1'>
-                  Finished At
-                </div>
-                <div className='text-sm'>{finishedAt ?? "-"}</div>
-              </div>
-            </div>
-
-            <div className='text-left mb-4'>
-              <h3 className='font-medium mb-2'>Review Logs</h3>
-              <div className='space-y-2 max-h-48 overflow-auto'>
-                {logs.length === 0 && (
-                  <div className='text-sm text-muted-foreground'>
-                    No logs available
-                  </div>
-                )}
-                {logs.map((log, idx) => (
-                  <div
-                    key={idx}
-                    className='p-3 bg-background/50 rounded flex items-center justify-between'
-                  >
-                    <div className='flex-1'>
-                      <div className='font-medium'>
-                        {findCardTitle((log as any).cardId)}
+            {logs.length > 0 && (
+              <div className='text-left mb-4'>
+                <h3 className='font-medium mb-2'>Review Logs</h3>
+                <div className='space-y-2 max-h-48 overflow-auto'>
+                  {logs.map((log, idx) => (
+                    <div
+                      key={idx}
+                      className='p-3 bg-background/50 rounded flex items-center justify-between'
+                    >
+                      <div className='flex-1'>
+                        <div className='font-medium'>
+                          {findCardTitle(log.cardId)}
+                        </div>
+                        <div className='text-sm text-muted-foreground'>
+                          {new Date(log.reviewedAt).toLocaleString()}
+                        </div>
                       </div>
-                      <div className='text-sm text-muted-foreground'>
-                        {new Date((log as any).reviewedAt).toLocaleString()}
+                      <div className='ml-4'>
+                        {log.known ? (
+                          <span className='text-green-600'>Known</span>
+                        ) : (
+                          <span className='text-destructive'>Unknown</span>
+                        )}
                       </div>
                     </div>
-                    <div className='ml-4'>
-                      {(log as any).known ? (
-                        <span className='text-green-600'>Known</span>
-                      ) : (
-                        <span className='text-destructive'>Unknown</span>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className='flex gap-4'>
-              <Button
-                variant='outline'
-                size='lg'
-                className='flex-1 cursor-pointer'
-                onClick={onHome}
-              >
-                Back to Home
-              </Button>
-              <Button
-                variant='outline'
-                size='lg'
-                className='flex-1 cursor-pointer'
-                onClick={onContinue}
-              >
-                Practice with Exam
-              </Button>
+            <div className='grid grid-cols-2 gap-3'>
               <Button
                 variant='default'
                 size='lg'
-                className='flex-1 cursor-pointer'
+                className='cursor-pointer'
+                onClick={onContinue}
+              >
+                Continue Studying
+              </Button>
+              {onPracticeWithExam && (
+                <Button
+                  variant='outline'
+                  size='lg'
+                  className='cursor-pointer'
+                  disabled={isPracticeWithExamLoading}
+                  onClick={onPracticeWithExam}
+                >
+                  {isPracticeWithExamLoading && (
+                    <Loader2 className='size-4 animate-spin mr-2' />
+                  )}
+                  Practice with Test
+                </Button>
+              )}
+              {onMatching && (
+                <Button
+                  variant='outline'
+                  size='lg'
+                  className='cursor-pointer'
+                  onClick={onMatching}
+                >
+                  Study in Matching Mode
+                </Button>
+              )}
+              <Button
+                variant='ghost'
+                size='lg'
+                className='cursor-pointer'
+                onClick={onHome}
+              >
+                Back to Flashcard
+              </Button>
+              <Button
+                variant='ghost'
+                size='lg'
+                className='cursor-pointer col-span-2 text-muted-foreground'
                 onClick={onReset}
               >
                 Reset Progress

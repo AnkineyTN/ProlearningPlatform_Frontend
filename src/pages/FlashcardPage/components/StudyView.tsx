@@ -19,6 +19,8 @@ type StudyViewProps = {
     completedCount: number;
     progressPercent: number;
   };
+  /** Surfaced when the server returns studyMode === "REVIEW". */
+  reviewBannerMessage?: string;
 };
 
 const StudyView = ({
@@ -31,6 +33,7 @@ const StudyView = ({
   onNext,
   onShuffle,
   onCardAnswer,
+  reviewBannerMessage,
 }: StudyViewProps) => {
   return (
     <div
@@ -61,6 +64,7 @@ const StudyView = ({
         onNext={onNext}
         onShuffle={onShuffle}
         onCardAnswer={onCardAnswer}
+        reviewBannerMessage={reviewBannerMessage}
       />
     </div>
   );

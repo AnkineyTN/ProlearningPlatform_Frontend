@@ -7,9 +7,11 @@ import {
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
+  LayoutList,
   Loader2,
   RotateCcw,
   Trash2,
+  ListRestart,
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
@@ -30,6 +32,9 @@ import {
   useGenerateExamFromBundle,
   useDismissBundle,
 } from '@/hooks/useReviewBundles';
+import { cn } from '@/lib/utils';
+
+type ViewMode = 'flip' | 'list';
 
 function formatPeriod(from: string, to: string): string {
   const fmt = (iso: string) => {
@@ -52,6 +57,7 @@ export default function ReviewBundlePage() {
   const generateExam = useGenerateExamFromBundle();
   const dismissBundle = useDismissBundle();
 
+  const [viewMode, setViewMode] = useState<ViewMode>('flip');
   const [cardIndex, setCardIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [flashcardDone, setFlashcardDone] = useState(false);
@@ -130,8 +136,24 @@ export default function ReviewBundlePage() {
 
   const currentCard = cards[cardIndex];
 
+  // Loading overlay shown while any of the three mutations is in flight.
+  const overlayBusy =
+    generateFlashcard.isPending ||
+    generateExam.isPending ||
+    dismissBundle.isPending;
+
+  // Status footer line: per spec
+  const statusLine =
+    flashcardDone && examDone
+      ? 'Flashcards and exam created'
+      : flashcardDone
+        ? 'Flashcards created'
+        : examDone
+          ? 'Exam created'
+          : null;
+
   return (
-    <div className='min-h-screen p-6'>
+    <div className='min-h-screen p-6 relative'>
       <div className='max-w-3xl mx-auto'>
         {/* Header */}
         <div className='flex items-center gap-3 mb-6'>
@@ -146,92 +168,144 @@ export default function ReviewBundlePage() {
           </Button>
         </div>
 
-        <div className='mb-6'>
-          <h1 className='text-xl font-bold'>Bundle #{bundle.id}</h1>
-          <p className='text-sm text-muted-foreground mt-1'>
-            Kỳ: {formatPeriod(bundle.periodFrom, bundle.periodTo)} &middot;{' '}
-            <span className='font-medium text-pink-500'>
-              {bundle.cardCount} thẻ sai
-            </span>
-          </p>
+        <div className='mb-6 flex flex-wrap items-start justify-between gap-3'>
+          <div>
+            <h1 className='text-xl font-bold'>Bundle #{bundle.id}</h1>
+            <p className='text-sm text-muted-foreground mt-1'>
+              Kỳ: {formatPeriod(bundle.periodFrom, bundle.periodTo)} &middot;{' '}
+              <span className='font-medium text-pink-500'>
+                {bundle.cardCount} thẻ sai
+              </span>
+            </p>
+          </div>
+
+          {/* View mode toggle: Flip / List */}
+          {cards.length > 0 && (
+            <div className='inline-flex rounded-lg border border-border p-0.5 bg-[var(--pl-bg-elev)]'>
+              <button
+                type='button'
+                onClick={() => setViewMode('flip')}
+                className={cn(
+                  'flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md transition-colors',
+                  viewMode === 'flip'
+                    ? 'bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]'
+                    : 'text-muted-foreground hover:text-foreground',
+                )}
+              >
+                <RotateCcw className='w-3.5 h-3.5' />
+                Flip
+              </button>
+              <button
+                type='button'
+                onClick={() => setViewMode('list')}
+                className={cn(
+                  'flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md transition-colors',
+                  viewMode === 'list'
+                    ? 'bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]'
+                    : 'text-muted-foreground hover:text-foreground',
+                )}
+              >
+                <LayoutList className='w-3.5 h-3.5' />
+                List
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Flip card viewer */}
+        {/* Card viewer */}
         {cards.length > 0 ? (
-          <div className='mb-8'>
-            {/* Card */}
-            <div
-              className='relative cursor-pointer select-none'
-              style={{ perspective: '1000px' }}
-              onClick={() => setFlipped((f) => !f)}
-            >
+          viewMode === 'flip' ? (
+            <div className='mb-8'>
+              {/* Flip card */}
               <div
-                className='relative w-full min-h-[200px] transition-transform duration-500'
-                style={{
-                  transformStyle: 'preserve-3d',
-                  transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                }}
+                className='relative cursor-pointer select-none'
+                style={{ perspective: '1000px' }}
+                onClick={() => setFlipped((f) => !f)}
               >
-                {/* Front */}
                 <div
-                  className='absolute inset-0 flex flex-col items-center justify-center bg-[var(--pl-bg)] border border-border rounded-2xl p-8 text-center backface-hidden'
-                  style={{ backfaceVisibility: 'hidden' }}
-                >
-                  <p className='text-xs text-muted-foreground mb-3 uppercase tracking-wider'>
-                    Mặt trước
-                  </p>
-                  <p className='text-lg font-medium'>{currentCard.frontCard}</p>
-                  <p className='text-xs text-muted-foreground mt-4'>
-                    Nhấn để xem đáp án
-                  </p>
-                </div>
-                {/* Back */}
-                <div
-                  className='absolute inset-0 flex flex-col items-center justify-center bg-purple-500/10 border border-purple-500/30 rounded-2xl p-8 text-center'
+                  className='relative w-full min-h-[200px] transition-transform duration-500'
                   style={{
-                    backfaceVisibility: 'hidden',
-                    transform: 'rotateY(180deg)',
+                    transformStyle: 'preserve-3d',
+                    transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
                   }}
                 >
-                  <p className='text-xs text-muted-foreground mb-3 uppercase tracking-wider'>
-                    Mặt sau
-                  </p>
-                  <p className='text-lg font-medium'>{currentCard.backCard}</p>
+                  <div
+                    className='absolute inset-0 flex flex-col items-center justify-center bg-[var(--pl-bg)] border border-border rounded-2xl p-8 text-center backface-hidden'
+                    style={{ backfaceVisibility: 'hidden' }}
+                  >
+                    <p className='text-xs text-muted-foreground mb-3 uppercase tracking-wider'>
+                      Mặt trước
+                    </p>
+                    <p className='text-lg font-medium'>{currentCard.frontCard}</p>
+                    <p className='text-xs text-muted-foreground mt-4'>
+                      Nhấn để xem đáp án
+                    </p>
+                  </div>
+                  <div
+                    className='absolute inset-0 flex flex-col items-center justify-center bg-purple-500/10 border border-purple-500/30 rounded-2xl p-8 text-center'
+                    style={{
+                      backfaceVisibility: 'hidden',
+                      transform: 'rotateY(180deg)',
+                    }}
+                  >
+                    <p className='text-xs text-muted-foreground mb-3 uppercase tracking-wider'>
+                      Mặt sau
+                    </p>
+                    <p className='text-lg font-medium'>{currentCard.backCard}</p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Navigation */}
-            <div className='flex items-center justify-center gap-4 mt-4'>
-              <Button
-                variant='ghost'
-                size='sm'
-                onClick={handlePrev}
-                disabled={cardIndex === 0}
-                className='cursor-pointer'
-              >
-                <ChevronLeft className='w-5 h-5' />
-              </Button>
-              <span className='text-sm text-muted-foreground'>
-                {cardIndex + 1} / {cards.length}
-              </span>
-              <Button
-                variant='ghost'
-                size='sm'
-                onClick={handleNext}
-                disabled={cardIndex >= cards.length - 1}
-                className='cursor-pointer'
-              >
-                <ChevronRight className='w-5 h-5' />
-              </Button>
-            </div>
+              <div className='flex items-center justify-center gap-4 mt-4'>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  onClick={handlePrev}
+                  disabled={cardIndex === 0}
+                  className='cursor-pointer'
+                >
+                  <ChevronLeft className='w-5 h-5' />
+                </Button>
+                <span className='text-sm text-muted-foreground'>
+                  {cardIndex + 1} / {cards.length}
+                </span>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  onClick={handleNext}
+                  disabled={cardIndex >= cards.length - 1}
+                  className='cursor-pointer'
+                >
+                  <ChevronRight className='w-5 h-5' />
+                </Button>
+              </div>
 
-            {/* Flip hint */}
-            <div className='flex items-center justify-center gap-1 mt-2 text-xs text-muted-foreground'>
-              <RotateCcw className='w-3 h-3' />
-              <span>Nhấn vào thẻ để lật</span>
+              <div className='flex items-center justify-center gap-1 mt-2 text-xs text-muted-foreground'>
+                <RotateCcw className='w-3 h-3' />
+                <span>Nhấn vào thẻ để lật</span>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className='mb-8 space-y-3'>
+              {cards.map((c, i) => (
+                <div
+                  key={c.id ?? i}
+                  className='border border-border rounded-xl p-4 bg-[var(--pl-bg)]'
+                >
+                  <div className='text-[11px] uppercase tracking-wider text-muted-foreground mb-1'>
+                    Mặt trước · #{i + 1}
+                  </div>
+                  <div className='text-base font-medium mb-3'>{c.frontCard}</div>
+                  <div className='border-t border-border pt-3'>
+                    <div className='text-[11px] uppercase tracking-wider text-muted-foreground mb-1'>
+                      Mặt sau
+                    </div>
+                    <div className='text-base'>{c.backCard}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
         ) : (
           <div className='bg-[var(--pl-bg)] border border-border rounded-2xl p-10 text-center mb-8 text-muted-foreground'>
             Bundle này không có thẻ nào.
@@ -240,7 +314,6 @@ export default function ReviewBundlePage() {
 
         {/* Action buttons */}
         <div className='grid grid-cols-1 sm:grid-cols-3 gap-3'>
-          {/* Lưu Flashcard */}
           <Button
             onClick={handleGenerateFlashcard}
             disabled={generateFlashcard.isPending || flashcardDone}
@@ -256,7 +329,6 @@ export default function ReviewBundlePage() {
             {flashcardDone ? 'Đã tạo Flashcard' : 'Lưu Flashcard'}
           </Button>
 
-          {/* Tạo Exam */}
           <Button
             onClick={handleGenerateExam}
             disabled={generateExam.isPending || examDone}
@@ -273,7 +345,6 @@ export default function ReviewBundlePage() {
             {examDone ? 'Đã tạo Exam' : 'Tạo Exam'}
           </Button>
 
-          {/* Đã nắm rồi (Dismiss) */}
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button
@@ -310,7 +381,25 @@ export default function ReviewBundlePage() {
             </AlertDialogContent>
           </AlertDialog>
         </div>
+
+        {/* Status footer line */}
+        {statusLine && (
+          <div className='mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground'>
+            <ListRestart className='w-4 h-4 text-green-500' />
+            <span>{statusLine}</span>
+          </div>
+        )}
       </div>
+
+      {/* Loading overlay */}
+      {overlayBusy && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm'>
+          <div className='bg-[var(--pl-bg-elev)] border border-border rounded-xl px-5 py-4 flex items-center gap-3 shadow-lg'>
+            <Loader2 className='w-5 h-5 animate-spin' />
+            <span className='text-sm'>Đang xử lý…</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

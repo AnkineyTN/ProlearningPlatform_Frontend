@@ -4,13 +4,17 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { Eye, EyeOff, Save, X } from 'lucide-react';
+import { Eye, EyeOff, Info, Save, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { setUser } from '@/store/authSlice';
 import { authAPI } from '@/services/endpoints/auth';
 import type { ApiErrorResponse } from '@/services/types/auth.types';
+import {
+  useGlobalNotificationPreferences,
+  useUpdateGlobalNotificationPreferences,
+} from '@/hooks/useNotifications';
 
 import { Input } from '@/components/ui/input';
 import {
@@ -98,12 +102,17 @@ export default function ProfilePage() {
   const [showOldPw, setShowOldPw] = useState(false);
   const [showNewPw, setShowNewPw] = useState(false);
 
-  const [prefs, setPrefs] = useState({
-    notifPush: true,
-    notifEmail: false,
-    notifReminders: true,
-    weekStart: 'mon',
-  });
+  // const [weekStart, setWeekStart] = useState<'mon' | 'sun'>('mon');
+
+  // Real global notification preferences (per spec section 3.2.1).
+  const { data: globalPrefs } = useGlobalNotificationPreferences();
+  const updateGlobalPrefs = useUpdateGlobalNotificationPreferences();
+
+  // UI-side defaults: all three flags default to `true` if missing (per spec).
+  const dueCardReminderEnabled = globalPrefs?.dueCardReminderEnabled ?? true;
+  const systemAnnouncementEnabled =
+    globalPrefs?.systemAnnouncementEnabled ?? true;
+  const accountActivityEnabled = globalPrefs?.accountActivityEnabled ?? true;
 
   const TABS: { id: ProfileTab; label: string }[] = [
     { id: 'profile', label: t('profile.tabs.profile') },
@@ -112,21 +121,49 @@ export default function ProfilePage() {
     { id: 'billing', label: t('profile.tabs.billing') },
   ];
 
-  const notifOptions = [
+  type GlobalPrefKey =
+    | 'dueCardReminderEnabled'
+    | 'systemAnnouncementEnabled'
+    | 'accountActivityEnabled';
+
+  const notifOptions: {
+    k: GlobalPrefKey;
+    value: boolean;
+    label: string;
+    desc: string;
+  }[] = [
     {
-      k: 'notifPush' as const,
-      label: t('profile.preferences.notifications.push'),
-      desc: t('profile.preferences.notifications.pushDesc'),
+      k: 'dueCardReminderEnabled',
+      value: dueCardReminderEnabled,
+      label: t('profile.preferences.notifications.dueCardReminder', {
+        defaultValue: 'Due-card reminders',
+      }),
+      desc: t('profile.preferences.notifications.dueCardReminderDesc', {
+        defaultValue:
+          'Get notified when flashcards become due for spaced-repetition review.',
+      }),
     },
     {
-      k: 'notifEmail' as const,
-      label: t('profile.preferences.notifications.email'),
-      desc: t('profile.preferences.notifications.emailDesc'),
+      k: 'systemAnnouncementEnabled',
+      value: systemAnnouncementEnabled,
+      label: t('profile.preferences.notifications.systemAnnouncement', {
+        defaultValue: 'System announcements',
+      }),
+      desc: t('profile.preferences.notifications.systemAnnouncementDesc', {
+        defaultValue:
+          'Updates about new features, maintenance, and important app news.',
+      }),
     },
     {
-      k: 'notifReminders' as const,
-      label: t('profile.preferences.notifications.reminders'),
-      desc: t('profile.preferences.notifications.remindersDesc'),
+      k: 'accountActivityEnabled',
+      value: accountActivityEnabled,
+      label: t('profile.preferences.notifications.accountActivity', {
+        defaultValue: 'Account activity',
+      }),
+      desc: t('profile.preferences.notifications.accountActivityDesc', {
+        defaultValue:
+          'Alerts about new sign-ins, password changes, and security events.',
+      }),
     },
   ];
 
@@ -548,16 +585,19 @@ export default function ProfilePage() {
                   </div>
                   <button
                     type='button'
-                    onClick={() => setPrefs((p) => ({ ...p, [o.k]: !p[o.k] }))}
-                    className={`relative flex-shrink-0 w-[38px] h-[22px] rounded-full transition-all border ${
-                      prefs[o.k]
+                    disabled={updateGlobalPrefs.isPending}
+                    onClick={() =>
+                      updateGlobalPrefs.mutate({ [o.k]: !o.value })
+                    }
+                    className={`relative flex-shrink-0 w-[38px] h-[22px] rounded-full transition-all border disabled:opacity-50 ${
+                      o.value
                         ? 'bg-[var(--pl-accent)] border-[var(--pl-accent)]'
                         : 'bg-[var(--pl-bg-hover)] border-[var(--pl-border)]'
                     }`}
                   >
                     <span
                       className={`absolute top-[2px] w-4 h-4 rounded-full transition-all ${
-                        prefs[o.k]
+                        o.value
                           ? 'left-[17px] bg-[var(--pl-accent-fg)]'
                           : 'left-[2px] bg-[var(--pl-text-faint)]'
                       }`}
@@ -566,26 +606,23 @@ export default function ProfilePage() {
                 </label>
               ))}
             </div>
-          </Section>
 
-          <Section
-            title={t('profile.preferences.display.title')}
-            sub={t('profile.preferences.display.sub')}
-          >
-            <div className='grid grid-cols-1 sm:grid-cols-2 gap-[18px]'>
-              <label className='flex flex-col gap-1.5'>
-                <FieldLabel>{t('profile.preferences.display.weekStart')}</FieldLabel>
-                <select
-                  value={prefs.weekStart}
-                  onChange={(e) =>
-                    setPrefs((p) => ({ ...p, weekStart: e.target.value }))
-                  }
-                  className={inputCls}
-                >
-                  <option value='mon'>{t('profile.preferences.display.monday')}</option>
-                  <option value='sun'>{t('profile.preferences.display.sunday')}</option>
-                </select>
-              </label>
+            {/* Per-set hint banner (mobile shows the same teal info) */}
+            <div
+              className='mt-5 flex items-start gap-2 rounded-[10px] border px-3.5 py-3 text-[12.5px]'
+              style={{
+                background: 'var(--pl-accent-soft)',
+                borderColor: 'var(--pl-accent-border)',
+                color: 'var(--pl-accent-strong)',
+              }}
+            >
+              <Info className='w-4 h-4 mt-0.5 shrink-0' />
+              <span>
+                {t('profile.preferences.notifications.perSetHint', {
+                  defaultValue:
+                    "Weekly review reminders can be configured per Set in each Set's notification settings.",
+                })}
+              </span>
             </div>
           </Section>
         </>
