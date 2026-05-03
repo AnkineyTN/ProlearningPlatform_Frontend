@@ -14,6 +14,7 @@ export default function ExamInviteAcceptPage() {
   const [status, setStatus] = useState<Status>("loading");
   const [errorMessage, setErrorMessage] = useState("");
   const [examId, setExamId] = useState<number | null>(null);
+  const [setId, setSetId] = useState<number | null>(null);
 
   useEffect(() => {
     if (!token) {
@@ -29,22 +30,37 @@ export default function ExamInviteAcceptPage() {
       return;
     }
 
-    collaborationAPI
-      .acceptExamByToken(token)
-      .then((res) => {
+    (async () => {
+      // Snapshot pending invites BEFORE accepting — the accept response
+      // doesn't include setId (which we need to navigate to the exam page),
+      // and accepting removes the invite from the pending list.
+      const pendingSetIdByExam = new Map<number, number>();
+      try {
+        const pendingRes = await collaborationAPI.getPendingExamInvites();
+        for (const inv of pendingRes.data.data ?? []) {
+          pendingSetIdByExam.set(inv.examId, inv.setId);
+        }
+      } catch {
+        // ignore — still proceed to accept; we'll fall back to /dashboard
+      }
+
+      try {
+        const res = await collaborationAPI.acceptExamByToken(token);
         const { data } = res.data;
         if (data.success) {
-          setExamId(data.examId ?? null);
+          const eId = data.examId ?? null;
+          setExamId(eId);
+          setSetId(eId != null ? pendingSetIdByExam.get(eId) ?? null : null);
           setStatus("success");
         } else {
           setStatus("error");
           setErrorMessage(data.error ?? "Failed to accept invitation");
         }
-      })
-      .catch(() => {
+      } catch {
         setStatus("error");
         setErrorMessage("An error occurred. Please try again.");
-      });
+      }
+    })();
   }, [token, navigate]);
 
   if (status === "loading") {
@@ -65,8 +81,14 @@ export default function ExamInviteAcceptPage() {
           <CheckCircle className="size-14 text-green-500" />
           <h1 className="text-xl font-bold">Invitation accepted!</h1>
           <p className="text-muted-foreground">You now have access to this exam.</p>
-          <Button onClick={() => navigate(examId ? `/sets/0/exams/${examId}` : "/dashboard")}>
-            {examId ? "Open Exam" : "Go to Dashboard"}
+          <Button
+            onClick={() =>
+              navigate(
+                examId && setId ? `/sets/${setId}/exams/${examId}` : "/dashboard",
+              )
+            }
+          >
+            {examId && setId ? "Open Exam" : "Go to Dashboard"}
           </Button>
         </div>
       </div>

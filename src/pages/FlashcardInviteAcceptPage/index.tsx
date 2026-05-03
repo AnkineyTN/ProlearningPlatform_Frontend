@@ -14,6 +14,7 @@ export default function FlashcardInviteAcceptPage() {
   const [status, setStatus] = useState<Status>("loading");
   const [errorMessage, setErrorMessage] = useState("");
   const [flashcardId, setFlashcardId] = useState<number | null>(null);
+  const [setId, setSetId] = useState<number | null>(null);
 
   useEffect(() => {
     if (!token) {
@@ -29,22 +30,37 @@ export default function FlashcardInviteAcceptPage() {
       return;
     }
 
-    collaborationAPI
-      .acceptFlashcardByToken(token)
-      .then((res) => {
+    (async () => {
+      // Snapshot pending invites BEFORE accepting — accept removes the
+      // invite from the pending list, and the accept response doesn't
+      // include setId (which we need to navigate to the flashcard page).
+      const pendingSetIdByFlashcard = new Map<number, number>();
+      try {
+        const pendingRes = await collaborationAPI.getPendingFlashcardInvites();
+        for (const inv of pendingRes.data.data ?? []) {
+          pendingSetIdByFlashcard.set(inv.flashcardId, inv.setId);
+        }
+      } catch {
+        // ignore — still proceed to accept; we'll fall back to /dashboard
+      }
+
+      try {
+        const res = await collaborationAPI.acceptFlashcardByToken(token);
         const { data } = res.data;
         if (data.success) {
-          setFlashcardId(data.flashcardId ?? null);
+          const fcId = data.flashcardId ?? null;
+          setFlashcardId(fcId);
+          setSetId(fcId != null ? pendingSetIdByFlashcard.get(fcId) ?? null : null);
           setStatus("success");
         } else {
           setStatus("error");
           setErrorMessage(data.error ?? "Failed to accept invitation");
         }
-      })
-      .catch(() => {
+      } catch {
         setStatus("error");
         setErrorMessage("An error occurred. Please try again.");
-      });
+      }
+    })();
   }, [token, navigate]);
 
   if (status === "loading") {
@@ -67,10 +83,14 @@ export default function FlashcardInviteAcceptPage() {
           <p className="text-muted-foreground">You now have access to this flashcard set.</p>
           <Button
             onClick={() =>
-              navigate(flashcardId ? `/sets/0/flashcards/${flashcardId}` : "/dashboard")
+              navigate(
+                flashcardId && setId
+                  ? `/sets/${setId}/flashcards/${flashcardId}`
+                  : "/dashboard",
+              )
             }
           >
-            {flashcardId ? "Open Flashcard" : "Go to Dashboard"}
+            {flashcardId && setId ? "Open Flashcard" : "Go to Dashboard"}
           </Button>
         </div>
       </div>

@@ -3,8 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginSchema, type LoginFormData } from '@/schemas/auth';
 import { authAPI } from '@/services/endpoints/auth';
-import { loginStart, loginFailure, loginSuccess } from '@/store/authSlice';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { useLogin } from '@/hooks/useAuth';
 import {
   AlertCircleIcon,
   Eye,
@@ -22,11 +21,12 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 
 const SignIn = () => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const loginSchemaInstance = loginSchema(t);
-  const { isLoading, error } = useAppSelector((state) => state.auth);
+  const login = useLogin();
+  const isLoading = login.isPending;
+  const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -47,18 +47,12 @@ const SignIn = () => {
   };
 
   const onSubmit = async (data: LoginFormData) => {
-    dispatch(loginStart());
+    setError(null);
     try {
-      const response = await authAPI.login(data);
-      dispatch(
-        loginSuccess({
-          user: response.data.data.userResponseDto,
-          token: response.data.data.accessToken,
-        }),
-      );
+      await login.mutateAsync(data);
       navigate('/dashboard');
     } catch {
-      dispatch(loginFailure(t('signin.wrongCredentials')));
+      setError(t('signin.wrongCredentials'));
     }
   };
 

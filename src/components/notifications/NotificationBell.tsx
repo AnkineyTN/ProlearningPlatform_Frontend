@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 
-import { useAppSelector } from "@/hooks/redux";
+import { useAuth } from "@/hooks/useAuth";
 import { notificationAPI } from "@/services/endpoints/notification";
 import {
   useMarkAllNotificationsRead,
@@ -480,8 +480,8 @@ function NotificationRow({
 export default function NotificationBell() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const token = useAppSelector((s) => s.auth.token);
-  const userId = useAppSelector((s) => s.auth.user?.id);
+  const { token, user } = useAuth();
+  const userId = user?.id;
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<NotificationTab>("all");
   const [moreOpen, setMoreOpen] = useState(false);

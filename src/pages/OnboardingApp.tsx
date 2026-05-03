@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import i18n from "@/i18n/config";
@@ -18,7 +17,7 @@ import {
   saveOnboardingDraft,
 } from "@/lib/onboardingStorage";
 import { authAPI } from "@/services/endpoints/auth";
-import type { RootState } from "@/store";
+import { useAuth } from "@/hooks/useAuth";
 
 const TOTAL_STEPS = 5;
 
@@ -42,7 +41,7 @@ const initialData: OnboardingData = {
 
 const OnboardingApp: React.FC = () => {
   const { t } = useTranslation();
-  const user = useSelector((s: RootState) => s.auth.user);
+  const { user } = useAuth();
   const [hydrated, setHydrated] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [data, setData] = useState<OnboardingData>(initialData);

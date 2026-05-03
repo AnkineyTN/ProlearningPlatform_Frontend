@@ -14,6 +14,7 @@ export default function InviteAcceptPage() {
   const [status, setStatus] = useState<Status>("loading");
   const [errorMessage, setErrorMessage] = useState("");
   const [noteId, setNoteId] = useState<number | null>(null);
+  const [setId, setSetId] = useState<number | null>(null);
 
   useEffect(() => {
     if (!token) {
@@ -29,22 +30,36 @@ export default function InviteAcceptPage() {
       return;
     }
 
-    collaborationAPI
-      .acceptNoteByToken(token)
-      .then((res) => {
+    (async () => {
+      // Snapshot pending invites BEFORE accepting — the accept response
+      // doesn't include setId (which we need to navigate to the note page),
+      // and accepting removes the invite from the pending list.
+      const pendingSetIdByNote = new Map<number, number>();
+      try {
+        const pendingRes = await collaborationAPI.getPendingNoteInvites();
+        for (const inv of pendingRes.data.data ?? []) {
+          pendingSetIdByNote.set(inv.noteId, inv.setId);
+        }
+      } catch {
+        // ignore — still proceed to accept; we'll fall back to /dashboard
+      }
+
+      try {
+        const res = await collaborationAPI.acceptNoteByToken(token);
         const { data } = res.data;
         if (data.success && data.noteId) {
           setNoteId(data.noteId);
+          setSetId(pendingSetIdByNote.get(data.noteId) ?? null);
           setStatus("success");
         } else {
           setStatus("error");
           setErrorMessage(data.error ?? "Failed to accept invitation");
         }
-      })
-      .catch(() => {
+      } catch {
         setStatus("error");
         setErrorMessage("An error occurred. Please try again.");
-      });
+      }
+    })();
   }, [token, navigate]);
 
   if (status === "loading") {
@@ -65,7 +80,13 @@ export default function InviteAcceptPage() {
           <CheckCircle className="size-14 text-green-500" />
           <h1 className="text-xl font-bold">Invitation accepted!</h1>
           <p className="text-muted-foreground">You now have access to this note.</p>
-          <Button onClick={() => navigate(`/sets/0/notes/${noteId}`)}>Open Note</Button>
+          <Button
+            onClick={() =>
+              navigate(setId ? `/sets/${setId}/notes/${noteId}` : "/dashboard")
+            }
+          >
+            {setId ? "Open Note" : "Go to Dashboard"}
+          </Button>
         </div>
       </div>
     );

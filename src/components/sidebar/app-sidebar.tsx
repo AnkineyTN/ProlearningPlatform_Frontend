@@ -15,8 +15,7 @@ import {
   PanelLeftOpen,
 } from 'lucide-react';
 
-import { logout } from '@/store/authSlice.ts';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { useAuth, useLogout } from '@/hooks/useAuth';
 import { useReviewBundles } from '@/hooks/useReviewBundles';
 import ColorThemeSwitcher from '@/components/theme/color-theme-switcher';
 import ModeToggle from '@/components/theme/mode-toggle';
@@ -44,8 +43,8 @@ const AppSidebar = () => {
     });
   };
 
-  const { user } = useAppSelector((s) => s.auth);
-  const dispatch = useAppDispatch();
+  const { user } = useAuth();
+  const logout = useLogout();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const location = useLocation();
@@ -53,7 +52,7 @@ const AppSidebar = () => {
   const bundleCount = reviewBundlesData?.data?.length ?? 0;
 
   const handleLogout = () => {
-    dispatch(logout());
+    logout();
     navigate('/login');
   };
 
@@ -244,12 +243,6 @@ const AppSidebar = () => {
                   label: t('sidebar.profile'),
                   icon: User,
                   onClick: () => navigate('/profile'),
-                  danger: false,
-                },
-                {
-                  label: t('sidebar.settings'),
-                  icon: Settings,
-                  onClick: () => navigate('/settings'),
                   danger: false,
                 },
                 {

@@ -3,8 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { signupSchema, type SignupFormData } from '@/schemas/auth';
 import { authAPI } from '@/services/endpoints/auth';
-import { loginStart, loginFailure, loginSuccess } from '@/store/authSlice';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { useLogin, useSignup } from '@/hooks/useAuth';
 import {
   AlertCircleIcon,
   Lock,
@@ -24,11 +23,13 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 
 const SignUp = () => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const signupSchemaInstance = signupSchema(t);
-  const { isLoading, error } = useAppSelector((state) => state.auth);
+  const signup = useSignup();
+  const login = useLogin();
+  const isLoading = signup.isPending || login.isPending;
+  const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -51,9 +52,9 @@ const SignUp = () => {
   };
 
   const onSubmit = async (data: SignupFormData) => {
-    dispatch(loginStart());
+    setError(null);
     try {
-      await authAPI.signup({
+      await signup.mutateAsync({
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
@@ -64,21 +65,15 @@ const SignUp = () => {
         position: 'top-right',
         autoClose: 2000,
       });
-      const loginResponse = await authAPI.login({
+      await login.mutateAsync({
         email: data.email,
         password: data.password,
       });
-      dispatch(
-        loginSuccess({
-          user: loginResponse.data.data.userResponseDto,
-          token: loginResponse.data.data.accessToken,
-        }),
-      );
       navigate('/verify-email', {
         state: { email: data.email, after: 'signup' },
       });
     } catch {
-      dispatch(loginFailure(t('signup.failed')));
+      setError(t('signup.failed'));
     }
   };
 

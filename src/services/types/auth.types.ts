@@ -1,4 +1,4 @@
-import type { User } from "@/store/authSlice";
+import type { User } from "@/hooks/useAuth";
 
 export type ApiMetadata = {
   code?: string;

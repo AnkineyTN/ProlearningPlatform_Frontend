@@ -25,7 +25,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { ShareDialog } from "@/components/collaboration/ShareDialog";
 import type { CollabRole } from "@/services/types/collaboration.types";
-import { useAppSelector } from "@/hooks/redux";
+import { useAuth } from "@/hooks/useAuth";
 
 interface NoteHeaderProps {
   title: string;
@@ -70,7 +70,7 @@ export const NoteHeader = ({
   const navigate = useNavigate();
   const { setId: setIdParam } = useParams<{ setId: string }>();
   const _setId = setId || (setIdParam ? Number(setIdParam) : 0);
-  const currentUserId = useAppSelector((s) => s.auth.user?.id);
+  const currentUserId = useAuth().user?.id;
   const [isUploading, setIsUploading] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const uploadDocumentMutation = useUploadDocumentFile();

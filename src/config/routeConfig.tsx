@@ -1,7 +1,8 @@
 /* eslint-disable no-constant-binary-expression */
 /* eslint-disable react-refresh/only-export-components */
-import { useSelector } from 'react-redux';
 import { Navigate, useParams } from 'react-router-dom';
+
+import { useAuth } from '@/hooks/useAuth';
 
 import SignIn from '@/components/auth/SignIn';
 import SignUp from '@/components/auth/SignUp';
@@ -32,9 +33,8 @@ import ExamInviteAcceptPage from '@/pages/ExamInviteAcceptPage';
 import FlashcardInviteAcceptPage from '@/pages/FlashcardInviteAcceptPage';
 import type { RouteObject } from 'react-router-dom';
 
-import type { RootState } from '@/store';
 function LandingPageWrapper() {
-  const token = useSelector((state: RootState) => state.auth.token);
+  const { token } = useAuth();
 
   if (token) {
     return <Navigate to='/dashboard' replace />;
@@ -44,7 +44,7 @@ function LandingPageWrapper() {
 }
 
 function SignInWrapper() {
-  const token = useSelector((state: RootState) => state.auth.token);
+  const { token } = useAuth();
 
   if (token) {
     return <Navigate to='/dashboard' replace />;
@@ -58,7 +58,7 @@ function SignUpWrapper() {
 }
 
 function ForgotPasswordWrapper() {
-  const token = useSelector((state: RootState) => state.auth.token);
+  const { token } = useAuth();
   if (token) return <Navigate to='/dashboard' replace />;
   return <ForgotPassword />;
 }
@@ -68,13 +68,13 @@ function VerifyEmailWrapper() {
 }
 
 function ResetOtpWrapper() {
-  const token = useSelector((state: RootState) => state.auth.token);
+  const { token } = useAuth();
   if (token) return <Navigate to='/dashboard' replace />;
   return <ResetOtp />;
 }
 
 function ResetPasswordWrapper() {
-  const token = useSelector((state: RootState) => state.auth.token);
+  const { token } = useAuth();
   if (token) return <Navigate to='/dashboard' replace />;
   return <ResetPassword />;
 }
@@ -125,8 +125,7 @@ function ExamUpdateWrapper() {
 }
 
 function AdminDashboardRoute() {
-  const token = useSelector((s: RootState) => s.auth.token);
-  const user = useSelector((s: RootState) => s.auth.user);
+  const { token, user } = useAuth();
   if (!token) {
     return <Navigate to='/login' replace />;
   }

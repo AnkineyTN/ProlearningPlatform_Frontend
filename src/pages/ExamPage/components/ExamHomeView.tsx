@@ -18,7 +18,7 @@ import ModeToggle from '@/components/theme/mode-toggle';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import { ShareDialog } from '@/components/collaboration/ShareDialog';
 import type { CollabRole } from '@/services/types/collaboration.types';
-import { useAppSelector } from '@/hooks/redux';
+import { useAuth } from '@/hooks/useAuth';
 
 interface ExamHomeViewProps {
   exam: Exam;
@@ -55,7 +55,7 @@ export default function ExamHomeView({
   userRole = 'OWNER',
 }: ExamHomeViewProps) {
   const { t } = useTranslation();
-  const currentUserId = useAppSelector((s) => s.auth.user?.id);
+  const currentUserId = useAuth().user?.id;
   const [shareOpen, setShareOpen] = useState(false);
 
   const questionTypes = ['MULTIPLE_CHOICE', 'TRUE_FALSE', 'ESSAY'].filter(

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { ShareDialog } from '@/components/collaboration/ShareDialog';
 import type { CollabRole } from '@/services/types/collaboration.types';
-import { useAppSelector } from '@/hooks/redux';
+import { useAuth } from '@/hooks/useAuth';
 
 interface FlashcardHeaderProps {
   setId: number;
@@ -25,7 +25,7 @@ export default function FlashcardHeader({
   userRole = 'OWNER',
 }: FlashcardHeaderProps) {
   const navigate = useNavigate();
-  const currentUserId = useAppSelector((s) => s.auth.user?.id);
+  const currentUserId = useAuth().user?.id;
   const [shareOpen, setShareOpen] = useState(false);
 
   const handleClick = () => {

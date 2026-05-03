@@ -20,7 +20,7 @@ import {
 } from "@/hooks/useNotes";
 import { isImageExtension } from "@/lib/utils";
 import type { NoteDocItem } from "@/services/types/note.types";
-import { useAppSelector } from "@/hooks/redux";
+import { useAuth } from "@/hooks/useAuth";
 
 interface UploadedFile {
   id: number;
@@ -72,7 +72,7 @@ export const NotePage = () => {
     id: string;
   }>();
   const numericSetId = setIdParam ? Number(setIdParam) : 0;
-  const currentUser = useAppSelector((s) => s.auth.user);
+  const currentUser = useAuth().user;
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isEditorReady, setIsEditorReady] = useState(false);

@@ -5,7 +5,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { useAppSelector } from "@/hooks/redux";
+import { useAuth } from "@/hooks/useAuth";
 import { notificationAPI } from "@/services/endpoints/notification";
 import type {
   GlobalNotificationPreferences,
@@ -66,7 +66,7 @@ function optimisticMarkAllReadInList(data: any): typeof data {
 }
 
 export function useUnreadNotificationCount() {
-  const token = useAppSelector((s) => s.auth.token);
+  const { token } = useAuth();
   return useQuery({
     queryKey: ["notifications", "unreadCount"],
     queryFn: async () => {
@@ -82,7 +82,7 @@ export function useUnreadNotificationCount() {
 export type NotificationTab = "all" | "unread" | "invites";
 
 export function useNotificationsInfinite(tab: NotificationTab, open: boolean) {
-  const token = useAppSelector((s) => s.auth.token);
+  const { token } = useAuth();
   return useInfiniteQuery({
     queryKey: ["notifications", "list", tab],
     initialPageParam: 0,
@@ -220,7 +220,7 @@ export function useMarkAllNotificationsRead() {
 const GLOBAL_PREFS_KEY = ["notifications", "preferences"] as const;
 
 export function useGlobalNotificationPreferences() {
-  const token = useAppSelector((s) => s.auth.token);
+  const { token } = useAuth();
   return useQuery({
     queryKey: GLOBAL_PREFS_KEY,
     enabled: !!token,
@@ -276,7 +276,7 @@ export function useSetNotificationPreferences(
   setId: number | string | undefined,
   enabled = true,
 ) {
-  const token = useAppSelector((s) => s.auth.token);
+  const { token } = useAuth();
   return useQuery({
     queryKey: setPrefsKey(setId ?? ""),
     enabled: !!token && !!setId && enabled,

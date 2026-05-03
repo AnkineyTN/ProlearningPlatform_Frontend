@@ -7,9 +7,7 @@ import { toast } from 'react-toastify';
 import { Eye, EyeOff, Info, Save, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { setUser } from '@/store/authSlice';
-import { authAPI } from '@/services/endpoints/auth';
+import { useAuth, useUpdateMe } from '@/hooks/useAuth';
 import type { ApiErrorResponse } from '@/services/types/auth.types';
 import {
   useGlobalNotificationPreferences,
@@ -94,8 +92,8 @@ const inputCls =
 
 export default function ProfilePage() {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
-  const { user } = useAppSelector((s) => s.auth);
+  const { user } = useAuth();
+  const updateMe = useUpdateMe();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<ProfileTab>('profile');
   const [bio, setBio] = useState('');
@@ -217,20 +215,6 @@ export default function ProfilePage() {
     });
   }, [reset, user]);
 
-  useEffect(() => {
-    const fetchMe = async () => {
-      setLoading(true);
-      try {
-        const res = await authAPI.getMe();
-        dispatch(setUser(res.data.data));
-      } catch {
-        // token invalid — global guards handle redirect
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchMe();
-  }, [dispatch]);
 
   const onSubmit = async (data: FormData) => {
     if (!initial) {
@@ -274,9 +258,8 @@ export default function ProfilePage() {
 
     setLoading(true);
     try {
-      const res = await authAPI.updateMe(payload);
-      dispatch(setUser(res.data.data));
-      toast.success(res.data.message ?? t('profile.toast.updateSuccess'));
+      const res = await updateMe.mutateAsync(payload);
+      toast.success(res.message ?? t('profile.toast.updateSuccess'));
       setValue('currentPassword', '');
       setValue('newPassword', '');
     } catch (err: unknown) {
