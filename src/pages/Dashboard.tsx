@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSetData, useUpdateSet } from '@/hooks/useSets';
 import { useGlobalSearch } from '@/hooks/useGlobalSearch';
+import { todoAPI } from '@/services/endpoints/todo';
+import { todayIso } from '@/pages/TodoDashboard/dateHelpers';
+import type { Todo } from '@/services/types/todo.types';
 import {
   ArrowRight,
   BookOpen,
@@ -8,12 +12,10 @@ import {
   ChevronRight,
   ExternalLink,
   Flame,
-  FlipHorizontal,
   Search,
   Target,
   Timer,
   TrendingUp,
-  Zap,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { type Set } from '@/components/cards/SetCard';
@@ -27,7 +29,12 @@ import NotificationBell from '@/components/notifications/NotificationBell';
 import LanguageToggle from '@/components/language/language-toggle';
 import { cn } from '@/lib/utils';
 import ActivityHeatmap from '@/components/cards/ActivityHeatmap';
-import { useStreak, useActivitySummary } from '@/hooks/useActivityLog';
+import {
+  useStreak,
+  useActivitySummary,
+  useHeatmap,
+} from '@/hooks/useActivityLog';
+import { Button } from '@/components/ui/button';
 
 /* ── helpers ─────────────────────────────────────────────── */
 function parseGlobalSearchItems(data: unknown): Record<string, unknown>[] {
@@ -177,33 +184,46 @@ function MiniCalendar() {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const startDay = new Date(year, month, 1).getDay();
 
-  const studyDays = useMemo(
-    () => new Set([1, 3, 5, 7, 8, 10, 12, 14, 15, 17, 18, 19]),
-    [],
-  );
+  const nowYear = now.getFullYear();
+  const nowMonth = now.getMonth();
+  const monthsBack = useMemo(() => {
+    const diff = (nowYear - year) * 12 + (nowMonth - month);
+    return Math.max(1, diff + 1);
+  }, [nowYear, nowMonth, year, month]);
+
+  const { data: heatmap } = useHeatmap(monthsBack);
+
+  const studyDays = useMemo(() => {
+    const set = new Set<number>();
+    (heatmap ?? []).forEach((d) => {
+      if (!d.date || d.totalMinutes <= 0) return;
+      const [y, m, day] = d.date.split('-').map(Number);
+      if (y === year && m === month + 1) set.add(day);
+    });
+    return set;
+  }, [heatmap, year, month]);
 
   const prev = () => setCurrent(new Date(year, month - 1, 1));
   const next = () => setCurrent(new Date(year, month + 1, 1));
+  const goToday = () => setCurrent(new Date());
 
   return (
     <Panel>
       <PanelHead
-        kicker={`${monthName} ${year}`}
-        title='This month'
+        title={`${monthName} ${year}`}
         right={
-          <div className='flex gap-1'>
-            <button
-              onClick={prev}
-              className='w-[26px] h-[26px] rounded-[6px] grid place-items-center bg-[var(--pl-bg-hover)] text-[var(--pl-text-muted)] border-0 cursor-pointer'
-            >
+          <div className='flex gap-2 items-center'>
+            {!sameMonth && (
+              <Button variant='ghost' onClick={goToday} size='sm'>
+                Today
+              </Button>
+            )}
+            <Button variant='ghost' onClick={prev} size='sm'>
               <ChevronLeft size={12} />
-            </button>
-            <button
-              onClick={next}
-              className='w-[26px] h-[26px] rounded-[6px] grid place-items-center bg-[var(--pl-bg-hover)] text-[var(--pl-text-muted)] border-0 cursor-pointer'
-            >
+            </Button>
+            <Button variant='ghost' onClick={next} size='sm'>
               <ChevronRight size={12} />
-            </button>
+            </Button>
           </div>
         }
       />
@@ -247,23 +267,33 @@ function MiniCalendar() {
 }
 
 /* ── checklist panel ─────────────────────────────────────── */
-const DEFAULT_CHECKLIST = [
-  { text: 'Review 20 flashcards', done: false },
-  { text: "Complete today's exam", done: false },
-  { text: 'Write a note summary', done: false },
-  { text: 'Study session 25 min', done: false },
-];
-
 function ChecklistPanel() {
-  const [items, setItems] = useState(DEFAULT_CHECKLIST);
-  const done = items.filter((i) => i.done).length;
-  const pct = Math.round((done / items.length) * 100);
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+  const today = todayIso();
 
-  const toggle = (idx: number) => {
-    setItems((prev) =>
-      prev.map((item, i) => (i === idx ? { ...item, done: !item.done } : item)),
-    );
-  };
+  const { data: todosData, isLoading } = useQuery({
+    queryKey: ['todos', 'today', today],
+    queryFn: () => todoAPI.getTodos({ size: 200 }),
+  });
+
+  const todayTodos: Todo[] = useMemo(() => {
+    const all = todosData?.data?.data ?? [];
+    return all.filter((td) => td.dueDate === today);
+  }, [todosData, today]);
+
+  const toggleMutation = useMutation({
+    mutationFn: todoAPI.toggleTodo,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['todos'] });
+      qc.invalidateQueries({ queryKey: ['goals'] });
+    },
+  });
+
+  const done = todayTodos.filter((t) => t.completed || t.status === 'DONE')
+    .length;
+  const pct =
+    todayTodos.length > 0 ? Math.round((done / todayTodos.length) * 100) : 0;
 
   return (
     <Panel>
@@ -271,9 +301,17 @@ function ChecklistPanel() {
         kicker="Today's practice"
         title='Daily checklist'
         right={
-          <span className='tabular-nums text-[12px] text-[var(--pl-text-muted)]'>
-            {done}/{items.length} · {pct}%
-          </span>
+          <div className='flex items-center gap-3'>
+            <span className='tabular-nums text-[12px] text-[var(--pl-text-muted)]'>
+              {done}/{todayTodos.length} · {pct}%
+            </span>
+            <button
+              onClick={() => navigate('/todo')}
+              className='flex items-center gap-1 text-[12.5px] text-[var(--pl-text-muted)] bg-transparent border-0 cursor-pointer'
+            >
+              Open <ArrowRight size={11} />
+            </button>
+          </div>
         }
       />
       <div className='px-6 pb-2'>
@@ -285,47 +323,60 @@ function ChecklistPanel() {
         </div>
       </div>
       <div className='px-3 pt-2 pb-4'>
-        {items.map((item, i) => (
-          <button
-            key={i}
-            onClick={() => toggle(i)}
-            className='w-full flex items-center gap-3 px-3 py-[10px] rounded-[7px] text-left bg-transparent border-0 cursor-pointer transition-[background] duration-150 hover:bg-[var(--pl-bg-hover)]'
-          >
-            <div
-              className={cn(
-                'w-[18px] h-[18px] rounded-[5px] grid place-items-center shrink-0 transition-all duration-150',
-                item.done
-                  ? 'bg-[var(--pl-accent)] border-[1.5px] border-[var(--pl-accent)]'
-                  : 'bg-transparent border-[1.5px] border-[var(--pl-border-strong)]',
-              )}
-            >
-              {item.done && (
-                <svg
-                  width='10'
-                  height='10'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='var(--pl-accent-fg)'
-                  strokeWidth='2.5'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
+        {isLoading ? (
+          <p className='px-[14px] py-3 text-[13px] text-[var(--pl-text-faint)]'>
+            Loading…
+          </p>
+        ) : todayTodos.length === 0 ? (
+          <p className='px-[14px] py-3 text-[13px] text-[var(--pl-text-faint)]'>
+            No tasks for today.
+          </p>
+        ) : (
+          todayTodos.map((item) => {
+            const isDone = item.completed || item.status === 'DONE';
+            return (
+              <button
+                key={item.id}
+                onClick={() => toggleMutation.mutate(item.id)}
+                className='w-full flex items-center gap-3 px-3 py-[10px] rounded-[7px] text-left bg-transparent border-0 cursor-pointer transition-[background] duration-150 hover:bg-[var(--pl-bg-hover)]'
+              >
+                <div
+                  className={cn(
+                    'w-[18px] h-[18px] rounded-[5px] grid place-items-center shrink-0 transition-all duration-150',
+                    isDone
+                      ? 'bg-[var(--pl-accent)] border-[1.5px] border-[var(--pl-accent)]'
+                      : 'bg-transparent border-[1.5px] border-[var(--pl-border-strong)]',
+                  )}
                 >
-                  <path d='M20 6L9 17l-5-5' />
-                </svg>
-              )}
-            </div>
-            <span
-              className={cn(
-                'text-[13.5px]',
-                item.done
-                  ? 'line-through text-[var(--pl-text-faint)]'
-                  : 'text-[var(--pl-text)]',
-              )}
-            >
-              {item.text}
-            </span>
-          </button>
-        ))}
+                  {isDone && (
+                    <svg
+                      width='10'
+                      height='10'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='var(--pl-accent-fg)'
+                      strokeWidth='2.5'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    >
+                      <path d='M20 6L9 17l-5-5' />
+                    </svg>
+                  )}
+                </div>
+                <span
+                  className={cn(
+                    'text-[13.5px] flex-1 min-w-0 truncate',
+                    isDone
+                      ? 'line-through text-[var(--pl-text-faint)]'
+                      : 'text-[var(--pl-text)]',
+                  )}
+                >
+                  {item.title}
+                </span>
+              </button>
+            );
+          })
+        )}
       </div>
     </Panel>
   );
@@ -614,48 +665,6 @@ const Dashboard = () => {
           <div className='flex flex-col gap-[18px]'>
             <MiniCalendar />
             <ActivityHeatmap months={6} />
-
-            {/* Quick start */}
-            <Panel>
-              <PanelHead title='Quick start' />
-              <div className='px-3 pt-1 pb-4 grid grid-cols-2 gap-2'>
-                {[
-                  {
-                    icon: <FlipHorizontal size={16} />,
-                    label: 'Flashcards',
-                    sub: 'Review due',
-                  },
-                  {
-                    icon: <Zap size={16} />,
-                    label: 'Quick Quiz',
-                    sub: 'Start now',
-                  },
-                  {
-                    icon: <Timer size={16} />,
-                    label: 'Focus timer',
-                    sub: '25 min',
-                  },
-                  {
-                    icon: <BookOpen size={16} />,
-                    label: 'New note',
-                    sub: 'Write',
-                  },
-                ].map((a) => (
-                  <button
-                    key={a.label}
-                    className='px-[14px] py-3 rounded-[10px] bg-[var(--pl-bg-hover)] border border-[var(--pl-border)] flex flex-col items-start gap-[6px] text-left cursor-pointer transition-all duration-150 hover:border-[var(--pl-accent-border)] hover:bg-[var(--pl-accent-soft)]'
-                  >
-                    <span className='text-[var(--pl-accent)]'>{a.icon}</span>
-                    <div className='text-[12.5px] font-semibold text-[var(--pl-text)]'>
-                      {a.label}
-                    </div>
-                    <div className='text-[10.5px] text-[var(--pl-text-faint)]'>
-                      {a.sub}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </Panel>
           </div>
         </div>
       </div>

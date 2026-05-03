@@ -52,7 +52,7 @@ function buildWeekGrid(months: number): Date[][] {
   start.setDate(start.getDate() - dow);
 
   const weeks: Date[][] = [];
-  let cur = new Date(start);
+  const cur = new Date(start);
   while (cur <= today) {
     const week: Date[] = [];
     for (let d = 0; d < 7; d++) {
