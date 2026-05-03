@@ -3,7 +3,6 @@ import {
   Download,
   FileText,
   LoaderCircle,
-  Save,
   Share2,
   Sparkles,
   Upload,
@@ -11,13 +10,14 @@ import {
 import { useState } from "react";
 import toast from "react-hot-toast";
 
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   useSaveDocumentInNote,
   useSaveImageInNote,
 } from "@/hooks/useNotes";
-import { isBrowserImageFile } from "@/lib/utils";
+import { cn, isBrowserImageFile } from "@/lib/utils";
 import {
   useUploadDocumentFile,
   useUploadImageFile,
@@ -30,8 +30,6 @@ import { useAppSelector } from "@/hooks/redux";
 interface NoteHeaderProps {
   title: string;
   onTitleChange: (title: string) => void;
-  onSave: () => void;
-  isSaving: boolean;
   noteId: number;
   setId: number;
   userRole?: CollabRole;
@@ -50,16 +48,15 @@ interface NoteHeaderProps {
   aiSummaryCount?: number;
   showAiPanel?: boolean;
   onToggleAiPanel?: () => void;
+  onlineUsers?: { name: string; color: string }[];
 }
 
 export const NoteHeader = ({
   title,
   onTitleChange,
-  onSave,
-  isSaving,
   noteId,
   setId,
-  userRole = 'OWNER',
+  userRole = "OWNER",
   onFileUploaded,
   onDownloadHTML,
   attachedFileCount = 0,
@@ -68,6 +65,7 @@ export const NoteHeader = ({
   aiSummaryCount = 0,
   showAiPanel = true,
   onToggleAiPanel,
+  onlineUsers = [],
 }: NoteHeaderProps) => {
   const navigate = useNavigate();
   const { setId: setIdParam } = useParams<{ setId: string }>();
@@ -167,137 +165,168 @@ export const NoteHeader = ({
       console.error(error);
     } finally {
       setIsUploading(false);
-      // Reset input
       event.target.value = "";
     }
   };
 
-  const handleDownloadHTML = () => {
-    onDownloadHTML();
-  };
+  const togglePillBase =
+    "flex items-center gap-2 px-3 h-8 text-sm rounded-md border transition-colors cursor-pointer";
+  const togglePillActive =
+    "bg-[var(--pl-accent-soft)] border-[var(--pl-accent-border)] text-[var(--pl-accent-strong)]";
+  const togglePillInactive =
+    "border-border text-[var(--pl-text-muted)] hover:text-[var(--pl-text)] hover:bg-[var(--pl-bg-hover)]";
 
   return (
     <>
-    <div className='flex items-center justify-between gap-4 border-b p-4 shadow-sm'>
-      <Button variant='outline' size='sm' className='gap-2' onClick={() => navigate(-1)}>
-        <ArrowLeft className='w-4 h-4' />
-        Back
-      </Button>
-      <div className='flex-1'>
-        <Input
-          value={title}
-          onChange={(e) => onTitleChange(e.target.value)}
-          placeholder='Untitled Note'
-          className='text-2xl font-bold border-none focus-visible:ring-0 px-4 py-2 h-auto w-100'
-          readOnly={userRole === 'VIEWER'}
-        />
-      </div>
-
-      <div className='flex items-center gap-2'>
-        <Button
-          variant='outline'
-          size='sm'
-          className='gap-2'
-          onClick={() => setShareOpen(true)}
-        >
-          <Share2 className='w-4 h-4' />
-          Share
-        </Button>
-
-        {userRole !== 'VIEWER' && (
-          <>
-          <Button
-            onClick={onSave}
-            disabled={isSaving}
-            size='sm'
-            className='gap-2'
+      <div className='sticky top-0 z-20 bg-[var(--pl-bg)]/95 backdrop-blur supports-[backdrop-filter]:bg-[var(--pl-bg)]/80 border-b border-border'>
+        <div className='flex items-center gap-3 px-6 py-3'>
+          <button
+            type='button'
+            onClick={() => navigate(-1)}
+            className='flex items-center gap-1.5 text-sm text-[var(--pl-text-muted)] hover:text-[var(--pl-text)] transition-colors cursor-pointer'
           >
-            {isSaving ? (
-              <LoaderCircle className='w-4 h-4 animate-spin' />
-            ) : (
-              <Save className='w-4 h-4' />
+            <ArrowLeft className='w-4 h-4' />
+            Back
+          </button>
+
+          <span className='text-border select-none'>·</span>
+
+          <Input
+            value={title}
+            onChange={(e) => onTitleChange(e.target.value)}
+            placeholder='Untitled Note'
+            className='flex-1 min-w-0 max-w-2xl border-none bg-transparent shadow-none px-2 h-auto py-1 font-[family-name:var(--font-display)] text-2xl font-medium tracking-tight focus-visible:ring-0'
+            readOnly={userRole === "VIEWER"}
+          />
+
+          <div className='flex items-center gap-1.5 ml-auto'>
+            {onlineUsers.length > 0 && (
+              <div className='flex items-center gap-1.5 mr-1'>
+                <div className='flex items-center -space-x-1.5'>
+                  {onlineUsers.slice(0, 8).map((u, i) => (
+                    <Avatar
+                      key={i}
+                      className='size-6 border-2 ring-2 ring-[var(--pl-bg)]'
+                      style={{ borderColor: u.color }}
+                    >
+                      <AvatarFallback
+                        className='text-[10px] font-medium'
+                        style={{ backgroundColor: u.color, color: '#fff' }}
+                      >
+                        {u.name.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  ))}
+                </div>
+                {onlineUsers.length > 8 && (
+                  <span className='text-xs text-[var(--pl-text-muted)] font-[family-name:var(--font-mono-pl)]'>
+                    +{onlineUsers.length - 8}
+                  </span>
+                )}
+              </div>
             )}
-            Save
-          </Button>
 
-          <Button
-            onClick={handleDownloadHTML}
-            variant='outline'
-            size='sm'
-            className='gap-2'
-          >
-            <Download className='w-4 h-4' />
-            Download
-          </Button>
+            <Button
+              variant='ghost'
+              size='sm'
+              className='gap-2 text-[var(--pl-text-muted)] hover:text-[var(--pl-text)]'
+              onClick={() => setShareOpen(true)}
+            >
+              <Share2 className='w-4 h-4' />
+              Share
+            </Button>
 
-          <div className='relative'>
-            <input
-              type='file'
-              onChange={handleFileUpload}
-              disabled={isUploading}
-              className='hidden'
-              id='file-upload'
-              accept='.pdf,.doc,.docx,.txt,.pptx,.jpg,.jpeg,.png,.gif,.webp,.svg,.bmp,.avif'
-            />
-            <label htmlFor='file-upload'>
-              <Button
-                asChild
-                variant='outline'
-                size='sm'
-                className='gap-2 cursor-pointer'
-                disabled={isUploading}
-              >
-                <span>
-                  {isUploading ? (
-                    <LoaderCircle className='w-4 h-4 animate-spin' />
-                  ) : (
-                    <Upload className='w-4 h-4' />
-                  )}
-                  Upload
-                </span>
-              </Button>
-            </label>
+            {userRole !== "VIEWER" && (
+              <>
+                <Button
+                  onClick={onDownloadHTML}
+                  variant='ghost'
+                  size='sm'
+                  className='gap-2 text-[var(--pl-text-muted)] hover:text-[var(--pl-text)]'
+                >
+                  <Download className='w-4 h-4' />
+                  Download
+                </Button>
+
+                <div className='relative'>
+                  <input
+                    type='file'
+                    onChange={handleFileUpload}
+                    disabled={isUploading}
+                    className='hidden'
+                    id='file-upload'
+                    accept='.pdf,.doc,.docx,.txt,.pptx,.jpg,.jpeg,.png,.gif,.webp,.svg,.bmp,.avif'
+                  />
+                  <label htmlFor='file-upload'>
+                    <Button
+                      asChild
+                      variant='ghost'
+                      size='sm'
+                      className='gap-2 cursor-pointer text-[var(--pl-text-muted)] hover:text-[var(--pl-text)]'
+                      disabled={isUploading}
+                    >
+                      <span>
+                        {isUploading ? (
+                          <LoaderCircle className='w-4 h-4 animate-spin' />
+                        ) : (
+                          <Upload className='w-4 h-4' />
+                        )}
+                        Upload
+                      </span>
+                    </Button>
+                  </label>
+                </div>
+
+                <span className='mx-1 h-5 w-px bg-border' />
+
+                {attachedFileCount > 0 && onToggleFilesPanel ? (
+                  <button
+                    type='button'
+                    onClick={onToggleFilesPanel}
+                    className={cn(
+                      togglePillBase,
+                      showFilesPanel ? togglePillActive : togglePillInactive,
+                    )}
+                  >
+                    <FileText className='w-4 h-4' />
+                    Files
+                    <span className='font-[family-name:var(--font-mono-pl)] text-xs opacity-70'>
+                      ({attachedFileCount})
+                    </span>
+                  </button>
+                ) : null}
+
+                {aiSummaryCount > 0 && onToggleAiPanel ? (
+                  <button
+                    type='button'
+                    onClick={onToggleAiPanel}
+                    className={cn(
+                      togglePillBase,
+                      showAiPanel ? togglePillActive : togglePillInactive,
+                    )}
+                  >
+                    <Sparkles className='w-4 h-4' />
+                    AI
+                    <span className='font-[family-name:var(--font-mono-pl)] text-xs opacity-70'>
+                      ({aiSummaryCount})
+                    </span>
+                  </button>
+                ) : null}
+              </>
+            )}
           </div>
-
-          {attachedFileCount > 0 && onToggleFilesPanel ? (
-            <Button
-              type='button'
-              variant={showFilesPanel ? "secondary" : "outline"}
-              size='sm'
-              className='gap-2'
-              onClick={onToggleFilesPanel}
-            >
-              <FileText className='w-4 h-4' />
-              Files ({attachedFileCount})
-            </Button>
-          ) : null}
-
-          {aiSummaryCount > 0 && onToggleAiPanel ? (
-            <Button
-              type='button'
-              variant={showAiPanel ? "secondary" : "outline"}
-              size='sm'
-              className='gap-2'
-              onClick={onToggleAiPanel}
-            >
-              <Sparkles className='w-4 h-4' />
-              AI ({aiSummaryCount})
-            </Button>
-          ) : null}
-          </>
-        )}
+        </div>
       </div>
-    </div>
 
-    <ShareDialog
-      open={shareOpen}
-      onOpenChange={setShareOpen}
-      setId={_setId}
-      resourceType="notes"
-      resourceId={noteId}
-      userRole={userRole}
-      currentUserId={currentUserId}
-    />
+      <ShareDialog
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+        setId={_setId}
+        resourceType='notes'
+        resourceId={noteId}
+        userRole={userRole}
+        currentUserId={currentUserId}
+      />
     </>
   );
 };

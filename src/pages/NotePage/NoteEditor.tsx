@@ -148,27 +148,35 @@ function NoteEditorInner({
     [editorInstance],
   );
 
-  // Text selection for AI explain
+  // Text selection for AI explain — scoped to editor container only
   useEffect(() => {
     const handleMouseUp = () => {
       const selection = window.getSelection();
       const text = selection?.toString().trim() || '';
-      if (text.length > 0) {
-        setSelectedText(text);
-        const range = selection?.getRangeAt(0);
-        if (range && editorContainerRef.current) {
-          const rect = range.getBoundingClientRect();
-          const editorRect = editorContainerRef.current.getBoundingClientRect();
-          setTooltipPos({
-            x: rect.left - editorRect.left,
-            y: rect.top - editorRect.top - 40,
-          });
-          setShowSummarizeBtn(true);
-        }
-      } else {
+      if (!text || !selection || selection.rangeCount === 0) {
         setShowSummarizeBtn(false);
         setSelectedText('');
+        return;
       }
+      const range = selection.getRangeAt(0);
+      const container = editorContainerRef.current;
+      if (
+        !container ||
+        !container.contains(range.startContainer) ||
+        !container.contains(range.endContainer)
+      ) {
+        setShowSummarizeBtn(false);
+        setSelectedText('');
+        return;
+      }
+      setSelectedText(text);
+      const rect = range.getBoundingClientRect();
+      const editorRect = container.getBoundingClientRect();
+      setTooltipPos({
+        x: rect.left - editorRect.left,
+        y: rect.top - editorRect.top - 40,
+      });
+      setShowSummarizeBtn(true);
     };
     document.addEventListener('mouseup', handleMouseUp);
     return () => document.removeEventListener('mouseup', handleMouseUp);
@@ -219,7 +227,7 @@ function NoteEditorInner({
   ]);
 
   return (
-    <div className='relative w-full h-full overflow-hidden flex flex-col'>
+    <div className='relative w-full h-full overflow-hidden flex flex-col bg-[var(--pl-bg)]'>
       {showSummarizeBtn && selectedText && (
         <div
           ref={tooltipRef}
@@ -247,7 +255,7 @@ function NoteEditorInner({
 
       <div
         ref={editorContainerRef}
-        className='flex-1 overflow-auto focus-within:outline-none px-8 text-foreground'
+        className='flex-1 overflow-auto focus-within:outline-none px-8 py-6 text-[var(--pl-text)] bg-[var(--pl-bg)]'
       >
         {editorInstance && (
           <BlockNoteView
@@ -417,7 +425,7 @@ function NoteEditorFallback({
   ]);
 
   return (
-    <div className='relative w-full h-full overflow-hidden flex flex-col'>
+    <div className='relative w-full h-full overflow-hidden flex flex-col bg-[var(--pl-bg)]'>
       {showSummarizeBtn && selectedText && (
         <div
           ref={tooltipRef}
@@ -444,7 +452,7 @@ function NoteEditorFallback({
       )}
       <div
         ref={editorContainerRef}
-        className='flex-1 overflow-auto focus-within:outline-none px-8 text-foreground'
+        className='flex-1 overflow-auto focus-within:outline-none px-8 py-6 text-[var(--pl-text)] bg-[var(--pl-bg)]'
       >
         {editorInstance && (
           <BlockNoteView
@@ -476,6 +484,8 @@ interface NoteEditorProps {
   ) => void;
   currentUserId?: number;
   currentUserName?: string;
+  /** Timestamp of the last successful auto-save / manual save */
+  lastSavedAt?: Date | null;
 }
 
 export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(
@@ -490,6 +500,7 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(
       onConnStatusChange,
       currentUserId = 0,
       currentUserName = 'User',
+      lastSavedAt = null,
     },
     ref,
   ) => {
@@ -572,25 +583,40 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(
       };
     }, [noteId, wsUrl]);
 
-    // Connection status banner
     const disconnectedBanner = connStatus === 'disconnected' && collabReady && (
-      <div className='flex items-center gap-1.5 bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'>
+      <div className='flex items-center gap-1.5 px-6 py-1.5 text-xs font-medium border-b border-[var(--bg-warning)] bg-[var(--bg-warning)] text-[var(--text-warning)]'>
         <WifiOff className='size-3.5' />
         Lost connection — reconnecting…
       </div>
     );
 
+    const savedLabel = lastSavedAt
+      ? `Auto-saved at ${lastSavedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+      : null;
+
     const connectedIndicator = connStatus === 'connected' && collabReady && (
-      <div className='flex items-center gap-1.5 px-3 py-0.5 text-xs text-green-600 dark:text-green-400'>
-        <Wifi className='size-3.5' />
-        Synced
+      <div className='flex items-center gap-3 px-6 py-1 text-[10px] tracking-[0.18em] uppercase text-[var(--pl-accent)]'>
+        <span className='flex items-center gap-1.5'>
+          <Wifi className='size-3' />
+          Synced
+        </span>
+        {savedLabel && (
+          <span className='text-[var(--pl-text-faint)]'>{savedLabel}</span>
+        )}
+      </div>
+    );
+
+    const offlineSavedIndicator = !collabReady && savedLabel && (
+      <div className='flex items-center gap-1.5 px-6 py-1 text-[10px] tracking-[0.18em] uppercase text-[var(--pl-text-faint)]'>
+        {savedLabel}
       </div>
     );
 
     return (
-      <div className='relative w-full h-full overflow-hidden flex flex-col'>
+      <div className='relative w-full h-full overflow-hidden flex flex-col bg-[var(--pl-bg)]'>
         {disconnectedBanner}
         {connectedIndicator}
+        {offlineSavedIndicator}
 
         {collabReady ? (
           <NoteEditorInner

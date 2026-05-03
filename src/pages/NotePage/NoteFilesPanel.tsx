@@ -252,22 +252,28 @@ function NoteFileRow({
   };
 
   return (
-    <Collapsible open={open} onOpenChange={setOpen} className='border-b last:border-b-0'>
-      <div className='flex items-center gap-1 px-2 py-2 hover:bg-muted/40'>
+    <Collapsible
+      open={open}
+      onOpenChange={setOpen}
+      className='border-b border-border last:border-b-0'
+    >
+      <div className='flex items-center gap-1 px-3 py-2 hover:bg-[var(--pl-bg-hover)] transition-colors'>
         <CollapsibleTrigger asChild>
           <Button
             variant='ghost'
             size='sm'
-            className='flex-1 min-w-0 h-auto py-2 px-2 justify-start gap-2 font-normal'
+            className='flex-1 min-w-0 h-auto py-2 px-2 justify-start gap-2.5 font-normal hover:bg-transparent'
           >
             {open ? (
-              <ChevronDown className='w-4 h-4 shrink-0 text-muted-foreground' />
+              <ChevronDown className='w-4 h-4 shrink-0 text-[var(--pl-text-faint)]' />
             ) : (
-              <ChevronRight className='w-4 h-4 shrink-0 text-muted-foreground' />
+              <ChevronRight className='w-4 h-4 shrink-0 text-[var(--pl-text-faint)]' />
             )}
-            <FileText className='w-4 h-4 shrink-0 text-blue-500' />
-            <span className='truncate text-sm font-medium text-left'>{fileName}</span>
-            <span className='text-xs text-muted-foreground shrink-0'>
+            <FileText className='w-4 h-4 shrink-0 text-[var(--pl-accent)]' />
+            <span className='truncate text-sm font-medium text-left text-[var(--pl-text)]'>
+              {fileName}
+            </span>
+            <span className='text-[10px] tracking-[0.14em] uppercase text-[var(--pl-text-faint)] shrink-0 font-[family-name:var(--font-mono-pl)]'>
               {extension.toUpperCase()}
             </span>
           </Button>
@@ -275,7 +281,7 @@ function NoteFileRow({
         <Button
           size='sm'
           variant='ghost'
-          className='shrink-0 h-8 w-8 p-0 text-muted-foreground hover:text-destructive'
+          className='shrink-0 h-8 w-8 p-0 text-[var(--pl-text-faint)] hover:text-[var(--text-error)] hover:bg-[var(--bg-error)]'
           onClick={handleDelete}
           disabled={isDeleting}
           aria-label='Delete file'
@@ -289,13 +295,13 @@ function NoteFileRow({
       </div>
 
       <CollapsibleContent>
-        <div className='px-3 pb-4 pt-0'>
-          <Card className='p-4'>
+        <div className='px-3 py-2'>
+          <Card className='p-2 bg-[var(--pl-bg)] shadow-none gap-4'>
             {isPdf && (
               <div
                 ref={pdfWrapRef}
                 data-note-file-scroll
-                className='rounded-md border bg-muted/20 overflow-y-auto max-h-[calc(100vh-380px)] overflow-x-auto mb-3'
+                className='rounded-md border border-border bg-[var(--pl-bg-sunken)] overflow-y-auto max-h-[calc(100vh-380px)] overflow-x-auto'
               >
                 <Document
                   file={fileUrl}
@@ -341,7 +347,7 @@ function NoteFileRow({
             {isImage && !isPdf && (
               <div
                 data-note-file-scroll
-                className='rounded-md border bg-muted/20 max-h-[calc(100vh-380px)] overflow-y-auto overflow-x-auto mb-3 flex justify-center p-2'
+                className='rounded-md border border-border bg-[var(--pl-bg-sunken)] max-h-[calc(100vh-380px)] overflow-y-auto overflow-x-auto flex justify-center p-2'
               >
                 <div className='relative inline-block max-w-full'>
                   <img
@@ -363,13 +369,13 @@ function NoteFileRow({
             )}
 
             {!isPdf && !isImage && (
-              <p className='text-xs text-muted-foreground mb-3'>
+              <p className='text-xs text-[var(--pl-text-muted)] italic font-[var(--font-serif)]'>
                 Preview is available for PDF and images. You can still summarize this file with AI.
               </p>
             )}
 
             {canRegionComment && (
-              <div className='flex flex-col gap-2 mb-3'>
+              <div className='flex flex-col gap-2'>
                 <Button
                   type='button'
                   variant={isCommentMode ? "secondary" : "outline"}
@@ -382,17 +388,17 @@ function NoteFileRow({
                   }}
                 >
                   <MessageSquarePlus className='w-4 h-4' />
-                  {isCommentMode ? "Cancel commenting" : "+ Comments"}
+                  {isCommentMode ? "Cancel commenting" : "Add region comment"}
                 </Button>
                 {isCommentMode && (
-                  <p className='text-xs text-muted-foreground text-center animate-pulse'>
-                    Drag to select a region · Esc to cancel mode
+                  <p className='text-xs text-[var(--pl-text-muted)] text-center animate-pulse'>
+                    Drag to select a region · Esc to cancel
                   </p>
                 )}
                 {comments.length > 0 && (
-                  <p className='text-xs text-muted-foreground text-center'>
+                  <p className='text-[10px] tracking-[0.14em] uppercase text-[var(--pl-text-faint)] text-center'>
                     {comments.length} comment{comments.length !== 1 ? "s" : ""}
-                    {!setId ? " (not synced — open note from a set after API upgrade)" : ""}
+                    {!setId ? " · not synced" : ""}
                   </p>
                 )}
               </div>
@@ -438,14 +444,21 @@ export const NoteFilesPanel = ({
   }, [fileComments]);
 
   return (
-    <div className='w-full h-full overflow-hidden flex flex-col bg-background'>
-      <div className='p-3 border-b flex items-center justify-between gap-2 shrink-0'>
-        <h3 className='font-semibold text-sm truncate'>Documents</h3>
+    <div className='w-full h-full overflow-hidden flex flex-col bg-[var(--pl-bg)] border-l border-border'>
+      <div className='px-4 py-3 border-b border-border flex items-center justify-between gap-2 shrink-0'>
+        <div className='flex items-baseline gap-2 min-w-0'>
+          <h3 className='font-[family-name:var(--font-display)] text-base font-medium tracking-tight truncate text-[var(--pl-text)]'>
+            Documents
+          </h3>
+          <span className='text-[10px] tracking-[0.18em] uppercase text-[var(--pl-text-faint)] font-[family-name:var(--font-mono-pl)]'>
+            {files.length} {files.length === 1 ? "file" : "files"}
+          </span>
+        </div>
         <Button
           type='button'
           size='sm'
           variant='ghost'
-          className='shrink-0 gap-1 h-8'
+          className='shrink-0 gap-1 h-8 text-[var(--pl-text-muted)] hover:text-[var(--pl-text)]'
           onClick={onClosePanel}
           aria-label='Hide documents panel'
         >

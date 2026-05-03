@@ -21,7 +21,6 @@ import {
 import { isImageExtension } from "@/lib/utils";
 import type { NoteDocItem } from "@/services/types/note.types";
 import { useAppSelector } from "@/hooks/redux";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface UploadedFile {
   id: number;
@@ -82,6 +81,7 @@ export const NotePage = () => {
   const [showAiPanel, setShowAiPanel] = useState(true);
   const [summaries, setSummaries] = useState<AISummary[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<{ name: string; color: string }[]>([]);
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const editorRef = useRef<NoteEditorHandle>(null);
 
   const { data: noteDetail, isLoading: isLoadingNote } = useNoteDetail(
@@ -91,6 +91,9 @@ export const NotePage = () => {
   const autoSaveMutation = useAutoSaveNote();
   const autoSaveMutationRef = useRef(autoSaveMutation);
   autoSaveMutationRef.current = autoSaveMutation;
+
+  const numericNoteId = noteId ? parseInt(noteId, 10) : 0;
+  const setId = noteDetail?.setId ?? 0;
 
   const isInitialLoadRef = useRef(true);
 
@@ -128,14 +131,19 @@ export const NotePage = () => {
 
     const timer = setTimeout(() => {
       if (setId && noteId && (title || content)) {
-        autoSaveMutationRef.current.mutate({
-          setId,
-          noteId: parseInt(noteId),
-          title,
-          content,
-        });
+        autoSaveMutationRef.current.mutate(
+          {
+            setId,
+            noteId: parseInt(noteId),
+            title,
+            content,
+          },
+          {
+            onSuccess: () => setLastSavedAt(new Date()),
+          },
+        );
       }
-    }, 3000);
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, [title, content, noteId]);
@@ -148,9 +156,9 @@ export const NotePage = () => {
     setContent(newContent);
   };
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     if (setId && noteId) {
-      autoSaveMutation.mutate(
+      autoSaveMutationRef.current.mutate(
         {
           setId,
           noteId: parseInt(noteId),
@@ -159,6 +167,7 @@ export const NotePage = () => {
         },
         {
           onSuccess: () => {
+            setLastSavedAt(new Date());
             toast.success("Note saved successfully");
           },
           onError: () => {
@@ -167,7 +176,18 @@ export const NotePage = () => {
         },
       );
     }
-  };
+  }, [setId, noteId, title, content]);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        handleSave();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [handleSave]);
 
   const handleFileUploaded = useCallback((file: UploadedFile) => {
     setNoteFiles((prev) => {
@@ -266,8 +286,6 @@ export const NotePage = () => {
     toast.success("Note downloaded successfully");
   }, [title]);
 
-  const numericNoteId = noteId ? parseInt(noteId, 10) : 0;
-  const setId = noteDetail?.setId ?? 0;
   const { data: fileRegionComments = [] } = useNoteFileRegionComments(
     setId,
     numericNoteId,
@@ -290,22 +308,20 @@ export const NotePage = () => {
 
   if (isLoadingNote) {
     return (
-      <div className='w-full h-screen flex items-center justify-center'>
+      <div className='w-full h-screen flex items-center justify-center bg-[var(--pl-bg-sunken)]'>
         <div className='text-center'>
-          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4'></div>
-          <p className='text-muted-foreground'>Loading note...</p>
+          <div className='w-8 h-8 border-2 border-[var(--pl-accent)] border-t-transparent rounded-full animate-spin mx-auto mb-3' />
+          <p className='text-sm text-[var(--pl-text-muted)]'>Loading note…</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className='flex flex-col w-full h-screen'>
+    <div className='flex flex-col w-full h-screen bg-[var(--pl-bg-sunken)]'>
       <NoteHeader
         title={title}
         onTitleChange={handleTitleChange}
-        onSave={handleSave}
-        isSaving={autoSaveMutation.isPending}
         noteId={numericNoteId}
         setId={setId}
         userRole={noteDetail?.userRole ?? 'OWNER'}
@@ -317,24 +333,8 @@ export const NotePage = () => {
         aiSummaryCount={summaries.length}
         showAiPanel={showAiPanel}
         onToggleAiPanel={() => setShowAiPanel((v) => !v)}
+        onlineUsers={onlineUsers}
       />
-
-      {/* Online users avatars */}
-      {onlineUsers.length > 0 && (
-        <div className="flex items-center gap-1 px-4 py-1 border-b bg-muted/30">
-          <span className="text-xs text-muted-foreground mr-1">Online:</span>
-          {onlineUsers.slice(0, 8).map((u, i) => (
-            <Avatar key={i} className="size-6 border-2" style={{ borderColor: u.color }}>
-              <AvatarFallback className="text-[10px]" style={{ backgroundColor: u.color, color: '#fff' }}>
-                {u.name.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-          ))}
-          {onlineUsers.length > 8 && (
-            <span className="text-xs text-muted-foreground">+{onlineUsers.length - 8}</span>
-          )}
-        </div>
-      )}
 
       <div className='flex-1 overflow-hidden'>
         <ResizablePanelGroup className='w-full h-full' key={`${hasFilesPanel}-${hasAiPanel}`}>
@@ -350,10 +350,11 @@ export const NotePage = () => {
                 currentUserId={currentUser?.id ?? 0}
                 currentUserName={currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : 'User'}
                 onOnlineUsersChange={setOnlineUsers}
+                lastSavedAt={lastSavedAt}
               />
             ) : (
               <div className='flex items-center justify-center h-full'>
-                <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500' />
+                <div className='w-8 h-8 border-2 border-[var(--pl-accent)] border-t-transparent rounded-full animate-spin' />
               </div>
             )}
           </ResizablePanel>

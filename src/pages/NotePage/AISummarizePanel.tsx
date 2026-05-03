@@ -8,7 +8,7 @@ interface AISummary {
   id: string;
   query: string;
   response: string;
-  type: 'text' | 'file'; // text for text explanation, file for file summary
+  type: 'text' | 'file';
 }
 
 interface AISummarizePanelProps {
@@ -29,31 +29,41 @@ export const AISummarizePanel = ({
 
   if (summaries.length === 0) {
     return (
-      <div className='w-full h-full bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col items-center justify-center p-6'>
-        <Sparkles className='w-12 h-12 text-blue-300 mb-4' />
-        <p className='text-center text-muted-foreground font-medium'>
-          AI Summarize Panel
+      <div className='w-full h-full bg-[var(--pl-bg)] border-l border-border flex flex-col items-center justify-center p-8 text-center'>
+        <div className='w-12 h-12 rounded-full bg-[var(--pl-accent-soft)] flex items-center justify-center mb-4'>
+          <Sparkles className='w-6 h-6 text-[var(--pl-accent)]' />
+        </div>
+        <p className='text-[10px] tracking-[0.18em] uppercase text-[var(--pl-text-faint)] mb-2'>
+          AI Workspace
         </p>
-        <p className='text-center text-sm text-muted-foreground mt-2'>
-          Highlight text to summarize or upload a file to get AI insights
+        <p
+          className='text-lg italic text-[var(--pl-text-muted)] max-w-[260px] leading-snug'
+          style={{ fontFamily: 'var(--font-serif)' }}
+        >
+          Highlight text or summarize a file to surface AI insights here.
         </p>
       </div>
     );
   }
 
   return (
-    <div className='w-full h-full overflow-auto flex flex-col'>
-      <div className='p-4 border-b sticky top-0 flex items-center justify-between gap-2 bg-background z-10'>
-        <div className='flex items-center gap-2 min-w-0'>
-          <Sparkles className='w-5 h-5 text-blue-500 shrink-0' />
-          <h3 className='font-semibold text-sm truncate'>AI Insights</h3>
+    <div className='w-full h-full overflow-hidden flex flex-col bg-[var(--pl-bg)] border-l border-border'>
+      <div className='px-4 py-3 border-b border-border sticky top-0 flex items-center justify-between gap-2 bg-[var(--pl-bg)] z-10'>
+        <div className='flex items-baseline gap-2 min-w-0'>
+          <h3 className='font-[family-name:var(--font-display)] text-base font-medium tracking-tight truncate text-[var(--pl-text)] flex items-center gap-2'>
+            <Sparkles className='w-4 h-4 text-[var(--pl-accent)]' />
+            AI Workspace
+          </h3>
+          <span className='text-[10px] tracking-[0.18em] uppercase text-[var(--pl-text-faint)] font-[family-name:var(--font-mono-pl)]'>
+            {summaries.length}
+          </span>
         </div>
         {onClosePanel ? (
           <Button
             type='button'
             size='sm'
             variant='ghost'
-            className='shrink-0 gap-1 h-8'
+            className='shrink-0 gap-1 h-8 text-[var(--pl-text-muted)] hover:text-[var(--pl-text)]'
             onClick={onClosePanel}
             aria-label='Hide AI panel'
           >
@@ -67,47 +77,56 @@ export const AISummarizePanel = ({
         {summaries.map((summary) => (
           <Card
             key={summary.id}
-            className='p-4 bg-[var(--pl-bg)] hover:shadow-md transition-shadow'
+            className='p-4 bg-[var(--pl-bg)] border-border shadow-none hover:border-[var(--pl-border-strong)] transition-colors'
           >
-            {/* Query Section */}
-            <div className='mb-4'>
-              <div className='flex items-start justify-between mb-2'>
-                <p className='text-xs font-medium text-foreground/70'>
-                  {summary.type === 'file'
-                    ? 'Content Summary'
-                    : 'Your Question'}
-                </p>
-                <Button
-                  size='sm'
-                  variant='ghost'
-                  className='h-6 w-6 p-0'
-                  onClick={() => onRemoveSummary(summary.id)}
-                >
-                  <X className='w-4 h-4' />
-                </Button>
-              </div>
-              <p className='text-sm text-foreground bg-card-selected p-3 rounded-lg leading-relaxed italic border-l-2 border-blue-400'>
+            <div className='flex items-center justify-between mb-3'>
+              <span
+                className='text-[10px] tracking-[0.18em] uppercase px-2 py-0.5 rounded-md border'
+                style={{
+                  color: 'var(--pl-accent-strong)',
+                  borderColor: 'var(--pl-accent-border)',
+                  background: 'var(--pl-accent-soft)',
+                }}
+              >
+                {summary.type === 'file' ? 'Summary' : 'Explain'}
+              </span>
+              <Button
+                size='sm'
+                variant='ghost'
+                className='h-6 w-6 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-text)]'
+                onClick={() => onRemoveSummary(summary.id)}
+                aria-label='Remove summary'
+              >
+                <X className='w-4 h-4' />
+              </Button>
+            </div>
+
+            <div className='mb-3'>
+              <p className='text-[10px] tracking-[0.18em] uppercase text-[var(--pl-text-faint)] mb-1.5'>
+                {summary.type === 'file' ? 'Source' : 'Selection'}
+              </p>
+              <p className='text-sm italic text-[var(--pl-text-muted)] leading-relaxed font-[var(--font-serif)] border-l-2 border-[var(--pl-accent-border)] pl-3'>
                 "{summary.query}"
               </p>
             </div>
 
-            {/* Response Section */}
             <div>
-              <div className='flex items-center justify-between mb-2'>
-                <p className='text-xs font-medium text-foreground/70'>
+              <div className='flex items-center justify-between mb-1.5'>
+                <p className='text-[10px] tracking-[0.18em] uppercase text-[var(--pl-text-faint)]'>
                   AI Response
                 </p>
                 <Button
                   size='sm'
                   variant='ghost'
-                  className='h-6 w-6 p-0 opacity-60 hover:opacity-100'
+                  className='h-6 w-6 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-text)]'
                   onClick={() => handleCopyResponse(summary.response)}
+                  aria-label='Copy response'
                 >
-                  <Copy className='w-4 h-4' />
+                  <Copy className='w-3.5 h-3.5' />
                 </Button>
               </div>
               <div
-                className='text-sm text-foreground p-3 bg-stat-card-3 rounded-lg leading-relaxed border-l-2 border-green-400 prose prose-sm max-w-none'
+                className='text-sm text-[var(--pl-text)] leading-relaxed prose prose-sm max-w-none [&_p]:my-1.5 [&_ul]:my-1.5 [&_ol]:my-1.5'
                 dangerouslySetInnerHTML={{ __html: summary.response }}
               />
             </div>
