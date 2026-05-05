@@ -3,11 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useFlashcards } from '@/hooks/useFlashcards';
 import FlashCard, { type Flashcard } from '@/components/cards/FlashCard';
-import {
-  ResourceFiltersBar,
-  type ListPrivacyFilter,
-  type ListCreateMethodFilter,
-  type ListSortOption,
+import type {
+  ListPrivacyFilter,
+  ListCreateMethodFilter,
+  ListSortOption,
 } from '@/components/lists/ResourceFiltersBar';
 import {
   CardGrid,
@@ -19,34 +18,37 @@ import { formatDate, getTimeAgo } from '@/lib/utils';
 
 type FlashcardListPageProps = {
   setId: number;
+  search: string;
+  privacy: ListPrivacyFilter;
+  createMethod: ListCreateMethodFilter;
+  sort: ListSortOption;
   onUpdate: (flashcard: Flashcard) => void;
   onDelete: (flashcardId: number | string) => void;
 };
 
 const FlashcardListPage = ({
   setId,
+  search,
+  privacy,
+  createMethod,
+  sort,
   onUpdate,
   onDelete,
 }: FlashcardListPageProps) => {
   const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(0);
-  const [listSearch, setListSearch] = useState('');
   const [debouncedQ, setDebouncedQ] = useState('');
-  const [privacyFilter, setPrivacyFilter] = useState<ListPrivacyFilter>('');
-  const [createMethodFilter, setCreateMethodFilter] =
-    useState<ListCreateMethodFilter>('');
-  const [sort, setSort] = useState<ListSortOption>('id,DESC');
   const pageSize = 6;
   const navigate = useNavigate();
 
   useEffect(() => {
-    const t = window.setTimeout(() => setDebouncedQ(listSearch.trim()), 350);
+    const t = window.setTimeout(() => setDebouncedQ(search.trim()), 350);
     return () => window.clearTimeout(t);
-  }, [listSearch]);
+  }, [search]);
 
   useEffect(() => {
     setCurrentPage(0);
-  }, [debouncedQ, privacyFilter, createMethodFilter, sort]);
+  }, [debouncedQ, privacy, createMethod, sort]);
 
   const { data, isLoading, isError, error } = useFlashcards({
     setId,
@@ -54,61 +56,33 @@ const FlashcardListPage = ({
     size: pageSize,
     sort,
     q: debouncedQ || undefined,
-    privacy: privacyFilter || undefined,
-    createMethod: createMethodFilter || undefined,
+    privacy: privacy || undefined,
+    createMethod: createMethod || undefined,
   });
 
   const handleAccess = (id: number | string) =>
     navigate(`/sets/${setId}/flashcards/${id}`);
 
-  const filters = (
-    <ResourceFiltersBar
-      searchValue={listSearch}
-      onSearchChange={setListSearch}
-      privacy={privacyFilter}
-      onPrivacyChange={setPrivacyFilter}
-      createMethod={createMethodFilter}
-      onCreateMethodChange={setCreateMethodFilter}
-      sort={sort}
-      onSortChange={setSort}
-    />
-  );
-
-  if (isLoading)
-    return (
-      <div>
-        {filters}
-        <CardGridSkeleton />
-      </div>
-    );
+  if (isLoading) return <CardGridSkeleton />;
 
   if (isError)
     return (
-      <div>
-        {filters}
-        <div className='py-10 text-center text-[oklch(0.65_0.2_25)] text-[13px]'>
-          {t('list.flashcards.error', {
-            message:
-              error instanceof Error ? error.message : t('list.unknownError'),
-          })}
-        </div>
+      <div className='py-10 text-center text-[oklch(0.65_0.2_25)] text-[13px]'>
+        {t('list.flashcards.error', {
+          message:
+            error instanceof Error ? error.message : t('list.unknownError'),
+        })}
       </div>
     );
 
   if (!data?.data || data.data.length === 0) {
-    return (
-      <div>
-        {filters}
-        <EmptyState label={t('list.flashcards.empty')} />
-      </div>
-    );
+    return <EmptyState label={t('list.flashcards.empty')} />;
   }
 
   const { data: flashcards, metadata } = data;
 
   return (
     <div>
-      {filters}
       <CardGrid>
         {flashcards.map((flashcard) => (
           <FlashCard

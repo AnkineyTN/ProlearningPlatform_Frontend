@@ -218,10 +218,6 @@ export const routeConfig: RouteObject[] = [
         element: <SetSeriesPageWrapper />,
       },
       {
-        path: 'sets/:id/mindmaps',
-        element: <SetSeriesPageWrapper />,
-      },
-      {
         path: 'sets/:id/exams',
         element: <SetSeriesPageWrapper />,
       },

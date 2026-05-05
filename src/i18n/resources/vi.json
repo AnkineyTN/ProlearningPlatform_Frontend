@@ -976,7 +976,8 @@
             "mastery": "Thành thạo",
             "streak": "Streak",
             "deleteSet": "Xoá bộ học",
-            "continueLearning": "Tiếp tục học"
+            "continueLearning": "Tiếp tục học",
+            "analyzeKnowledge": "Phân tích kiến thức của tôi"
         },
         "actions": {
             "generating": "Đang tạo với AI…",
@@ -988,6 +989,36 @@
             "newRecord": "Bản ghi mới",
             "newItem": "Mục mới"
         }
+    },
+    "analysis": {
+        "title": {
+            "set": "Phân tích kiến thức bộ học",
+            "flashcard": "Phân tích kiến thức flashcard",
+            "exam": "Phân tích kiến thức bài thi"
+        },
+        "sections": {
+            "topics": "Độ chính xác theo chủ đề",
+            "strengths": "Điểm mạnh",
+            "weaknesses": "Điểm yếu",
+            "improvements": "Gợi ý cải thiện",
+            "contributingSources": "Nguồn dữ liệu"
+        },
+        "actions": {
+            "analyze": "Phân tích kiến thức",
+            "assignAndRetry": "Gán chủ đề và thử lại",
+            "retry": "Thử lại"
+        },
+        "errors": {
+            "notFound": "Không tìm thấy phân tích.",
+            "loadFailed": "Không thể tải phân tích.",
+            "unknown": "Đã có lỗi xảy ra. Vui lòng thử lại.",
+            "assignFailed": "Không thể gán chủ đề."
+        },
+        "loading": "Đang phân tích kiến thức của bạn…",
+        "noTopics": "Đang gán chủ đề, vui lòng thử lại sau ít phút.",
+        "setEmpty": "Hãy học flashcard hoặc làm bài thi trước, rồi thử lại.",
+        "stale": "Đã cũ",
+        "generatedAt": "Tạo lúc {{date}}"
     },
     "reviewBundles": {
         "breadcrumb": "Ôn tập · Tổng hợp tuần",

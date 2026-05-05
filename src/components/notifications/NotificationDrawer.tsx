@@ -419,13 +419,10 @@ function NotificationCard({
         }
       }}
       className={cn(
-        'group relative flex w-full gap-3 rounded-xl border border-transparent p-3 text-left transition-colors',
+        'group relative flex w-full gap-3 rounded-xl border border-transparent p-3 text-left transition-colors cursor-pointer',
         'hover:bg-[var(--pl-accent-soft)]',
         !item.isRead &&
-          cn(
-            'bg-primary/5 border-l-[3px] rounded-l-md',
-            config.borderColor,
-          ),
+          cn('bg-primary/5 border-l-[3px] rounded-l-md', config.borderColor),
         isActivating && 'pointer-events-none opacity-70',
       )}
     >

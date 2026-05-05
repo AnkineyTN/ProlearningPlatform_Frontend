@@ -556,6 +556,8 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
 
       {viewMode === "results" && (
         <ResultsView
+          setId={Number(setId)}
+          flashcardId={Number(flashcardId)}
           studiedCards={studiedCards.size}
           totalCards={flashcards.length}
           flashcards={activeCards}

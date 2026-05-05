@@ -57,7 +57,10 @@ function PillSelect<T extends string>({
       </SelectTrigger>
       <SelectContent>
         {options.map((o) => (
-          <SelectItem key={o.value} value={o.value === '' ? ALL_SENTINEL : o.value}>
+          <SelectItem
+            key={o.value}
+            value={o.value === '' ? ALL_SENTINEL : o.value}
+          >
             {o.label}
           </SelectItem>
         ))}
@@ -82,49 +85,91 @@ export function ResourceFiltersBar({
   const { t } = useTranslation();
 
   const privacyOptions: { value: ListPrivacyFilter; label: string }[] = [
-    { value: '', label: t('list.filter.privacyAll', { defaultValue: 'All privacy' }) },
-    { value: 'PUBLIC', label: t('list.filter.public', { defaultValue: 'Public' }) },
-    { value: 'PRIVATE', label: t('list.filter.private', { defaultValue: 'Private' }) },
+    {
+      value: '',
+      label: t('list.filter.privacyAll', { defaultValue: 'All privacy' }),
+    },
+    {
+      value: 'PUBLIC',
+      label: t('list.filter.public', { defaultValue: 'Public' }),
+    },
+    {
+      value: 'PRIVATE',
+      label: t('list.filter.private', { defaultValue: 'Private' }),
+    },
   ];
 
   const methodOptions: { value: ListCreateMethodFilter; label: string }[] = [
-    { value: '', label: t('list.filter.methodAll', { defaultValue: 'All methods' }) },
-    { value: 'MANUAL', label: t('list.filter.methodManual', { defaultValue: 'Manual' }) },
-    { value: 'AI', label: t('list.filter.methodAI', { defaultValue: 'AI generated' }) },
-    { value: 'REVIEW', label: t('list.filter.methodReview', { defaultValue: 'Review' }) },
+    {
+      value: '',
+      label: t('list.filter.methodAll', { defaultValue: 'All methods' }),
+    },
+    {
+      value: 'MANUAL',
+      label: t('list.filter.methodManual', { defaultValue: 'Manual' }),
+    },
+    {
+      value: 'AI',
+      label: t('list.filter.methodAI', { defaultValue: 'AI generated' }),
+    },
+    {
+      value: 'REVIEW',
+      label: t('list.filter.methodReview', { defaultValue: 'Review' }),
+    },
   ];
 
   const sortOptions: { value: ListSortOption; label: string }[] = [
-    { value: 'id,DESC', label: t('list.filter.sortNewest', { defaultValue: 'Newest first' }) },
-    { value: 'id,ASC', label: t('list.filter.sortOldest', { defaultValue: 'Oldest first' }) },
-    { value: 'title,ASC', label: t('list.filter.sortTitleAsc', { defaultValue: 'Title A → Z' }) },
-    { value: 'title,DESC', label: t('list.filter.sortTitleDesc', { defaultValue: 'Title Z → A' }) },
+    {
+      value: 'id,DESC',
+      label: t('list.filter.sortNewest', { defaultValue: 'Newest first' }),
+    },
+    {
+      value: 'id,ASC',
+      label: t('list.filter.sortOldest', { defaultValue: 'Oldest first' }),
+    },
+    {
+      value: 'title,ASC',
+      label: t('list.filter.sortTitleAsc', { defaultValue: 'Title A → Z' }),
+    },
+    {
+      value: 'title,DESC',
+      label: t('list.filter.sortTitleDesc', { defaultValue: 'Title Z → A' }),
+    },
   ];
 
   return (
-    <div className={cn("flex items-center gap-2 flex-wrap py-4 pb-[18px]", className)}>
+    <div
+      className={cn(
+        'flex items-center gap-2 flex-wrap py-4 pb-[18px]',
+        className,
+      )}
+    >
       {/* Search */}
       {showSearch && (
-        <div className="flex items-center gap-2 px-3 py-[7px] bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-lg w-[240px] transition-[border-color] duration-150 focus-within:border-[var(--pl-accent-border)]">
-          <Search size={13} className="text-[var(--pl-text-faint)] shrink-0" />
+        <div className='flex items-center gap-2 px-3 py-[7px] bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-lg w-[240px] transition-[border-color] duration-150 focus-within:border-[var(--pl-accent-border)]'>
+          <Search size={13} className='text-[var(--pl-text-faint)] shrink-0' />
           <input
-            type="search"
+            type='search'
             value={searchValue}
             onChange={(e) => onSearchChange?.(e.target.value)}
             placeholder={
               searchPlaceholder ??
               t('list.filter.searchPlaceholder', { defaultValue: 'Search…' })
             }
-            className="bg-transparent border-0 outline-none text-[12.5px] text-[var(--pl-text)] w-full font-[inherit]"
+            className='bg-transparent border-0 outline-none text-[12.5px] text-[var(--pl-text)] w-full font-[inherit]'
           />
         </div>
       )}
 
       {/* Divider */}
-      <div className="w-px h-5 bg-[var(--pl-border)] shrink-0 mx-0.5" />
+      <div className='w-px h-5 bg-[var(--pl-border)] shrink-0 mx-0.5' />
 
       {/* Privacy filter */}
-      <PillSelect value={privacy} onChange={onPrivacyChange} options={privacyOptions} />
+      <PillSelect
+        value={privacy}
+        onChange={onPrivacyChange}
+        options={privacyOptions}
+      />
 
       {/* Create method filter */}
       {onCreateMethodChange !== undefined && (

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Plus } from 'lucide-react'
+import { Plus } from 'lucide-react';
 import AISourceModal from '@/components/modals/AISourceModal';
 import ExamAISourceModal from '@/components/modals/ExamAISourceModal';
 import CreateMethodModal from '@/components/modals/CreateMethodModal';
@@ -28,7 +28,6 @@ import type { ExamAIDifficultyDistribution } from '@/services/types/exam.types';
 
 import FlashcardListPage from './components/FlashcardListPage';
 import HeaderSetDetails from './components/HeaderSetDetails';
-import MindmapListPage from './components/MindmapListPage';
 import NoteListPage from './components/NoteListPage';
 import ExamListPage from './components/ExamListPage';
 
@@ -36,6 +35,13 @@ import type { Note } from '@/components/cards/NoteCard';
 import type { Flashcard } from '@/components/cards/FlashCard';
 import type { ExamCardData } from '@/components/cards/ExamCard';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import {
+  ResourceFiltersBar,
+  type ListCreateMethodFilter,
+  type ListPrivacyFilter,
+  type ListSortOption,
+} from '@/components/lists/ResourceFiltersBar';
 
 interface SetSeriesPageProps {
   setId: string;
@@ -50,7 +56,6 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
     Notes: 'notes',
     Flashcards: 'flashcards',
     Exams: 'exams',
-    Mindmaps: 'mindmaps',
     Records: 'records',
   };
 
@@ -58,7 +63,6 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
   let initialTab = 'Notes';
   if (path.includes(`/sets/${setId}/flashcards`)) initialTab = 'Flashcards';
   else if (path.includes(`/sets/${setId}/exams`)) initialTab = 'Exams';
-  else if (path.includes(`/sets/${setId}/mindmaps`)) initialTab = 'Mindmaps';
   else if (path.includes(`/sets/${setId}/records`)) initialTab = 'Records';
   else if (path.includes(`/sets/${setId}/notes`)) initialTab = 'Notes';
 
@@ -82,14 +86,33 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
   const generateExamFromFilesMutation = useGenerateExamFromFiles();
   const generateExamFromNotesMutation = useGenerateExamFromNotes();
   const generateExamFromWebMutation = useGenerateExamFromWeb();
-  const generateExamFromExistingExamMutation = useGenerateExamFromExistingExam();
+  const generateExamFromExistingExamMutation =
+    useGenerateExamFromExistingExam();
 
   const [isMethodModalOpen, setIsMethodModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isAISourceModalOpen, setIsAISourceModalOpen] = useState(false);
   const [isExamAISourceModalOpen, setIsExamAISourceModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-  const tabs = ['Notes', 'Flashcards', 'Exams', 'Mindmaps'];
+  const tabs = ['Notes', 'Flashcards', 'Exams'];
+
+  // Per-tab filter state (lifted out of list pages so the filter bar can
+  // sit on the same row as the "+ New" button).
+  const [notesSearch, setNotesSearch] = useState('');
+  const [notesPrivacy, setNotesPrivacy] = useState<ListPrivacyFilter>('');
+
+  const [flashcardsSearch, setFlashcardsSearch] = useState('');
+  const [flashcardsPrivacy, setFlashcardsPrivacy] =
+    useState<ListPrivacyFilter>('');
+  const [flashcardsMethod, setFlashcardsMethod] =
+    useState<ListCreateMethodFilter>('');
+  const [flashcardsSort, setFlashcardsSort] =
+    useState<ListSortOption>('id,DESC');
+
+  const [examsSearch, setExamsSearch] = useState('');
+  const [examsPrivacy, setExamsPrivacy] = useState<ListPrivacyFilter>('');
+  const [examsMethod, setExamsMethod] = useState<ListCreateMethodFilter>('');
+  const [examsSort, setExamsSort] = useState<ListSortOption>('id,DESC');
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
@@ -320,9 +343,6 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
           toast.error('Failed to create exam. Please try again.');
         }
         break;
-      case 'Mindmaps':
-      case 'Records':
-        break;
       default:
         console.log('New item created:', data);
         setIsCreateModalOpen(false);
@@ -462,7 +482,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
     generateExamFromWebMutation.isPending;
 
   return (
-    <div className='min-h-screen bg-[var(--pl-bg)] transition-[background] duration-300'>
+    <div className='min-h-screen bg-[var(--pl-bg)] transition-[background] duration-300 pb-10'>
       <HeaderSetDetails setId={setId} />
 
       {/* Tabs */}
@@ -486,18 +506,19 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
         })}
       </div>
 
-      {/* Action Bar */}
-      <div className='px-10 pt-5 flex items-center'>
-        <button
+      {/* Action Bar — "+ New" + inline filters */}
+      <div className='px-10 pt-5 flex items-center gap-3 flex-wrap'>
+        <Button
+          size='sm'
           onClick={handleCreateButtonClick}
           disabled={createNoteMutation.isPending || isGenerating}
           className={cn(
-            'flex items-center gap-1 px-[18px] py-[9px] bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] rounded-full font-semibold text-[13px] border-0 cursor-pointer transition-[opacity] duration-150',
+            'font-semibold gap-1',
             (createNoteMutation.isPending || isGenerating) &&
               'opacity-55 cursor-not-allowed',
           )}
         >
-          <Plus className='size-4'/>  
+          <Plus className='size-4' />
           {isGenerating
             ? t('set.actions.generating')
             : createNoteMutation.isPending
@@ -506,19 +527,56 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
                   `set.actions.new${activeTab.slice(0, -1)}` as
                     | 'set.actions.newNote'
                     | 'set.actions.newFlashcard'
-                    | 'set.actions.newExam'
-                    | 'set.actions.newMindmap'
-                    | 'set.actions.newRecord',
+                    | 'set.actions.newExam',
                   { defaultValue: t('set.actions.newItem') },
                 )}
-        </button>
+        </Button>
+        <div className='w-px h-5 bg-[var(--pl-border)] shrink-0 mx-0.5' />
+
+        {activeTab === 'Notes' && (
+          <ResourceFiltersBar
+            className='py-0'
+            searchValue={notesSearch}
+            onSearchChange={setNotesSearch}
+            privacy={notesPrivacy}
+            onPrivacyChange={setNotesPrivacy}
+          />
+        )}
+        {activeTab === 'Flashcards' && (
+          <ResourceFiltersBar
+            className='py-0'
+            searchValue={flashcardsSearch}
+            onSearchChange={setFlashcardsSearch}
+            privacy={flashcardsPrivacy}
+            onPrivacyChange={setFlashcardsPrivacy}
+            createMethod={flashcardsMethod}
+            onCreateMethodChange={setFlashcardsMethod}
+            sort={flashcardsSort}
+            onSortChange={setFlashcardsSort}
+          />
+        )}
+        {activeTab === 'Exams' && (
+          <ResourceFiltersBar
+            className='py-0'
+            searchValue={examsSearch}
+            onSearchChange={setExamsSearch}
+            privacy={examsPrivacy}
+            onPrivacyChange={setExamsPrivacy}
+            createMethod={examsMethod}
+            onCreateMethodChange={setExamsMethod}
+            sort={examsSort}
+            onSortChange={setExamsSort}
+          />
+        )}
       </div>
 
       {/* Content Grid */}
-      <div className='px-10'>
+      <div className='px-10 pt-4'>
         {activeTab === 'Notes' && (
           <NoteListPage
             setId={Number(setId)}
+            search={notesSearch}
+            privacy={notesPrivacy}
             onUpdate={handleUpdate}
             onDelete={(noteId) => handleDeleteNote(noteId)}
           />
@@ -526,14 +584,21 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
         {activeTab === 'Flashcards' && (
           <FlashcardListPage
             setId={Number(setId)}
+            search={flashcardsSearch}
+            privacy={flashcardsPrivacy}
+            createMethod={flashcardsMethod}
+            sort={flashcardsSort}
             onUpdate={handleUpdateFlashcard}
             onDelete={(flashcardId) => handleDeleteFlashcard(flashcardId)}
           />
         )}
-        {activeTab === 'Mindmaps' && <MindmapListPage />}
         {activeTab === 'Exams' && (
           <ExamListPage
             setId={Number(setId)}
+            search={examsSearch}
+            privacy={examsPrivacy}
+            createMethod={examsMethod}
+            sort={examsSort}
             onUpdate={handleUpdateExam}
             onDelete={handleDeleteExam}
           />

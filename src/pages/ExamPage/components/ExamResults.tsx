@@ -3,6 +3,7 @@ import {
   CheckCircle,
   XCircle,
   Award,
+  Brain,
   Clock,
   FileText,
   BarChart3,
@@ -58,12 +59,14 @@ import {
   useGenerateReviewExam,
 } from '@/hooks/useReviewBundles';
 import { toast } from 'react-toastify';
+import KnowledgeAnalysisDialog from '@/components/analysis/KnowledgeAnalysisDialog';
 
 interface ExamResultsProps {
   setId: number;
   examId: number;
   exam: Exam;
   result: ExamResult;
+  attemptId?: number;
 }
 
 export default function ExamResults({
@@ -71,6 +74,7 @@ export default function ExamResults({
   examId,
   exam,
   result,
+  attemptId,
 }: ExamResultsProps) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -120,6 +124,8 @@ export default function ExamResults({
   const [detailOpen, setDetailOpen] = useState(false);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailData, setDetailData] = useState<ExamAttemptDetail | null>(null);
+
+  const [analysisOpen, setAnalysisOpen] = useState(false);
 
   // Retry Wrong Answers (Flow 2)
   const [retryOpen, setRetryOpen] = useState(false);
@@ -739,6 +745,18 @@ if (correct === true) {
                   <History className='w-4 h-4' />
                   {t('exam.results.viewHistory')}
                 </Button>
+                {attemptId != null && (
+                  <Button
+                    variant='outline'
+                    className='gap-2 border-[var(--pl-accent)]/40 text-[var(--pl-accent)] hover:bg-[var(--pl-accent)]/5'
+                    onClick={() => setAnalysisOpen(true)}
+                  >
+                    <Brain className='w-4 h-4' />
+                    {t('analysis.actions.analyze', {
+                      defaultValue: 'Analyze my knowledge',
+                    })}
+                  </Button>
+                )}
                 <Button
                   variant='outline'
                   className='gap-2 border-orange-400/50 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950/30 cursor-pointer'
@@ -1146,6 +1164,14 @@ if (correct === true) {
           </div>
         </DialogContent>
       </Dialog>
+
+      {attemptId != null && analysisOpen && (
+        <KnowledgeAnalysisDialog
+          open={analysisOpen}
+          onOpenChange={setAnalysisOpen}
+          target={{ kind: 'exam', setId, examId, attemptId }}
+        />
+      )}
     </TooltipProvider>
   );
 }

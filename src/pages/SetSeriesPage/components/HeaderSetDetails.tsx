@@ -4,22 +4,19 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import {
   BookOpen,
+  Brain,
   ChevronRight,
-  Flame,
   Loader2,
   MoreHorizontal,
   Pencil,
-  Play,
   Trash2,
 } from 'lucide-react';
 
 import CreateNewModal from '@/components/modals/CreateNewModal';
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
-import ModeToggle from '@/components/theme/mode-toggle';
-import NotificationBell from '@/components/notifications/NotificationBell';
-import LanguageToggle from '@/components/language/language-toggle';
+import KnowledgeAnalysisDialog from '@/components/analysis/KnowledgeAnalysisDialog';
 import { useDeleteSet, useSet, useUpdateSet } from '@/hooks/useSets';
-import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 type Props = { setId: string };
 
@@ -43,6 +40,7 @@ const HeaderSetDetails = ({ setId }: Props) => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showActionsMenu, setShowActionsMenu] = useState(false);
+  const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
 
   const handleUpdateSubmit = async (data: {
     title: string;
@@ -80,15 +78,6 @@ const HeaderSetDetails = ({ setId }: Props) => {
 
   const titleDisplay = setDetail?.title ?? '';
   const descriptionDisplay = setDetail?.description ?? '';
-  const numNotes: number =
-    ((setDetail as unknown as Record<string, unknown>)?.numNotes as number) ??
-    0;
-  const numCards: number =
-    ((setDetail as unknown as Record<string, unknown>)?.flashcards as number) ??
-    0;
-  const mastery: number =
-    ((setDetail as unknown as Record<string, unknown>)?.progress as number) ??
-    0;
 
   return (
     <>
@@ -152,46 +141,6 @@ const HeaderSetDetails = ({ setId }: Props) => {
                     {descriptionDisplay}
                   </p>
                 )}
-
-                {/* Stats row */}
-                <div
-                  className={cn(
-                    'flex gap-6 items-center',
-                    !descriptionDisplay && 'mt-4',
-                  )}
-                >
-                  {[
-                    { value: numNotes, label: t('set.header.notes') },
-                    { value: numCards, label: t('set.header.cards') },
-                    { value: `${mastery}%`, label: t('set.header.mastery') },
-                  ].map((stat, i, arr) => (
-                    <div key={stat.label} className='flex items-center gap-6'>
-                      <div>
-                        <div className='tabular-nums text-[20px] font-bold text-[var(--pl-text)] leading-none'>
-                          {stat.value}
-                        </div>
-                        <div className='text-[10px] tracking-[0.14em] uppercase text-[var(--pl-text-faint)] mt-[3px]'>
-                          {stat.label}
-                        </div>
-                      </div>
-                      {i < arr.length - 1 && (
-                        <div className='w-px h-7 bg-[var(--pl-border)]' />
-                      )}
-                    </div>
-                  ))}
-                  <div className='w-px h-7 bg-[var(--pl-border)]' />
-                  <div className='flex items-center gap-[6px]'>
-                    <Flame size={18} style={{ color: 'oklch(0.72 0.17 55)' }} />
-                    <div>
-                      <div className='tabular-nums text-[20px] font-bold text-[var(--pl-text)] leading-none'>
-                        7
-                      </div>
-                      <div className='text-[10px] tracking-[0.14em] uppercase text-[var(--pl-text-faint)] mt-[3px]'>
-                        {t('set.header.streak')}
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </>
             )}
           </div>
@@ -199,48 +148,54 @@ const HeaderSetDetails = ({ setId }: Props) => {
           {/* Actions */}
           <div className='flex flex-col gap-2 items-end shrink-0'>
             <div className='flex items-center gap-2'>
-              <NotificationBell />
-              <ModeToggle />
-              <LanguageToggle />
+              {/* Knowledge Analysis CTA */}
+              {!isLoading && !isError && setDetail && (
+                <Button
+                  onClick={() => setShowAnalysisDialog(true)}
+                  className='rounded-full font-semibold text-[13px] flex items-center gap-2 border-0 cursor-pointer transition-[opacity] duration-150 hover:opacity-[0.88]'
+                >
+                  <Brain size={14} strokeWidth={2.5} />
+                  {t('set.header.analyzeKnowledge', {
+                    defaultValue: 'Analyze my knowledge',
+                  })}
+                </Button>
+              )}
               <div className='w-px h-5 bg-[var(--pl-border)]' />
-              <button
+              <Button
+                variant={'ghost'}
+                size={'icon'}
                 onClick={() => setIsUpdateModalOpen(true)}
                 disabled={isLoading || isError || !setDetail}
-                className='w-[34px] h-[34px] grid place-items-center rounded-lg border border-[var(--pl-border)] bg-transparent text-[var(--pl-text-muted)] cursor-pointer transition-[background] duration-150 hover:bg-[var(--pl-bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed'
+                className='w-[34px] h-[34px] rounded-lg border border-[var(--pl-border)] bg-transparent text-[var(--pl-text-muted)] cursor-pointer transition-[background] duration-150 hover:bg-[var(--pl-bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed'
               >
                 <Pencil size={14} />
-              </button>
+              </Button>
               <div className='relative'>
-                <button
+                <Button
+                  variant={'ghost'}
+                  size={'icon'}
                   onClick={() => setShowActionsMenu((v) => !v)}
                   className='w-[34px] h-[34px] grid place-items-center rounded-lg border border-[var(--pl-border)] bg-transparent text-[var(--pl-text-muted)] cursor-pointer'
                 >
                   <MoreHorizontal size={14} />
-                </button>
+                </Button>
                 {showActionsMenu && (
                   <div className='absolute top-[calc(100%+6px)] right-0 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[10px] p-1 z-50 min-w-[140px] shadow-[0_8px_24px_oklch(0_0_0/0.12)]'>
-                    <button
+                    <Button
+                      variant={'ghost'}
+                      className='w-full flex items-center gap-2 px-3 py-2 rounded-[7px] text-[13px] text-[oklch(0.65_0.2_25)] bg-transparent border-0 cursor-pointer text-left hover:bg-[oklch(0.65_0.2_25/0.1)]'
                       onClick={() => {
                         setShowActionsMenu(false);
                         setShowDeleteDialog(true);
                       }}
-                      className='w-full flex items-center gap-2 px-3 py-2 rounded-[7px] text-[13px] text-[oklch(0.65_0.2_25)] bg-transparent border-0 cursor-pointer text-left hover:bg-[oklch(0.65_0.2_25/0.1)]'
                     >
                       <Trash2 size={14} />
                       {t('set.header.deleteSet')}
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
             </div>
-
-            {/* Continue learning CTA */}
-            {!isLoading && !isError && setDetail && (
-              <button className='mt-1 px-5 py-[10px] bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] rounded-full font-semibold text-[13px] flex items-center gap-2 border-0 cursor-pointer transition-[opacity] duration-150 hover:opacity-[0.88]'>
-                <Play size={12} strokeWidth={2.5} />
-                {t('set.header.continueLearning')}
-              </button>
-            )}
           </div>
         </div>
       </div>
@@ -268,6 +223,14 @@ const HeaderSetDetails = ({ setId }: Props) => {
         title={t('modal.deleteConfirmationTitle')}
         itemName={`"${titleDisplay || t('set.thisSet', { defaultValue: 'this set' })}"`}
       />
+
+      {showAnalysisDialog && (
+        <KnowledgeAnalysisDialog
+          open={showAnalysisDialog}
+          onOpenChange={setShowAnalysisDialog}
+          target={{ kind: 'set', setId: id }}
+        />
+      )}
     </>
   );
 };

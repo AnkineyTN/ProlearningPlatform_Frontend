@@ -1,12 +1,16 @@
-import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Brain, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import KnowledgeAnalysisDialog from "@/components/analysis/KnowledgeAnalysisDialog";
 
 import type { ReviewLog } from "@/services/types/flashcard-session.types";
 import type { Card as Flashcard } from "@/services/types/flashcard.types";
 
 type ResultsViewProps = {
+  setId?: number;
+  flashcardId?: number;
   studiedCards: number;
   totalCards: number;
   flashcards?: Flashcard[];
@@ -28,6 +32,8 @@ type ResultsViewProps = {
 };
 
 const ResultsView = ({
+  setId,
+  flashcardId,
   studiedCards,
   totalCards,
   flashcards = [],
@@ -40,6 +46,12 @@ const ResultsView = ({
   isProgressTrackingEnabled = true,
   sessionResult,
 }: ResultsViewProps) => {
+  const [showAnalysis, setShowAnalysis] = useState(false);
+  const sessionId = sessionResult?.sessionId;
+  const canAnalyze =
+    typeof setId === 'number' &&
+    typeof flashcardId === 'number' &&
+    typeof sessionId === 'number';
   const rawCorrect = sessionResult?.correctCount ?? 0;
   const rawIncorrect = sessionResult?.incorrectCount ?? 0;
 
@@ -198,6 +210,17 @@ const ResultsView = ({
                   Practice with Test
                 </Button>
               )}
+              {canAnalyze && (
+                <Button
+                  variant='outline'
+                  size='lg'
+                  className='cursor-pointer'
+                  onClick={() => setShowAnalysis(true)}
+                >
+                  <Brain className='size-4 mr-2' />
+                  Analyze my knowledge
+                </Button>
+              )}
               {onMatching && (
                 <Button
                   variant='outline'
@@ -228,6 +251,19 @@ const ResultsView = ({
           </CardContent>
         </Card>
       </div>
+
+      {canAnalyze && showAnalysis && (
+        <KnowledgeAnalysisDialog
+          open={showAnalysis}
+          onOpenChange={setShowAnalysis}
+          target={{
+            kind: 'flashcard',
+            setId: setId!,
+            flashcardId: flashcardId!,
+            sessionId: sessionId!,
+          }}
+        />
+      )}
     </div>
   );
 };

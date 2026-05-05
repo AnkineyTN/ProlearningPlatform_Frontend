@@ -31,6 +31,9 @@ export default function ExamPage({ setId, examId }: Props) {
   const [activeAttempt, setActiveAttempt] = useState<ExamAttemptSummary | null>(
     null,
   );
+  const [submittedAttemptId, setSubmittedAttemptId] = useState<number | null>(
+    null,
+  );
   const [isStartingAttempt, setIsStartingAttempt] = useState(false);
 
   const { recordItem, flush } = useSessionTracker({
@@ -104,6 +107,7 @@ export default function ExamPage({ setId, examId }: Props) {
       );
       await flush(Math.round(mapped.percentage));
       setExamResult(mapped);
+      setSubmittedAttemptId(activeAttempt.id);
       setActiveAttempt(null);
       setViewMode('results');
     } catch {
@@ -206,6 +210,7 @@ export default function ExamPage({ setId, examId }: Props) {
         examId={Number(examId)}
         exam={exam}
         result={examResult}
+        attemptId={submittedAttemptId ?? undefined}
       />
     );
   }

@@ -415,7 +415,7 @@ function NotificationRow({
         }
       }}
       className={cn(
-        'flex w-full gap-3 rounded-lg px-2 py-2.5 text-left transition-colors',
+        'flex w-full gap-3 rounded-lg px-2 py-2.5 text-left transition-colors cursor-pointer',
         'hover:bg-[var(--pl-accent-soft)]',
         // Unread items get a 3px left border in the type's icon color and a bg tint.
         !item.isRead && cn('bg-primary/5 border-l-[3px]', config.borderColor),

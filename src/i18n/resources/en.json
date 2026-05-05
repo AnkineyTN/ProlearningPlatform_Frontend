@@ -976,7 +976,8 @@
       "mastery": "Mastery",
       "streak": "Streak",
       "deleteSet": "Delete set",
-      "continueLearning": "Continue learning"
+      "continueLearning": "Continue learning",
+      "analyzeKnowledge": "Analyze my knowledge"
     },
     "actions": {
       "generating": "Generating with AI…",
@@ -988,6 +989,36 @@
       "newRecord": "New record",
       "newItem": "New item"
     }
+  },
+  "analysis": {
+    "title": {
+      "set": "Set knowledge analysis",
+      "flashcard": "Flashcard knowledge analysis",
+      "exam": "Exam knowledge analysis"
+    },
+    "sections": {
+      "topics": "Topic accuracy",
+      "strengths": "Strengths",
+      "weaknesses": "Weaknesses",
+      "improvements": "Suggestions",
+      "contributingSources": "Contributing sources"
+    },
+    "actions": {
+      "analyze": "Analyze my knowledge",
+      "assignAndRetry": "Assign topics and retry",
+      "retry": "Retry"
+    },
+    "errors": {
+      "notFound": "Analysis not found.",
+      "loadFailed": "Could not load analysis.",
+      "unknown": "Something went wrong. Please try again.",
+      "assignFailed": "Failed to assign topics."
+    },
+    "loading": "Analyzing your knowledge…",
+    "noTopics": "Topics are being assigned, please try again shortly.",
+    "setEmpty": "Study a flashcard or take an exam first, then try again.",
+    "stale": "Outdated",
+    "generatedAt": "Generated {{date}}"
   },
   "reviewBundles": {
     "breadcrumb": "Review · Weekly bundles",

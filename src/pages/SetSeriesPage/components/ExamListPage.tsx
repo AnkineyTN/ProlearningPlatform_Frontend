@@ -2,11 +2,10 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import ExamCard, { type ExamCardData } from '@/components/cards/ExamCard';
-import {
-  ResourceFiltersBar,
-  type ListPrivacyFilter,
-  type ListCreateMethodFilter,
-  type ListSortOption,
+import type {
+  ListPrivacyFilter,
+  ListCreateMethodFilter,
+  ListSortOption,
 } from '@/components/lists/ResourceFiltersBar';
 import {
   CardGrid,
@@ -18,34 +17,37 @@ import { useExams } from '@/hooks/useExams';
 
 interface ExamListPageProps {
   setId: number;
+  search: string;
+  privacy: ListPrivacyFilter;
+  createMethod: ListCreateMethodFilter;
+  sort: ListSortOption;
   onUpdate: (exam: ExamCardData) => void;
   onDelete: (examId: number | string) => void;
 }
 
 export default function ExamListPage({
   setId,
+  search,
+  privacy,
+  createMethod,
+  sort,
   onUpdate,
   onDelete,
 }: ExamListPageProps) {
   const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(0);
-  const [listSearch, setListSearch] = useState('');
   const [debouncedQ, setDebouncedQ] = useState('');
-  const [privacyFilter, setPrivacyFilter] = useState<ListPrivacyFilter>('');
-  const [createMethodFilter, setCreateMethodFilter] =
-    useState<ListCreateMethodFilter>('');
-  const [sort, setSort] = useState<ListSortOption>('id,DESC');
   const pageSize = 9;
   const navigate = useNavigate();
 
   useEffect(() => {
-    const t = window.setTimeout(() => setDebouncedQ(listSearch.trim()), 350);
+    const t = window.setTimeout(() => setDebouncedQ(search.trim()), 350);
     return () => window.clearTimeout(t);
-  }, [listSearch]);
+  }, [search]);
 
   useEffect(() => {
     setCurrentPage(0);
-  }, [debouncedQ, privacyFilter, createMethodFilter, sort]);
+  }, [debouncedQ, privacy, createMethod, sort]);
 
   const { data, isLoading, isError } = useExams({
     setId,
@@ -53,8 +55,8 @@ export default function ExamListPage({
     size: pageSize,
     sort,
     q: debouncedQ || undefined,
-    privacy: privacyFilter || undefined,
-    createMethod: createMethodFilter || undefined,
+    privacy: privacy || undefined,
+    createMethod: createMethod || undefined,
   });
 
   const exams = data?.data ?? [];
@@ -62,48 +64,19 @@ export default function ExamListPage({
 
   const handleAccess = (id: string) => navigate(`/sets/${setId}/exams/${id}`);
 
-  const filters = (
-    <ResourceFiltersBar
-      searchValue={listSearch}
-      onSearchChange={setListSearch}
-      privacy={privacyFilter}
-      onPrivacyChange={setPrivacyFilter}
-      createMethod={createMethodFilter}
-      onCreateMethodChange={setCreateMethodFilter}
-      sort={sort}
-      onSortChange={setSort}
-    />
-  );
-
-  if (isLoading)
-    return (
-      <div>
-        {filters}
-        <CardGridSkeleton />
-      </div>
-    );
+  if (isLoading) return <CardGridSkeleton />;
 
   if (isError)
     return (
-      <div>
-        {filters}
-        <div className='py-10 text-center text-[oklch(0.65_0.2_25)] text-[13px]'>
-          {t('list.exams.error')}
-        </div>
+      <div className='py-10 text-center text-[oklch(0.65_0.2_25)] text-[13px]'>
+        {t('list.exams.error')}
       </div>
     );
 
-  if (exams.length === 0)
-    return (
-      <div>
-        {filters}
-        <EmptyState label={t('list.exams.empty')} />
-      </div>
-    );
+  if (exams.length === 0) return <EmptyState label={t('list.exams.empty')} />;
 
   return (
     <div>
-      {filters}
       <CardGrid>
         {exams.map((exam) => (
           <ExamCard

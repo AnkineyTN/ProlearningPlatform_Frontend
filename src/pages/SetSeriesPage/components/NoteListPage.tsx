@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import NoteCard, { type Note } from '@/components/cards/NoteCard';
-import {
-  ResourceFiltersBar,
-  type ListPrivacyFilter,
-} from '@/components/lists/ResourceFiltersBar';
+import type { ListPrivacyFilter } from '@/components/lists/ResourceFiltersBar';
 import {
   CardGrid,
   CardGridSkeleton,
@@ -17,29 +14,35 @@ import { formatDate, getTimeAgo } from '@/lib/utils';
 
 type Props = {
   setId?: number;
+  search: string;
+  privacy: ListPrivacyFilter;
   onUpdate: (note: Note) => void;
   onDelete: (noteId: number) => void;
 };
 
-const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
+const NoteListPage = ({
+  setId: propSetId,
+  search,
+  privacy,
+  onUpdate,
+  onDelete,
+}: Props) => {
   const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(0);
-  const [listSearch, setListSearch] = useState('');
   const [debouncedQ, setDebouncedQ] = useState('');
-  const [privacyFilter, setPrivacyFilter] = useState<ListPrivacyFilter>('');
   const navigate = useNavigate();
   const { setId: paramSetId } = useParams<{ setId: string }>();
-  const pageSize = 6;
+  const pageSize = 12;
   const setId = propSetId || Number(paramSetId);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setDebouncedQ(listSearch.trim()), 350);
+    const t = window.setTimeout(() => setDebouncedQ(search.trim()), 350);
     return () => window.clearTimeout(t);
-  }, [listSearch]);
+  }, [search]);
 
   useEffect(() => {
     setCurrentPage(0);
-  }, [debouncedQ, privacyFilter]);
+  }, [debouncedQ, privacy]);
 
   const {
     data: notesData,
@@ -49,7 +52,7 @@ const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
     page: currentPage,
     size: pageSize,
     q: debouncedQ || undefined,
-    privacy: privacyFilter || undefined,
+    privacy: privacy || undefined,
   });
 
   const notes = notesData?.items || [];
@@ -64,44 +67,19 @@ const NoteListPage = ({ setId: propSetId, onUpdate, onDelete }: Props) => {
       </div>
     );
 
-  const filters = (
-    <ResourceFiltersBar
-      searchValue={listSearch}
-      onSearchChange={setListSearch}
-      privacy={privacyFilter}
-      onPrivacyChange={setPrivacyFilter}
-    />
-  );
-
-  if (isLoading)
-    return (
-      <div>
-        {filters}
-        <CardGridSkeleton />
-      </div>
-    );
+  if (isLoading) return <CardGridSkeleton />;
 
   if (error)
     return (
-      <div>
-        {filters}
-        <div className='py-10 text-center text-red-500 text-[13px]'>
-          {t('list.notes.error')}
-        </div>
+      <div className='py-10 text-center text-red-500 text-[13px]'>
+        {t('list.notes.error')}
       </div>
     );
 
-  if (notes.length === 0)
-    return (
-      <div>
-        {filters}
-        <EmptyState label={t('list.notes.empty')} />
-      </div>
-    );
+  if (notes.length === 0) return <EmptyState label={t('list.notes.empty')} />;
 
   return (
     <div>
-      {filters}
       <CardGrid>
         {notes.map((note) => {
           const noteForUI: Note = {
