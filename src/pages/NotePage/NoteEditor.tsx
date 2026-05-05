@@ -64,6 +64,9 @@ interface NoteEditorInnerProps {
   editable: boolean;
   noteId: number;
   setId: number;
+  /** Persisted note content (BlockNote JSON) loaded from API. Used to hydrate
+   * the Y.Doc the first time we sync if the server's doc is empty. */
+  initialContent: string;
   onContentChange: (content: string) => void;
   onAISummarize: (selectedText: string, response: string) => void;
   innerRef: React.Ref<NoteEditorHandle>;
@@ -76,6 +79,7 @@ function NoteEditorInner({
   editable,
   noteId,
   setId,
+  initialContent,
   onContentChange,
   onAISummarize,
   innerRef,
@@ -98,7 +102,6 @@ function NoteEditorInner({
     useState<BlockNoteEditorClass | null>(null);
   const explainTextMutation = useExplainText();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const blockNoteEditor = useCreateBlockNote({
     collaboration: {
       // Cast provider to any to avoid type mismatch between @hocuspocus/provider and BlockNote's expected type
@@ -114,6 +117,49 @@ function NoteEditorInner({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setEditorInstance(blockNoteEditor as any);
   }, [blockNoteEditor]);
+
+  // Hydrate the Y.Doc from API content the first time we sync.
+  // BlockNote ignores `initialContent` when collaboration is enabled, so the
+  // editor only shows what the Hocuspocus server has in the Y.Doc. If the
+  // server's doc is empty (e.g. first time opening this note, or backend
+  // doesn't seed Y.Doc from DB), the persisted JSON content from the API
+  // would otherwise never appear. After the first sync, if the editor is
+  // still empty, we replace its blocks with the parsed API content.
+  const hydratedRef = useRef(false);
+  useEffect(() => {
+    if (!editorInstance || !initialContent) return;
+    if (hydratedRef.current) return;
+
+    const tryHydrate = () => {
+      if (hydratedRef.current) return;
+      hydratedRef.current = true;
+      const blocks = editorInstance.document;
+      const isEmpty =
+        !blocks ||
+        blocks.length === 0 ||
+        (blocks.length === 1 &&
+          blocks[0].type === 'paragraph' &&
+          (!blocks[0].content ||
+            (Array.isArray(blocks[0].content) &&
+              blocks[0].content.length === 0)));
+      if (!isEmpty) return;
+      try {
+        const parsed = JSON.parse(initialContent) as PartialBlock[];
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          editorInstance.replaceBlocks(editorInstance.document, parsed);
+        }
+      } catch {
+        // invalid JSON — leave editor empty
+      }
+    };
+
+    const onSynced = () => tryHydrate();
+    collab.provider.on('synced', onSynced);
+    if (collab.provider.isSynced) tryHydrate();
+    return () => {
+      collab.provider.off('synced', onSynced);
+    };
+  }, [editorInstance, collab.provider, initialContent]);
 
   // Sync content changes to parent for auto-save
   const handleEditorChange = useCallback(() => {
@@ -556,7 +602,10 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(
         },
       });
 
-      // Track online users via awareness
+      // Track online users via awareness.
+      // Defer the parent setState to a microtask: BlockNote's `useCreateBlockNote`
+      // sets local awareness synchronously during the inner editor's render, which
+      // would otherwise trigger `setState during render of a different component`.
       provider.awareness?.on('change', () => {
         const users: OnlineUser[] = [];
         provider?.awareness?.getStates().forEach((state) => {
@@ -567,7 +616,9 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(
             });
           }
         });
-        onOnlineUsersChange?.(users);
+        queueMicrotask(() => {
+          if (!cancelled) onOnlineUsersChange?.(users);
+        });
       });
 
       if (!cancelled) {
@@ -576,12 +627,22 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(
 
       return () => {
         cancelled = true;
+        const localProvider = provider;
+        const localDoc = yjsDoc;
         setCollabReady(null);
-        provider?.awareness?.setLocalState(null);
-        provider?.disconnect();
-        yjsDoc.destroy();
+        // Defer Yjs/provider tear-down so the inner editor (which holds a
+        // BlockNote instance bound to this Y.Doc fragment) can unmount first.
+        // Destroying the doc synchronously here causes `RangeError: Position
+        // out of range` when BlockNote's observer flushes pending updates
+        // against an already-destroyed doc.
+        setTimeout(() => {
+          localProvider?.awareness?.setLocalState(null);
+          localProvider?.disconnect();
+          localProvider?.destroy();
+          localDoc.destroy();
+        }, 0);
       };
-    }, [noteId, wsUrl]);
+    }, [noteId, onConnStatusChange, onOnlineUsersChange, wsUrl]);
 
     const disconnectedBanner = connStatus === 'disconnected' && collabReady && (
       <div className='flex items-center gap-1.5 px-6 py-1.5 text-xs font-medium border-b border-[var(--bg-warning)] bg-[var(--bg-warning)] text-[var(--text-warning)]'>
@@ -626,6 +687,7 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(
             editable={editable}
             noteId={noteId}
             setId={setId}
+            initialContent={content}
             onContentChange={onContentChange}
             onAISummarize={onAISummarize}
             innerRef={ref}

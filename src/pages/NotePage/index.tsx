@@ -1,26 +1,26 @@
-import "./notes.css";
+import './notes.css';
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
-import { useParams } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import { useParams } from 'react-router-dom';
 
-import { AISummarizePanel } from "@/pages/NotePage/AISummarizePanel";
-import { NoteFilesPanel } from "@/pages/NotePage/NoteFilesPanel";
-import { NoteEditor, type NoteEditorHandle } from "@/pages/NotePage/NoteEditor";
-import { NoteHeader } from "@/pages/NotePage/NoteHeader";
+import { AISummarizePanel } from '@/pages/NotePage/AISummarizePanel';
+import { NoteFilesPanel } from '@/pages/NotePage/NoteFilesPanel';
+import { NoteEditor, type NoteEditorHandle } from '@/pages/NotePage/NoteEditor';
+import { NoteHeader } from '@/pages/NotePage/NoteHeader';
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from "@/components/ui/resizable";
+} from '@/components/ui/resizable';
 import {
   useAutoSaveNote,
   useNoteDetail,
   useNoteFileRegionComments,
-} from "@/hooks/useNotes";
-import { isImageExtension } from "@/lib/utils";
-import type { NoteDocItem } from "@/services/types/note.types";
-import { useAuth } from "@/hooks/useAuth";
+} from '@/hooks/useNotes';
+import { isImageExtension } from '@/lib/utils';
+import type { NoteDocItem } from '@/services/types/note.types';
+import { useAuth } from '@/hooks/useAuth';
 
 interface UploadedFile {
   id: number;
@@ -28,16 +28,16 @@ interface UploadedFile {
   fileUrl: string;
   extension: string;
   publicId: string;
-  kind: "doc" | "image";
+  kind: 'doc' | 'image';
 }
 
 function noteItemToUploadedFile(
   doc: NoteDocItem,
-  kind: UploadedFile["kind"],
+  kind: UploadedFile['kind'],
 ): UploadedFile {
-  const ext = doc.fileName.includes(".")
-    ? doc.fileName.split(".").pop() || ""
-    : "";
+  const ext = doc.fileName.includes('.')
+    ? doc.fileName.split('.').pop() || ''
+    : '';
   return {
     id: doc.assetId,
     fileName: doc.fileName,
@@ -52,18 +52,18 @@ function attachmentKey(f: UploadedFile) {
   return `${f.id}-${f.publicId}`;
 }
 
-function inferKindFromNoteDoc(doc: NoteDocItem): UploadedFile["kind"] {
-  const ext = doc.fileName.includes(".")
-    ? doc.fileName.split(".").pop() || ""
-    : "";
-  return isImageExtension(ext) ? "image" : "doc";
+function inferKindFromNoteDoc(doc: NoteDocItem): UploadedFile['kind'] {
+  const ext = doc.fileName.includes('.')
+    ? doc.fileName.split('.').pop() || ''
+    : '';
+  return isImageExtension(ext) ? 'image' : 'doc';
 }
 
 interface AISummary {
   id: string;
   query: string;
   response: string;
-  type: "text" | "file";
+  type: 'text' | 'file';
 }
 
 export const NotePage = () => {
@@ -73,14 +73,16 @@ export const NotePage = () => {
   }>();
   const numericSetId = setIdParam ? Number(setIdParam) : 0;
   const currentUser = useAuth().user;
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
   const [isEditorReady, setIsEditorReady] = useState(false);
   const [noteFiles, setNoteFiles] = useState<UploadedFile[]>([]);
   const [showFilesPanel, setShowFilesPanel] = useState(true);
   const [showAiPanel, setShowAiPanel] = useState(true);
   const [summaries, setSummaries] = useState<AISummary[]>([]);
-  const [onlineUsers, setOnlineUsers] = useState<{ name: string; color: string }[]>([]);
+  const [onlineUsers, setOnlineUsers] = useState<
+    { name: string; color: string }[]
+  >([]);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const editorRef = useRef<NoteEditorHandle>(null);
 
@@ -115,11 +117,9 @@ export const NotePage = () => {
     const fromDocs = (noteDetail.noteDocs ?? []).map((d) =>
       noteItemToUploadedFile(d, inferKindFromNoteDoc(d)),
     );
-    const fromImgs = (
-      noteDetail.noteImgs ??
-      noteDetail.noteImages ??
-      []
-    ).map((d) => noteItemToUploadedFile(d, "image"));
+    const fromImgs = (noteDetail.noteImgs ?? noteDetail.noteImages ?? []).map(
+      (d) => noteItemToUploadedFile(d, 'image'),
+    );
     const merged = new Map<string, UploadedFile>();
     for (const f of fromDocs) merged.set(attachmentKey(f), f);
     for (const f of fromImgs) merged.set(attachmentKey(f), f);
@@ -146,7 +146,7 @@ export const NotePage = () => {
     }, 5000);
 
     return () => clearTimeout(timer);
-  }, [title, content, noteId]);
+  }, [title, content, noteId, setId]);
 
   const handleTitleChange = (newTitle: string) => {
     setTitle(newTitle);
@@ -168,10 +168,10 @@ export const NotePage = () => {
         {
           onSuccess: () => {
             setLastSavedAt(new Date());
-            toast.success("Note saved successfully");
+            toast.success('Note saved successfully');
           },
           onError: () => {
-            toast.error("Failed to save note");
+            toast.error('Failed to save note');
           },
         },
       );
@@ -180,13 +180,13 @@ export const NotePage = () => {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
         e.preventDefault();
         handleSave();
       }
     };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
   }, [handleSave]);
 
   const handleFileUploaded = useCallback((file: UploadedFile) => {
@@ -206,7 +206,7 @@ export const NotePage = () => {
       id: Date.now().toString(),
       query: selectedText,
       response,
-      type: "text",
+      type: 'text',
     };
 
     setSummaries((prev) => [newSummary, ...prev]);
@@ -218,7 +218,7 @@ export const NotePage = () => {
       id: Date.now().toString(),
       query: `Summarize content of ${fileName}`,
       response: summary,
-      type: "file",
+      type: 'file',
     };
 
     setSummaries((prev) => [newSummary, ...prev]);
@@ -230,7 +230,7 @@ export const NotePage = () => {
   };
 
   const handleDownloadHTML = useCallback(async () => {
-    const editorHtml = await editorRef.current?.getHTML() || "";
+    const editorHtml = (await editorRef.current?.getHTML()) || '';
 
     const htmlContent = `
       <!DOCTYPE html>
@@ -273,17 +273,17 @@ export const NotePage = () => {
       </html>
     `;
 
-    const blob = new Blob([htmlContent], { type: "text/html" });
+    const blob = new Blob([htmlContent], { type: 'text/html' });
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = `${title || "note"}.html`;
+    a.download = `${title || 'note'}.html`;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
 
-    toast.success("Note downloaded successfully");
+    toast.success('Note downloaded successfully');
   }, [title]);
 
   const { data: fileRegionComments = [] } = useNoteFileRegionComments(
@@ -337,7 +337,10 @@ export const NotePage = () => {
       />
 
       <div className='flex-1 overflow-hidden'>
-        <ResizablePanelGroup className='w-full h-full' key={`${hasFilesPanel}-${hasAiPanel}`}>
+        <ResizablePanelGroup
+          className='w-full h-full'
+          key={`${hasFilesPanel}-${hasAiPanel}`}
+        >
           <ResizablePanel defaultSize={editorDefaultSize} minSize={30}>
             {isEditorReady ? (
               <NoteEditor
@@ -348,7 +351,11 @@ export const NotePage = () => {
                 onAISummarize={handleAISummarize}
                 userRole={noteDetail?.userRole ?? 'OWNER'}
                 currentUserId={currentUser?.id ?? 0}
-                currentUserName={currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : 'User'}
+                currentUserName={
+                  currentUser
+                    ? `${currentUser.firstName} ${currentUser.lastName}`
+                    : 'User'
+                }
                 onOnlineUsersChange={setOnlineUsers}
                 lastSavedAt={lastSavedAt}
               />

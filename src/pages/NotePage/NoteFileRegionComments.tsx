@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { ImagePlus } from "lucide-react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
