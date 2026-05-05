@@ -78,7 +78,7 @@ export function MiniCalendar() {
               <button
                 key={d}
                 className={cn(
-                  'aspect-square rounded-[6px] grid place-items-center text-[11px] relative border-0 cursor-pointer',
+                  'rounded-[6px] grid place-items-center text-[11px] relative border-0 cursor-pointer',
                   isToday
                     ? 'bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] font-semibold'
                     : hasActivity

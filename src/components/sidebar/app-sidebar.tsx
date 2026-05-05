@@ -6,20 +6,22 @@ import {
   LayoutList,
   CheckCheck,
   Hourglass,
-  Settings,
   Inbox,
   LogOut,
   User,
   ChevronRight,
   PanelLeftClose,
   PanelLeftOpen,
+  Bell,
 } from 'lucide-react';
 
 import { useAuth, useLogout } from '@/hooks/useAuth';
 import { useReviewBundles } from '@/hooks/useReviewBundles';
+import { useUnreadNotificationCount } from '@/hooks/useNotifications';
 import ColorThemeSwitcher from '@/components/theme/color-theme-switcher';
 import ModeToggle from '@/components/theme/mode-toggle';
 import LanguageToggle from '@/components/language/language-toggle';
+import NotificationDrawer from '@/components/notifications/NotificationDrawer';
 
 import {
   DropdownMenu,
@@ -35,6 +37,7 @@ const AppSidebar = () => {
   const [collapsed, setCollapsed] = useState(
     () => localStorage.getItem(STORAGE_KEY) === 'true',
   );
+  const [notifOpen, setNotifOpen] = useState(false);
 
   const toggle = () => {
     setCollapsed((v) => {
@@ -50,13 +53,22 @@ const AppSidebar = () => {
   const location = useLocation();
   const { data: reviewBundlesData } = useReviewBundles();
   const bundleCount = reviewBundlesData?.data?.length ?? 0;
+  const { data: unreadCount = 0 } = useUnreadNotificationCount();
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
-  const menuItems = [
+  type MenuItem = {
+    title: string;
+    icon: typeof LayoutDashboard;
+    url?: string;
+    onClick?: () => void;
+    badge?: number | string;
+  };
+
+  const menuItems: MenuItem[] = [
     { title: t('sidebar.dashboard'), icon: LayoutDashboard, url: '/dashboard' },
     { title: t('sidebar.setList'), icon: LayoutList, url: '/sets' },
     { title: t('sidebar.todo'), icon: CheckCheck, url: '/todo' },
@@ -67,7 +79,13 @@ const AppSidebar = () => {
       url: '/review-bundles',
       badge: bundleCount > 0 ? bundleCount : undefined,
     },
-    { title: t('sidebar.settings'), icon: Settings, url: '/settings' },
+    {
+      title: t('sidebar.notifications'),
+      icon: Bell,
+      onClick: () => setNotifOpen(true),
+      badge:
+        unreadCount > 0 ? (unreadCount > 99 ? '99+' : unreadCount) : undefined,
+    },
   ];
 
   const initials =
@@ -137,28 +155,28 @@ const AppSidebar = () => {
         )}
       >
         {menuItems.map((item) => {
-          const active =
-            item.url === '/dashboard'
+          const active = item.url
+            ? item.url === '/dashboard'
               ? location.pathname === '/dashboard'
-              : location.pathname.startsWith(item.url);
+              : location.pathname.startsWith(item.url)
+            : false;
 
-          return (
-            <a
-              key={item.url}
-              href={item.url}
-              title={collapsed ? item.title : undefined}
-              className={cn(
-                'flex items-center rounded-[7px] text-[13px] no-underline transition-[background,color] duration-150 relative',
-                collapsed
-                  ? 'justify-center gap-0 py-[10px] px-0'
-                  : 'justify-start gap-[11px] px-[10px] py-2',
-                active
-                  ? 'text-[var(--pl-accent-strong)] bg-[var(--pl-accent-soft)] font-semibold'
-                  : 'text-[var(--pl-text-muted)] bg-transparent font-normal hover:bg-[var(--pl-bg-hover)]',
-              )}
-            >
+          const className = cn(
+            'flex items-center rounded-[7px] text-[13px] no-underline transition-[background,color] duration-150 relative w-full bg-transparent border-0 cursor-pointer',
+            collapsed
+              ? 'justify-center gap-0 py-[10px] px-0'
+              : 'justify-start gap-[11px] px-[10px] py-2',
+            active
+              ? 'text-[var(--pl-accent-strong)] bg-[var(--pl-accent-soft)] font-semibold'
+              : 'text-[var(--pl-text-muted)] font-normal hover:bg-[var(--pl-bg-hover)]',
+          );
+
+          const inner = (
+            <>
               <item.icon size={16} className='shrink-0' />
-              {!collapsed && <span className='flex-1'>{item.title}</span>}
+              {!collapsed && (
+                <span className='flex-1 text-left'>{item.title}</span>
+              )}
               {!collapsed && item.badge !== undefined && (
                 <span className='text-[10px] font-bold min-w-[18px] h-[18px] rounded-full bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] flex items-center justify-center px-[5px] shrink-0'>
                   {item.badge}
@@ -167,6 +185,31 @@ const AppSidebar = () => {
               {collapsed && item.badge !== undefined && (
                 <span className='absolute top-1 right-1 w-2 h-2 rounded-full bg-[var(--pl-accent)]' />
               )}
+            </>
+          );
+
+          if (item.onClick) {
+            return (
+              <button
+                key={item.title}
+                type='button'
+                onClick={item.onClick}
+                title={collapsed ? item.title : undefined}
+                className={className}
+              >
+                {inner}
+              </button>
+            );
+          }
+
+          return (
+            <a
+              key={item.url}
+              href={item.url}
+              title={collapsed ? item.title : undefined}
+              className={className}
+            >
+              {inner}
             </a>
           );
         })}
@@ -277,6 +320,7 @@ const AppSidebar = () => {
           </DropdownMenu>
         </div>
       </div>
+      <NotificationDrawer open={notifOpen} onOpenChange={setNotifOpen} />
     </aside>
   );
 };

@@ -1,1024 +1,1024 @@
 {
-    "adminOnboarding": {
-        "backToDashboard": "Back to dashboard",
-        "analyticsEducation": "Education",
-        "analyticsHearAppFrom": "How they heard about us",
-        "analyticsLoadError": "Could not load analytics.",
-        "analyticsPremium": "Account type (PRO / FREE)",
-        "analyticsTitle": "Analytics",
-        "chartCount": "Count",
-        "chartPercent": "Percent",
-        "colId": "ID",
-        "colSummary": "Summary",
-        "colTime": "Submitted",
-        "colUserId": "User ID",
-        "collapseRow": "Collapse row details",
-        "description": "Submissions and analytics from the server (admin API).",
-        "detailJsonTitle": "Record detail",
-        "expandRow": "Expand row details",
-        "empty": "No submissions on this page.",
-        "forbidden": "You do not have access to this page.",
-        "loadError": "Could not load submissions.",
-        "nextPage": "Next",
-        "planFree": "FREE",
-        "planPremium": "PRO",
-        "prevPage": "Previous",
-        "refresh": "Refresh",
-        "submissionsTitle": "Submissions",
-        "title": "Admin — Onboarding",
-        "totalRegistered": "Registered users",
-        "userIdChip": "· id {{id}}",
-        "notAvailable": "—"
+  "adminOnboarding": {
+    "backToDashboard": "Back to dashboard",
+    "analyticsEducation": "Education",
+    "analyticsHearAppFrom": "How they heard about us",
+    "analyticsLoadError": "Could not load analytics.",
+    "analyticsPremium": "Account type (PRO / FREE)",
+    "analyticsTitle": "Analytics",
+    "chartCount": "Count",
+    "chartPercent": "Percent",
+    "colId": "ID",
+    "colSummary": "Summary",
+    "colTime": "Submitted",
+    "colUserId": "User ID",
+    "collapseRow": "Collapse row details",
+    "description": "Submissions and analytics from the server (admin API).",
+    "detailJsonTitle": "Record detail",
+    "expandRow": "Expand row details",
+    "empty": "No submissions on this page.",
+    "forbidden": "You do not have access to this page.",
+    "loadError": "Could not load submissions.",
+    "nextPage": "Next",
+    "planFree": "FREE",
+    "planPremium": "PRO",
+    "prevPage": "Previous",
+    "refresh": "Refresh",
+    "submissionsTitle": "Submissions",
+    "title": "Admin — Onboarding",
+    "totalRegistered": "Registered users",
+    "userIdChip": "· id {{id}}",
+    "notAvailable": "—"
+  },
+  "adminDashboard": {
+    "accountTypeUnset": "Unchanged",
+    "backToDashboard": "Back to dashboard",
+    "cancel": "Cancel",
+    "colAccountType": "Account",
+    "colActions": "Actions",
+    "colEducation": "Education",
+    "colEmail": "Email",
+    "colHearAppFrom": "Heard from",
+    "colId": "ID",
+    "colLanguage": "Language",
+    "colName": "Name",
+    "colOnboardingAt": "Onboarding done",
+    "colRoles": "Roles",
+    "deleteConfirmAction": "Delete",
+    "deleteConfirmDescription": "Permanently delete {{name}}? This cannot be undone.",
+    "deleteConfirmTitle": "Delete user?",
+    "deleteError": "Could not delete user.",
+    "deleteUser": "Delete user",
+    "description": "Manage users and view onboarding analytics.",
+    "editDialogTitle": "Edit user",
+    "editUser": "Edit user",
+    "emptyUsers": "No users on this page.",
+    "fieldAccountType": "Account type",
+    "fieldFirstName": "First name",
+    "fieldLastName": "Last name",
+    "nextPage": "Next",
+    "prevPage": "Previous",
+    "refresh": "Refresh",
+    "save": "Save",
+    "title": "Admin dashboard",
+    "updateError": "Could not update user.",
+    "userDeleted": "User deleted.",
+    "userUpdated": "User updated.",
+    "usersLoadError": "Could not load users.",
+    "usersTitle": "Users"
+  },
+  "calendar": {
+    "days": {
+      "friday": "Fri",
+      "monday": "Mon",
+      "saturday": "Sat",
+      "sunday": "Sun",
+      "thursday": "Thu",
+      "tuesday": "Tue",
+      "wednesday": "Wed"
     },
-    "adminDashboard": {
-        "accountTypeUnset": "Unchanged",
-        "backToDashboard": "Back to dashboard",
-        "cancel": "Cancel",
-        "colAccountType": "Account",
-        "colActions": "Actions",
-        "colEducation": "Education",
-        "colEmail": "Email",
-        "colHearAppFrom": "Heard from",
-        "colId": "ID",
-        "colLanguage": "Language",
-        "colName": "Name",
-        "colOnboardingAt": "Onboarding done",
-        "colRoles": "Roles",
-        "deleteConfirmAction": "Delete",
-        "deleteConfirmDescription": "Permanently delete {{name}}? This cannot be undone.",
-        "deleteConfirmTitle": "Delete user?",
-        "deleteError": "Could not delete user.",
-        "deleteUser": "Delete user",
-        "description": "Manage users and view onboarding analytics.",
-        "editDialogTitle": "Edit user",
-        "editUser": "Edit user",
-        "emptyUsers": "No users on this page.",
-        "fieldAccountType": "Account type",
-        "fieldFirstName": "First name",
-        "fieldLastName": "Last name",
-        "nextPage": "Next",
-        "prevPage": "Previous",
-        "refresh": "Refresh",
-        "save": "Save",
-        "title": "Admin dashboard",
-        "updateError": "Could not update user.",
-        "userDeleted": "User deleted.",
-        "userUpdated": "User updated.",
-        "usersLoadError": "Could not load users.",
-        "usersTitle": "Users"
+    "months": {
+      "april": "April",
+      "august": "August",
+      "december": "December",
+      "february": "February",
+      "january": "January",
+      "july": "July",
+      "june": "June",
+      "march": "March",
+      "may": "May",
+      "november": "November",
+      "october": "October",
+      "september": "September"
     },
-    "calendar": {
-        "days": {
-            "friday": "Fri",
-            "monday": "Mon",
-            "saturday": "Sat",
-            "sunday": "Sun",
-            "thursday": "Thu",
-            "tuesday": "Tue",
-            "wednesday": "Wed"
-        },
-        "months": {
-            "april": "April",
-            "august": "August",
-            "december": "December",
-            "february": "February",
-            "january": "January",
-            "july": "July",
-            "june": "June",
-            "march": "March",
-            "may": "May",
-            "november": "November",
-            "october": "October",
-            "september": "September"
-        },
-        "targetStudyTime": "Target study time",
-        "yourCalendar": "Your Calendar"
-    },
-    "card": {
-        "checklist": {
-            "seeMore": "See more",
-            "title": "Your checklist today!"
-        },
-        "exam": {
-            "questions_one": "{{count}} question",
-            "questions_other": "{{count}} questions",
-            "minutes": "{{count}} min",
-            "deleteTitle": "Delete Exam"
-        }
-    },
-    "dashboard": {
-        "recentNotes": "Recent notes",
-        "viewAll": "View all",
-        "yourSets": "Your Sets"
-    },
-    "header": {
-        "notifications": "Notifications",
-        "profile": "Profile",
-        "search": "Search...",
-        "welcome": "Welcome back!"
-    },
-    "notificationsPanel": {
-        "title": "Notifications",
-        "tabAll": "All",
-        "tabUnread": "Unread",
-        "sectionEarlier": "Earlier",
-        "seeAll": "See all",
-        "empty": "No notifications yet",
-        "emptyUnread": "You're all caught up",
-        "loadError": "Could not load notifications.",
-        "moreActions": "More options",
-        "createTest": "Create test notification",
-        "markAsRead": "Mark as read",
-        "markAllRead": "Mark all as read"
-    },
-    "landing": {
-        "createAccount": "Create an account",
-        "cta": {
-            "buttonText": "Get Started Free",
-            "description": "Join thousands of learners who are already transforming their careers",
-            "title": "Ready to Start Your Journey?"
-        },
-        "features": {
-            "certifiedPrograms": {
-                "description": "Complete certified programs to enhance your personal profile.",
-                "title": "Certified Programs"
-            },
-            "communityLearning": {
-                "description": "Connect with a community of learners and instructors to exchange knowledge and experiences.",
-                "title": "Community Learning"
-            },
-            "fastTrackLearning": {
-                "description": "Access learning paths designed to help you achieve your goals faster.",
-                "title": "Fast Track Learning"
-            },
-            "interactiveCourses": {
-                "description": "Join interactive courses with hands-on exercises and instant feedback.",
-                "title": "Interactive Courses"
-            }
-        },
-        "footer": {
-            "about": "About Us",
-            "careers": "Careers",
-            "company": "Company",
-            "contact": "Contact",
-            "courses": "Courses",
-            "description": "Empowering learners worldwide with quality education.",
-            "features": "Features",
-            "legal": "Legal",
-            "pricing": "Pricing",
-            "privacy": "Privacy",
-            "product": "Product",
-            "security": "Security",
-            "terms": "Terms of Service"
-        },
-        "getStarted": "Get Started",
-        "intro": {
-            "description": "Master new skills, advance your career, and achieve your goals with expert-led courses and personalized learning paths.",
-            "header": "Transform Your Future Today",
-            "platform": "PLATFORM FOR YOU!",
-            "subheader": "THE BEST LEARNING"
-        },
-        "login": "Log In",
-        "signUp": "Sign Up",
-        "stats": {
-            "activeStudents": "Active Students",
-            "expertInstructors": "Expert Instructors",
-            "qualityCourses": "Quality Courses",
-            "successRate": "Success Rate"
-        },
-        "testimonials": {
-            "emily": {
-                "content": "I love the flexibility and quality of the content. It's definitely worth recommending!"
-            },
-            "michael": {
-                "content": "I have developed my data analysis skills thanks to the in-depth courses and support from the community."
-            },
-            "sarah": {
-                "content": "This platform has changed the way I learn programming. The courses are very practical and easy to follow!"
-            }
-        },
-        "title": {
-            "about": "About us",
-            "features": "Our features",
-            "plans": "Plans",
-            "testimonials": "Loved by Students Worldwide"
-        },
-        "watchDemo": "Watch Demo",
-        "whyChooseUs": "Why Choose ProLearning?",
-        "whyChooseUsDescription": "Experience learning like never before with our cutting-edge platform"
-    },
-    "modal": {
-        "ai": {
-            "chooseFiles": "Choose Files",
-            "fromNotes": "From Notes",
-            "generateWithAI": "Generate with AI",
-            "generating": "Generating...",
-            "header": "Create {{type}} with AI",
-            "selectNotes": "Select notes to create {{type}} from:",
-            "selected": "selected",
-            "uploadFiles": "Upload Files",
-            "uploadedFiles": "Uploaded Files"
-        },
-        "back": "Back",
-        "cancel": "Cancel",
-        "create": "Create",
-        "delete": "Delete",
-        "deleteConfirmation": "Are you sure you want to delete",
-        "deleteConfirmationTitle": "Confirm Delete",
-        "deleteConfirmationWarning": "This action cannot be undone.",
-        "description": "Description",
-        "enterDescription": "Enter description",
-        "generateWithAI": "Generate with AI",
-        "method": {
-            "addImages": "Add images",
-            "aiGeneration": "AI Generation",
-            "customContent": "Custom content",
-            "description": "Select a method to create your {{type}}:",
-            "header": "Create new {{type}}",
-            "importFromText": "Import from text",
-            "manualCreation": "Manual Creation",
-            "multipleSources": "Multiple sources",
-            "quickGeneration": "Quick generation",
-            "smartContentExtraction": "Smart content extraction"
-        },
-        "new": "Create a new {{type}}",
-        "noDescription": "No description available...",
-        "optional": "Optional",
-        "privacy": "Privacy",
-        "privacyRequired": "Privacy is required",
-        "private": "Private",
-        "public": "Public",
-        "thisCard": "this card",
-        "thisFlashcard": "this flashcard",
-        "title": "Title",
-        "titleEmpty": "Title is required",
-        "titleTooLong": "Title must be less than 100 characters",
-        "unlisted": "Unlisted",
-        "update": "Update {{type}}",
-        "updateButton": "Update"
-    },
-    "onboarding": {
-        "back": "Back",
-        "continue": "Continue",
-        "createStudySet": {
-            "charCount": "{{current}}/{{max}}",
-            "createFailed": "Could not create your study set. Please try again.",
-            "createSet": "Create Set",
-            "description": "Create your personalized learning space to organize your study materials",
-            "descriptionLabel": "Description",
-            "descriptionPlaceholder": "Add a description to help you remember what this study set is about...",
-            "keepMaterialsInOnePlace": "Keep all of a class's materials in one place.",
-            "makeManyStudySets": "You can make as many study sets as you want.",
-            "nameLabel": "Study Set Name",
-            "namePlaceholder": "E.g. the name of your class",
-            "optionalTag": "(Optional)",
-            "organizeMaterials": "Organize your materials into separate classes or semesters.",
-            "privacyLabel": "Privacy",
-            "privacyPlaceholder": "Select privacy level",
-            "privacyPrivate": "Private",
-            "privacyPublic": "Public",
-            "privacyUnlisted": "Unlisted",
-            "quickTip1": "Use descriptive names like \"CS101 - Data Structures\"",
-            "quickTip2": "Add semester info: \"Spring 2025 - React Development\"",
-            "quickTip3": "Include your learning goal: \"Mastering AI Fundamentals\"",
-            "quickTips": "Quick Tips",
-            "title": "Name Your First Study Set",
-            "whatIsStudySet": "What is a study set?"
-        },
-        "educationSelection": {
-            "college": "College",
-            "collegeDescription": "Undergraduate degree or equivalent",
-            "description": "Help us personalize your learning experience",
-            "gradSchool": "Grad School",
-            "gradSchoolDescription": "Master's or Doctoral degree",
-            "highSchool": "High School",
-            "highSchoolDescription": "Secondary education completion",
-            "medSchool": "Med School",
-            "medSchoolDescription": "Medical degree program",
-            "other": "Other",
-            "otherDescription": "Alternative or non-traditional education",
-            "title": "What is your education?"
-        },
-        "languageSelection": {
-            "description": "Choose the language you'd like to use for your learning experience",
-            "header": "Choose Your Language",
-            "info": "You can change your language preference anytime in your account settings.",
-            "title": "Choose Your Language"
-        },
-        "loading": "Loading…",
-        "submitting": "Saving…",
-        "submitError": "Could not save your onboarding answers. Please try again.",
-        "submitMissingUser": "You need to be signed in to finish onboarding.",
-        "progress": {
-            "step": "Step {{current}} / {{total}}",
-            "percent": "{{pct}}%"
-        },
-        "premiumSelection": {
-            "badgePopular": "POPULAR",
-            "description": "Select the plan that best suits your learning needs and goals.",
-            "free": "Free",
-            "freeFeatures": {
-                "basicStudyModes": "Basic study modes",
-                "communityAccess": "Community access",
-                "unlimitedStudySets": "Unlimited study sets"
-            },
-            "premium": "Premium",
-            "priceFree": "$0",
-            "pricePremium": "$9.99",
-            "pricePremiumInterval": "/month",
-            "premiumFeatures": {
-                "adFreeExperience": "Ad-free experience",
-                "advancedStudyModes": "Advanced study modes",
-                "everythingInFree": "Everything in Free",
-                "offlineAccess": "Offline access",
-                "prioritySupport": "Priority support"
-            },
-            "selectPremium": "Select Premium",
-            "title": "Choose Your Plan"
-        },
-        "roleSelection": {
-            "description": "This helps us tailor your learning experience to suit your needs and goals.",
-            "header": "What best describes your role?",
-            "student": "Student",
-            "studentDescription": "I'm focused on learning and studying materials",
-            "teacher": "Teacher",
-            "teacherDescription": "I create and share study materials"
-        },
-        "skipForNow": "Skip for now",
-        "sourceSelection": {
-            "channels": {
-                "ChatGPT": "ChatGPT",
-                "Classmate": "Classmate",
-                "Facebook": "Facebook",
-                "Google": "Google",
-                "Instagram": "Instagram",
-                "Other": "Other",
-                "Reddit": "Reddit",
-                "TikTok": "TikTok",
-                "YouTube": "YouTube"
-            },
-            "description": "Help us understand how you discovered our platform so we can improve our reach.",
-            "header": "How did you hear about ProLearning?"
-        }
-    },
-    "setlist": {
-        "all": "All",
-        "completed": "Completed",
-        "creating": "Creating...",
-        "in_progress": "In Progress",
-        "new_set": "New Set",
-        "title": "Set Library",
-        "your_set": "Your Set",
-        "your_workspace": "Your workspace",
-        "searchPlaceholder": "Search sets…"
-    },
-    "sidebar": {
-        "blog": "Blog",
-        "dashboard": "Dashboard",
-        "logout": "Logout",
-        "pomodoro": "Pomodoro",
-        "profile": "Profile",
-        "setList": "Set Library",
-        "settings": "Settings",
-        "socials": "Socials",
-        "todo": "To-Do"
-    },
-    "signin": {
-        "createAccount": "Sign up",
-        "description": "Welcome back! Please sign in to continue.",
-        "email": "Email",
-        "failedGoogleConnect": "Failed to connect with Google",
-        "forgotPassword": "Forgot Password?",
-        "invalidEmail": "Invalid email",
-        "noAccount": "Don't have an account?",
-        "orContinueWith": "Or continue with",
-        "password": "Password",
-        "passwordRequired": "Password is required",
-        "subtitle": "Sign in",
-        "title": "Sign In to Your Account",
-        "wrongCredentials": "Wrong username or password"
-    },
-    "signup": {
-        "confirmPassword": "Confirm Password",
-        "confirmPasswordPlease": "Please confirm your password",
-        "createAccount": "Create Account",
-        "description": "Please fill in the details to get started.",
-        "email": "Email",
-        "emailPlaceholder": "Your email",
-        "failed": "Account already exists",
-        "firstName": "First Name",
-        "firstNameMax": "First name must not exceed 50 characters",
-        "firstNameMin": "First name must be at least 2 characters",
-        "firstNamePlaceholder": "Your first name",
-        "haveAccount": "Already have an account?",
-        "invalidEmail": "Invalid email address",
-        "lastName": "Last Name",
-        "lastNameMax": "Last name must not exceed 50 characters",
-        "lastNameMin": "Last name must be at least 2 characters",
-        "lastNamePlaceholder": "Your last name",
-        "orContinueWith": "Or continue with",
-        "password": "Password",
-        "passwordMax": "Password must not exceed 20 characters",
-        "passwordMin": "Password must be at least 8 characters",
-        "passwordNotMatch": "Passwords don't match",
-        "passwordRequired": "Password is required",
-        "passwordRequirement": "8 or more characters",
-        "signIn": "Sign in",
-        "subtitle": "Sign up",
-        "success": "Account created successfully!",
-        "title": "Create Your Account"
+    "targetStudyTime": "Target study time",
+    "yourCalendar": "Your Calendar"
+  },
+  "card": {
+    "checklist": {
+      "seeMore": "See more",
+      "title": "Your checklist today!"
     },
     "exam": {
-        "back": "Back",
-        "backToExams": "Back to exams",
-        "backToSet": "Back to Set",
-        "booleanFalse": "False",
-        "booleanTrue": "True",
-        "common": {
-            "correct": "Correct",
-            "essay": "Essay",
-            "min": "min",
-            "multipleChoice": "Multiple Choice",
-            "points": "pts",
-            "pointsShort": "points",
-            "trueFalse": "True / False",
-            "yourAnswer": "Your Answer"
-        },
-        "editor": {
-            "addAnswer": "Add Answer",
-            "addFirstQuestion": "Add Your First Question",
-            "addQuestion": "Add Question",
-            "answerN": "Answer {{n}}",
-            "answerRequired": "Answer text is required",
-            "answersHintMcq": "(Select correct answer(s))",
-            "answersLabel": "Answers",
-            "createExam": "Create Exam",
-            "descriptionLabel": "Description (Optional)",
-            "descriptionPlaceholder": "Enter exam description",
-            "editExam": "Edit Exam",
-            "examInfo": "Exam Information",
-            "essayGradingNote": "Essay questions will be graded by AI in the future.",
-            "failedCreate": "Failed to create exam",
-            "failedSave": "Failed to save exam. Please try again.",
-            "fixBeforeSave": "Please fix the highlighted fields before saving",
-            "loading": "Loading exam...",
-            "minOneQuestion": "Exam must have at least one question",
-            "noQuestionsYet": "No questions yet",
-            "pointsLabel": "Points",
-            "questionLabel": "Question",
-            "questionPlaceholder": "Enter your question here...",
-            "questionRequired": "Question text is required",
-            "questionType": "Question Type",
-            "questionsHeading": "Questions ({{count}})",
-            "selectCorrect": "Please select at least one correct answer",
-            "successCreated": "Exam created successfully",
-            "successUpdated": "Exam updated successfully",
-            "timeLimitMinutes": "Time Limit (minutes)",
-            "titleLabel": "Title",
-            "titlePlaceholder": "Enter exam title",
-            "titleRequired": "Title is required",
-            "totalScore": "Total Score",
-            "updateExam": "Update Exam"
-        },
-        "list": {
-            "empty": "No exams yet. Create your first exam to get started.",
-            "loadError": "Failed to load exams. Please try again."
-        },
-        "home": {
-            "beforeStart": "Before you start:",
-            "editExam": "Edit Exam",
-            "hintInternet": "Make sure you have a stable internet connection",
-            "hintNoPause": "You cannot pause the exam once started",
-            "hintProgress": "Your progress will be auto-saved",
-            "hintReview": "Review all questions before submitting your final answers",
-            "questionTypes": "Question Types:",
-            "questions": "Questions",
-            "startExam": "Start Exam",
-            "starting": "Starting…",
-            "timeLimit": "Time Limit",
-            "totalPoints": "Total Points"
-        },
-        "page": {
-            "emptyDescription": "This exam has no questions yet. Add questions in the editor.",
-            "goToEditor": "Go to editor",
-            "loadError": "Failed to load exam. It may not exist or you may not have access.",
-            "loading": "Loading exam...",
-            "backToList": "Back to exam list",
-            "startAttemptError": "Could not start the exam. Please try again.",
-            "submitError": "Could not submit your answers. Please try again."
-        },
-        "results": {
-            "aiExplanation": "AI Explanation",
-            "backToSet": "Back to Set",
-            "congrats": "Congratulations!",
-            "correctBadge": "{{correct}}/{{total}} correct",
-            "correctLabel": "Correct",
-            "examCompleted": "Exam Completed",
-            "examResults": "Exam Results",
-            "expectedAnswer": "Expected answer",
-            "explainAI": "Explain with AI",
-            "feedback": "Feedback",
-            "failedExplanation": "Failed to load explanation. Please try again.",
-            "generatingExplanation": "Generating explanation…",
-            "keepPracticing": "Keep practicing to improve your score",
-            "markReviewed": "Mark as Reviewed",
-            "navReviewed": "Reviewed",
-            "navCorrect": "Correct",
-            "navIncorrect": "Incorrect",
-            "navEssayPending": "Essay – pending grading",
-            "navigatorTitle": "Question Navigator",
-            "noExplanation": "No explanation available.",
-            "passed": "You passed the exam!",
-            "pendingGrading": "Pending Grading",
-            "percentage": "Percentage",
-            "questionReview": "Question Review",
-            "reviewed": "Reviewed ✓",
-            "reviewedCount": "{{done}}/{{total}} reviewed",
-            "reviewExam": "Review Exam",
-            "attemptDetailAnswers": "Answers",
-            "attemptDetailError": "Could not load this attempt.",
-            "attemptDetailLoading": "Loading…",
-            "attemptDetailTitle": "Attempt details",
-            "attemptHistoryEmpty": "No attempts yet.",
-            "attemptHistoryLoadError": "Could not load attempt history.",
-            "attemptHistoryLoading": "Loading history…",
-            "attemptHistoryTitle": "Your attempts",
-            "score": "Score",
-            "timeFormatted": "{{mins}}m {{secs}}s",
-            "timeTaken": "Time Taken",
-            "tableActions": "Actions",
-            "tableAttemptId": "Attempt",
-            "tableScore": "Score",
-            "tableStarted": "Started",
-            "tableStatus": "Status",
-            "tableSubmitted": "Submitted",
-            "viewDetails": "View",
-            "viewExam": "View Exam",
-            "viewHistory": "View History",
-            "yourAnswerLabel": "Your Answer:"
-        },
-        "taking": {
-            "answered": "Answered",
-            "answeredCount": "Answered:",
-            "back": "Back",
-            "continueExam": "Continue Exam",
-            "current": "Current",
-            "essayPlaceholder": "Type your answer here...",
-            "leaveConfirm": "Leave exam",
-            "leaveDescription": "You will return to the exam intro. Your attempt may still be open on the server until it expires or you finish later.",
-            "leaveTitle": "Leave this exam?",
-            "legendNotAnswered": "Not Answered",
-            "next": "Next",
-            "notAnsweredWarning": "You have unanswered questions",
-            "points": "{{n}} points",
-            "previous": "Previous",
-            "questionNofM": "Question {{current}} of {{total}}",
-            "questionsSidebar": "Questions",
-            "submitConfirm": "Are you sure you want to submit your exam? You have answered {{answered}} out of {{total}} questions.",
-            "stayContinue": "Stay",
-            "submitExam": "Submit Exam",
-            "submitting": "Submitting…",
-            "submitTitle": "Submit Exam?",
-            "timeUp": "Time's up! Submitting your exam...",
-            "totalScore": "Total Score:",
-            "unansweredWarning": "Warning: You still have unanswered questions."
-        }
+      "questions_one": "{{count}} question",
+      "questions_other": "{{count}} questions",
+      "minutes": "{{count}} min",
+      "deleteTitle": "Delete Exam"
+    }
+  },
+  "dashboard": {
+    "recentNotes": "Recent notes",
+    "viewAll": "View all",
+    "yourSets": "Your Sets"
+  },
+  "header": {
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "search": "Search...",
+    "welcome": "Welcome back!"
+  },
+  "notificationsPanel": {
+    "title": "Notifications",
+    "tabAll": "All",
+    "tabUnread": "Unread",
+    "sectionEarlier": "Earlier",
+    "seeAll": "See all",
+    "empty": "No notifications yet",
+    "emptyUnread": "You're all caught up",
+    "loadError": "Could not load notifications.",
+    "moreActions": "More options",
+    "createTest": "Create test notification",
+    "markAsRead": "Mark as read",
+    "markAllRead": "Mark all as read"
+  },
+  "landing": {
+    "createAccount": "Create an account",
+    "cta": {
+      "buttonText": "Get Started Free",
+      "description": "Join thousands of learners who are already transforming their careers",
+      "title": "Ready to Start Your Journey?"
     },
-    "profile": {
-        "breadcrumb": "Account",
-        "title": "Your Profile",
-        "subtitle": "Manage your info, plan and learning preferences — only you can see this.",
-        "tabs": {
-            "profile": "Profile",
-            "preferences": "Preferences",
-            "security": "Security",
-            "billing": "Plan & Billing"
-        },
-        "basicInfo": {
-            "title": "Basic Information",
-            "sub": "Display name, email, avatar.",
-            "firstName": "First name",
-            "lastName": "Last name",
-            "email": "Email",
-            "emailHint": "Used for login and notifications.",
-            "accountType": "Account type",
-            "accountTypeHint": "Display only (read-only).",
-            "bio": "Bio",
-            "bioPlaceholder": "A short introduction about yourself…"
-        },
-        "learningProfile": {
-            "title": "Learning Profile",
-            "sub": "Helps ProLearning suggest more relevant content.",
-            "language": "Language",
-            "languagePlaceholder": "Select language",
-            "education": "Education",
-            "educationPlaceholder": "Select education",
-            "hearAppFrom": "Hear app from",
-            "hearAppFromPlaceholder": "Select source"
-        },
-        "actions": {
-            "cancel": "Cancel",
-            "save": "Save changes",
-            "saving": "Saving…"
-        },
-        "preferences": {
-            "notifications": {
-                "title": "Notifications",
-                "sub": "When do you want ProLearning to nudge you?",
-                "push": "Push notifications",
-                "pushDesc": "Reminders for flashcards, goal deadlines.",
-                "email": "Email summaries",
-                "emailDesc": "Weekly recap, new recommended bundles.",
-                "reminders": "Daily streak reminder",
-                "remindersDesc": "A gentle reminder at 8pm if you haven't studied today."
-            },
-            "display": {
-                "title": "Display",
-                "sub": "How you view ProLearning.",
-                "weekStart": "Week starts on",
-                "monday": "Monday",
-                "sunday": "Sunday"
-            }
-        },
-        "security": {
-            "changePassword": {
-                "title": "Change Password",
-                "sub": "New password must be ≥ 8 characters, with letters and numbers.",
-                "currentPassword": "Current password",
-                "newPassword": "New password",
-                "submit": "Change Password"
-            },
-            "dangerZone": {
-                "title": "Danger Zone",
-                "sub": "Actions that cannot be undone.",
-                "deleteAccount": "Delete account",
-                "deleteDesc": "All sets, bundles, notes and progress will be permanently deleted.",
-                "deleteBtn": "Delete account"
-            }
-        },
-        "billing": {
-            "title": "Current Plan",
-            "sub": "You are on the {{plan}} plan.",
-            "planFree": "Free",
-            "planPro": "Pro",
-            "freeDesc": "Upgrade to unlock all features.",
-            "proDesc": "Thank you for using ProLearning.",
-            "upgrade": "Upgrade to Pro",
-            "features": {
-                "unlimited": "Unlimited sets and flashcards",
-                "ai": "AI generate from notes, files, web URLs",
-                "sr": "Spaced repetition + interval scheduling",
-                "export": "Export data to Markdown / Anki",
-                "support": "Priority support via email"
-            }
-        },
-        "toast": {
-            "noUser": "User info not found.",
-            "noChanges": "No changes to update.",
-            "updateSuccess": "Profile updated successfully.",
-            "updateFailed": "Update failed. Please try again."
-        }
+    "features": {
+      "certifiedPrograms": {
+        "description": "Complete certified programs to enhance your personal profile.",
+        "title": "Certified Programs"
+      },
+      "communityLearning": {
+        "description": "Connect with a community of learners and instructors to exchange knowledge and experiences.",
+        "title": "Community Learning"
+      },
+      "fastTrackLearning": {
+        "description": "Access learning paths designed to help you achieve your goals faster.",
+        "title": "Fast Track Learning"
+      },
+      "interactiveCourses": {
+        "description": "Join interactive courses with hands-on exercises and instant feedback.",
+        "title": "Interactive Courses"
+      }
     },
-    "todo": {
-        "breadcrumb": "To-Do · Goals",
-        "title": "What do you want to accomplish today?",
-        "subtitle": "Just write it down — assign to a goal when needed.",
-        "stats": {
-            "completed": "Completed",
-            "pending": "Pending",
-            "total": "Total todos",
-            "goals": "Active goals"
-        },
-        "filters": {
-            "all": "All",
-            "noGoal": "No goal",
-            "completed": "Completed"
-        },
-        "todoList": {
-            "add": "Add",
-            "placeholder": "Quick-add a todo… (Enter to create)",
-            "placeholderGoal": "Add todo to \"{{title}}\"…",
-            "empty": "No todos here yet.",
-            "emptyHint": "Use the input above to add one.",
-            "unassigned": "No goal assigned",
-            "unassignedHint": "Assign to a goal when needed →"
-        },
-        "item": {
-            "editTitle": "Details / edit",
-            "deleteTitle": "Delete",
-            "shortBadge": "short-term"
-        },
-        "priority": {
-            "HIGH": "High",
-            "MEDIUM": "Medium",
-            "LOW": "Low"
-        },
-        "goalStatus": {
-            "IN_PROGRESS": "In Progress",
-            "COMPLETED": "Completed",
-            "ARCHIVED": "Archived"
-        },
-        "goalType": {
-            "LONG": "Long-term (≥ 6 months)",
-            "SHORT": "Short-term (1–6 months)"
-        },
-        "todoType": {
-            "DAILY": "Daily",
-            "WEEKLY": "Weekly"
-        },
-        "todoStatus": {
-            "TODO": "To do",
-            "DONE": "Done",
-            "SKIPPED": "Skipped"
-        },
-        "resource": {
-            "set": "Set",
-            "note": "Note",
-            "flashcard": "Flashcard",
-            "exam": "Exam"
-        },
-        "goalsSidebar": {
-            "goals": "Goals",
-            "newGoalTitle": "Create new goal",
-            "empty": "No goals yet",
-            "createFirst": "Create your first goal →",
-            "progressTitle": "Overall Progress",
-            "progressDetail": "{{done}} done · {{pending}} pending",
-            "shortBadge": "short",
-            "until": "until {{date}}"
-        },
-        "goalModal": {
-            "createTitle": "Create New Goal",
-            "editTitle": "Edit Goal",
-            "goalType": "Goal type",
-            "parentGoal": "Under long-term goal",
-            "namePlaceholder": "Goal name...",
-            "descPlaceholder": "Description (optional)...",
-            "targetDate": "Target date",
-            "color": "Color",
-            "noParent": "-- None --",
-            "cancel": "Cancel",
-            "save": "Save",
-            "create": "Create",
-            "longLabel": "Long-term",
-            "shortLabel": "Short-term",
-            "longDesc": "≥ 6 months",
-            "shortDesc": "1–6 months"
-        },
-        "detailModal": {
-            "title": "Todo Details",
-            "namePlaceholder": "Todo name...",
-            "descPlaceholder": "Description (optional)...",
-            "taskType": "Task type",
-            "status": "Status",
-            "priority": "Priority",
-            "dueDate": "Due date",
-            "goal": "Goal",
-            "noGoal": "-- No goal --",
-            "resources": "Linked resources",
-            "addResource": "Add {{type}}",
-            "noResources": "No resources yet. Use the buttons above to add.",
-            "displayNamePlaceholder": "Display name...",
-            "cancel": "Cancel",
-            "save": "Save",
-            "priorityLow": "Low",
-            "priorityMedium": "Medium",
-            "priorityHigh": "High"
-        },
-        "assignGoal": {
-            "noGoal": "No goal",
-            "unassign": "Remove goal"
-        },
-        "today": {
-            "label": "TODAY",
-            "headline_one": "{{count}} task to ship",
-            "headline_other": "{{count}} tasks to ship",
-            "emptyHeadline": "Nothing scheduled today",
-            "done": "done",
-            "pending": "pending",
-            "empty": "No tasks for today — add one above.",
-            "quickAddPlaceholder": "Quick-add a todo for today..."
-        },
-        "overall": {
-            "title": "Overall Progress",
-            "newGoal": "New goal",
-            "detail": "{{done}} done · {{pending}} pending across {{count}} goals",
-            "longHeader": "Long-term",
-            "shortHeader": "Short-term",
-            "emptyLong": "No long-term goals yet.",
-            "emptyShort": "No short-term goals yet."
-        },
-        "week": {
-            "title": "This Week",
-            "planned_one": "{{count}} planned",
-            "planned_other": "{{count}} planned",
-            "today": "Today",
-            "selectedHeader": "SELECTED DAY",
-            "dayEmpty": "No tasks scheduled for this day.",
-            "more_one": "+ {{count}} more",
-            "more_other": "+ {{count}} more",
-            "addPlaceholder": "Quick-add a todo for {{date}}..."
-        },
-        "year": {
-            "title": "Goals × Year",
-            "subtitle_one": "{{count}} goal scheduled",
-            "subtitle_other": "{{count}} goals scheduled",
-            "progressHint": "Progress: {{progress}}%",
-            "undatedHeader_one": "Undated · {{count}} goal",
-            "undatedHeader_other": "Undated · {{count}} goals"
-        },
-        "toast": {
-            "createFailed": "Failed to create todo",
-            "deleteFailed": "Failed to delete todo",
-            "goalDeleted": "Goal deleted",
-            "goalDeleteFailed": "Failed to delete goal",
-            "goalCreated": "Goal created successfully!",
-            "goalCreateFailed": "Failed to create goal",
-            "goalUpdated": "Goal updated successfully!",
-            "goalUpdateFailed": "Failed to update goal",
-            "todoUpdated": "Todo updated successfully!",
-            "todoUpdateFailed": "Failed to update todo",
-            "goalNameRequired": "Goal name cannot be empty",
-            "todoNameRequired": "Todo name cannot be empty",
-            "invalidId": "Invalid ID",
-            "setIdRequired": "Set ID is required"
-        }
+    "footer": {
+      "about": "About Us",
+      "careers": "Careers",
+      "company": "Company",
+      "contact": "Contact",
+      "courses": "Courses",
+      "description": "Empowering learners worldwide with quality education.",
+      "features": "Features",
+      "legal": "Legal",
+      "pricing": "Pricing",
+      "privacy": "Privacy",
+      "product": "Product",
+      "security": "Security",
+      "terms": "Terms of Service"
     },
+    "getStarted": "Get Started",
+    "intro": {
+      "description": "Master new skills, advance your career, and achieve your goals with expert-led courses and personalized learning paths.",
+      "header": "Transform Your Future Today",
+      "platform": "PLATFORM FOR YOU!",
+      "subheader": "THE BEST LEARNING"
+    },
+    "login": "Log In",
+    "signUp": "Sign Up",
+    "stats": {
+      "activeStudents": "Active Students",
+      "expertInstructors": "Expert Instructors",
+      "qualityCourses": "Quality Courses",
+      "successRate": "Success Rate"
+    },
+    "testimonials": {
+      "emily": {
+        "content": "I love the flexibility and quality of the content. It's definitely worth recommending!"
+      },
+      "michael": {
+        "content": "I have developed my data analysis skills thanks to the in-depth courses and support from the community."
+      },
+      "sarah": {
+        "content": "This platform has changed the way I learn programming. The courses are very practical and easy to follow!"
+      }
+    },
+    "title": {
+      "about": "About us",
+      "features": "Our features",
+      "plans": "Plans",
+      "testimonials": "Loved by Students Worldwide"
+    },
+    "watchDemo": "Watch Demo",
+    "whyChooseUs": "Why Choose ProLearning?",
+    "whyChooseUsDescription": "Experience learning like never before with our cutting-edge platform"
+  },
+  "modal": {
+    "ai": {
+      "chooseFiles": "Choose Files",
+      "fromNotes": "From Notes",
+      "generateWithAI": "Generate with AI",
+      "generating": "Generating...",
+      "header": "Create {{type}} with AI",
+      "selectNotes": "Select notes to create {{type}} from:",
+      "selected": "selected",
+      "uploadFiles": "Upload Files",
+      "uploadedFiles": "Uploaded Files"
+    },
+    "back": "Back",
+    "cancel": "Cancel",
+    "create": "Create",
+    "delete": "Delete",
+    "deleteConfirmation": "Are you sure you want to delete",
+    "deleteConfirmationTitle": "Confirm Delete",
+    "deleteConfirmationWarning": "This action cannot be undone.",
+    "description": "Description",
+    "enterDescription": "Enter description",
+    "generateWithAI": "Generate with AI",
+    "method": {
+      "addImages": "Add images",
+      "aiGeneration": "AI Generation",
+      "customContent": "Custom content",
+      "description": "Select a method to create your {{type}}:",
+      "header": "Create new {{type}}",
+      "importFromText": "Import from text",
+      "manualCreation": "Manual Creation",
+      "multipleSources": "Multiple sources",
+      "quickGeneration": "Quick generation",
+      "smartContentExtraction": "Smart content extraction"
+    },
+    "new": "Create a new {{type}}",
+    "noDescription": "No description available...",
+    "optional": "Optional",
+    "privacy": "Privacy",
+    "privacyRequired": "Privacy is required",
+    "private": "Private",
+    "public": "Public",
+    "thisCard": "this card",
+    "thisFlashcard": "this flashcard",
+    "title": "Title",
+    "titleEmpty": "Title is required",
+    "titleTooLong": "Title must be less than 100 characters",
+    "unlisted": "Unlisted",
+    "update": "Update {{type}}",
+    "updateButton": "Update"
+  },
+  "onboarding": {
+    "back": "Back",
+    "continue": "Continue",
+    "createStudySet": {
+      "charCount": "{{current}}/{{max}}",
+      "createFailed": "Could not create your study set. Please try again.",
+      "createSet": "Create Set",
+      "description": "Create your personalized learning space to organize your study materials",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Add a description to help you remember what this study set is about...",
+      "keepMaterialsInOnePlace": "Keep all of a class's materials in one place.",
+      "makeManyStudySets": "You can make as many study sets as you want.",
+      "nameLabel": "Study Set Name",
+      "namePlaceholder": "E.g. the name of your class",
+      "optionalTag": "(Optional)",
+      "organizeMaterials": "Organize your materials into separate classes or semesters.",
+      "privacyLabel": "Privacy",
+      "privacyPlaceholder": "Select privacy level",
+      "privacyPrivate": "Private",
+      "privacyPublic": "Public",
+      "privacyUnlisted": "Unlisted",
+      "quickTip1": "Use descriptive names like \"CS101 - Data Structures\"",
+      "quickTip2": "Add semester info: \"Spring 2025 - React Development\"",
+      "quickTip3": "Include your learning goal: \"Mastering AI Fundamentals\"",
+      "quickTips": "Quick Tips",
+      "title": "Name Your First Study Set",
+      "whatIsStudySet": "What is a study set?"
+    },
+    "educationSelection": {
+      "college": "College",
+      "collegeDescription": "Undergraduate degree or equivalent",
+      "description": "Help us personalize your learning experience",
+      "gradSchool": "Grad School",
+      "gradSchoolDescription": "Master's or Doctoral degree",
+      "highSchool": "High School",
+      "highSchoolDescription": "Secondary education completion",
+      "medSchool": "Med School",
+      "medSchoolDescription": "Medical degree program",
+      "other": "Other",
+      "otherDescription": "Alternative or non-traditional education",
+      "title": "What is your education?"
+    },
+    "languageSelection": {
+      "description": "Choose the language you'd like to use for your learning experience",
+      "header": "Choose Your Language",
+      "info": "You can change your language preference anytime in your account settings.",
+      "title": "Choose Your Language"
+    },
+    "loading": "Loading…",
+    "submitting": "Saving…",
+    "submitError": "Could not save your onboarding answers. Please try again.",
+    "submitMissingUser": "You need to be signed in to finish onboarding.",
+    "progress": {
+      "step": "Step {{current}} / {{total}}",
+      "percent": "{{pct}}%"
+    },
+    "premiumSelection": {
+      "badgePopular": "POPULAR",
+      "description": "Select the plan that best suits your learning needs and goals.",
+      "free": "Free",
+      "freeFeatures": {
+        "basicStudyModes": "Basic study modes",
+        "communityAccess": "Community access",
+        "unlimitedStudySets": "Unlimited study sets"
+      },
+      "premium": "Premium",
+      "priceFree": "$0",
+      "pricePremium": "$9.99",
+      "pricePremiumInterval": "/month",
+      "premiumFeatures": {
+        "adFreeExperience": "Ad-free experience",
+        "advancedStudyModes": "Advanced study modes",
+        "everythingInFree": "Everything in Free",
+        "offlineAccess": "Offline access",
+        "prioritySupport": "Priority support"
+      },
+      "selectPremium": "Select Premium",
+      "title": "Choose Your Plan"
+    },
+    "roleSelection": {
+      "description": "This helps us tailor your learning experience to suit your needs and goals.",
+      "header": "What best describes your role?",
+      "student": "Student",
+      "studentDescription": "I'm focused on learning and studying materials",
+      "teacher": "Teacher",
+      "teacherDescription": "I create and share study materials"
+    },
+    "skipForNow": "Skip for now",
+    "sourceSelection": {
+      "channels": {
+        "ChatGPT": "ChatGPT",
+        "Classmate": "Classmate",
+        "Facebook": "Facebook",
+        "Google": "Google",
+        "Instagram": "Instagram",
+        "Other": "Other",
+        "Reddit": "Reddit",
+        "TikTok": "TikTok",
+        "YouTube": "YouTube"
+      },
+      "description": "Help us understand how you discovered our platform so we can improve our reach.",
+      "header": "How did you hear about ProLearning?"
+    }
+  },
+  "setlist": {
+    "all": "All",
+    "completed": "Completed",
+    "creating": "Creating...",
+    "in_progress": "In Progress",
+    "new_set": "New Set",
+    "title": "Set Library",
+    "your_set": "Your Set",
+    "your_workspace": "Your workspace",
+    "searchPlaceholder": "Search sets…"
+  },
+  "sidebar": {
+    "blog": "Blog",
+    "dashboard": "Dashboard",
+    "logout": "Logout",
+    "pomodoro": "Pomodoro",
+    "profile": "Profile",
+    "setList": "Set Library",
+    "notifications": "Notifications",
+    "socials": "Socials",
+    "todo": "To-Do"
+  },
+  "signin": {
+    "createAccount": "Sign up",
+    "description": "Welcome back! Please sign in to continue.",
+    "email": "Email",
+    "failedGoogleConnect": "Failed to connect with Google",
+    "forgotPassword": "Forgot Password?",
+    "invalidEmail": "Invalid email",
+    "noAccount": "Don't have an account?",
+    "orContinueWith": "Or continue with",
+    "password": "Password",
+    "passwordRequired": "Password is required",
+    "subtitle": "Sign in",
+    "title": "Sign In to Your Account",
+    "wrongCredentials": "Wrong username or password"
+  },
+  "signup": {
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlease": "Please confirm your password",
+    "createAccount": "Create Account",
+    "description": "Please fill in the details to get started.",
+    "email": "Email",
+    "emailPlaceholder": "Your email",
+    "failed": "Account already exists",
+    "firstName": "First Name",
+    "firstNameMax": "First name must not exceed 50 characters",
+    "firstNameMin": "First name must be at least 2 characters",
+    "firstNamePlaceholder": "Your first name",
+    "haveAccount": "Already have an account?",
+    "invalidEmail": "Invalid email address",
+    "lastName": "Last Name",
+    "lastNameMax": "Last name must not exceed 50 characters",
+    "lastNameMin": "Last name must be at least 2 characters",
+    "lastNamePlaceholder": "Your last name",
+    "orContinueWith": "Or continue with",
+    "password": "Password",
+    "passwordMax": "Password must not exceed 20 characters",
+    "passwordMin": "Password must be at least 8 characters",
+    "passwordNotMatch": "Passwords don't match",
+    "passwordRequired": "Password is required",
+    "passwordRequirement": "8 or more characters",
+    "signIn": "Sign in",
+    "subtitle": "Sign up",
+    "success": "Account created successfully!",
+    "title": "Create Your Account"
+  },
+  "exam": {
+    "back": "Back",
+    "backToExams": "Back to exams",
+    "backToSet": "Back to Set",
+    "booleanFalse": "False",
+    "booleanTrue": "True",
     "common": {
-        "cancel": "Cancel",
-        "close": "Close",
-        "delete": "Delete",
-        "loading": "Loading...",
-        "save": "Save",
-        "saving": "Saving...",
-        "timeAgo": {
-            "minutes_one": "{{count}} minute ago",
-            "minutes_other": "{{count}} minutes ago",
-            "hours_one": "{{count}} hour ago",
-            "hours_other": "{{count}} hours ago",
-            "days_one": "{{count}} day ago",
-            "days_other": "{{count}} days ago"
-        },
-        "edit": "Edit"
+      "correct": "Correct",
+      "essay": "Essay",
+      "min": "min",
+      "multipleChoice": "Multiple Choice",
+      "points": "pts",
+      "pointsShort": "points",
+      "trueFalse": "True / False",
+      "yourAnswer": "Your Answer"
     },
-    "pomodoro": {
-        "start": "Start",
-        "pause": "Pause",
-        "reset": "Reset",
-        "skip": "Skip",
-        "favorite": "Add to favorites",
-        "unfavorite": "Remove from favorites",
-        "completedToday": "Completed pomodoros: {{count}}",
-        "types": {
-            "POMODORO": "Focus",
-            "SHORT_BREAK": "Short break",
-            "LONG_BREAK": "Long break"
-        },
-        "tabs": {
-            "all": "All",
-            "myUploads": "My uploads",
-            "favorites": "Favorites"
-        },
-        "spaces": {
-            "title": "Background spaces",
-            "button": "Spaces",
-            "searchPlaceholder": "Search spaces...",
-            "uploadName": "Name for new space",
-            "upload": "Upload",
-            "uploading": "Uploading...",
-            "empty": "No spaces found.",
-            "confirmDelete": "Delete this space?",
-            "reset": "Default"
-        },
-        "sounds": {
-            "title": "Sound mixer",
-            "button": "Sounds",
-            "searchPlaceholder": "Search sounds...",
-            "uploadName": "Name for new sound",
-            "upload": "Upload",
-            "uploading": "Uploading...",
-            "empty": "No sounds found.",
-            "active": "Active",
-            "remove": "Remove",
-            "clearAll": "Clear all",
-            "confirmDelete": "Delete this sound?"
-        },
-        "settings": {
-            "button": "Settings",
-            "title": "Timer settings",
-            "focus": "Focus",
-            "short": "Short break",
-            "long": "Long break",
-            "minutes": "minutes",
-            "longBreakInterval": "Long break interval",
-            "intervalHint": "Pomodoros before a long break",
-            "autoStartBreak": "Auto-start breaks",
-            "autoStartPomodoro": "Auto-start pomodoros",
-            "invalid": "One or more values are out of range."
-        },
-        "stats": {
-            "button": "Stats",
-            "title": "This week",
-            "focusMinutes": "Focus min",
-            "sessions": "Sessions",
-            "completion": "Completion",
-            "streak": "Streak (days)",
-            "daily": "Daily breakdown",
-            "bestDay": "Best day: {{date}} ({{minutes}} min)"
-        },
-        "toast": {
-            "nameRequired": "Please enter a name first.",
-            "invalidSpaceFile": "Please choose an image or video file.",
-            "invalidSoundFile": "Please choose an audio file.",
-            "uploadFailed": "Upload failed. Please try again.",
-            "spaceCreated": "Space created.",
-            "soundCreated": "Sound added."
-        }
+    "editor": {
+      "addAnswer": "Add Answer",
+      "addFirstQuestion": "Add Your First Question",
+      "addQuestion": "Add Question",
+      "answerN": "Answer {{n}}",
+      "answerRequired": "Answer text is required",
+      "answersHintMcq": "(Select correct answer(s))",
+      "answersLabel": "Answers",
+      "createExam": "Create Exam",
+      "descriptionLabel": "Description (Optional)",
+      "descriptionPlaceholder": "Enter exam description",
+      "editExam": "Edit Exam",
+      "examInfo": "Exam Information",
+      "essayGradingNote": "Essay questions will be graded by AI in the future.",
+      "failedCreate": "Failed to create exam",
+      "failedSave": "Failed to save exam. Please try again.",
+      "fixBeforeSave": "Please fix the highlighted fields before saving",
+      "loading": "Loading exam...",
+      "minOneQuestion": "Exam must have at least one question",
+      "noQuestionsYet": "No questions yet",
+      "pointsLabel": "Points",
+      "questionLabel": "Question",
+      "questionPlaceholder": "Enter your question here...",
+      "questionRequired": "Question text is required",
+      "questionType": "Question Type",
+      "questionsHeading": "Questions ({{count}})",
+      "selectCorrect": "Please select at least one correct answer",
+      "successCreated": "Exam created successfully",
+      "successUpdated": "Exam updated successfully",
+      "timeLimitMinutes": "Time Limit (minutes)",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Enter exam title",
+      "titleRequired": "Title is required",
+      "totalScore": "Total Score",
+      "updateExam": "Update Exam"
     },
     "list": {
-        "filter": {
-            "searchPlaceholder": "Search…",
-            "privacyAll": "All privacy",
-            "public": "Public",
-            "private": "Private",
-            "methodAll": "All methods",
-            "methodManual": "Manual",
-            "methodAI": "AI generated",
-            "methodReview": "Review",
-            "sortNewest": "Newest first",
-            "sortOldest": "Oldest first",
-            "sortTitleAsc": "Title A → Z",
-            "sortTitleDesc": "Title Z → A"
-        },
-        "noDescription": "No description available…",
-        "invalidSetId": "Invalid set ID",
-        "unknownError": "Unknown error",
-        "notes": {
-            "error": "Error loading notes. Please try again.",
-            "empty": "No notes found — create your first note!"
-        },
-        "flashcards": {
-            "error": "Error loading flashcards: {{message}}",
-            "empty": "No flashcards found"
-        },
-        "exams": {
-            "error": "Failed to load exams. Please try again.",
-            "empty": "No exams found"
-        }
+      "empty": "No exams yet. Create your first exam to get started.",
+      "loadError": "Failed to load exams. Please try again."
     },
-    "set": {
-        "breadcrumb": "Set Library",
-        "thisSet": "this set",
-        "header": {
-            "loadError": "Could not load set details.",
-            "notes": "Notes",
-            "cards": "Cards",
-            "mastery": "Mastery",
-            "streak": "Streak",
-            "deleteSet": "Delete set",
-            "continueLearning": "Continue learning"
-        },
-        "actions": {
-            "generating": "Generating with AI…",
-            "creating": "Creating…",
-            "newNote": "New note",
-            "newFlashcard": "New flashcard",
-            "newExam": "New exam",
-            "newMindmap": "New mindmap",
-            "newRecord": "New record",
-            "newItem": "New item"
-        }
+    "home": {
+      "beforeStart": "Before you start:",
+      "editExam": "Edit Exam",
+      "hintInternet": "Make sure you have a stable internet connection",
+      "hintNoPause": "You cannot pause the exam once started",
+      "hintProgress": "Your progress will be auto-saved",
+      "hintReview": "Review all questions before submitting your final answers",
+      "questionTypes": "Question Types:",
+      "questions": "Questions",
+      "startExam": "Start Exam",
+      "starting": "Starting…",
+      "timeLimit": "Time Limit",
+      "totalPoints": "Total Points"
     },
-    "reviewBundles": {
-        "breadcrumb": "Review · Weekly bundles",
-        "title": "Revisit what slipped through",
-        "subtitle": "Cards you missed this week — gathered here so you can lock them in.",
-        "stats": {
-            "bundles": "Pending bundles",
-            "bundlesUnit": "bundles",
-            "bundlesHint": "Waiting for review",
-            "cards": "Cards to review",
-            "cardsUnit": "cards",
-            "cardsHint": "Across all bundles",
-            "sets": "Sets affected",
-            "setsUnit": "sets",
-            "setsHint": "Spread your focus"
-        },
-        "list": {
-            "kicker": "Weekly digests",
-            "title": "All bundles",
-            "count_one": "{{count}} bundle",
-            "count_other": "{{count}} bundles"
-        },
-        "item": {
-            "title": "Bundle #{{id}}",
-            "cardCount_one": "{{count}} miss",
-            "cardCount_other": "{{count}} misses"
-        },
-        "empty": {
-            "title": "Nothing to review right now",
-            "hint": "When you miss flashcards during the week, they'll be bundled here automatically — come back later."
-        },
-        "error": "Could not load bundles. Please try again."
+    "page": {
+      "emptyDescription": "This exam has no questions yet. Add questions in the editor.",
+      "goToEditor": "Go to editor",
+      "loadError": "Failed to load exam. It may not exist or you may not have access.",
+      "loading": "Loading exam...",
+      "backToList": "Back to exam list",
+      "startAttemptError": "Could not start the exam. Please try again.",
+      "submitError": "Could not submit your answers. Please try again."
+    },
+    "results": {
+      "aiExplanation": "AI Explanation",
+      "backToSet": "Back to Set",
+      "congrats": "Congratulations!",
+      "correctBadge": "{{correct}}/{{total}} correct",
+      "correctLabel": "Correct",
+      "examCompleted": "Exam Completed",
+      "examResults": "Exam Results",
+      "expectedAnswer": "Expected answer",
+      "explainAI": "Explain with AI",
+      "feedback": "Feedback",
+      "failedExplanation": "Failed to load explanation. Please try again.",
+      "generatingExplanation": "Generating explanation…",
+      "keepPracticing": "Keep practicing to improve your score",
+      "markReviewed": "Mark as Reviewed",
+      "navReviewed": "Reviewed",
+      "navCorrect": "Correct",
+      "navIncorrect": "Incorrect",
+      "navEssayPending": "Essay – pending grading",
+      "navigatorTitle": "Question Navigator",
+      "noExplanation": "No explanation available.",
+      "passed": "You passed the exam!",
+      "pendingGrading": "Pending Grading",
+      "percentage": "Percentage",
+      "questionReview": "Question Review",
+      "reviewed": "Reviewed ✓",
+      "reviewedCount": "{{done}}/{{total}} reviewed",
+      "reviewExam": "Review Exam",
+      "attemptDetailAnswers": "Answers",
+      "attemptDetailError": "Could not load this attempt.",
+      "attemptDetailLoading": "Loading…",
+      "attemptDetailTitle": "Attempt details",
+      "attemptHistoryEmpty": "No attempts yet.",
+      "attemptHistoryLoadError": "Could not load attempt history.",
+      "attemptHistoryLoading": "Loading history…",
+      "attemptHistoryTitle": "Your attempts",
+      "score": "Score",
+      "timeFormatted": "{{mins}}m {{secs}}s",
+      "timeTaken": "Time Taken",
+      "tableActions": "Actions",
+      "tableAttemptId": "Attempt",
+      "tableScore": "Score",
+      "tableStarted": "Started",
+      "tableStatus": "Status",
+      "tableSubmitted": "Submitted",
+      "viewDetails": "View",
+      "viewExam": "View Exam",
+      "viewHistory": "View History",
+      "yourAnswerLabel": "Your Answer:"
+    },
+    "taking": {
+      "answered": "Answered",
+      "answeredCount": "Answered:",
+      "back": "Back",
+      "continueExam": "Continue Exam",
+      "current": "Current",
+      "essayPlaceholder": "Type your answer here...",
+      "leaveConfirm": "Leave exam",
+      "leaveDescription": "You will return to the exam intro. Your attempt may still be open on the server until it expires or you finish later.",
+      "leaveTitle": "Leave this exam?",
+      "legendNotAnswered": "Not Answered",
+      "next": "Next",
+      "notAnsweredWarning": "You have unanswered questions",
+      "points": "{{n}} points",
+      "previous": "Previous",
+      "questionNofM": "Question {{current}} of {{total}}",
+      "questionsSidebar": "Questions",
+      "submitConfirm": "Are you sure you want to submit your exam? You have answered {{answered}} out of {{total}} questions.",
+      "stayContinue": "Stay",
+      "submitExam": "Submit Exam",
+      "submitting": "Submitting…",
+      "submitTitle": "Submit Exam?",
+      "timeUp": "Time's up! Submitting your exam...",
+      "totalScore": "Total Score:",
+      "unansweredWarning": "Warning: You still have unanswered questions."
     }
+  },
+  "profile": {
+    "breadcrumb": "Account",
+    "title": "Your Profile",
+    "subtitle": "Manage your info, plan and learning preferences — only you can see this.",
+    "tabs": {
+      "profile": "Profile",
+      "preferences": "Preferences",
+      "security": "Security",
+      "billing": "Plan & Billing"
+    },
+    "basicInfo": {
+      "title": "Basic Information",
+      "sub": "Display name, email, avatar.",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "emailHint": "Used for login and notifications.",
+      "accountType": "Account type",
+      "accountTypeHint": "Display only (read-only).",
+      "bio": "Bio",
+      "bioPlaceholder": "A short introduction about yourself…"
+    },
+    "learningProfile": {
+      "title": "Learning Profile",
+      "sub": "Helps ProLearning suggest more relevant content.",
+      "language": "Language",
+      "languagePlaceholder": "Select language",
+      "education": "Education",
+      "educationPlaceholder": "Select education",
+      "hearAppFrom": "Hear app from",
+      "hearAppFromPlaceholder": "Select source"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "save": "Save changes",
+      "saving": "Saving…"
+    },
+    "preferences": {
+      "notifications": {
+        "title": "Notifications",
+        "sub": "When do you want ProLearning to nudge you?",
+        "push": "Push notifications",
+        "pushDesc": "Reminders for flashcards, goal deadlines.",
+        "email": "Email summaries",
+        "emailDesc": "Weekly recap, new recommended bundles.",
+        "reminders": "Daily streak reminder",
+        "remindersDesc": "A gentle reminder at 8pm if you haven't studied today."
+      },
+      "display": {
+        "title": "Display",
+        "sub": "How you view ProLearning.",
+        "weekStart": "Week starts on",
+        "monday": "Monday",
+        "sunday": "Sunday"
+      }
+    },
+    "security": {
+      "changePassword": {
+        "title": "Change Password",
+        "sub": "New password must be ≥ 8 characters, with letters and numbers.",
+        "currentPassword": "Current password",
+        "newPassword": "New password",
+        "submit": "Change Password"
+      },
+      "dangerZone": {
+        "title": "Danger Zone",
+        "sub": "Actions that cannot be undone.",
+        "deleteAccount": "Delete account",
+        "deleteDesc": "All sets, bundles, notes and progress will be permanently deleted.",
+        "deleteBtn": "Delete account"
+      }
+    },
+    "billing": {
+      "title": "Current Plan",
+      "sub": "You are on the {{plan}} plan.",
+      "planFree": "Free",
+      "planPro": "Pro",
+      "freeDesc": "Upgrade to unlock all features.",
+      "proDesc": "Thank you for using ProLearning.",
+      "upgrade": "Upgrade to Pro",
+      "features": {
+        "unlimited": "Unlimited sets and flashcards",
+        "ai": "AI generate from notes, files, web URLs",
+        "sr": "Spaced repetition + interval scheduling",
+        "export": "Export data to Markdown / Anki",
+        "support": "Priority support via email"
+      }
+    },
+    "toast": {
+      "noUser": "User info not found.",
+      "noChanges": "No changes to update.",
+      "updateSuccess": "Profile updated successfully.",
+      "updateFailed": "Update failed. Please try again."
+    }
+  },
+  "todo": {
+    "breadcrumb": "To-Do · Goals",
+    "title": "What do you want to accomplish today?",
+    "subtitle": "Just write it down — assign to a goal when needed.",
+    "stats": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "total": "Total todos",
+      "goals": "Active goals"
+    },
+    "filters": {
+      "all": "All",
+      "noGoal": "No goal",
+      "completed": "Completed"
+    },
+    "todoList": {
+      "add": "Add",
+      "placeholder": "Quick-add a todo… (Enter to create)",
+      "placeholderGoal": "Add todo to \"{{title}}\"…",
+      "empty": "No todos here yet.",
+      "emptyHint": "Use the input above to add one.",
+      "unassigned": "No goal assigned",
+      "unassignedHint": "Assign to a goal when needed →"
+    },
+    "item": {
+      "editTitle": "Details / edit",
+      "deleteTitle": "Delete",
+      "shortBadge": "short-term"
+    },
+    "priority": {
+      "HIGH": "High",
+      "MEDIUM": "Medium",
+      "LOW": "Low"
+    },
+    "goalStatus": {
+      "IN_PROGRESS": "In Progress",
+      "COMPLETED": "Completed",
+      "ARCHIVED": "Archived"
+    },
+    "goalType": {
+      "LONG": "Long-term (≥ 6 months)",
+      "SHORT": "Short-term (1–6 months)"
+    },
+    "todoType": {
+      "DAILY": "Daily",
+      "WEEKLY": "Weekly"
+    },
+    "todoStatus": {
+      "TODO": "To do",
+      "DONE": "Done",
+      "SKIPPED": "Skipped"
+    },
+    "resource": {
+      "set": "Set",
+      "note": "Note",
+      "flashcard": "Flashcard",
+      "exam": "Exam"
+    },
+    "goalsSidebar": {
+      "goals": "Goals",
+      "newGoalTitle": "Create new goal",
+      "empty": "No goals yet",
+      "createFirst": "Create your first goal →",
+      "progressTitle": "Overall Progress",
+      "progressDetail": "{{done}} done · {{pending}} pending",
+      "shortBadge": "short",
+      "until": "until {{date}}"
+    },
+    "goalModal": {
+      "createTitle": "Create New Goal",
+      "editTitle": "Edit Goal",
+      "goalType": "Goal type",
+      "parentGoal": "Under long-term goal",
+      "namePlaceholder": "Goal name...",
+      "descPlaceholder": "Description (optional)...",
+      "targetDate": "Target date",
+      "color": "Color",
+      "noParent": "-- None --",
+      "cancel": "Cancel",
+      "save": "Save",
+      "create": "Create",
+      "longLabel": "Long-term",
+      "shortLabel": "Short-term",
+      "longDesc": "≥ 6 months",
+      "shortDesc": "1–6 months"
+    },
+    "detailModal": {
+      "title": "Todo Details",
+      "namePlaceholder": "Todo name...",
+      "descPlaceholder": "Description (optional)...",
+      "taskType": "Task type",
+      "status": "Status",
+      "priority": "Priority",
+      "dueDate": "Due date",
+      "goal": "Goal",
+      "noGoal": "-- No goal --",
+      "resources": "Linked resources",
+      "addResource": "Add {{type}}",
+      "noResources": "No resources yet. Use the buttons above to add.",
+      "displayNamePlaceholder": "Display name...",
+      "cancel": "Cancel",
+      "save": "Save",
+      "priorityLow": "Low",
+      "priorityMedium": "Medium",
+      "priorityHigh": "High"
+    },
+    "assignGoal": {
+      "noGoal": "No goal",
+      "unassign": "Remove goal"
+    },
+    "today": {
+      "label": "TODAY",
+      "headline_one": "{{count}} task to ship",
+      "headline_other": "{{count}} tasks to ship",
+      "emptyHeadline": "Nothing scheduled today",
+      "done": "done",
+      "pending": "pending",
+      "empty": "No tasks for today — add one above.",
+      "quickAddPlaceholder": "Quick-add a todo for today..."
+    },
+    "overall": {
+      "title": "Overall Progress",
+      "newGoal": "New goal",
+      "detail": "{{done}} done · {{pending}} pending across {{count}} goals",
+      "longHeader": "Long-term",
+      "shortHeader": "Short-term",
+      "emptyLong": "No long-term goals yet.",
+      "emptyShort": "No short-term goals yet."
+    },
+    "week": {
+      "title": "This Week",
+      "planned_one": "{{count}} planned",
+      "planned_other": "{{count}} planned",
+      "today": "Today",
+      "selectedHeader": "SELECTED DAY",
+      "dayEmpty": "No tasks scheduled for this day.",
+      "more_one": "+ {{count}} more",
+      "more_other": "+ {{count}} more",
+      "addPlaceholder": "Quick-add a todo for {{date}}..."
+    },
+    "year": {
+      "title": "Goals × Year",
+      "subtitle_one": "{{count}} goal scheduled",
+      "subtitle_other": "{{count}} goals scheduled",
+      "progressHint": "Progress: {{progress}}%",
+      "undatedHeader_one": "Undated · {{count}} goal",
+      "undatedHeader_other": "Undated · {{count}} goals"
+    },
+    "toast": {
+      "createFailed": "Failed to create todo",
+      "deleteFailed": "Failed to delete todo",
+      "goalDeleted": "Goal deleted",
+      "goalDeleteFailed": "Failed to delete goal",
+      "goalCreated": "Goal created successfully!",
+      "goalCreateFailed": "Failed to create goal",
+      "goalUpdated": "Goal updated successfully!",
+      "goalUpdateFailed": "Failed to update goal",
+      "todoUpdated": "Todo updated successfully!",
+      "todoUpdateFailed": "Failed to update todo",
+      "goalNameRequired": "Goal name cannot be empty",
+      "todoNameRequired": "Todo name cannot be empty",
+      "invalidId": "Invalid ID",
+      "setIdRequired": "Set ID is required"
+    }
+  },
+  "common": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "save": "Save",
+    "saving": "Saving...",
+    "timeAgo": {
+      "minutes_one": "{{count}} minute ago",
+      "minutes_other": "{{count}} minutes ago",
+      "hours_one": "{{count}} hour ago",
+      "hours_other": "{{count}} hours ago",
+      "days_one": "{{count}} day ago",
+      "days_other": "{{count}} days ago"
+    },
+    "edit": "Edit"
+  },
+  "pomodoro": {
+    "start": "Start",
+    "pause": "Pause",
+    "reset": "Reset",
+    "skip": "Skip",
+    "favorite": "Add to favorites",
+    "unfavorite": "Remove from favorites",
+    "completedToday": "Completed pomodoros: {{count}}",
+    "types": {
+      "POMODORO": "Focus",
+      "SHORT_BREAK": "Short break",
+      "LONG_BREAK": "Long break"
+    },
+    "tabs": {
+      "all": "All",
+      "myUploads": "My uploads",
+      "favorites": "Favorites"
+    },
+    "spaces": {
+      "title": "Background spaces",
+      "button": "Spaces",
+      "searchPlaceholder": "Search spaces...",
+      "uploadName": "Name for new space",
+      "upload": "Upload",
+      "uploading": "Uploading...",
+      "empty": "No spaces found.",
+      "confirmDelete": "Delete this space?",
+      "reset": "Default"
+    },
+    "sounds": {
+      "title": "Sound mixer",
+      "button": "Sounds",
+      "searchPlaceholder": "Search sounds...",
+      "uploadName": "Name for new sound",
+      "upload": "Upload",
+      "uploading": "Uploading...",
+      "empty": "No sounds found.",
+      "active": "Active",
+      "remove": "Remove",
+      "clearAll": "Clear all",
+      "confirmDelete": "Delete this sound?"
+    },
+    "settings": {
+      "button": "Settings",
+      "title": "Timer settings",
+      "focus": "Focus",
+      "short": "Short break",
+      "long": "Long break",
+      "minutes": "minutes",
+      "longBreakInterval": "Long break interval",
+      "intervalHint": "Pomodoros before a long break",
+      "autoStartBreak": "Auto-start breaks",
+      "autoStartPomodoro": "Auto-start pomodoros",
+      "invalid": "One or more values are out of range."
+    },
+    "stats": {
+      "button": "Stats",
+      "title": "This week",
+      "focusMinutes": "Focus min",
+      "sessions": "Sessions",
+      "completion": "Completion",
+      "streak": "Streak (days)",
+      "daily": "Daily breakdown",
+      "bestDay": "Best day: {{date}} ({{minutes}} min)"
+    },
+    "toast": {
+      "nameRequired": "Please enter a name first.",
+      "invalidSpaceFile": "Please choose an image or video file.",
+      "invalidSoundFile": "Please choose an audio file.",
+      "uploadFailed": "Upload failed. Please try again.",
+      "spaceCreated": "Space created.",
+      "soundCreated": "Sound added."
+    }
+  },
+  "list": {
+    "filter": {
+      "searchPlaceholder": "Search…",
+      "privacyAll": "All privacy",
+      "public": "Public",
+      "private": "Private",
+      "methodAll": "All methods",
+      "methodManual": "Manual",
+      "methodAI": "AI generated",
+      "methodReview": "Review",
+      "sortNewest": "Newest first",
+      "sortOldest": "Oldest first",
+      "sortTitleAsc": "Title A → Z",
+      "sortTitleDesc": "Title Z → A"
+    },
+    "noDescription": "No description available…",
+    "invalidSetId": "Invalid set ID",
+    "unknownError": "Unknown error",
+    "notes": {
+      "error": "Error loading notes. Please try again.",
+      "empty": "No notes found — create your first note!"
+    },
+    "flashcards": {
+      "error": "Error loading flashcards: {{message}}",
+      "empty": "No flashcards found"
+    },
+    "exams": {
+      "error": "Failed to load exams. Please try again.",
+      "empty": "No exams found"
+    }
+  },
+  "set": {
+    "breadcrumb": "Set Library",
+    "thisSet": "this set",
+    "header": {
+      "loadError": "Could not load set details.",
+      "notes": "Notes",
+      "cards": "Cards",
+      "mastery": "Mastery",
+      "streak": "Streak",
+      "deleteSet": "Delete set",
+      "continueLearning": "Continue learning"
+    },
+    "actions": {
+      "generating": "Generating with AI…",
+      "creating": "Creating…",
+      "newNote": "New note",
+      "newFlashcard": "New flashcard",
+      "newExam": "New exam",
+      "newMindmap": "New mindmap",
+      "newRecord": "New record",
+      "newItem": "New item"
+    }
+  },
+  "reviewBundles": {
+    "breadcrumb": "Review · Weekly bundles",
+    "title": "Revisit what slipped through",
+    "subtitle": "Cards you missed this week — gathered here so you can lock them in.",
+    "stats": {
+      "bundles": "Pending bundles",
+      "bundlesUnit": "bundles",
+      "bundlesHint": "Waiting for review",
+      "cards": "Cards to review",
+      "cardsUnit": "cards",
+      "cardsHint": "Across all bundles",
+      "sets": "Sets affected",
+      "setsUnit": "sets",
+      "setsHint": "Spread your focus"
+    },
+    "list": {
+      "kicker": "Weekly digests",
+      "title": "All bundles",
+      "count_one": "{{count}} bundle",
+      "count_other": "{{count}} bundles"
+    },
+    "item": {
+      "title": "Bundle #{{id}}",
+      "cardCount_one": "{{count}} miss",
+      "cardCount_other": "{{count}} misses"
+    },
+    "empty": {
+      "title": "Nothing to review right now",
+      "hint": "When you miss flashcards during the week, they'll be bundled here automatically — come back later."
+    },
+    "error": "Could not load bundles. Please try again."
+  }
 }
