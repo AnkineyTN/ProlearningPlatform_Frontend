@@ -1,6 +1,6 @@
-import { FileText, Clock } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useState } from "react";
+import { FileText, Clock } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useState } from 'react';
 
 export interface Note {
   id: number;
@@ -34,7 +34,12 @@ const NoteCardSelect = ({ note, onSelected, isSelected }: Props) => {
         <Checkbox checked={checked} />
       </div>
 
-      <h2 className='font-semibold mb-1'>{note.title}</h2>
+      <h2
+        className='font-semibold mb-1'
+        style={{ fontFamily: 'var(--font-display)' }}
+      >
+        {note.title}
+      </h2>
       <p className='text-sm text-muted-foreground mb-4'>{note.description}</p>
       <div className='flex justify-between items-center text-xs text-muted-foreground'>
         <span className='flex items-center gap-1'>

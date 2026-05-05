@@ -133,7 +133,10 @@ const HeaderSetDetails = ({ setId }: Props) => {
               </p>
             ) : (
               <>
-                <h1 className='text-[36px] font-bold tracking-[-0.025em] text-[var(--pl-text)] m-0 mb-[6px] leading-[1.1] overflow-hidden text-ellipsis whitespace-nowrap'>
+                <h1
+                  style={{ fontFamily: 'var(--font-display)' }}
+                  className='text-[36px] font-bold tracking-[-0.025em] text-[var(--pl-text)] m-0 mb-[6px] leading-[1.1] overflow-hidden text-ellipsis whitespace-nowrap'
+                >
                   {titleDisplay || '—'}
                 </h1>
                 {descriptionDisplay && (

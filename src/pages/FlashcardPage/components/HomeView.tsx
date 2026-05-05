@@ -229,9 +229,9 @@ const HomeView = ({
 
   return (
     <>
-      <div className='max-w-5xl mx-auto px-6 py-8'>
+      <div className='max-w-5xl mx-auto p-6'>
         {/* Action bar */}
-        <div className='flex items-center gap-2 mb-7'>
+        <div className='flex items-center gap-2 mb-2'>
           <Button onClick={onStudy} className='gap-2 text-sm' size='sm'>
             <Brain className='w-4 h-4' />
             Study

@@ -194,7 +194,7 @@ function NoteEditorInner({
     [editorInstance],
   );
 
-  // Text selection for AI explain — scoped to editor container only
+  // Text selection for AI Explain — scoped to editor container only
   useEffect(() => {
     const handleMouseUp = () => {
       const selection = window.getSelection();
@@ -218,9 +218,12 @@ function NoteEditorInner({
       setSelectedText(text);
       const rect = range.getBoundingClientRect();
       const editorRect = container.getBoundingClientRect();
+      // Place button to the LEFT of the selection, vertically centered with it
+      const buttonWidth = 130;
+      const xRaw = rect.left - editorRect.left - buttonWidth - 8;
       setTooltipPos({
-        x: rect.left - editorRect.left,
-        y: rect.top - editorRect.top - 40,
+        x: Math.max(6, xRaw),
+        y: rect.top - editorRect.top,
       });
       setShowSummarizeBtn(true);
     };
@@ -243,8 +246,8 @@ function NoteEditorInner({
   }, []);
 
   const handleAISummarize = useCallback(async () => {
-    if (!selectedText || !setId || !noteId) {
-      if (!selectedText) return;
+    if (!selectedText) return;
+    if (!setId || !noteId) {
       toast.error('Invalid note');
       return;
     }
@@ -277,10 +280,10 @@ function NoteEditorInner({
       {showSummarizeBtn && selectedText && (
         <div
           ref={tooltipRef}
-          className='fixed rounded-lg shadow-lg bg-[var(--pl-bg)] z-50 flex items-center gap-2'
+          className='absolute rounded-lg shadow-lg bg-[var(--pl-bg)] z-50 flex items-center gap-2'
           style={{
-            left: `${(editorContainerRef.current?.getBoundingClientRect().left ?? 0) + tooltipPos.x}px`,
-            top: `${(editorContainerRef.current?.getBoundingClientRect().top ?? 0) + tooltipPos.y}px`,
+            right: `${(editorContainerRef.current?.getBoundingClientRect().left ?? 0) + tooltipPos.x + 20}px`,
+            top: `${tooltipPos.y}px`,
           }}
         >
           <Button
@@ -405,22 +408,32 @@ function NoteEditorFallback({
     const handleMouseUp = () => {
       const selection = window.getSelection();
       const text = selection?.toString().trim() || '';
-      if (text.length > 0) {
-        setSelectedText(text);
-        const range = selection?.getRangeAt(0);
-        if (range && editorContainerRef.current) {
-          const rect = range.getBoundingClientRect();
-          const editorRect = editorContainerRef.current.getBoundingClientRect();
-          setTooltipPos({
-            x: rect.left - editorRect.left,
-            y: rect.top - editorRect.top - 40,
-          });
-          setShowSummarizeBtn(true);
-        }
-      } else {
+      if (!text || !selection || selection.rangeCount === 0) {
         setShowSummarizeBtn(false);
         setSelectedText('');
+        return;
       }
+      const range = selection.getRangeAt(0);
+      const container = editorContainerRef.current;
+      if (
+        !container ||
+        !container.contains(range.startContainer) ||
+        !container.contains(range.endContainer)
+      ) {
+        setShowSummarizeBtn(false);
+        setSelectedText('');
+        return;
+      }
+      setSelectedText(text);
+      const rect = range.getBoundingClientRect();
+      const editorRect = container.getBoundingClientRect();
+      const buttonWidth = 130;
+      const xRaw = rect.left - editorRect.left - buttonWidth - 8;
+      setTooltipPos({
+        x: Math.max(8, xRaw),
+        y: rect.top - editorRect.top,
+      });
+      setShowSummarizeBtn(true);
     };
     document.addEventListener('mouseup', handleMouseUp);
     return () => document.removeEventListener('mouseup', handleMouseUp);
@@ -475,10 +488,10 @@ function NoteEditorFallback({
       {showSummarizeBtn && selectedText && (
         <div
           ref={tooltipRef}
-          className='fixed rounded-lg shadow-lg bg-[var(--pl-bg)] z-50 flex items-center gap-2'
+          className='absolute rounded-lg shadow-lg bg-[var(--pl-bg)] z-50 flex items-center gap-2'
           style={{
-            left: `${(editorContainerRef.current?.getBoundingClientRect().left ?? 0) + tooltipPos.x}px`,
-            top: `${(editorContainerRef.current?.getBoundingClientRect().top ?? 0) + tooltipPos.y}px`,
+            right: `${(editorContainerRef.current?.getBoundingClientRect().left ?? 0) + tooltipPos.x + 20}px`,
+            top: `${tooltipPos.y}px`,
           }}
         >
           <Button

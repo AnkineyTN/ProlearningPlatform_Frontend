@@ -1,5 +1,6 @@
 import {
   ArrowLeft,
+  Download,
   FileText,
   Link2,
   Loader2,
@@ -8,7 +9,7 @@ import {
   FileX,
   Repeat2,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
@@ -105,6 +106,63 @@ const ExamAISourceModal = ({
   const [freeText, setFreeText] = useState('');
   const [sampleFile, setSampleFile] = useState<File | null>(null);
   const [similarDesc, setSimilarDesc] = useState('');
+  const [previewFile, setPreviewFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewText, setPreviewText] = useState<string | null>(null);
+
+  const getFileKind = (file: File): 'pdf' | 'txt' | 'download' => {
+    const name = file.name.toLowerCase();
+    if (file.type === 'application/pdf' || name.endsWith('.pdf')) return 'pdf';
+    if (file.type.startsWith('text/') || name.endsWith('.txt')) return 'txt';
+    return 'download';
+  };
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
+  const downloadFile = (file: File) => {
+    const url = URL.createObjectURL(file);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = file.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleFileClick = async (file: File) => {
+    const kind = getFileKind(file);
+    if (kind === 'pdf') {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      setPreviewText(null);
+      setPreviewFile(file);
+    } else if (kind === 'txt') {
+      const text = await file.text();
+      setPreviewUrl(null);
+      setPreviewText(text);
+      setPreviewFile(file);
+    } else {
+      downloadFile(file);
+    }
+  };
+
+  const closePreview = () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
+    setPreviewText(null);
+    setPreviewFile(null);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
 
   const { data: notesData } = useNotesBySet(setId, { page: 0, size: 20 });
   const notes = notesData?.items || [];
@@ -181,6 +239,7 @@ const ExamAISourceModal = ({
   };
 
   return (
+    <>
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
@@ -317,7 +376,7 @@ const ExamAISourceModal = ({
               <div className='w-full border-2 border-dashed border-ring rounded-lg p-6 text-center hover:border-foreground transition-colors'>
                 <Upload className='w-10 h-10 mx-auto mb-3 text-muted-foreground' />
                 <p className='text-sm text-muted-foreground mb-3'>
-                  PDF, DOCX, TXT (Maximum 3 files)
+                  PDF, DOCX, PPTX, TXT (Maximum 3 files)
                 </p>
                 <label className='inline-block'>
                   <input
@@ -327,7 +386,7 @@ const ExamAISourceModal = ({
                       if (!isLoading) handleFileUpload(e);
                     }}
                     className='hidden'
-                    accept='.pdf,.docx,.txt,.doc'
+                    accept='.pdf,.docx,.txt,.doc,.pptx'
                     disabled={isLoading}
                   />
                   <span
@@ -344,25 +403,64 @@ const ExamAISourceModal = ({
 
               {uploadedFiles.length > 0 && (
                 <div className='w-full mt-3 space-y-2'>
-                  {uploadedFiles.map((file, index) => (
-                    <div
-                      key={index}
-                      className='flex items-center justify-between p-2 bg-[var(--pl-bg)] rounded border border-border'
-                    >
-                      <span className='text-sm truncate'>{file.name}</span>
+                  {uploadedFiles.map((file, index) => {
+                    const kind = getFileKind(file);
+                    const actionLabel =
+                      kind === 'download'
+                        ? t('modal.ai.downloadToOpen', {
+                            defaultValue: 'Click to download',
+                          })
+                        : t('modal.ai.clickToPreview', {
+                            defaultValue: 'Click to preview',
+                          });
+                    return (
                       <button
-                        onClick={() =>
-                          setUploadedFiles((prev) =>
-                            prev.filter((_, i) => i !== index),
-                          )
-                        }
-                        disabled={isLoading}
-                        className='text-muted-foreground hover:text-foreground cursor-pointer'
+                        key={index}
+                        type='button'
+                        onClick={() => handleFileClick(file)}
+                        title={actionLabel}
+                        className='w-full flex items-center justify-between gap-2 p-2 bg-[var(--pl-bg)] hover:bg-[var(--pl-bg-elevated)] rounded border border-border cursor-pointer text-left'
                       >
-                        <X className='w-4 h-4' />
+                        <div className='flex items-center gap-2 min-w-0 flex-1'>
+                          {kind === 'download' ? (
+                            <Download className='w-4 h-4 shrink-0 text-muted-foreground' />
+                          ) : (
+                            <FileText className='w-4 h-4 shrink-0 text-muted-foreground' />
+                          )}
+                          <span className='text-sm truncate'>{file.name}</span>
+                          <span className='text-xs text-muted-foreground shrink-0'>
+                            {formatFileSize(file.size)}
+                          </span>
+                        </div>
+                        <span
+                          role='button'
+                          tabIndex={0}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (!isLoading) {
+                              setUploadedFiles((prev) =>
+                                prev.filter((_, i) => i !== index),
+                              );
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              if (!isLoading) {
+                                setUploadedFiles((prev) =>
+                                  prev.filter((_, i) => i !== index),
+                                );
+                              }
+                            }
+                          }}
+                          className='text-muted-foreground hover:text-foreground cursor-pointer shrink-0'
+                        >
+                          <X className='w-4 h-4' />
+                        </span>
                       </button>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -405,7 +503,7 @@ const ExamAISourceModal = ({
                   <Repeat2 className='w-10 h-10 mx-auto mb-3 text-muted-foreground' />
                   <p className='text-sm text-muted-foreground mb-3'>
                     {t('modal.ai.similarExamFileHint', {
-                      defaultValue: 'PDF, DOCX, TXT (1 file only)',
+                      defaultValue: 'PDF, DOCX, PPTX, TXT (1 file only)',
                     })}
                   </p>
                   <label className='inline-block'>
@@ -417,7 +515,7 @@ const ExamAISourceModal = ({
                         }
                       }}
                       className='hidden'
-                      accept='.pdf,.docx,.txt,.doc'
+                      accept='.pdf,.docx,.txt,.doc,.pptx'
                       disabled={isLoading}
                     />
                     <span
@@ -434,18 +532,57 @@ const ExamAISourceModal = ({
                   </label>
                 </div>
 
-                {sampleFile && (
-                  <div className='mt-3 flex items-center justify-between p-2 bg-[var(--pl-bg-sunken)] rounded border border-border'>
-                    <span className='text-sm truncate'>{sampleFile.name}</span>
+                {sampleFile && (() => {
+                  const kind = getFileKind(sampleFile);
+                  const actionLabel =
+                    kind === 'download'
+                      ? t('modal.ai.downloadToOpen', {
+                          defaultValue: 'Click to download',
+                        })
+                      : t('modal.ai.clickToPreview', {
+                          defaultValue: 'Click to preview',
+                        });
+                  return (
                     <button
-                      onClick={() => setSampleFile(null)}
-                      disabled={isLoading}
-                      className='text-muted-foreground hover:text-foreground cursor-pointer ml-2 shrink-0'
+                      type='button'
+                      onClick={() => handleFileClick(sampleFile)}
+                      title={actionLabel}
+                      className='w-full mt-3 flex items-center justify-between gap-2 p-2 bg-[var(--pl-bg-sunken)] hover:bg-[var(--pl-bg-elevated)] rounded border border-border cursor-pointer text-left'
                     >
-                      <X className='w-4 h-4' />
+                      <div className='flex items-center gap-2 min-w-0 flex-1'>
+                        {kind === 'download' ? (
+                          <Download className='w-4 h-4 shrink-0 text-muted-foreground' />
+                        ) : (
+                          <FileText className='w-4 h-4 shrink-0 text-muted-foreground' />
+                        )}
+                        <span className='text-sm truncate'>
+                          {sampleFile.name}
+                        </span>
+                        <span className='text-xs text-muted-foreground shrink-0'>
+                          {formatFileSize(sampleFile.size)}
+                        </span>
+                      </div>
+                      <span
+                        role='button'
+                        tabIndex={0}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!isLoading) setSampleFile(null);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            if (!isLoading) setSampleFile(null);
+                          }
+                        }}
+                        className='text-muted-foreground hover:text-foreground cursor-pointer ml-2 shrink-0'
+                      >
+                        <X className='w-4 h-4' />
+                      </span>
                     </button>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
 
               <div>
@@ -680,6 +817,38 @@ const ExamAISourceModal = ({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+
+    {previewFile && (
+      <Dialog
+        open={!!previewFile}
+        onOpenChange={(open) => {
+          if (!open) closePreview();
+        }}
+      >
+        <DialogContent className='w-full max-w-4xl sm:max-w-4xl px-6 py-6'>
+          <DialogHeader>
+            <DialogTitle className='text-lg font-semibold truncate pr-6'>
+              {previewFile.name}
+            </DialogTitle>
+          </DialogHeader>
+          <div className='w-full h-[70vh] mt-2'>
+            {previewUrl && (
+              <iframe
+                src={previewUrl}
+                title={previewFile.name}
+                className='w-full h-full rounded border border-border'
+              />
+            )}
+            {previewText !== null && (
+              <pre className='w-full h-full overflow-auto whitespace-pre-wrap break-words text-sm p-4 bg-[var(--pl-bg-sunken)] rounded border border-border font-mono'>
+                {previewText}
+              </pre>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    )}
+    </>
   );
 };
 

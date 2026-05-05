@@ -333,7 +333,7 @@ export default function FlashcardEditor({
         </div>
       </div>
 
-      <div className='max-w-5xl mx-auto px-6 py-8'>
+      <div className='max-w-5xl mx-auto p-6'>
         {/* Metadata */}
         <div className='bg-[var(--pl-bg)] border border-border rounded-xl p-6 mb-8 space-y-5'>
           <div>

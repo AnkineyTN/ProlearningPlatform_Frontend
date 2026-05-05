@@ -122,7 +122,10 @@ const ExamCard = ({ exam, onAccess, onUpdate, onDelete }: Props) => {
       </div>
 
       {/* Title */}
-      <div className='text-[15px] font-semibold text-[var(--pl-text)] tracking-[-0.01em] mb-1 overflow-hidden text-ellipsis whitespace-nowrap'>
+      <div
+        style={{ fontFamily: 'var(--font-display)' }}
+        className='text-[15px] font-semibold text-[var(--pl-text)] tracking-[-0.01em] mb-1 overflow-hidden text-ellipsis whitespace-nowrap'
+      >
         {exam.title}
       </div>
 

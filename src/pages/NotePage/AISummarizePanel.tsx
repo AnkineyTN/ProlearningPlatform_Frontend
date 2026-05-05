@@ -1,4 +1,5 @@
-import { Copy, PanelRightClose, Sparkles, X } from 'lucide-react';
+import { ChevronDown, Copy, PanelRightClose, Sparkles, X } from 'lucide-react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 import { Button } from '@/components/ui/button';
@@ -16,6 +17,123 @@ interface AISummarizePanelProps {
   onRemoveSummary: (id: string) => void;
   onClosePanel?: () => void;
 }
+
+const QUERY_PREVIEW_LIMIT = 200;
+
+const SummaryQuery = ({ query }: { query: string }) => {
+  const [expanded, setExpanded] = useState(false);
+  const isTruncatable = query.length > QUERY_PREVIEW_LIMIT;
+  const displayed =
+    !isTruncatable || expanded
+      ? query
+      : query.slice(0, QUERY_PREVIEW_LIMIT).trimEnd();
+
+  return (
+    <p className='text-sm italic text-[var(--pl-text-muted)] leading-relaxed font-[var(--font-serif)] border-l-2 border-[var(--pl-accent-border)] pl-3'>
+      "{displayed}
+      {isTruncatable && !expanded ? '...' : ''}"
+      {isTruncatable ? (
+        <button
+          type='button'
+          onClick={() => setExpanded((prev) => !prev)}
+          className='ml-1 not-italic text-[var(--pl-accent)] hover:underline text-xs font-[family-name:var(--font-mono-pl)]'
+        >
+          {expanded ? 'Show less' : 'Read more'}
+        </button>
+      ) : null}
+    </p>
+  );
+};
+
+interface SummaryCardProps {
+  summary: AISummary;
+  onRemove: (id: string) => void;
+  onCopy: (text: string) => void;
+}
+
+const SummaryCard = ({ summary, onRemove, onCopy }: SummaryCardProps) => {
+  const [collapsed, setCollapsed] = useState(false);
+
+  return (
+    <Card className='p-4 gap-2 bg-[var(--pl-bg)] border-border shadow-none hover:border-[var(--pl-border-strong)] transition-colors'>
+      <div className='flex items-center justify-between'>
+        <div className='flex items-center gap-2 min-w-0'>
+          <Button
+            size='sm'
+            variant='ghost'
+            className='h-6 w-6 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-text)] shrink-0'
+            onClick={() => setCollapsed((prev) => !prev)}
+            aria-label={collapsed ? 'Expand summary' : 'Collapse summary'}
+            aria-expanded={!collapsed}
+          >
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${collapsed ? '-rotate-90' : ''}`}
+            />
+          </Button>
+          <span
+            className='text-[10px] tracking-[0.18em] uppercase px-2 py-0.5 rounded-md border shrink-0'
+            style={{
+              color: 'var(--pl-accent-strong)',
+              borderColor: 'var(--pl-accent-border)',
+              background: 'var(--pl-accent-soft)',
+            }}
+          >
+            {summary.type === 'file' ? 'Summary' : 'Explain'}
+          </span>
+          {collapsed ? (
+            <span
+              className='text-xs italic text-[var(--pl-text-muted)] truncate font-[var(--font-serif)] min-w-0'
+              title={summary.query}
+            >
+              {summary.query}
+            </span>
+          ) : null}
+        </div>
+        <Button
+          size='sm'
+          variant='ghost'
+          className='h-6 w-6 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-text)]'
+          onClick={() => onRemove(summary.id)}
+          aria-label='Remove summary'
+        >
+          <X className='w-4 h-4' />
+        </Button>
+      </div>
+
+      {collapsed ? null : (
+        <>
+          <div className='mb-3'>
+            <p className='text-[10px] tracking-[0.18em] uppercase text-[var(--pl-text-faint)] mb-1.5'>
+              {summary.type === 'file' ? 'Source' : 'Selection'}
+            </p>
+            <SummaryQuery query={summary.query} />
+          </div>
+
+          <div>
+            <div className='flex items-center justify-between mb-1.5'>
+              <p className='text-[10px] tracking-[0.18em] uppercase text-[var(--pl-text-faint)]'>
+                AI Response
+              </p>
+              <Button
+                size='sm'
+                variant='ghost'
+                className='h-6 w-6 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-text)]'
+                onClick={() => onCopy(summary.response)}
+                aria-label='Copy response'
+              >
+                <Copy className='w-3.5 h-3.5' />
+              </Button>
+            </div>
+            <div
+              className='text-sm text-[var(--pl-text)] leading-relaxed prose prose-sm max-w-none [&_p]:my-1.5 [&_ul]:my-1.5 [&_ol]:my-1.5'
+              dangerouslySetInnerHTML={{ __html: summary.response }}
+            />
+          </div>
+        </>
+      )}
+    </Card>
+  );
+};
 
 export const AISummarizePanel = ({
   summaries,
@@ -73,64 +191,14 @@ export const AISummarizePanel = ({
         ) : null}
       </div>
 
-      <div className='flex-1 overflow-auto p-4 space-y-4'>
+      <div className='flex-1 overflow-auto p-4 space-y-2'>
         {summaries.map((summary) => (
-          <Card
+          <SummaryCard
             key={summary.id}
-            className='p-4 bg-[var(--pl-bg)] border-border shadow-none hover:border-[var(--pl-border-strong)] transition-colors'
-          >
-            <div className='flex items-center justify-between mb-3'>
-              <span
-                className='text-[10px] tracking-[0.18em] uppercase px-2 py-0.5 rounded-md border'
-                style={{
-                  color: 'var(--pl-accent-strong)',
-                  borderColor: 'var(--pl-accent-border)',
-                  background: 'var(--pl-accent-soft)',
-                }}
-              >
-                {summary.type === 'file' ? 'Summary' : 'Explain'}
-              </span>
-              <Button
-                size='sm'
-                variant='ghost'
-                className='h-6 w-6 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-text)]'
-                onClick={() => onRemoveSummary(summary.id)}
-                aria-label='Remove summary'
-              >
-                <X className='w-4 h-4' />
-              </Button>
-            </div>
-
-            <div className='mb-3'>
-              <p className='text-[10px] tracking-[0.18em] uppercase text-[var(--pl-text-faint)] mb-1.5'>
-                {summary.type === 'file' ? 'Source' : 'Selection'}
-              </p>
-              <p className='text-sm italic text-[var(--pl-text-muted)] leading-relaxed font-[var(--font-serif)] border-l-2 border-[var(--pl-accent-border)] pl-3'>
-                "{summary.query}"
-              </p>
-            </div>
-
-            <div>
-              <div className='flex items-center justify-between mb-1.5'>
-                <p className='text-[10px] tracking-[0.18em] uppercase text-[var(--pl-text-faint)]'>
-                  AI Response
-                </p>
-                <Button
-                  size='sm'
-                  variant='ghost'
-                  className='h-6 w-6 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-text)]'
-                  onClick={() => handleCopyResponse(summary.response)}
-                  aria-label='Copy response'
-                >
-                  <Copy className='w-3.5 h-3.5' />
-                </Button>
-              </div>
-              <div
-                className='text-sm text-[var(--pl-text)] leading-relaxed prose prose-sm max-w-none [&_p]:my-1.5 [&_ul]:my-1.5 [&_ol]:my-1.5'
-                dangerouslySetInnerHTML={{ __html: summary.response }}
-              />
-            </div>
-          </Card>
+            summary={summary}
+            onRemove={onRemoveSummary}
+            onCopy={handleCopyResponse}
+          />
         ))}
       </div>
     </div>

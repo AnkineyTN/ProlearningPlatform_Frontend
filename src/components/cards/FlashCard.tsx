@@ -118,7 +118,10 @@ const FlashCard = ({ flashcard, onAccess, onUpdate, onDelete }: Props) => {
       </div>
 
       {/* Title & desc */}
-      <div className='text-[15px] font-semibold text-[var(--pl-text)] tracking-[-0.01em] mb-1 overflow-hidden text-ellipsis whitespace-nowrap'>
+      <div
+        style={{ fontFamily: 'var(--font-display)' }}
+        className='text-[15px] font-semibold text-[var(--pl-text)] tracking-[-0.01em] mb-1 overflow-hidden text-ellipsis whitespace-nowrap'
+      >
         {flashcard.title}
       </div>
       <div className='text-[12.5px] text-[var(--pl-text-muted)] mb-[14px] overflow-hidden text-ellipsis whitespace-nowrap'>

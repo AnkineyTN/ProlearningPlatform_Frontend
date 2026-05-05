@@ -1,4 +1,10 @@
-import { Shuffle, Settings, ChevronRight, ChevronLeft, Info } from 'lucide-react';
+import {
+  Shuffle,
+  Settings,
+  ChevronRight,
+  ChevronLeft,
+  Info,
+} from 'lucide-react';
 import { useState } from 'react';
 
 import {
@@ -80,7 +86,7 @@ const FlipFlashcard = ({
       )}
 
       {/* Progress bar */}
-      <div className='pt-5'>
+      <div className='pt-5 px-10 lg:px-20'>
         <div
           className='flex justify-between text-xs mb-2'
           style={{
@@ -330,7 +336,7 @@ const FlipFlashcard = ({
       </div>
 
       {/* Bottom toolbar */}
-      <div className='flex justify-end gap-2 px-10 pb-6'>
+      <div className='flex justify-end gap-2 px-10 pb-4'>
         <button
           onClick={onShuffle}
           className='p-2 rounded-lg transition-colors'

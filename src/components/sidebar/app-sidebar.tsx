@@ -222,12 +222,12 @@ const AppSidebar = () => {
           className={cn(
             'flex items-center gap-2',
             collapsed
-              ? 'justify-center py-[10px] px-0'
+              ? 'justify-center py-[10px] px-0 flex-col transition-all duration-300'
               : 'justify-between py-[10px] px-[14px]',
           )}
         >
           <ColorThemeSwitcher collapsed={collapsed} />
-          <div className='flex gap-2'>
+          <div className={cn('flex gap-2', collapsed ? 'flex-col' : '')}>
             <ModeToggle />
             <LanguageToggle />
           </div>

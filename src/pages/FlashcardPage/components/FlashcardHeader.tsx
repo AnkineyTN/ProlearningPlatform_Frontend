@@ -1,8 +1,5 @@
 import { BookOpen, Share2, SwatchBook } from 'lucide-react';
 import { useState } from 'react';
-import ModeToggle from '@/components/theme/mode-toggle';
-import LanguageToggle from '@/components/language/language-toggle';
-import NotificationBell from '@/components/notifications/NotificationBell';
 import { useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { ShareDialog } from '@/components/collaboration/ShareDialog';
@@ -57,9 +54,6 @@ export default function FlashcardHeader({
             >
               <Share2 className='size-4' />
             </Button>
-            <NotificationBell />
-            <ModeToggle />
-            <LanguageToggle />
           </div>
         </div>
         <div className='text-sm text-muted-foreground'>{description}</div>
