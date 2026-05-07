@@ -42,6 +42,9 @@ const MatchingView = ({
   const [timer, setTimer] = useState(0);
   const [resultSaved, setResultSaved] = useState(false);
   const [activeTab, setActiveTab] = useState<GameTab>('history');
+  const [wrongCardCounts, setWrongCardCounts] = useState<
+    Record<string, number>
+  >({});
 
   const saveGameResult = useSaveGameResult();
   const isPublic = privacy === 'PUBLIC';
@@ -81,7 +84,7 @@ const MatchingView = ({
         {
           setId: Number(setId),
           flashcardId,
-          data: { totalCards, durationSeconds },
+          data: { totalCards, durationSeconds, wrongCardCounts },
         },
         {
           onSuccess: () => {
@@ -119,6 +122,7 @@ const MatchingView = ({
     setEndTime(null);
     setTimer(0);
     setResultSaved(false);
+    setWrongCardCounts({});
     setIsGameStarted(true);
   };
 
@@ -158,6 +162,14 @@ const MatchingView = ({
             setEndTime(Date.now());
           }
         } else {
+          setWrongCardCounts((prev) => {
+            const next = { ...prev };
+            const firstKey = String(firstCard.originalId);
+            const secondKey = String(secondCard.originalId);
+            next[firstKey] = (next[firstKey] ?? 0) + 1;
+            next[secondKey] = (next[secondKey] ?? 0) + 1;
+            return next;
+          });
           setTimeout(() => setSelectedCards([]), 500);
         }
       }

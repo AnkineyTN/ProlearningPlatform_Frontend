@@ -4,10 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Plus } from 'lucide-react';
-import AISourceModal from '@/components/modals/AISourceModal';
-import ExamAISourceModal from '@/components/modals/ExamAISourceModal';
-import CreateMethodModal from '@/components/modals/CreateMethodModal';
 import CreateNewModal from '@/components/modals/CreateNewModal';
+import type { AISubmitData } from '@/components/modals/CreateAITab';
 import {
   useDeleteFlashcard,
   useGenerateFlashcardsFromFiles,
@@ -21,7 +19,6 @@ import {
   useGenerateExamFromFiles,
   useGenerateExamFromNotes,
   useGenerateExamFromWeb,
-  useGenerateExamFromExistingExam,
 } from '@/hooks/useExams';
 import { useCreateNote, useDeleteNote, useUpdateNote } from '@/hooks/useNotes';
 import type { ExamAIDifficultyDistribution } from '@/services/types/exam.types';
@@ -86,13 +83,8 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
   const generateExamFromFilesMutation = useGenerateExamFromFiles();
   const generateExamFromNotesMutation = useGenerateExamFromNotes();
   const generateExamFromWebMutation = useGenerateExamFromWeb();
-  const generateExamFromExistingExamMutation =
-    useGenerateExamFromExistingExam();
 
-  const [isMethodModalOpen, setIsMethodModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isAISourceModalOpen, setIsAISourceModalOpen] = useState(false);
-  const [isExamAISourceModalOpen, setIsExamAISourceModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const tabs = ['Notes', 'Flashcards', 'Exams'];
 
@@ -121,58 +113,24 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
   };
 
   const handleCreateButtonClick = () => {
-    if (activeTab === 'Notes') {
-      setIsCreateModalOpen(true);
-    } else {
-      setIsMethodModalOpen(true);
-    }
+    setIsCreateModalOpen(true);
   };
 
-  const handleSelectManual = () => setIsCreateModalOpen(true);
-
-  const handleSelectAI = () => {
-    if (activeTab === 'Exams') {
-      setIsExamAISourceModalOpen(true);
-    } else {
-      setIsAISourceModalOpen(true);
-    }
-  };
-
-  const handleBackFromCreate = () => {
-    setIsCreateModalOpen(false);
-    if (activeTab !== 'Notes') {
-      setIsMethodModalOpen(true);
-    }
-  };
-
-  const handleBackFromAISource = () => {
-    setIsAISourceModalOpen(false);
-    setIsExamAISourceModalOpen(false);
-    setIsMethodModalOpen(true);
-  };
-
-  const handleAISourceSubmit = async (data: {
-    source: 'notes' | 'files' | 'web';
-    selectedItems: unknown[];
-    language: string;
-    freeText: string;
-    urls?: string[];
-  }) => {
+  const handleAISubmit = async (data: AISubmitData) => {
     if (activeTab === 'Flashcards') {
       try {
         let result;
-
-        if (data.source === 'notes') {
+        if (data.source === 'notes' && data.noteIds) {
           result = await generateFlashcardsMutation.mutateAsync({
             setId: Number(setId),
-            noteIds: data.selectedItems as number[],
+            noteIds: data.noteIds,
             language: data.language,
             freeText: data.freeText,
           });
-        } else if (data.source === 'files') {
+        } else if (data.source === 'files' && data.files) {
           result = await generateFlashcardsFromFilesMutation.mutateAsync({
             setId: Number(setId),
-            files: data.selectedItems as File[],
+            files: data.files,
             language: data.language,
             freeText: data.freeText,
           });
@@ -189,23 +147,26 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
           const flashcardsContent = result.data.content;
           const flashcards = flashcardsContent.split(';').map((card) => {
             const [frontCard, backCard] = card.split('|');
-            return { frontCard: frontCard?.trim(), backCard: backCard?.trim() };
+            return {
+              frontCard: frontCard?.trim(),
+              backCard: backCard?.trim(),
+            };
           });
 
-          setIsAISourceModalOpen(false);
+          setIsCreateModalOpen(false);
 
           const description =
             data.source === 'notes'
-              ? `Generated from ${data.selectedItems.length} note(s)`
+              ? `Generated from ${data.noteIds?.length ?? 0} note(s)`
               : data.source === 'files'
-                ? `Generated from ${data.selectedItems.length} file(s)`
+                ? `Generated from ${data.files?.length ?? 0} file(s)`
                 : `Generated from ${data.urls?.length ?? 0} URL(s)`;
 
           navigate(`/sets/${setId}/flashcards/editor`, {
             state: {
-              title: 'AI Generated Flashcards',
+              title: data.title || 'AI Generated Flashcards',
               description,
-              privacy: 'PRIVATE',
+              privacy: data.privacy,
               generatedFlashcards: flashcards,
             },
           });
@@ -214,82 +175,76 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
         console.error('Error generating flashcards:', error);
         toast.error('Failed to generate flashcards. Please try again.');
       }
+      return;
     }
-  };
 
-  const handleExamAISubmit = async (data: {
-    source: 'notes' | 'files' | 'web' | 'similar';
-    noteIds?: number[];
-    files?: File[];
-    urls?: string[];
-    questionCounts: { MCQ: number; TF: number; ESS: number };
-    difficulty: ExamAIDifficultyDistribution;
-    language: string;
-    freeText: string;
-  }) => {
-    try {
-      let result;
+    if (activeTab === 'Exams') {
+      try {
+        let result;
+        const questionCounts = data.questionCounts ?? {
+          MCQ: 0,
+          TF: 0,
+          ESS: 0,
+        };
+        const difficulty: ExamAIDifficultyDistribution = data.difficulty ?? {
+          Easy: 50,
+          Medium: 30,
+          Hard: 20,
+        };
 
-      if (data.source === 'notes' && data.noteIds) {
-        result = await generateExamFromNotesMutation.mutateAsync({
-          setId: Number(setId),
-          noteIds: data.noteIds,
-          questionCounts: data.questionCounts,
-          language: data.language,
-          difficulty: data.difficulty,
-          freeText: data.freeText,
-        });
-      } else if (data.source === 'files' && data.files) {
-        result = await generateExamFromFilesMutation.mutateAsync({
-          setId: Number(setId),
-          files: data.files,
-          questionCounts: data.questionCounts,
-          language: data.language,
-          difficulty: data.difficulty,
-          freeText: data.freeText,
-        });
-      } else if (data.source === 'web' && data.urls?.length) {
-        result = await generateExamFromWebMutation.mutateAsync({
-          setId: Number(setId),
-          urls: data.urls,
-          questionCounts: data.questionCounts,
-          language: data.language,
-          difficulty: data.difficulty,
-          freeText: data.freeText,
-        });
-      } else if (data.source === 'similar' && data.files?.length) {
-        result = await generateExamFromExistingExamMutation.mutateAsync({
-          setId: Number(setId),
-          file: data.files[0],
-          description: data.freeText?.trim() || undefined,
-        });
-      }
+        if (data.source === 'notes' && data.noteIds) {
+          result = await generateExamFromNotesMutation.mutateAsync({
+            setId: Number(setId),
+            noteIds: data.noteIds,
+            questionCounts,
+            language: data.language,
+            difficulty,
+            freeText: data.freeText,
+          });
+        } else if (data.source === 'files' && data.files) {
+          result = await generateExamFromFilesMutation.mutateAsync({
+            setId: Number(setId),
+            files: data.files,
+            questionCounts,
+            language: data.language,
+            difficulty,
+            freeText: data.freeText,
+          });
+        } else if (data.source === 'web' && data.urls?.length) {
+          result = await generateExamFromWebMutation.mutateAsync({
+            setId: Number(setId),
+            urls: data.urls,
+            questionCounts,
+            language: data.language,
+            difficulty,
+            freeText: data.freeText,
+          });
+        }
 
-      if (!result) return;
+        if (!result) return;
 
-      setIsExamAISourceModalOpen(false);
+        setIsCreateModalOpen(false);
 
-      const content = result.data?.content ?? '';
-      const sourceDesc =
-        data.source === 'notes'
-          ? `${data.noteIds?.length ?? 0} note(s)`
-          : data.source === 'similar'
-            ? `sample exam (${data.files?.[0]?.name ?? 'file'})`
+        const content = result.data?.content ?? '';
+        const sourceDesc =
+          data.source === 'notes'
+            ? `${data.noteIds?.length ?? 0} note(s)`
             : data.source === 'files'
               ? `${data.files?.length ?? 0} file(s)`
               : `${data.urls?.length ?? 0} URL(s)`;
 
-      navigate(`/sets/${setId}/exams/editor`, {
-        state: {
-          title: '',
-          description: `Generated from ${sourceDesc}`,
-          privacy: 'PRIVATE',
-          aiContent: content,
-        },
-      });
-    } catch (error) {
-      console.error('Error generating exam with AI:', error);
-      toast.error('Failed to generate exam. Please try again.');
+        navigate(`/sets/${setId}/exams/editor`, {
+          state: {
+            title: data.title || '',
+            description: `Generated from ${sourceDesc}`,
+            privacy: data.privacy,
+            aiContent: content,
+          },
+        });
+      } catch (error) {
+        console.error('Error generating exam with AI:', error);
+        toast.error('Failed to generate exam. Please try again.');
+      }
     }
   };
 
@@ -606,50 +561,22 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
       </div>
 
       {/* Modals */}
-      <CreateMethodModal
-        type={activeTab.slice(0, -1)}
-        isOpen={isMethodModalOpen}
-        onClose={() => setIsMethodModalOpen(false)}
-        onSelectManual={handleSelectManual}
-        onSelectAI={handleSelectAI}
-      />
-
-      <AISourceModal
-        setId={Number(setId)}
-        currentPage={0}
-        pageSize={6}
-        type={activeTab.slice(0, -1)}
-        isOpen={isAISourceModalOpen}
-        onClose={() => setIsAISourceModalOpen(false)}
-        onBack={handleBackFromAISource}
-        onSubmit={handleAISourceSubmit}
-        isLoading={
-          generateFlashcardsMutation.isPending ||
-          generateFlashcardsFromFilesMutation.isPending ||
-          generateFlashcardsFromWebMutation.isPending
-        }
-      />
-
-      <ExamAISourceModal
-        setId={Number(setId)}
-        isOpen={isExamAISourceModalOpen}
-        onClose={() => setIsExamAISourceModalOpen(false)}
-        onBack={handleBackFromAISource}
-        onSubmit={handleExamAISubmit}
-        isLoading={
-          generateExamFromFilesMutation.isPending ||
-          generateExamFromNotesMutation.isPending ||
-          generateExamFromWebMutation.isPending ||
-          generateExamFromExistingExamMutation.isPending
-        }
-      />
-
       <CreateNewModal
         type={activeTab.slice(0, -1)}
+        setId={Number(setId)}
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        onBack={activeTab !== 'Notes' ? handleBackFromCreate : undefined}
         onSubmit={handleCreate}
+        showAITab={activeTab === 'Flashcards' || activeTab === 'Exams'}
+        onSubmitAI={handleAISubmit}
+        isGenerating={
+          generateFlashcardsMutation.isPending ||
+          generateFlashcardsFromFilesMutation.isPending ||
+          generateFlashcardsFromWebMutation.isPending ||
+          generateExamFromFilesMutation.isPending ||
+          generateExamFromNotesMutation.isPending ||
+          generateExamFromWebMutation.isPending
+        }
       />
 
       {isUpdateModalOpen &&

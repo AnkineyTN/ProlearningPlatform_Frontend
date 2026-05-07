@@ -1,40 +1,26 @@
-import {
-  AlignJustify,
-  ArrowLeft,
-  Earth,
-  EarthLock,
-  Heading,
-  Lock,
-  LockKeyhole,
-} from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { cn } from '@/lib/utils';
+
+import CreateAITab, { type AISubmitData } from './CreateAITab';
+import CreateManualTab, {
+  type ManualErrors,
+} from './create-modal/CreateManualTab';
+import CreateModalFooter from './create-modal/CreateModalFooter';
+import CreateModeTabs, { type CreateMode } from './create-modal/CreateModeTabs';
 
 type Props = {
   type: string;
   isOpen: boolean;
   onClose: () => void;
-  onBack?: () => void;
   onSubmit: (data: {
     title: string;
     description: string;
@@ -42,48 +28,75 @@ type Props = {
   }) => void | Promise<void>;
   initialData?: { title: string; description: string; privacy: string };
   isUpdateMode?: boolean;
+  // AI props (only for Flashcard / Exam create mode)
+  setId?: number;
+  showAITab?: boolean;
+  onSubmitAI?: (data: AISubmitData) => void | Promise<void>;
+  isGenerating?: boolean;
 };
 
 const CreateNewModal = ({
   type,
   isOpen,
   onClose,
-  onBack,
   onSubmit,
   initialData,
   isUpdateMode,
+  setId,
+  showAITab = false,
+  onSubmitAI,
+  isGenerating,
 }: Props) => {
+  const { t } = useTranslation();
+  const typeLower = type.toLowerCase();
+
+  const [mode, setMode] = useState<CreateMode>('manual');
   const [title, setTitle] = useState(initialData?.title || '');
   const [description, setDescription] = useState(
     initialData?.description || '',
   );
   const [privacy, setPrivacy] = useState(initialData?.privacy || 'Public');
-  const [errors, setErrors] = useState<{
-    titleEmpty?: boolean;
-    titleTooLong?: boolean;
-    privacy?: boolean;
-  }>({});
-  const { t } = useTranslation();
-  const typeLower = type.toLowerCase();
+  const [errors, setErrors] = useState<ManualErrors>({});
 
-  const handleSubmit = async () => {
-    const newErrors: {
-      titleEmpty?: boolean;
-      titleTooLong?: boolean;
-      privacy?: boolean;
-    } = {};
+  const [aiData, setAiData] = useState<AISubmitData | null>(null);
+  const [aiValid, setAiValid] = useState(false);
 
-    if (!title.trim()) {
-      newErrors.titleEmpty = true;
+  useEffect(() => {
+    if (isOpen) {
+      setMode('manual');
+      setTitle(initialData?.title || '');
+      setDescription(initialData?.description || '');
+      setPrivacy(initialData?.privacy || 'Public');
+      setErrors({});
     }
+  }, [
+    isOpen,
+    initialData?.title,
+    initialData?.description,
+    initialData?.privacy,
+  ]);
 
-    if (title.length >= 100) {
-      newErrors.titleTooLong = true;
+  const handleTitleChange = (value: string) => {
+    setTitle(value);
+    if (errors.titleEmpty || errors.titleTooLong) {
+      setErrors((prev) => ({
+        ...prev,
+        titleEmpty: false,
+        titleTooLong: false,
+      }));
     }
+  };
 
-    if (!privacy) {
-      newErrors.privacy = true;
-    }
+  const handlePrivacyChange = (value: string) => {
+    setPrivacy(value);
+    if (errors.privacy) setErrors((prev) => ({ ...prev, privacy: false }));
+  };
+
+  const handleSubmitManual = async () => {
+    const newErrors: ManualErrors = {};
+    if (!title.trim()) newErrors.titleEmpty = true;
+    if (title.length >= 100) newErrors.titleTooLong = true;
+    if (!privacy) newErrors.privacy = true;
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -93,7 +106,6 @@ const CreateNewModal = ({
     try {
       await Promise.resolve(onSubmit({ title, description, privacy }));
       window.dispatchEvent(new Event('prolearning:refresh'));
-
       setTitle('');
       setDescription('');
       setPrivacy('Public');
@@ -105,147 +117,120 @@ const CreateNewModal = ({
     }
   };
 
+  const handleSubmitAI = async () => {
+    if (!aiData || !onSubmitAI) return;
+    try {
+      await Promise.resolve(onSubmitAI(aiData));
+    } catch (err) {
+      console.error('CreateNewModal AI submit error', err);
+      toast.error('Failed to generate. Please try again.');
+    }
+  };
+
   const handleCancel = () => {
-    if (onBack) {
-      onBack();
-    } else {
-      setTitle('');
-      setDescription('');
-      setPrivacy('Public');
-      setErrors({});
-      onClose();
-    }
+    if (isGenerating) return;
+    setTitle('');
+    setDescription('');
+    setPrivacy('Public');
+    setErrors({});
+    onClose();
   };
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
-    if (errors.titleEmpty || errors.titleTooLong) {
-      setErrors((prev) => ({
-        ...prev,
-        titleEmpty: false,
-        titleTooLong: false,
-      }));
-    }
-  };
+  const handleAIDataChange = useCallback((data: AISubmitData) => {
+    setAiData(data);
+  }, []);
 
-  const handlePrivacyChange = (val: string) => {
-    setPrivacy(val);
-    if (errors.privacy) {
-      setErrors((prev) => ({ ...prev, privacy: false }));
-    }
-  };
+  const handleAIValidityChange = useCallback((valid: boolean) => {
+    setAiValid(valid);
+  }, []);
+
+  const subtitle = t(`modal.subtitle.${typeLower}`, { defaultValue: '' });
+  const isAI = mode === 'ai';
+  const canShowAITab =
+    showAITab &&
+    !isUpdateMode &&
+    (type === 'Flashcard' || type === 'Exam') &&
+    setId !== undefined &&
+    onSubmitAI !== undefined;
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && handleCancel()}>
-      <DialogContent className='w-full max-w-xl sm:max-w-xl'>
-        <DialogHeader>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open && !isGenerating) handleCancel();
+      }}
+    >
+      <DialogContent
+        className={cn(
+          'gap-0 px-8 py-7',
+          isAI
+            ? 'w-full max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto'
+            : 'w-full max-w-2xl sm:max-w-2xl',
+        )}
+        showCloseButton={!isGenerating}
+        onEscapeKeyDown={(e) => {
+          if (isGenerating) e.preventDefault();
+        }}
+        onPointerDownOutside={(e) => {
+          if (isGenerating) e.preventDefault();
+        }}
+      >
+        <DialogHeader className='gap-1.5 mb-5'>
           <DialogTitle className='text-2xl font-bold'>
             {isUpdateMode
               ? t('modal.update', { type: typeLower })
               : t('modal.new', { type: typeLower })}
           </DialogTitle>
+          {subtitle && !isUpdateMode && (
+            <p
+              className='text-sm text-muted-foreground italic'
+              style={{ fontFamily: 'var(--font-serif)' }}
+            >
+              {subtitle}
+            </p>
+          )}
         </DialogHeader>
 
-        {/* Form */}
-        <div className='space-y-4'>
-          {/* Set Title */}
-          <div>
-            <Label className='flex items-center gap-2 font-medium mb-3'>
-              <Heading className='w-4 h-4' />
-              {t('modal.title')}
-              <span className='text-red-500'>*</span>
-            </Label>
-            <Input
-              type='text'
-              value={title}
-              onChange={handleTitleChange}
-              className={`w-full px-3 py-2 border rounded-lg bg-[var(--pl-bg)] focus:outline-none focus:ring-2 ${
-                errors.titleEmpty || errors.titleTooLong
-                  ? 'border-red-500 focus:ring-red-500'
-                  : 'border-border focus:ring-foreground'
-              }`}
-              placeholder={t('modal.title')}
-            />
-            {errors.titleEmpty && (
-              <p className='text-red-500 text-sm mt-1'>
-                {t('modal.titleEmpty')}
-              </p>
-            )}
-            {errors.titleTooLong && (
-              <p className='text-red-500 text-sm mt-1'>
-                {t('modal.titleTooLong')}
-              </p>
-            )}
-          </div>
+        {canShowAITab && (
+          <CreateModeTabs
+            value={mode}
+            onChange={setMode}
+            disabled={isGenerating}
+          />
+        )}
 
-          {/* Privacy */}
-          <div>
-            <Label className='flex items-center gap-2 font-medium mb-3'>
-              <Lock className='w-4 h-4' />
-              {t('modal.privacy')}
-              <span className='text-red-500'>*</span>
-            </Label>
-            <Select value={privacy} onValueChange={handlePrivacyChange}>
-              <SelectTrigger
-                className={`w-full px-3 py-2 border rounded-lg bg-[var(--pl-bg)] focus:outline-none focus:ring-2 ${
-                  errors.privacy
-                    ? 'border-red-500 focus:ring-red-500'
-                    : 'border-border focus:ring-foreground'
-                }`}
-              >
-                <SelectValue placeholder='Select privacy' />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='Public'>
-                  <Earth className='w-4 h-4' /> {t('modal.public')}
-                </SelectItem>
-                <SelectItem value='Private'>
-                  <LockKeyhole className='w-4 h-4' /> {t('modal.private')}
-                </SelectItem>
-                <SelectItem value='Unlisted'>
-                  <EarthLock className='w-4 h-4' />
-                  {t('modal.unlisted')}
-                </SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.privacy && (
-              <p className='text-red-500 text-sm mt-1'>
-                {t('modal.privacyRequired')}
-              </p>
-            )}
-          </div>
+        {!isAI && (
+          <CreateManualTab
+            type={type}
+            title={title}
+            onTitleChange={handleTitleChange}
+            description={description}
+            onDescriptionChange={setDescription}
+            privacy={privacy}
+            onPrivacyChange={handlePrivacyChange}
+            errors={errors}
+          />
+        )}
 
-          {/* Description */}
-          <div>
-            <Label className='flex items-center gap-2 font-medium mb-3'>
-              <AlignJustify className='w-4 h-4' />
-              <span>{t('modal.description')}</span>
-            </Label>
-            <Textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className='w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-foreground resize-none'
-              rows={4}
-              placeholder={t('modal.enterDescription')}
-            />
-          </div>
-        </div>
+        {isAI && setId !== undefined && (
+          <CreateAITab
+            type={type as 'Flashcard' | 'Exam'}
+            setId={setId}
+            isLoading={isGenerating}
+            onValidityChange={handleAIValidityChange}
+            onDataChange={handleAIDataChange}
+          />
+        )}
 
-        <DialogFooter>
-          <Button
-            onClick={handleCancel}
-            variant={"ghost"}
-          >
-            {onBack && <ArrowLeft className='w-4 h-4' />}
-            {onBack ? t('modal.back') : t('modal.cancel')}
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            variant={"default"}
-          >
-            {isUpdateMode ? t('modal.updateButton') : t('modal.create')}
-          </Button>
-        </DialogFooter>
+        <CreateModalFooter
+          mode={mode}
+          type={type}
+          isUpdateMode={isUpdateMode}
+          isGenerating={isGenerating}
+          aiSubmitDisabled={!aiValid}
+          onCancel={handleCancel}
+          onSubmit={isAI ? handleSubmitAI : handleSubmitManual}
+        />
       </DialogContent>
     </Dialog>
   );

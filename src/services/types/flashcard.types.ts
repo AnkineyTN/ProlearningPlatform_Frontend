@@ -276,6 +276,7 @@ export type GenerateExamFromFlashcardResponse = {
 export type SaveGameResultRequest = {
   totalCards: number;
   durationSeconds: number;
+  wrongCardCounts: Record<string, number>;
 };
 
 export type SaveGameResultResponse = {
