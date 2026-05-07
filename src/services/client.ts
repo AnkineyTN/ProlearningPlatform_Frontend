@@ -56,6 +56,7 @@ const refreshAccessToken = async (): Promise<string> => {
   const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
   if (!refreshToken) throw new Error("No refresh token");
 
+  console.debug("[auth] access token expired, refreshing...");
   const res = await publicApi.post<{
     status: string;
     message: string;
@@ -65,6 +66,7 @@ const refreshAccessToken = async (): Promise<string> => {
   const { accessToken, refreshToken: newRefreshToken } = res.data.data;
   localStorage.setItem(TOKEN_KEY, accessToken);
   if (newRefreshToken) localStorage.setItem(REFRESH_TOKEN_KEY, newRefreshToken);
+  console.debug("[auth] refresh OK, replaying original request");
   return accessToken;
 };
 

@@ -312,6 +312,7 @@ export type GameHistoryItem = {
   totalCards: number;
   durationSeconds: number;
   completedAt: string;
+  wrongCardCounts: Record<string, number>;
 };
 
 export type GameHistoryResponse = {

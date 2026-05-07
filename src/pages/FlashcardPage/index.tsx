@@ -582,6 +582,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           flashcardId={flashcardId}
           privacy={privacy}
           flashcards={flashcards}
+          flashcardTitle={title}
           onBack={() => navigate(`/sets/${setId}/flashcards/${flashcardId}`)}
         />
       )}

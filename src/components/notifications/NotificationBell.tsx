@@ -628,7 +628,7 @@ export default function NotificationBell() {
           size='icon'
           className={cn(
             'relative h-9 w-9 hover:bg-[var(--pl-bg-hover)] place-items-center rounded-lg border border-[var(--pl-border)] bg-transparent text-[var(--pl-text-muted)] cursor-pointer',
-            open && 'bg-accent',
+            open && 'bg-[var(--pl-bg-hover)]',
           )}
           title={t('header.notifications')}
           aria-label={t('header.notifications')}
@@ -668,14 +668,13 @@ export default function NotificationBell() {
               {moreOpen && (
                 <div
                   role='menu'
-                  className='absolute right-0 top-full z-[60] mt-1 min-w-[11rem] rounded-md border border-border bg-popover py-1 shadow-md'
+                  className='absolute right-0 top-full z-[60] mt-1 min-w-[11rem] rounded-md border border-border bg-[var(--pl-bg-elev)] py-1 shadow-md'
                 >
                   {import.meta.env.DEV && (
-                    <button
-                      type='button'
+                    <Button
+                      variant='ghost'
                       role='menuitem'
                       disabled={!userId || creatingTest}
-                      className='flex w-full px-3 py-2 text-left text-sm hover:bg-muted disabled:opacity-50'
                       onClick={() => void handleCreateTest()}
                     >
                       {creatingTest ? (
@@ -686,20 +685,19 @@ export default function NotificationBell() {
                       ) : (
                         t('notificationsPanel.createTest')
                       )}
-                    </button>
+                    </Button>
                   )}
-                  <button
-                    type='button'
+                  <Button
+                    variant='ghost'
                     role='menuitem'
                     disabled={markAllRead.isPending || unreadCount === 0}
-                    className='flex w-full px-3 py-2 text-left text-sm hover:bg-muted disabled:opacity-50'
                     onClick={() => {
                       void markAllRead.mutateAsync();
                       setMoreOpen(false);
                     }}
                   >
                     {t('notificationsPanel.markAllRead')}
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
