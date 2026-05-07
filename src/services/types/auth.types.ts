@@ -26,6 +26,21 @@ export type AuthResponse = {
   data: {
     userResponseDto: User;
     accessToken: string;
+    refreshToken: string;
+  };
+  metadata: Record<string, unknown>;
+}
+
+export type RefreshTokenRequest = {
+  refreshToken: string;
+}
+
+export type RefreshTokenResponse = {
+  status: string;
+  message: string;
+  data: {
+    accessToken: string;
+    refreshToken: string;
   };
   metadata: Record<string, unknown>;
 }

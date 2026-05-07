@@ -14,6 +14,8 @@ import type {
   VerifyResetOtpResponseData,
   UpdateMeRequest,
   UpdateMeResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
 } from "../types/auth.types";
 
 export const authAPI = {
@@ -22,6 +24,11 @@ export const authAPI = {
 
   login: (userData: LoginData): Promise<AxiosResponse<AuthResponse>> =>
     publicApi.post("/auth/login", userData),
+
+  refresh: (
+    payload: RefreshTokenRequest,
+  ): Promise<AxiosResponse<RefreshTokenResponse>> =>
+    publicApi.post("/auth/refresh", payload),
 
   getMe: (): Promise<AxiosResponse<MeResponse>> => api.get("/users/me"),
 

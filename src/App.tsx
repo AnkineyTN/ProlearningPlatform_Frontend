@@ -20,13 +20,24 @@ function App() {
   useEffect(() => {
     try {
       const href = window.location.href;
-      const match = href.match(/[?&]accessToken=([^&]+)/);
-      if (match && match[1]) {
-        const token = decodeURIComponent(match[1]);
+      const accessMatch = href.match(/[?&]accessToken=([^&]+)/);
+      const refreshMatch = href.match(/[?&]refreshToken=([^&]+)/);
+      if (accessMatch && accessMatch[1]) {
+        const token = decodeURIComponent(accessMatch[1]);
         localStorage.setItem("token", token);
+        if (refreshMatch && refreshMatch[1]) {
+          localStorage.setItem(
+            "refreshToken",
+            decodeURIComponent(refreshMatch[1]),
+          );
+        }
 
         const cleaned = href
           .replace(/([?&])accessToken=[^&]*(&?)/, (_match, p1, p2) => {
+            if (p1 === "?" && p2 === "&") return "?";
+            return p2 ? p1 : "";
+          })
+          .replace(/([?&])refreshToken=[^&]*(&?)/, (_match, p1, p2) => {
             if (p1 === "?" && p2 === "&") return "?";
             return p2 ? p1 : "";
           })
@@ -42,8 +53,7 @@ function App() {
     const token = localStorage.getItem("token");
     if (token) {
       authAPI.getMe().catch(() => {
-        localStorage.removeItem("token");
-        window.location.href = "/login";
+        // Interceptor đã xử lý refresh + redirect khi cần
       });
     }
   }, []);

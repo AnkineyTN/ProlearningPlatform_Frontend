@@ -15,12 +15,19 @@ export type User = {
 };
 
 const TOKEN_KEY = "token";
+const REFRESH_TOKEN_KEY = "refreshToken";
 const USER_KEY = "user";
 
 export const tokenStorage = {
   get: () => localStorage.getItem(TOKEN_KEY),
   set: (t: string) => localStorage.setItem(TOKEN_KEY, t),
   clear: () => localStorage.removeItem(TOKEN_KEY),
+};
+
+export const refreshTokenStorage = {
+  get: () => localStorage.getItem(REFRESH_TOKEN_KEY),
+  set: (t: string) => localStorage.setItem(REFRESH_TOKEN_KEY, t),
+  clear: () => localStorage.removeItem(REFRESH_TOKEN_KEY),
 };
 
 const userStorage = {
@@ -70,6 +77,7 @@ export function useLogin() {
     },
     onSuccess: (data) => {
       tokenStorage.set(data.accessToken);
+      if (data.refreshToken) refreshTokenStorage.set(data.refreshToken);
       userStorage.set(data.userResponseDto);
       qc.setQueryData(authQueryKey, data.userResponseDto);
     },
@@ -89,6 +97,7 @@ export function useLogout() {
   const qc = useQueryClient();
   return () => {
     tokenStorage.clear();
+    refreshTokenStorage.clear();
     userStorage.clear();
     qc.removeQueries({ queryKey: authQueryKey });
     qc.clear();
