@@ -1,1117 +1,1120 @@
 {
-    "adminOnboarding": {
-        "backToDashboard": "Về dashboard",
-        "analyticsEducation": "Trình độ học vấn",
-        "analyticsHearAppFrom": "Biết app từ đâu",
-        "analyticsLoadError": "Không tải được phân tích.",
-        "analyticsPremium": "Loại tài khoản (PRO / FREE)",
-        "analyticsTitle": "Phân tích",
-        "chartCount": "Số lượng",
-        "chartPercent": "Phần trăm",
-        "colId": "ID",
-        "colSummary": "Tóm tắt",
-        "colTime": "Gửi lúc",
-        "colUserId": "User ID",
-        "collapseRow": "Thu gọn chi tiết dòng",
-        "description": "Bản gửi và thống kê từ máy chủ (API admin).",
-        "detailJsonTitle": "Chi tiết bản ghi",
-        "expandRow": "Mở rộng chi tiết dòng",
-        "empty": "Không có bản ghi trên trang này.",
-        "forbidden": "Bạn không có quyền truy cập trang này.",
-        "loadError": "Không tải được danh sách bản gửi.",
-        "nextPage": "Sau",
-        "planFree": "FREE",
-        "planPremium": "PRO",
-        "prevPage": "Trước",
-        "refresh": "Làm mới",
-        "submissionsTitle": "Bản gửi",
-        "title": "Admin — Onboarding",
-        "totalRegistered": "Người dùng đã đăng ký",
-        "userIdChip": "· id {{id}}",
-        "notAvailable": "—"
+  "adminOnboarding": {
+    "backToDashboard": "Về dashboard",
+    "analyticsEducation": "Trình độ học vấn",
+    "analyticsHearAppFrom": "Biết app từ đâu",
+    "analyticsLoadError": "Không tải được phân tích.",
+    "analyticsPremium": "Loại tài khoản (PRO / FREE)",
+    "analyticsTitle": "Phân tích",
+    "chartCount": "Số lượng",
+    "chartPercent": "Phần trăm",
+    "colId": "ID",
+    "colSummary": "Tóm tắt",
+    "colTime": "Gửi lúc",
+    "colUserId": "User ID",
+    "collapseRow": "Thu gọn chi tiết dòng",
+    "description": "Bản gửi và thống kê từ máy chủ (API admin).",
+    "detailJsonTitle": "Chi tiết bản ghi",
+    "expandRow": "Mở rộng chi tiết dòng",
+    "empty": "Không có bản ghi trên trang này.",
+    "forbidden": "Bạn không có quyền truy cập trang này.",
+    "loadError": "Không tải được danh sách bản gửi.",
+    "nextPage": "Sau",
+    "planFree": "FREE",
+    "planPremium": "PRO",
+    "prevPage": "Trước",
+    "refresh": "Làm mới",
+    "submissionsTitle": "Bản gửi",
+    "title": "Admin — Onboarding",
+    "totalRegistered": "Người dùng đã đăng ký",
+    "userIdChip": "· id {{id}}",
+    "notAvailable": "—"
+  },
+  "adminDashboard": {
+    "accountTypeUnset": "Giữ nguyên",
+    "backToDashboard": "Về dashboard",
+    "cancel": "Hủy",
+    "colAccountType": "Tài khoản",
+    "colActions": "Thao tác",
+    "colEducation": "Học vấn",
+    "colEmail": "Email",
+    "colHearAppFrom": "Biết app từ",
+    "colId": "ID",
+    "colLanguage": "Ngôn ngữ",
+    "colName": "Tên",
+    "colOnboardingAt": "Hoàn tất onboarding",
+    "colRoles": "Vai trò",
+    "deleteConfirmAction": "Xóa",
+    "deleteConfirmDescription": "Xóa vĩnh viễn {{name}}? Không thể hoàn tác.",
+    "deleteConfirmTitle": "Xóa người dùng?",
+    "deleteError": "Không xóa được người dùng.",
+    "deleteUser": "Xóa người dùng",
+    "description": "Quản lý người dùng và xem phân tích onboarding.",
+    "editDialogTitle": "Sửa người dùng",
+    "editUser": "Sửa người dùng",
+    "emptyUsers": "Không có người dùng trên trang này.",
+    "fieldAccountType": "Loại tài khoản",
+    "fieldFirstName": "Tên",
+    "fieldLastName": "Họ",
+    "nextPage": "Sau",
+    "prevPage": "Trước",
+    "refresh": "Làm mới",
+    "save": "Lưu",
+    "title": "Bảng điều khiển admin",
+    "updateError": "Không cập nhật được người dùng.",
+    "userDeleted": "Đã xóa người dùng.",
+    "userUpdated": "Đã cập nhật người dùng.",
+    "usersLoadError": "Không tải được danh sách người dùng.",
+    "usersTitle": "Người dùng"
+  },
+  "calendar": {
+    "days": {
+      "friday": "T6",
+      "monday": "T2",
+      "saturday": "T7",
+      "sunday": "CN",
+      "thursday": "T5",
+      "tuesday": "T3",
+      "wednesday": "T4"
     },
-    "adminDashboard": {
-        "accountTypeUnset": "Giữ nguyên",
-        "backToDashboard": "Về dashboard",
-        "cancel": "Hủy",
-        "colAccountType": "Tài khoản",
-        "colActions": "Thao tác",
-        "colEducation": "Học vấn",
-        "colEmail": "Email",
-        "colHearAppFrom": "Biết app từ",
-        "colId": "ID",
-        "colLanguage": "Ngôn ngữ",
-        "colName": "Tên",
-        "colOnboardingAt": "Hoàn tất onboarding",
-        "colRoles": "Vai trò",
-        "deleteConfirmAction": "Xóa",
-        "deleteConfirmDescription": "Xóa vĩnh viễn {{name}}? Không thể hoàn tác.",
-        "deleteConfirmTitle": "Xóa người dùng?",
-        "deleteError": "Không xóa được người dùng.",
-        "deleteUser": "Xóa người dùng",
-        "description": "Quản lý người dùng và xem phân tích onboarding.",
-        "editDialogTitle": "Sửa người dùng",
-        "editUser": "Sửa người dùng",
-        "emptyUsers": "Không có người dùng trên trang này.",
-        "fieldAccountType": "Loại tài khoản",
-        "fieldFirstName": "Tên",
-        "fieldLastName": "Họ",
-        "nextPage": "Sau",
-        "prevPage": "Trước",
-        "refresh": "Làm mới",
-        "save": "Lưu",
-        "title": "Bảng điều khiển admin",
-        "updateError": "Không cập nhật được người dùng.",
-        "userDeleted": "Đã xóa người dùng.",
-        "userUpdated": "Đã cập nhật người dùng.",
-        "usersLoadError": "Không tải được danh sách người dùng.",
-        "usersTitle": "Người dùng"
+    "months": {
+      "april": "Tháng 4",
+      "august": "Tháng 8",
+      "december": "Tháng 12",
+      "february": "Tháng 2",
+      "january": "Tháng 1",
+      "july": "Tháng 7",
+      "june": "Tháng 6",
+      "march": "Tháng 3",
+      "may": "Tháng 5",
+      "november": "Tháng 11",
+      "october": "Tháng 10",
+      "september": "Tháng 9"
     },
-    "calendar": {
-        "days": {
-            "friday": "T6",
-            "monday": "T2",
-            "saturday": "T7",
-            "sunday": "CN",
-            "thursday": "T5",
-            "tuesday": "T3",
-            "wednesday": "T4"
-        },
-        "months": {
-            "april": "Tháng 4",
-            "august": "Tháng 8",
-            "december": "Tháng 12",
-            "february": "Tháng 2",
-            "january": "Tháng 1",
-            "july": "Tháng 7",
-            "june": "Tháng 6",
-            "march": "Tháng 3",
-            "may": "Tháng 5",
-            "november": "Tháng 11",
-            "october": "Tháng 10",
-            "september": "Tháng 9"
-        },
-        "targetStudyTime": "Thời gian học mục tiêu",
-        "yourCalendar": "Lịch của bạn"
-    },
-    "card": {
-        "checklist": {
-            "seeMore": "Xem thêm",
-            "title": "Danh sách kiểm tra của bạn hôm nay!"
-        },
-        "exam": {
-            "questions_one": "{{count}} câu hỏi",
-            "questions_other": "{{count}} câu hỏi",
-            "minutes": "{{count}} phút",
-            "deleteTitle": "Xoá bài thi"
-        }
-    },
-    "dashboard": {
-        "recentNotes": "Ghi chú gần đây",
-        "viewAll": "Xem tất cả",
-        "yourSets": "Bộ sưu tập của bạn"
-    },
-    "header": {
-        "notifications": "Thông báo",
-        "profile": "Trang cá nhân",
-        "search": "Tìm kiếm...",
-        "welcome": "Chào mừng trở lại!"
-    },
-    "notificationsPanel": {
-        "title": "Thông báo",
-        "tabAll": "Tất cả",
-        "tabUnread": "Chưa đọc",
-        "sectionEarlier": "Trước đó",
-        "seeAll": "Xem thêm",
-        "empty": "Chưa có thông báo",
-        "emptyUnread": "Bạn đã xem hết thông báo",
-        "loadError": "Không tải được thông báo.",
-        "moreActions": "Tùy chọn khác",
-        "createTest": "Tạo thông báo test",
-        "markAsRead": "Đánh dấu đã đọc",
-        "markAllRead": "Đánh dấu tất cả đã đọc"
-    },
-    "landing": {
-        "createAccount": "Tạo tài khoản",
-        "cta": {
-            "buttonText": "Bắt đầu miễn phí",
-            "description": "Tham gia hàng ngàn học viên đã và đang biến đổi sự nghiệp của họ",
-            "title": "Sẵn sàng bắt đầu hành trình của bạn?"
-        },
-        "features": {
-            "certifiedPrograms": {
-                "description": "Hoàn thành các chương trình được chứng nhận để nâng cao hồ sơ cá nhân của bạn.",
-                "title": "Chương trình chứng nhận"
-            },
-            "communityLearning": {
-                "description": "Kết nối với cộng đồng học viên và giảng viên để trao đổi kiến thức và kinh nghiệm.",
-                "title": "Học tập cộng đồng"
-            },
-            "fastTrackLearning": {
-                "description": "Tiếp cận các lộ trình học tập được thiết kế để giúp bạn đạt được mục tiêu nhanh hơn.",
-                "title": "Học tập nhanh"
-            },
-            "interactiveCourses": {
-                "description": "Tham gia các khóa học tương tác với bài tập thực hành và phản hồi ngay lập tức.",
-                "title": "Khóa học tương tác"
-            }
-        },
-        "footer": {
-            "about": "Về chúng tôi",
-            "careers": "Cơ hội nghề nghiệp",
-            "company": "Công ty",
-            "contact": "Liên hệ",
-            "courses": "Khóa học",
-            "description": "Trao quyền cho người học trên toàn thế giới với giáo dục chất lượng.",
-            "features": "Tính năng",
-            "legal": "Pháp lý",
-            "pricing": "Giá cả",
-            "privacy": "Chính sách bảo mật",
-            "product": "Sản phẩm",
-            "security": "Bảo mật",
-            "terms": "Điều khoản dịch vụ"
-        },
-        "getStarted": "Bắt đầu",
-        "intro": {
-            "description": "Làm chủ các kỹ năng mới, phát triển sự nghiệp và đạt được mục tiêu của bạn với các khóa học từ chuyên gia và các lộ trình học tập cá nhân hóa.",
-            "header": "Biến đổi tương lai của bạn ngay hôm nay",
-            "platform": "DÀNH CHO BẠN!",
-            "subheader": "NỀN TẢNG HỌC TẬP TỐT NHẤT"
-        },
-        "login": "Đăng nhập",
-        "signUp": "Đăng ký",
-        "stats": {
-            "activeStudents": "Học viên tích cực",
-            "expertInstructors": "Giảng viên chuyên gia",
-            "qualityCourses": "Khóa học chất lượng",
-            "successRate": "Tỷ lệ thành công"
-        },
-        "testimonials": {
-            "emily": {
-                "content": "Tôi yêu thích sự linh hoạt và chất lượng nội dung. Rất đáng để giới thiệu!"
-            },
-            "michael": {
-                "content": "Tôi đã phát triển kỹ năng phân tích dữ liệu của mình nhờ các khóa học chuyên sâu và sự hỗ trợ từ cộng đồng."
-            },
-            "sarah": {
-                "content": "Nền tảng này đã thay đổi cách tôi học lập trình. Các khóa học rất thực tế và dễ theo dõi!"
-            }
-        },
-        "title": {
-            "about": "Về chúng tôi",
-            "features": "Tính năng của chúng tôi",
-            "plans": "Kế hoạch",
-            "testimonials": "Được học viên trên toàn thế giới yêu thích"
-        },
-        "watchDemo": "Xem bản demo",
-        "whyChooseUs": "Tại sao chọn ProLearning?",
-        "whyChooseUsDescription": "Trải nghiệm học tập như chưa từng có với nền tảng ProLearning."
-    },
-    "modal": {
-        "ai": {
-            "chooseFiles": "Chọn tệp",
-            "fromNotes": "From Note",
-            "fromNotesDesc": "Chọn ghi chú có sẵn trong set này.",
-            "uploadFiles": "Upload File",
-            "uploadFilesDesc": "PDF, DOCX, PPTX, TXT — AI đọc và tóm tắt.",
-            "fromWeb": "Web URL",
-            "fromWebDesc": "Bài blog, Wikipedia, MDN — AI tự crawl.",
-            "sourceLabel": "Nguồn nội dung",
-            "contentLabel": "Nội dung",
-            "titleAutoPlaceholder": "Auto-generate",
-            "titleAutoHint": "Để trống để AI tự đặt.",
-            "aiSettings": "AI settings",
-            "fileHint": "PDF, DOCX, PPTX, TXT (tối đa 3 tệp)",
-            "maxFiles": "Tối đa 3 tệp",
-            "noNotes": "Không có ghi chú nào",
-            "webUrlsPlaceholder": "https://example.com/article",
-            "webUrlsHint": "Mỗi URL trên một dòng (https://…)",
-            "mcq": "Trắc nghiệm",
-            "tf": "Đúng / Sai",
-            "essay": "Tự luận",
-            "questionTotal": "Tổng: {{count}} câu hỏi",
-            "generateButton": "Generate {{type}}",
-            "language": "Ngôn ngữ",
-            "specialRequirements": "Yêu cầu đặc biệt (tuỳ chọn)",
-            "specialRequirementsPlaceholder": "VD: tập trung vào định nghĩa, tránh chi tiết khó, bám theo chương 3…",
-            "difficultyMix": "Tỉ lệ độ khó (% — Dễ + Trung bình + Khó = 100)",
-            "difficultyReset": "Đặt lại 50 / 30 / 20",
-            "difficultyEasy": "Dễ",
-            "difficultyMedium": "Trung bình",
-            "difficultyHard": "Khó",
-            "difficultySumHint": "Tổng hiện tại: {{sum}}% — phải bằng 100%",
-            "generateWithAI": "Tạo với AI",
-            "generating": "Đang tạo...",
-            "header": "Tạo {{type}} với AI",
-            "subtitle": "Chọn nguồn — ghi chú, tệp, hoặc trang web — để AI lo phần còn lại.",
-            "examHeader": "Tạo Exam với AI",
-            "examSubtitle": "Chọn nguồn, đặt số lượng câu hỏi và độ khó — AI sẽ soạn đề cho bạn.",
-            "questionCounts": "Số lượng câu hỏi theo loại",
-            "selectNotes": "Chọn ghi chú để tạo {{type}} từ:",
-            "selected": "đã chọn",
-            "uploadedFiles": "Tệp đã tải lên"
-        },
-        "back": "Quay lại",
-        "cancel": "Hủy",
-        "create": "Tạo",
-        "delete": "Xóa",
-        "deleteConfirmation": "Bạn có chắc chắn muốn xóa",
-        "deleteConfirmationTitle": "Xác nhận xóa",
-        "deleteConfirmationWarning": "Hành động này không thể hoàn tác.",
-        "description": "Mô tả",
-        "enterDescription": "Nhập mô tả",
-        "generateWithAI": "Tạo với AI",
-        "method": {
-            "addImages": "Thêm hình ảnh",
-            "aiGeneration": "Tạo nội dung bằng AI",
-            "customContent": "Nội dung tùy chỉnh",
-            "description": "Chọn phương pháp để tạo {type} của bạn:",
-            "header": "Tạo mới {type}",
-            "importFromText": "Nhập từ văn bản",
-            "manualCreation": "Tạo thủ công",
-            "multipleSources": "Nhiều nguồn",
-            "quickGeneration": "Tạo nhanh",
-            "smartContentExtraction": "Trích xuất nội dung thông minh"
-        },
-        "new": "Tạo {{type}} mới",
-        "noDescription": "Không có mô tả sẵn có...",
-        "optional": "Tùy chọn",
-        "optionalLabel": "không bắt buộc",
-        "editLaterHint": "Bạn có thể chỉnh sửa mọi thứ sau khi tạo.",
-        "titleHint": "Đặt tên ngắn gọn — bạn sẽ thấy nó trong Library.",
-        "tabs": {
-            "manual": "Tạo manually",
-            "ai": "Generate by AI"
-        },
-        "subtitle": {
-            "set": "Mỗi Set là một chủ đề học – chứa Note, Flashcard và Exam.",
-            "note": "Ghi lại ý tưởng, tóm tắt bài học, hoặc bất cứ thứ gì cần nhớ.",
-            "flashcard": "Bộ thẻ ngắn gọn – mặt trước câu hỏi, mặt sau đáp án.",
-            "exam": "Đề kiểm tra giúp bạn tự đánh giá hoặc luyện thi."
-        },
-        "titlePlaceholder": {
-            "set": "VD: React Hooks · Deep dive",
-            "note": "VD: Tổng kết chương 3",
-            "flashcard": "VD: Từ vựng IELTS · Unit 1",
-            "exam": "VD: Giữa kỳ Toán cao cấp"
-        },
-        "descriptionPlaceholder": {
-            "set": "Set này nói về điều gì? Bạn muốn học cụ thể những gì?",
-            "note": "Tóm tắt nhanh nội dung ghi chú này...",
-            "flashcard": "Bộ flashcard này dùng để ôn gì?",
-            "exam": "Đề này kiểm tra phạm vi kiến thức nào?"
-        },
-        "privacyDesc": {
-            "private": "Chỉ mình bạn thấy.",
-            "unlisted": "Ai có link đều xem được.",
-            "public": "Ai cũng có thể xem."
-        },
-        "privacy": "Quyền riêng tư",
-        "privacyRequired": "Quyền riêng tư là bắt buộc",
-        "private": "Riêng tư",
-        "public": "Công khai",
-        "thisCard": "thẻ này",
-        "thisFlashcard": "thẻ ghi nhớ này",
-        "title": "Tiêu đề",
-        "titleEmpty": "Vui lòng nhập tiêu đề",
-        "titleTooLong": "Tiêu đề phải ít hơn 100 ký tự",
-        "unlisted": "Không công khai",
-        "update": "Chỉnh sửa {{type}}",
-        "updateButton": "Chỉnh sửa"
-    },
-    "onboarding": {
-        "back": "Quay lại",
-        "continue": "Tiếp tục",
-        "createStudySet": {
-            "charCount": "{{current}}/{{max}}",
-            "createFailed": "Không tạo được bộ tài liệu. Vui lòng thử lại.",
-            "createSet": "Tạo bộ tài liệu",
-            "description": "Tạo không gian học tập cá nhân hóa của bạn để tổ chức tài liệu học tập",
-            "descriptionLabel": "Mô tả",
-            "descriptionPlaceholder": "Thêm mô tả để giúp bạn nhớ bộ tài liệu học tập này về cái gì...",
-            "keepMaterialsInOnePlace": "Giữ tất cả tài liệu của một lớp trong một nơi.",
-            "makeManyStudySets": "Bạn có thể tạo nhiều bộ tài liệu học tập như bạn muốn.",
-            "nameLabel": "Tên bộ tài liệu học tập",
-            "namePlaceholder": "Ví dụ: tên lớp hoặc môn học",
-            "optionalTag": "(Tùy chọn)",
-            "organizeMaterials": "Tổ chức tài liệu của bạn thành các lớp hoặc học kỳ riêng biệt.",
-            "privacyLabel": "Quyền riêng tư",
-            "privacyPlaceholder": "Chọn mức quyền riêng tư",
-            "privacyPrivate": "Riêng tư",
-            "privacyPublic": "Công khai",
-            "privacyUnlisted": "Không niêm yết",
-            "quickTip1": "Sử dụng tên mô tả như \"CS101 - Cấu trúc dữ liệu\"",
-            "quickTip2": "Thêm thông tin học kỳ: \"Mùa xuân 2025 - Phát triển React\"",
-            "quickTip3": "Bao gồm mục tiêu học tập của bạn: \"Nắm vững các nguyên tắc cơ bản về AI\"",
-            "quickTips": "Mẹo nhanh",
-            "title": "Đặt tên cho bộ tài liệu học tập đầu tiên của bạn",
-            "whatIsStudySet": "Bộ tài liệu học tập là gì?"
-        },
-        "educationSelection": {
-            "college": "Cao đẳng",
-            "collegeDescription": "Bằng cử nhân hoặc tương đương",
-            "description": "Giúp chúng tôi cá nhân hóa trải nghiệm học tập của bạn",
-            "gradSchool": "Sau đại học",
-            "gradSchoolDescription": "Bằng thạc sĩ hoặc tiến sĩ",
-            "highSchool": "Trung học phổ thông",
-            "highSchoolDescription": "Hoàn thành giáo dục trung học",
-            "medSchool": "Trường y",
-            "medSchoolDescription": "Chương trình đào tạo y khoa",
-            "other": "Khác",
-            "otherDescription": "Giáo dục thay thế hoặc phi truyền thống",
-            "title": "Trình độ học vấn của bạn là gì?"
-        },
-        "languageSelection": {
-            "description": "Chọn ngôn ngữ bạn muốn sử dụng cho trải nghiệm học tập của mình",
-            "header": "Chọn ngôn ngữ của bạn",
-            "info": "Bạn có thể thay đổi sở thích ngôn ngữ bất cứ lúc nào trong cài đặt tài khoản của mình.",
-            "title": "Chọn ngôn ngữ của bạn"
-        },
-        "loading": "Đang tải…",
-        "submitting": "Đang lưu…",
-        "submitError": "Không lưu được phần trả lời onboarding. Vui lòng thử lại.",
-        "submitMissingUser": "Bạn cần đăng nhập để hoàn tất onboarding.",
-        "progress": {
-            "step": "Bước {{current}} / {{total}}",
-            "percent": "{{pct}}%"
-        },
-        "premiumSelection": {
-            "badgePopular": "PHỔ BIẾN",
-            "description": "Chọn gói phù hợp nhất với nhu cầu và mục tiêu học tập của bạn.",
-            "free": "Miễn phí",
-            "freeFeatures": {
-                "basicStudyModes": "Các chế độ học cơ bản",
-                "communityAccess": "Tham gia cộng đồng",
-                "unlimitedStudySets": "Không giới hạn bộ học tập"
-            },
-            "premium": "Gói cao cấp",
-            "priceFree": "$0",
-            "pricePremium": "$9.99",
-            "pricePremiumInterval": "/tháng",
-            "premiumFeatures": {
-                "adFreeExperience": "Trải nghiệm không có quảng cáo",
-                "advancedStudyModes": "Chế độ học tập nâng cao",
-                "everythingInFree": "Tất cả trong gói miễn phí",
-                "offlineAccess": "Truy cập ngoại tuyến",
-                "prioritySupport": "Hỗ trợ ưu tiên"
-            },
-            "selectPremium": "Chọn gói cao cấp",
-            "title": "Chọn gói của bạn"
-        },
-        "roleSelection": {
-            "description": "Điều này giúp chúng tôi điều chỉnh trải nghiệm học tập của bạn phù hợp với nhu cầu và mục tiêu của bạn.",
-            "header": "Vai trò nào mô tả bạn nhất?",
-            "student": "Học sinh / Sinh viên",
-            "studentDescription": "Tôi tập trung vào học tập và ôn luyện",
-            "teacher": "Giáo viên / Giảng viên",
-            "teacherDescription": "Tôi tạo và chia sẻ tài liệu học tập"
-        },
-        "skipForNow": "Bỏ qua cho bây giờ",
-        "sourceSelection": {
-            "channels": {
-                "ChatGPT": "ChatGPT",
-                "Classmate": "Bạn cùng lớp",
-                "Facebook": "Facebook",
-                "Google": "Google",
-                "Instagram": "Instagram",
-                "Other": "Khác",
-                "Reddit": "Reddit",
-                "TikTok": "TikTok",
-                "YouTube": "YouTube"
-            },
-            "description": "Giúp chúng tôi hiểu cách bạn phát hiện ra nền tảng của chúng tôi để chúng tôi có thể cải thiện khả năng tiếp cận của mình.",
-            "header": "Bạn đã nghe về ProLearning từ đâu?"
-        }
-    },
-    "setlist": {
-      "all": "Tất cả",
-      "completed": "Đã hoàn thành",
-      "creating": "Đang tạo...",
-      "in_progress": "Đang tiến hành",
-      "new_set": "Bộ học tập mới",
-      "set": "Bộ học tập",
-      "title": "Danh sách tài liệu",
-      "your_set": "Bộ học tập của bạn",
-      "your_workspace": "Không gian của bạn",
-      "searchPlaceholder": "Tìm bộ học…"
-    },
-    "sidebar": {
-        "blog": "Blog",
-        "dashboard": "Trang chủ",
-        "logout": "Đăng xuất",
-        "pomodoro": "Pomodoro",
-        "profile": "Hồ sơ",
-        "setList": "Danh sách tài liệu",
-        "settings": "Cài đặt",
-        "socials": "Mạng xã hội",
-        "todo": "Việc cần làm"
-    },
-    "signin": {
-        "createAccount": "Đăng ký",
-        "description": "Chào mừng bạn trở lại! Vui lòng đăng nhập để tiếp tục.",
-        "email": "Email",
-        "failedGoogleConnect": "Kết nối với Google không thành công",
-        "forgotPassword": "Quên mật khẩu?",
-        "invalidEmail": "Email không hợp lệ",
-        "noAccount": "Bạn chưa có tài khoản?",
-        "orContinueWith": "Hoặc tiếp tục với",
-        "password": "Mật khẩu",
-        "passwordRequired": "Mật khẩu là bắt buộc",
-        "subtitle": "Đăng nhập",
-        "title": "Đăng Nhập Tài Khoản",
-        "wrongCredentials": "Sai tên người dùng hoặc mật khẩu"
-    },
-    "signup": {
-        "confirmPassword": "Xác nhận mật khẩu",
-        "confirmPasswordPlease": "Vui lòng xác nhận mật khẩu",
-        "createAccount": "Tạo tài khoản",
-        "description": "Vui lòng điền thông tin để bắt đầu.",
-        "email": "Email",
-        "emailPlaceholder": "Email của bạn",
-        "failed": "Tài khoản đã tồn tại",
-        "firstName": "Họ",
-        "firstNameMax": "Họ không được vượt quá 50 ký tự",
-        "firstNameMin": "Họ phải có ít nhất 2 ký tự",
-        "firstNamePlaceholder": "Tên của bạn",
-        "haveAccount": "Bạn đã có tài khoản?",
-        "invalidEmail": "Email không hợp lệ",
-        "lastName": "Tên",
-        "lastNameMax": "Tên không được vượt quá 50 ký tự",
-        "lastNameMin": "Tên phải có ít nhất 2 ký tự",
-        "lastNamePlaceholder": "Họ của bạn",
-        "orContinueWith": "Hoặc tiếp tục với",
-        "password": "Mật khẩu",
-        "passwordMax": "Mật khẩu không được vượt quá 20 ký tự",
-        "passwordMin": "Mật khẩu phải có ít nhất 8 ký tự",
-        "passwordNotMatch": "Mật khẩu không khớp",
-        "passwordRequirement": "8 ký tự trở lên",
-        "signIn": "Đăng nhập",
-        "subtitle": "Đăng ký",
-        "success": "Tạo tài khoản thành công!",
-        "title": "Tạo tài khoản của bạn"
+    "targetStudyTime": "Thời gian học mục tiêu",
+    "yourCalendar": "Lịch của bạn"
+  },
+  "card": {
+    "checklist": {
+      "seeMore": "Xem thêm",
+      "title": "Danh sách kiểm tra của bạn hôm nay!"
     },
     "exam": {
-        "back": "Quay lại",
-        "backToExams": "Quay lại danh sách đề thi",
-        "backToSet": "Về bộ học tập",
-        "booleanFalse": "Sai",
-        "booleanTrue": "Đúng",
-        "common": {
-            "correct": "Đáp án đúng",
-            "essay": "Tự luận",
-            "min": "phút",
-            "multipleChoice": "Trắc nghiệm",
-            "points": "đ",
-            "pointsShort": "điểm",
-            "trueFalse": "Đúng / Sai",
-            "yourAnswer": "Bạn chọn"
-        },
-        "editor": {
-            "addAnswer": "Thêm đáp án",
-            "addFirstQuestion": "Thêm câu hỏi đầu tiên",
-            "addQuestion": "Thêm câu hỏi",
-            "answerN": "Đáp án {{n}}",
-            "answerRequired": "Vui lòng nhập nội dung đáp án",
-            "answersHintMcq": "(Chọn đáp án đúng)",
-            "answersLabel": "Đáp án",
-            "createExam": "Tạo đề thi",
-            "descriptionLabel": "Mô tả (tùy chọn)",
-            "descriptionPlaceholder": "Nhập mô tả đề thi",
-            "editExam": "Sửa đề thi",
-            "examInfo": "Thông tin đề thi",
-            "essayGradingNote": "Câu tự luận sẽ được chấm bằng AI trong tương lai.",
-            "failedCreate": "Tạo đề thi thất bại",
-            "failedSave": "Lưu đề thi thất bại. Vui lòng thử lại.",
-            "fixBeforeSave": "Vui lòng sửa các ô được đánh dấu trước khi lưu",
-            "loading": "Đang tải đề thi...",
-            "minOneQuestion": "Đề thi cần ít nhất một câu hỏi",
-            "noQuestionsYet": "Chưa có câu hỏi",
-            "pointsLabel": "Điểm",
-            "questionLabel": "Câu hỏi",
-            "questionPlaceholder": "Nhập nội dung câu hỏi...",
-            "questionRequired": "Vui lòng nhập nội dung câu hỏi",
-            "questionType": "Loại câu hỏi",
-            "questionsHeading": "Câu hỏi ({{count}})",
-            "selectCorrect": "Chọn ít nhất một đáp án đúng",
-            "successCreated": "Tạo đề thi thành công",
-            "successUpdated": "Cập nhật đề thi thành công",
-            "timeLimitMinutes": "Giới hạn thời gian (phút)",
-            "titleLabel": "Tiêu đề",
-            "titlePlaceholder": "Nhập tiêu đề đề thi",
-            "titleRequired": "Tiêu đề là bắt buộc",
-            "totalScore": "Tổng điểm",
-            "updateExam": "Cập nhật đề thi"
-        },
-        "list": {
-            "empty": "Chưa có đề thi. Hãy tạo đề thi đầu tiên để bắt đầu.",
-            "loadError": "Không tải được danh sách đề thi. Vui lòng thử lại."
-        },
-        "home": {
-            "beforeStart": "Trước khi bắt đầu:",
-            "editExam": "Sửa đề thi",
-            "hintInternet": "Đảm bảo kết nối mạng ổn định",
-            "hintNoPause": "Không thể tạm dừng sau khi đã bắt đầu",
-            "hintProgress": "Tiến độ sẽ được lưu tự động",
-            "hintReview": "Xem lại tất cả câu hỏi trước khi nộp bài",
-            "questionTypes": "Loại câu hỏi:",
-            "questions": "Câu hỏi",
-            "startExam": "Bắt đầu làm bài",
-            "starting": "Đang bắt đầu…",
-            "timeLimit": "Thời gian",
-            "totalPoints": "Tổng điểm"
-        },
-        "page": {
-            "emptyDescription": "Đề thi này chưa có câu hỏi. Hãy thêm câu hỏi trong trình soạn thảo.",
-            "goToEditor": "Mở trình soạn thảo",
-            "loadError": "Không tải được đề thi. Đề có thể không tồn tại hoặc bạn không có quyền truy cập.",
-            "loading": "Đang tải đề thi...",
-            "backToList": "Quay lại danh sách",
-            "startAttemptError": "Không thể bắt đầu bài thi. Vui lòng thử lại.",
-            "submitError": "Không thể nộp bài. Vui lòng thử lại."
-        },
-        "results": {
-            "aiExplanation": "Giải thích AI",
-            "backToSet": "Về bộ học tập",
-            "congrats": "Chúc mừng!",
-            "correctBadge": "{{correct}}/{{total}} đúng",
-            "correctLabel": "Đúng",
-            "examCompleted": "Hoàn thành bài thi",
-            "examResults": "Kết quả bài thi",
-            "expectedAnswer": "Đáp án đúng",
-            "explainAI": "Giải thích bằng AI",
-            "feedback": "Nhận xét",
-            "failedExplanation": "Không tải được giải thích. Vui lòng thử lại.",
-            "generatingExplanation": "Đang tạo giải thích…",
-            "keepPracticing": "Tiếp tục luyện tập để cải thiện điểm số",
-            "markReviewed": "Đánh dấu đã xem",
-            "navReviewed": "Đã xem",
-            "navCorrect": "Đúng",
-            "navIncorrect": "Sai",
-            "navEssayPending": "Tự luận – chờ chấm",
-            "navigatorTitle": "Danh sách câu hỏi",
-            "noExplanation": "Không có giải thích.",
-            "passed": "Bạn đã đạt bài thi!",
-            "pendingGrading": "Chờ chấm",
-            "percentage": "Phần trăm",
-            "questionReview": "Xem lại câu hỏi",
-            "reviewed": "Đã xem ✓",
-            "reviewedCount": "Đã xem {{done}}/{{total}}",
-            "reviewExam": "Xem lại đề thi",
-            "attemptDetailAnswers": "Các câu trả lời",
-            "attemptDetailError": "Không tải được lần làm này.",
-            "attemptDetailLoading": "Đang tải…",
-            "attemptDetailTitle": "Chi tiết lần làm",
-            "attemptHistoryEmpty": "Chưa có lần làm nào.",
-            "attemptHistoryLoadError": "Không tải được lịch sử làm bài.",
-            "attemptHistoryLoading": "Đang tải lịch sử…",
-            "attemptHistoryTitle": "Các lần làm của bạn",
-            "score": "Điểm",
-            "timeFormatted": "{{mins}} phút {{secs}} giây",
-            "timeTaken": "Thời gian làm bài",
-            "tableActions": "Thao tác",
-            "tableAttemptId": "Lần làm",
-            "tableScore": "Điểm",
-            "tableStarted": "Bắt đầu",
-            "tableStatus": "Trạng thái",
-            "tableSubmitted": "Nộp bài",
-            "viewDetails": "Xem",
-            "viewExam": "Xem đề thi",
-            "viewHistory": "Xem lịch sử",
-            "yourAnswerLabel": "Bài làm của bạn:"
-        },
-        "taking": {
-            "answered": "Đã trả lời",
-            "answeredCount": "Đã trả lời:",
-            "back": "Quay lại",
-            "continueExam": "Tiếp tục làm bài",
-            "current": "Hiện tại",
-            "essayPlaceholder": "Nhập câu trả lời của bạn...",
-            "leaveConfirm": "Rời khỏi",
-            "leaveDescription": "Bạn sẽ quay lại màn hình giới thiệu đề thi. Phiên làm bài có thể vẫn còn trên server cho đến khi hết hạn hoặc bạn làm tiếp sau.",
-            "leaveTitle": "Rời khỏi bài thi?",
-            "legendNotAnswered": "Chưa trả lời",
-            "next": "Tiếp",
-            "notAnsweredWarning": "Bạn còn câu chưa trả lời",
-            "points": "{{n}} điểm",
-            "previous": "Trước",
-            "questionNofM": "Câu {{current}} / {{total}}",
-            "questionsSidebar": "Câu hỏi",
-            "submitConfirm": "Bạn chắc chắn muốn nộp bài? Bạn đã trả lời {{answered}} / {{total}} câu.",
-            "stayContinue": "Ở lại",
-            "submitExam": "Nộp bài",
-            "submitting": "Đang nộp…",
-            "submitTitle": "Nộp bài thi?",
-            "timeUp": "Hết giờ! Đang nộp bài...",
-            "totalScore": "Tổng điểm:",
-            "unansweredWarning": "Cảnh báo: Bạn vẫn còn câu chưa trả lời."
-        }
+      "questions_one": "{{count}} câu hỏi",
+      "questions_other": "{{count}} câu hỏi",
+      "minutes": "{{count}} phút",
+      "deleteTitle": "Xoá bài thi"
+    }
+  },
+  "dashboard": {
+    "recentNotes": "Ghi chú gần đây",
+    "viewAll": "Xem tất cả",
+    "yourSets": "Bộ sưu tập của bạn"
+  },
+  "header": {
+    "notifications": "Thông báo",
+    "profile": "Trang cá nhân",
+    "search": "Tìm kiếm...",
+    "welcome": "Chào mừng trở lại!"
+  },
+  "notificationsPanel": {
+    "title": "Thông báo",
+    "tabAll": "Tất cả",
+    "tabUnread": "Chưa đọc",
+    "sectionEarlier": "Trước đó",
+    "seeAll": "Xem thêm",
+    "empty": "Chưa có thông báo",
+    "emptyUnread": "Bạn đã xem hết thông báo",
+    "loadError": "Không tải được thông báo.",
+    "moreActions": "Tùy chọn khác",
+    "createTest": "Tạo thông báo test",
+    "markAsRead": "Đánh dấu đã đọc",
+    "markAllRead": "Đánh dấu tất cả đã đọc"
+  },
+  "landing": {
+    "createAccount": "Tạo tài khoản",
+    "cta": {
+      "buttonText": "Bắt đầu miễn phí",
+      "description": "Tham gia hàng ngàn học viên đã và đang biến đổi sự nghiệp của họ",
+      "title": "Sẵn sàng bắt đầu hành trình của bạn?"
     },
-    "profile": {
-        "breadcrumb": "Tài khoản",
-        "title": "Hồ sơ của bạn",
-        "subtitle": "Quản lý thông tin, gói và sở thích học tập — chỉ bạn mới thấy được.",
-        "tabs": {
-            "profile": "Hồ sơ",
-            "preferences": "Tuỳ chỉnh",
-            "security": "Bảo mật",
-            "billing": "Gói & thanh toán"
-        },
-        "basicInfo": {
-            "title": "Thông tin cơ bản",
-            "sub": "Tên hiển thị, email, ảnh đại diện.",
-            "firstName": "First name",
-            "lastName": "Last name",
-            "email": "Email",
-            "emailHint": "Dùng để đăng nhập và nhận thông báo.",
-            "accountType": "Account type",
-            "accountTypeHint": "Field này dạng để hiển thị (không sửa).",
-            "bio": "Bio",
-            "bioPlaceholder": "Giới thiệu ngắn về bản thân…"
-        },
-        "learningProfile": {
-            "title": "Hồ sơ học tập",
-            "sub": "Giúp ProLearning gợi ý nội dung phù hợp hơn.",
-            "language": "Language",
-            "languagePlaceholder": "Chọn ngôn ngữ",
-            "education": "Education",
-            "educationPlaceholder": "Chọn học vấn",
-            "hearAppFrom": "Hear app from",
-            "hearAppFromPlaceholder": "Chọn nguồn"
-        },
-        "actions": {
-            "cancel": "Huỷ",
-            "save": "Lưu thay đổi",
-            "saving": "Đang lưu…"
-        },
-        "preferences": {
-            "notifications": {
-                "title": "Thông báo",
-                "sub": "Bạn muốn ProLearning chạm vai bạn lúc nào?",
-                "push": "Push notifications",
-                "pushDesc": "Nhắc học flashcard, deadline goal.",
-                "email": "Email summaries",
-                "emailDesc": "Tổng kết tuần, bundle mới được đề xuất.",
-                "reminders": "Daily streak reminder",
-                "remindersDesc": "Nhắc nhẹ vào 20:00 nếu hôm đó chưa học."
-            },
-            "display": {
-                "title": "Hiển thị",
-                "sub": "Cách bạn nhìn ProLearning.",
-                "weekStart": "Tuần bắt đầu vào",
-                "monday": "Thứ Hai",
-                "sunday": "Chủ Nhật"
-            }
-        },
-        "security": {
-            "changePassword": {
-                "title": "Đổi mật khẩu",
-                "sub": "Mật khẩu mới phải ≥ 8 ký tự, có chữ và số.",
-                "currentPassword": "Current password",
-                "newPassword": "New password",
-                "submit": "Đổi mật khẩu"
-            },
-            "dangerZone": {
-                "title": "Vùng nguy hiểm",
-                "sub": "Hành động không thể hoàn tác.",
-                "deleteAccount": "Xoá tài khoản",
-                "deleteDesc": "Mọi sets, bundles, ghi chú và tiến độ sẽ bị xoá vĩnh viễn.",
-                "deleteBtn": "Xoá tài khoản"
-            }
-        },
-        "billing": {
-            "title": "Gói hiện tại",
-            "sub": "Bạn đang dùng gói {{plan}}.",
-            "planFree": "Miễn phí",
-            "planPro": "Pro",
-            "freeDesc": "Nâng cấp để mở khoá toàn bộ tính năng.",
-            "proDesc": "Cảm ơn bạn đã tin dùng ProLearning.",
-            "upgrade": "Nâng cấp Pro",
-            "features": {
-                "unlimited": "Không giới hạn sets và flashcards",
-                "ai": "AI generate từ note, file, web URL",
-                "sr": "Spaced repetition + interval scheduling",
-                "export": "Xuất dữ liệu sang Markdown / Anki",
-                "support": "Hỗ trợ ưu tiên qua email"
-            }
-        },
-        "toast": {
-            "noUser": "Không tìm thấy thông tin user.",
-            "noChanges": "Không có thay đổi nào để cập nhật.",
-            "updateSuccess": "Cập nhật profile thành công.",
-            "updateFailed": "Cập nhật thất bại. Vui lòng thử lại."
-        }
+    "features": {
+      "certifiedPrograms": {
+        "description": "Hoàn thành các chương trình được chứng nhận để nâng cao hồ sơ cá nhân của bạn.",
+        "title": "Chương trình chứng nhận"
+      },
+      "communityLearning": {
+        "description": "Kết nối với cộng đồng học viên và giảng viên để trao đổi kiến thức và kinh nghiệm.",
+        "title": "Học tập cộng đồng"
+      },
+      "fastTrackLearning": {
+        "description": "Tiếp cận các lộ trình học tập được thiết kế để giúp bạn đạt được mục tiêu nhanh hơn.",
+        "title": "Học tập nhanh"
+      },
+      "interactiveCourses": {
+        "description": "Tham gia các khóa học tương tác với bài tập thực hành và phản hồi ngay lập tức.",
+        "title": "Khóa học tương tác"
+      }
     },
-    "todo": {
-        "breadcrumb": "To-Do · Goals",
-        "title": "Hôm nay bạn muốn hoàn thành điều gì?",
-        "subtitle": "Cứ ghi xuống — gắn vào goal khi thấy cần.",
-        "stats": {
-            "completed": "Đã hoàn thành",
-            "pending": "Đang chờ",
-            "total": "Tổng todos",
-            "goals": "Goals đang theo"
-        },
-        "filters": {
-            "all": "Tất cả",
-            "noGoal": "Chưa gắn goal",
-            "completed": "Đã xong"
-        },
-        "todoList": {
-            "add": "Thêm",
-            "placeholder": "Nhập nhanh todo… (Enter để tạo)",
-            "placeholderGoal": "Thêm todo vào \"{{title}}\"…",
-            "empty": "Chưa có todo nào ở đây.",
-            "emptyHint": "Dùng ô phía trên để thêm nhanh.",
-            "unassigned": "Chưa gắn goal",
-            "unassignedHint": "Gắn vào goal khi thấy cần →"
-        },
-        "item": {
-            "editTitle": "Chi tiết / chỉnh sửa",
-            "deleteTitle": "Xóa",
-            "shortBadge": "ngắn hạn"
-        },
-        "priority": {
-            "HIGH": "Cao",
-            "MEDIUM": "Trung bình",
-            "LOW": "Thấp"
-        },
-        "goalStatus": {
-            "IN_PROGRESS": "Đang thực hiện",
-            "COMPLETED": "Hoàn thành",
-            "ARCHIVED": "Lưu trữ"
-        },
-        "goalType": {
-            "LONG": "Dài hạn (≥ 6 tháng)",
-            "SHORT": "Ngắn hạn (1–6 tháng)"
-        },
-        "todoType": {
-            "DAILY": "Hằng ngày",
-            "WEEKLY": "Hằng tuần"
-        },
-        "todoStatus": {
-            "TODO": "Cần làm",
-            "DONE": "Hoàn thành",
-            "SKIPPED": "Bỏ qua"
-        },
-        "resource": {
-            "set": "Set",
-            "note": "Ghi chú",
-            "flashcard": "Flashcard",
-            "exam": "Bài kiểm tra"
-        },
-        "goalsSidebar": {
-            "goals": "Goals",
-            "newGoalTitle": "Tạo goal mới",
-            "empty": "Chưa có goal nào",
-            "createFirst": "Tạo goal đầu tiên →",
-            "progressTitle": "Tiến độ tổng",
-            "progressDetail": "{{done}} done · {{pending}} đang chờ",
-            "shortBadge": "ngắn",
-            "until": "đến {{date}}"
-        },
-        "goalModal": {
-            "createTitle": "Tạo Goal mới",
-            "editTitle": "Sửa Goal",
-            "goalType": "Loại goal",
-            "parentGoal": "Thuộc goal dài hạn",
-            "namePlaceholder": "Tên goal...",
-            "descPlaceholder": "Mô tả (tùy chọn)...",
-            "targetDate": "Ngày mục tiêu",
-            "color": "Màu sắc",
-            "noParent": "-- Không gắn --",
-            "cancel": "Hủy",
-            "save": "Lưu",
-            "create": "Tạo",
-            "longLabel": "Dài hạn",
-            "shortLabel": "Ngắn hạn",
-            "longDesc": "≥ 6 tháng",
-            "shortDesc": "1–6 tháng"
-        },
-        "detailModal": {
-            "title": "Chi tiết Todo",
-            "namePlaceholder": "Tên todo...",
-            "descPlaceholder": "Mô tả (tùy chọn)...",
-            "taskType": "Loại task",
-            "status": "Trạng thái",
-            "priority": "Ưu tiên",
-            "dueDate": "Ngày hết hạn",
-            "goal": "Goal",
-            "noGoal": "-- Không có goal --",
-            "resources": "Tài nguyên liên kết",
-            "addResource": "Thêm {{type}}",
-            "noResources": "Chưa có tài nguyên nào. Dùng các nút trên để thêm.",
-            "displayNamePlaceholder": "Tên hiển thị...",
-            "cancel": "Hủy",
-            "save": "Lưu",
-            "priorityLow": "Thấp",
-            "priorityMedium": "Trung bình",
-            "priorityHigh": "Cao"
-        },
-        "assignGoal": {
-            "noGoal": "Chưa có goal",
-            "unassign": "Không gắn goal"
-        },
-        "today": {
-            "label": "HÔM NAY",
-            "headline_one": "{{count}} task cần xử lý",
-            "headline_other": "{{count}} tasks cần xử lý",
-            "emptyHeadline": "Hôm nay chưa có task nào",
-            "done": "đã xong",
-            "pending": "còn lại",
-            "empty": "Chưa có task nào cho hôm nay — thêm bên trên.",
-            "quickAddPlaceholder": "Thêm nhanh todo cho hôm nay..."
-        },
-        "overall": {
-            "title": "Tiến độ tổng",
-            "newGoal": "Goal mới",
-            "detail": "{{done}} xong · {{pending}} còn lại trên {{count}} goals",
-            "longHeader": "Dài hạn",
-            "shortHeader": "Ngắn hạn",
-            "emptyLong": "Chưa có goal dài hạn.",
-            "emptyShort": "Chưa có goal ngắn hạn."
-        },
-        "week": {
-            "title": "Tuần này",
-            "planned_one": "{{count}} task",
-            "planned_other": "{{count}} tasks",
-            "today": "Hôm nay",
-            "selectedHeader": "NGÀY ĐANG CHỌN",
-            "dayEmpty": "Ngày này chưa có task nào.",
-            "more_one": "+ {{count}} nữa",
-            "more_other": "+ {{count}} nữa",
-            "addPlaceholder": "Thêm nhanh todo cho {{date}}..."
-        },
-        "year": {
-            "title": "Goals × Năm",
-            "subtitle_one": "{{count}} goal có lịch",
-            "subtitle_other": "{{count}} goals có lịch",
-            "progressHint": "Tiến độ: {{progress}}%",
-            "undatedHeader_one": "Chưa có ngày · {{count}} goal",
-            "undatedHeader_other": "Chưa có ngày · {{count}} goals"
-        },
-        "toast": {
-            "createFailed": "Tạo todo thất bại",
-            "deleteFailed": "Xóa todo thất bại",
-            "goalDeleted": "Đã xóa goal",
-            "goalDeleteFailed": "Xóa goal thất bại",
-            "goalCreated": "Tạo goal thành công!",
-            "goalCreateFailed": "Tạo goal thất bại",
-            "goalUpdated": "Cập nhật goal thành công!",
-            "goalUpdateFailed": "Cập nhật goal thất bại",
-            "todoUpdated": "Cập nhật todo thành công!",
-            "todoUpdateFailed": "Cập nhật todo thất bại",
-            "goalNameRequired": "Tên goal không được để trống",
-            "todoNameRequired": "Tên todo không được để trống",
-            "invalidId": "ID không hợp lệ",
-            "setIdRequired": "Cần nhập Set ID"
-        }
+    "footer": {
+      "about": "Về chúng tôi",
+      "careers": "Cơ hội nghề nghiệp",
+      "company": "Công ty",
+      "contact": "Liên hệ",
+      "courses": "Khóa học",
+      "description": "Trao quyền cho người học trên toàn thế giới với giáo dục chất lượng.",
+      "features": "Tính năng",
+      "legal": "Pháp lý",
+      "pricing": "Giá cả",
+      "privacy": "Chính sách bảo mật",
+      "product": "Sản phẩm",
+      "security": "Bảo mật",
+      "terms": "Điều khoản dịch vụ"
     },
+    "getStarted": "Bắt đầu",
+    "intro": {
+      "description": "Làm chủ các kỹ năng mới, phát triển sự nghiệp và đạt được mục tiêu của bạn với các khóa học từ chuyên gia và các lộ trình học tập cá nhân hóa.",
+      "header": "Biến đổi tương lai của bạn ngay hôm nay",
+      "platform": "DÀNH CHO BẠN!",
+      "subheader": "NỀN TẢNG HỌC TẬP TỐT NHẤT"
+    },
+    "login": "Đăng nhập",
+    "signUp": "Đăng ký",
+    "stats": {
+      "activeStudents": "Học viên tích cực",
+      "expertInstructors": "Giảng viên chuyên gia",
+      "qualityCourses": "Khóa học chất lượng",
+      "successRate": "Tỷ lệ thành công"
+    },
+    "testimonials": {
+      "emily": {
+        "content": "Tôi yêu thích sự linh hoạt và chất lượng nội dung. Rất đáng để giới thiệu!"
+      },
+      "michael": {
+        "content": "Tôi đã phát triển kỹ năng phân tích dữ liệu của mình nhờ các khóa học chuyên sâu và sự hỗ trợ từ cộng đồng."
+      },
+      "sarah": {
+        "content": "Nền tảng này đã thay đổi cách tôi học lập trình. Các khóa học rất thực tế và dễ theo dõi!"
+      }
+    },
+    "title": {
+      "about": "Về chúng tôi",
+      "features": "Tính năng của chúng tôi",
+      "plans": "Kế hoạch",
+      "testimonials": "Được học viên trên toàn thế giới yêu thích"
+    },
+    "watchDemo": "Xem bản demo",
+    "whyChooseUs": "Tại sao chọn ProLearning?",
+    "whyChooseUsDescription": "Trải nghiệm học tập như chưa từng có với nền tảng ProLearning."
+  },
+  "modal": {
+    "ai": {
+      "chooseFiles": "Chọn tệp",
+      "fromNotes": "From Note",
+      "fromNotesDesc": "Chọn ghi chú có sẵn trong set này.",
+      "uploadFiles": "Upload File",
+      "uploadFilesDesc": "PDF, DOCX, PPTX, TXT — AI đọc và tóm tắt.",
+      "fromWeb": "Web URL",
+      "fromWebDesc": "Bài blog, Wikipedia, MDN — AI tự crawl.",
+      "sourceLabel": "Nguồn nội dung",
+      "contentLabel": "Nội dung",
+      "titleAutoPlaceholder": "Auto-generate",
+      "titleAutoHint": "Để trống để AI tự đặt.",
+      "aiSettings": "AI settings",
+      "fileHint": "PDF, DOCX, PPTX, TXT (tối đa 3 tệp)",
+      "maxFiles": "Tối đa 3 tệp",
+      "noNotes": "Không có ghi chú nào",
+      "webUrlsPlaceholder": "https://example.com/article",
+      "webUrlsHint": "Mỗi URL trên một dòng (https://…)",
+      "mcq": "Trắc nghiệm",
+      "tf": "Đúng / Sai",
+      "essay": "Tự luận",
+      "questionTotal": "Tổng: {{count}} câu hỏi",
+      "generateButton": "Generate {{type}}",
+      "language": "Ngôn ngữ",
+      "specialRequirements": "Yêu cầu đặc biệt (tuỳ chọn)",
+      "specialRequirementsPlaceholder": "VD: tập trung vào định nghĩa, tránh chi tiết khó, bám theo chương 3…",
+      "difficultyMix": "Tỉ lệ độ khó (% — Dễ + Trung bình + Khó = 100)",
+      "difficultyReset": "Đặt lại 50 / 30 / 20",
+      "difficultyEasy": "Dễ",
+      "difficultyMedium": "Trung bình",
+      "difficultyHard": "Khó",
+      "difficultySumHint": "Tổng hiện tại: {{sum}}% — phải bằng 100%",
+      "generateWithAI": "Tạo với AI",
+      "generating": "Đang tạo...",
+      "header": "Tạo {{type}} với AI",
+      "subtitle": "Chọn nguồn — ghi chú, tệp, hoặc trang web — để AI lo phần còn lại.",
+      "examHeader": "Tạo Exam với AI",
+      "examSubtitle": "Chọn nguồn, đặt số lượng câu hỏi và độ khó — AI sẽ soạn đề cho bạn.",
+      "questionCounts": "Số lượng câu hỏi theo loại",
+      "selectNotes": "Chọn ghi chú để tạo {{type}} từ:",
+      "selected": "đã chọn",
+      "uploadedFiles": "Tệp đã tải lên"
+    },
+    "back": "Quay lại",
+    "cancel": "Hủy",
+    "create": "Tạo",
+    "delete": "Xóa",
+    "deleteConfirmation": "Bạn có chắc chắn muốn xóa",
+    "deleteConfirmationTitle": "Xác nhận xóa",
+    "deleteConfirmationWarning": "Hành động này không thể hoàn tác.",
+    "description": "Mô tả",
+    "enterDescription": "Nhập mô tả",
+    "generateWithAI": "Tạo với AI",
+    "method": {
+      "addImages": "Thêm hình ảnh",
+      "aiGeneration": "Tạo nội dung bằng AI",
+      "customContent": "Nội dung tùy chỉnh",
+      "description": "Chọn phương pháp để tạo {type} của bạn:",
+      "header": "Tạo mới {type}",
+      "importFromText": "Nhập từ văn bản",
+      "manualCreation": "Tạo thủ công",
+      "multipleSources": "Nhiều nguồn",
+      "quickGeneration": "Tạo nhanh",
+      "smartContentExtraction": "Trích xuất nội dung thông minh"
+    },
+    "new": "Tạo {{type}} mới",
+    "noDescription": "Không có mô tả sẵn có...",
+    "optional": "Tùy chọn",
+    "optionalLabel": "không bắt buộc",
+    "editLaterHint": "Bạn có thể chỉnh sửa mọi thứ sau khi tạo.",
+    "titleHint": "Đặt tên ngắn gọn — bạn sẽ thấy nó trong Library.",
+    "tabs": {
+      "manual": "Tạo manually",
+      "ai": "Generate by AI"
+    },
+    "subtitle": {
+      "set": "Mỗi Set là một chủ đề học – chứa Note, Flashcard và Exam.",
+      "note": "Ghi lại ý tưởng, tóm tắt bài học, hoặc bất cứ thứ gì cần nhớ.",
+      "flashcard": "Bộ thẻ ngắn gọn – mặt trước câu hỏi, mặt sau đáp án.",
+      "exam": "Đề kiểm tra giúp bạn tự đánh giá hoặc luyện thi."
+    },
+    "titlePlaceholder": {
+      "set": "VD: React Hooks · Deep dive",
+      "note": "VD: Tổng kết chương 3",
+      "flashcard": "VD: Từ vựng IELTS · Unit 1",
+      "exam": "VD: Giữa kỳ Toán cao cấp"
+    },
+    "descriptionPlaceholder": {
+      "set": "Set này nói về điều gì? Bạn muốn học cụ thể những gì?",
+      "note": "Tóm tắt nhanh nội dung ghi chú này...",
+      "flashcard": "Bộ flashcard này dùng để ôn gì?",
+      "exam": "Đề này kiểm tra phạm vi kiến thức nào?"
+    },
+    "privacyDesc": {
+      "private": "Chỉ mình bạn thấy.",
+      "unlisted": "Ai có link đều xem được.",
+      "public": "Ai cũng có thể xem."
+    },
+    "privacy": "Quyền riêng tư",
+    "privacyRequired": "Quyền riêng tư là bắt buộc",
+    "private": "Riêng tư",
+    "public": "Công khai",
+    "thisCard": "thẻ này",
+    "thisFlashcard": "thẻ ghi nhớ này",
+    "title": "Tiêu đề",
+    "titleEmpty": "Vui lòng nhập tiêu đề",
+    "titleTooLong": "Tiêu đề phải ít hơn 100 ký tự",
+    "unlisted": "Không công khai",
+    "update": "Chỉnh sửa {{type}}",
+    "updateButton": "Chỉnh sửa"
+  },
+  "onboarding": {
+    "back": "Quay lại",
+    "continue": "Tiếp tục",
+    "createStudySet": {
+      "charCount": "{{current}}/{{max}}",
+      "createFailed": "Không tạo được bộ tài liệu. Vui lòng thử lại.",
+      "createSet": "Tạo bộ tài liệu",
+      "description": "Tạo không gian học tập cá nhân hóa của bạn để tổ chức tài liệu học tập",
+      "descriptionLabel": "Mô tả",
+      "descriptionPlaceholder": "Thêm mô tả để giúp bạn nhớ bộ tài liệu học tập này về cái gì...",
+      "keepMaterialsInOnePlace": "Giữ tất cả tài liệu của một lớp trong một nơi.",
+      "makeManyStudySets": "Bạn có thể tạo nhiều bộ tài liệu học tập như bạn muốn.",
+      "nameLabel": "Tên bộ tài liệu học tập",
+      "namePlaceholder": "Ví dụ: tên lớp hoặc môn học",
+      "optionalTag": "(Tùy chọn)",
+      "organizeMaterials": "Tổ chức tài liệu của bạn thành các lớp hoặc học kỳ riêng biệt.",
+      "privacyLabel": "Quyền riêng tư",
+      "privacyPlaceholder": "Chọn mức quyền riêng tư",
+      "privacyPrivate": "Riêng tư",
+      "privacyPublic": "Công khai",
+      "privacyUnlisted": "Không niêm yết",
+      "quickTip1": "Sử dụng tên mô tả như \"CS101 - Cấu trúc dữ liệu\"",
+      "quickTip2": "Thêm thông tin học kỳ: \"Mùa xuân 2025 - Phát triển React\"",
+      "quickTip3": "Bao gồm mục tiêu học tập của bạn: \"Nắm vững các nguyên tắc cơ bản về AI\"",
+      "quickTips": "Mẹo nhanh",
+      "title": "Đặt tên cho bộ tài liệu học tập đầu tiên của bạn",
+      "whatIsStudySet": "Bộ tài liệu học tập là gì?"
+    },
+    "educationSelection": {
+      "college": "Cao đẳng",
+      "collegeDescription": "Bằng cử nhân hoặc tương đương",
+      "description": "Giúp chúng tôi cá nhân hóa trải nghiệm học tập của bạn",
+      "gradSchool": "Sau đại học",
+      "gradSchoolDescription": "Bằng thạc sĩ hoặc tiến sĩ",
+      "highSchool": "Trung học phổ thông",
+      "highSchoolDescription": "Hoàn thành giáo dục trung học",
+      "medSchool": "Trường y",
+      "medSchoolDescription": "Chương trình đào tạo y khoa",
+      "other": "Khác",
+      "otherDescription": "Giáo dục thay thế hoặc phi truyền thống",
+      "title": "Trình độ học vấn của bạn là gì?"
+    },
+    "languageSelection": {
+      "description": "Chọn ngôn ngữ bạn muốn sử dụng cho trải nghiệm học tập của mình",
+      "header": "Chọn ngôn ngữ của bạn",
+      "info": "Bạn có thể thay đổi sở thích ngôn ngữ bất cứ lúc nào trong cài đặt tài khoản của mình.",
+      "title": "Chọn ngôn ngữ của bạn"
+    },
+    "loading": "Đang tải…",
+    "submitting": "Đang lưu…",
+    "submitError": "Không lưu được phần trả lời onboarding. Vui lòng thử lại.",
+    "submitMissingUser": "Bạn cần đăng nhập để hoàn tất onboarding.",
+    "progress": {
+      "step": "Bước {{current}} / {{total}}",
+      "percent": "{{pct}}%"
+    },
+    "premiumSelection": {
+      "badgePopular": "PHỔ BIẾN",
+      "description": "Chọn gói phù hợp nhất với nhu cầu và mục tiêu học tập của bạn.",
+      "free": "Miễn phí",
+      "freeFeatures": {
+        "basicStudyModes": "Các chế độ học cơ bản",
+        "communityAccess": "Tham gia cộng đồng",
+        "unlimitedStudySets": "Không giới hạn bộ học tập"
+      },
+      "premium": "Gói cao cấp",
+      "priceFree": "$0",
+      "pricePremium": "$9.99",
+      "pricePremiumInterval": "/tháng",
+      "premiumFeatures": {
+        "adFreeExperience": "Trải nghiệm không có quảng cáo",
+        "advancedStudyModes": "Chế độ học tập nâng cao",
+        "everythingInFree": "Tất cả trong gói miễn phí",
+        "offlineAccess": "Truy cập ngoại tuyến",
+        "prioritySupport": "Hỗ trợ ưu tiên"
+      },
+      "selectPremium": "Chọn gói cao cấp",
+      "title": "Chọn gói của bạn"
+    },
+    "roleSelection": {
+      "description": "Điều này giúp chúng tôi điều chỉnh trải nghiệm học tập của bạn phù hợp với nhu cầu và mục tiêu của bạn.",
+      "header": "Vai trò nào mô tả bạn nhất?",
+      "student": "Học sinh / Sinh viên",
+      "studentDescription": "Tôi tập trung vào học tập và ôn luyện",
+      "teacher": "Giáo viên / Giảng viên",
+      "teacherDescription": "Tôi tạo và chia sẻ tài liệu học tập"
+    },
+    "skipForNow": "Bỏ qua cho bây giờ",
+    "sourceSelection": {
+      "channels": {
+        "ChatGPT": "ChatGPT",
+        "Classmate": "Bạn cùng lớp",
+        "Facebook": "Facebook",
+        "Google": "Google",
+        "Instagram": "Instagram",
+        "Other": "Khác",
+        "Reddit": "Reddit",
+        "TikTok": "TikTok",
+        "YouTube": "YouTube"
+      },
+      "description": "Giúp chúng tôi hiểu cách bạn phát hiện ra nền tảng của chúng tôi để chúng tôi có thể cải thiện khả năng tiếp cận của mình.",
+      "header": "Bạn đã nghe về ProLearning từ đâu?"
+    }
+  },
+  "setlist": {
+    "all": "Tất cả",
+    "completed": "Đã hoàn thành",
+    "creating": "Đang tạo...",
+    "in_progress": "Đang tiến hành",
+    "new_set": "Bộ học tập mới",
+    "set": "Bộ học tập",
+    "title": "Danh sách tài liệu",
+    "your_set": "Bộ học tập của bạn",
+    "your_workspace": "Không gian của bạn",
+    "searchPlaceholder": "Tìm bộ học…"
+  },
+  "sidebar": {
+    "blog": "Blog",
+    "dashboard": "Trang chủ",
+    "logout": "Đăng xuất",
+    "pomodoro": "Pomodoro",
+    "profile": "Hồ sơ",
+    "setList": "Danh sách tài liệu",
+    "settings": "Cài đặt",
+    "socials": "Mạng xã hội",
+    "todo": "Việc cần làm"
+  },
+  "signin": {
+    "createAccount": "Đăng ký",
+    "description": "Chào mừng bạn trở lại! Vui lòng đăng nhập để tiếp tục.",
+    "email": "Email",
+    "failedGoogleConnect": "Kết nối với Google không thành công",
+    "forgotPassword": "Quên mật khẩu?",
+    "invalidEmail": "Email không hợp lệ",
+    "noAccount": "Bạn chưa có tài khoản?",
+    "orContinueWith": "Hoặc tiếp tục với",
+    "password": "Mật khẩu",
+    "passwordRequired": "Mật khẩu là bắt buộc",
+    "subtitle": "Đăng nhập",
+    "title": "Đăng Nhập Tài Khoản",
+    "wrongCredentials": "Sai tên người dùng hoặc mật khẩu"
+  },
+  "signup": {
+    "confirmPassword": "Xác nhận mật khẩu",
+    "confirmPasswordPlease": "Vui lòng xác nhận mật khẩu",
+    "createAccount": "Tạo tài khoản",
+    "description": "Vui lòng điền thông tin để bắt đầu.",
+    "email": "Email",
+    "emailPlaceholder": "Email của bạn",
+    "failed": "Tài khoản đã tồn tại",
+    "firstName": "Họ",
+    "firstNameMax": "Họ không được vượt quá 50 ký tự",
+    "firstNameMin": "Họ phải có ít nhất 2 ký tự",
+    "firstNamePlaceholder": "Tên của bạn",
+    "haveAccount": "Bạn đã có tài khoản?",
+    "invalidEmail": "Email không hợp lệ",
+    "lastName": "Tên",
+    "lastNameMax": "Tên không được vượt quá 50 ký tự",
+    "lastNameMin": "Tên phải có ít nhất 2 ký tự",
+    "lastNamePlaceholder": "Họ của bạn",
+    "orContinueWith": "Hoặc tiếp tục với",
+    "password": "Mật khẩu",
+    "passwordMax": "Mật khẩu không được vượt quá 20 ký tự",
+    "passwordMin": "Mật khẩu phải có ít nhất 8 ký tự",
+    "passwordNotMatch": "Mật khẩu không khớp",
+    "passwordRequirement": "8 ký tự trở lên",
+    "signIn": "Đăng nhập",
+    "subtitle": "Đăng ký",
+    "success": "Tạo tài khoản thành công!",
+    "title": "Tạo tài khoản của bạn"
+  },
+  "exam": {
+    "back": "Quay lại",
+    "backToExams": "Quay lại danh sách đề thi",
+    "backToSet": "Về bộ học tập",
+    "booleanFalse": "Sai",
+    "booleanTrue": "Đúng",
     "common": {
-        "cancel": "Huỷ",
-        "close": "Đóng",
-        "delete": "Xoá",
-        "loading": "Đang tải...",
-        "save": "Lưu",
-        "saving": "Đang lưu...",
-        "timeAgo": {
-            "minutes_one": "{{count}} phút trước",
-            "minutes_other": "{{count}} phút trước",
-            "hours_one": "{{count}} giờ trước",
-            "hours_other": "{{count}} giờ trước",
-            "days_one": "{{count}} ngày trước",
-            "days_other": "{{count}} ngày trước"
-        },
-        "edit": "Sửa"
+      "correct": "Đáp án đúng",
+      "essay": "Tự luận",
+      "min": "phút",
+      "multipleChoice": "Trắc nghiệm",
+      "points": "đ",
+      "pointsShort": "điểm",
+      "trueFalse": "Đúng / Sai",
+      "yourAnswer": "Bạn chọn"
     },
-    "pomodoro": {
-        "start": "Bắt đầu",
-        "pause": "Tạm dừng",
-        "reset": "Đặt lại",
-        "skip": "Bỏ qua",
-        "favorite": "Thêm vào yêu thích",
-        "unfavorite": "Bỏ yêu thích",
-        "completedToday": "Số pomodoro đã hoàn thành: {{count}}",
-        "types": {
-            "POMODORO": "Tập trung",
-            "SHORT_BREAK": "Nghỉ ngắn",
-            "LONG_BREAK": "Nghỉ dài"
-        },
-        "tabs": {
-            "all": "Tất cả",
-            "myUploads": "Của tôi",
-            "favorites": "Yêu thích"
-        },
-        "spaces": {
-            "title": "Không gian nền",
-            "button": "Không gian",
-            "searchPlaceholder": "Tìm không gian...",
-            "uploadName": "Tên không gian mới",
-            "upload": "Tải lên",
-            "uploading": "Đang tải...",
-            "empty": "Không tìm thấy không gian nào.",
-            "confirmDelete": "Xoá không gian này?",
-            "reset": "Mặc định"
-        },
-        "sounds": {
-            "title": "Trộn âm thanh",
-            "button": "Âm thanh",
-            "searchPlaceholder": "Tìm âm thanh...",
-            "uploadName": "Tên âm thanh mới",
-            "upload": "Tải lên",
-            "uploading": "Đang tải...",
-            "empty": "Không tìm thấy âm thanh nào.",
-            "active": "Đang phát",
-            "remove": "Bỏ",
-            "clearAll": "Bỏ tất cả",
-            "confirmDelete": "Xoá âm thanh này?"
-        },
-        "settings": {
-            "button": "Cài đặt",
-            "title": "Cài đặt hẹn giờ",
-            "focus": "Tập trung",
-            "short": "Nghỉ ngắn",
-            "long": "Nghỉ dài",
-            "minutes": "phút",
-            "longBreakInterval": "Chu kỳ nghỉ dài",
-            "intervalHint": "Số pomodoro trước khi nghỉ dài",
-            "autoStartBreak": "Tự động bắt đầu nghỉ",
-            "autoStartPomodoro": "Tự động bắt đầu pomodoro",
-            "invalid": "Một hoặc nhiều giá trị không hợp lệ."
-        },
-        "stats": {
-            "button": "Thống kê",
-            "title": "Tuần này",
-            "focusMinutes": "Phút tập trung",
-            "sessions": "Phiên",
-            "completion": "Hoàn thành",
-            "streak": "Streak (ngày)",
-            "daily": "Theo ngày",
-            "bestDay": "Ngày tốt nhất: {{date}} ({{minutes}} phút)"
-        },
-        "toast": {
-            "nameRequired": "Hãy nhập tên trước.",
-            "invalidSpaceFile": "Hãy chọn file ảnh hoặc video.",
-            "invalidSoundFile": "Hãy chọn file âm thanh.",
-            "uploadFailed": "Tải lên thất bại. Hãy thử lại.",
-            "spaceCreated": "Đã tạo không gian.",
-            "soundCreated": "Đã thêm âm thanh."
-        }
+    "editor": {
+      "addAnswer": "Thêm đáp án",
+      "addFirstQuestion": "Thêm câu hỏi đầu tiên",
+      "addQuestion": "Thêm câu hỏi",
+      "answerN": "Đáp án {{n}}",
+      "answerRequired": "Vui lòng nhập nội dung đáp án",
+      "answersHintMcq": "(Chọn đáp án đúng)",
+      "answersLabel": "Đáp án",
+      "createExam": "Tạo đề thi",
+      "descriptionLabel": "Mô tả (tùy chọn)",
+      "descriptionPlaceholder": "Nhập mô tả đề thi",
+      "editExam": "Sửa đề thi",
+      "examInfo": "Thông tin đề thi",
+      "essayGradingNote": "Câu tự luận sẽ được chấm bằng AI trong tương lai.",
+      "failedCreate": "Tạo đề thi thất bại",
+      "failedSave": "Lưu đề thi thất bại. Vui lòng thử lại.",
+      "fixBeforeSave": "Vui lòng sửa các ô được đánh dấu trước khi lưu",
+      "loading": "Đang tải đề thi...",
+      "minOneQuestion": "Đề thi cần ít nhất một câu hỏi",
+      "noQuestionsYet": "Chưa có câu hỏi",
+      "pointsLabel": "Điểm",
+      "questionLabel": "Câu hỏi",
+      "questionPlaceholder": "Nhập nội dung câu hỏi...",
+      "questionRequired": "Vui lòng nhập nội dung câu hỏi",
+      "questionType": "Loại câu hỏi",
+      "questionsHeading": "Câu hỏi ({{count}})",
+      "selectCorrect": "Chọn ít nhất một đáp án đúng",
+      "successCreated": "Tạo đề thi thành công",
+      "successUpdated": "Cập nhật đề thi thành công",
+      "timeLimitMinutes": "Giới hạn thời gian (phút)",
+      "titleLabel": "Tiêu đề",
+      "titlePlaceholder": "Nhập tiêu đề đề thi",
+      "titleRequired": "Tiêu đề là bắt buộc",
+      "totalScore": "Tổng điểm",
+      "updateExam": "Cập nhật đề thi"
     },
     "list": {
-        "filter": {
-            "searchPlaceholder": "Tìm kiếm…",
-            "privacyAll": "Tất cả",
-            "public": "Công khai",
-            "private": "Riêng tư",
-            "methodAll": "Tất cả phương thức",
-            "methodManual": "Thủ công",
-            "methodAI": "Tạo bởi AI",
-            "methodReview": "Ôn tập",
-            "sortNewest": "Mới nhất trước",
-            "sortOldest": "Cũ nhất trước",
-            "sortTitleAsc": "Tiêu đề A → Z",
-            "sortTitleDesc": "Tiêu đề Z → A"
-        },
-        "noDescription": "Chưa có mô tả…",
-        "invalidSetId": "ID bộ học không hợp lệ",
-        "unknownError": "Lỗi không xác định",
-        "notes": {
-            "error": "Lỗi khi tải ghi chú. Vui lòng thử lại.",
-            "empty": "Chưa có ghi chú — hãy tạo ghi chú đầu tiên!"
-        },
-        "flashcards": {
-            "error": "Lỗi khi tải flashcard: {{message}}",
-            "empty": "Không tìm thấy flashcard nào"
-        },
-        "exams": {
-            "error": "Không thể tải bài thi. Vui lòng thử lại.",
-            "empty": "Không tìm thấy bài thi nào"
-        }
+      "empty": "Chưa có đề thi. Hãy tạo đề thi đầu tiên để bắt đầu.",
+      "loadError": "Không tải được danh sách đề thi. Vui lòng thử lại."
     },
-    "set": {
-        "breadcrumb": "Thư viện bộ học",
-        "thisSet": "bộ này",
-        "header": {
-            "loadError": "Không thể tải chi tiết bộ học.",
-            "notes": "Ghi chú",
-            "cards": "Thẻ",
-            "mastery": "Thành thạo",
-            "streak": "Streak",
-            "deleteSet": "Xoá bộ học",
-            "continueLearning": "Tiếp tục học",
-            "analyzeKnowledge": "Phân tích kiến thức của tôi"
-        },
-        "actions": {
-            "generating": "Đang tạo với AI…",
-            "creating": "Đang tạo…",
-            "newNote": "Ghi chú mới",
-            "newFlashcard": "Flashcard mới",
-            "newExam": "Bài thi mới",
-            "newMindmap": "Sơ đồ tư duy mới",
-            "newRecord": "Bản ghi mới",
-            "newItem": "Mục mới"
-        }
+    "home": {
+      "beforeStart": "Trước khi bắt đầu:",
+      "editExam": "Sửa đề thi",
+      "hintInternet": "Đảm bảo kết nối mạng ổn định",
+      "hintNoPause": "Không thể tạm dừng sau khi đã bắt đầu",
+      "hintProgress": "Tiến độ sẽ được lưu tự động",
+      "hintReview": "Xem lại tất cả câu hỏi trước khi nộp bài",
+      "questionTypes": "Loại câu hỏi:",
+      "questions": "Câu hỏi",
+      "startExam": "Bắt đầu làm bài",
+      "starting": "Đang bắt đầu…",
+      "timeLimit": "Thời gian",
+      "totalPoints": "Tổng điểm"
     },
-    "analysis": {
-        "title": {
-            "set": "Phân tích kiến thức bộ học",
-            "flashcard": "Phân tích kiến thức flashcard",
-            "exam": "Phân tích kiến thức bài thi"
-        },
-        "sections": {
-            "topics": "Độ chính xác theo chủ đề",
-            "strengths": "Điểm mạnh",
-            "weaknesses": "Điểm yếu",
-            "improvements": "Gợi ý cải thiện",
-            "contributingSources": "Nguồn dữ liệu"
-        },
-        "actions": {
-            "analyze": "Phân tích kiến thức",
-            "assignAndRetry": "Gán chủ đề và thử lại",
-            "retry": "Thử lại"
-        },
-        "errors": {
-            "notFound": "Không tìm thấy phân tích.",
-            "loadFailed": "Không thể tải phân tích.",
-            "unknown": "Đã có lỗi xảy ra. Vui lòng thử lại.",
-            "assignFailed": "Không thể gán chủ đề."
-        },
-        "loading": "Đang phân tích kiến thức của bạn…",
-        "noTopics": "Đang gán chủ đề, vui lòng thử lại sau ít phút.",
-        "setEmpty": "Hãy học flashcard hoặc làm bài thi trước, rồi thử lại.",
-        "stale": "Đã cũ",
-        "generatedAt": "Tạo lúc {{date}}"
+    "page": {
+      "emptyDescription": "Đề thi này chưa có câu hỏi. Hãy thêm câu hỏi trong trình soạn thảo.",
+      "goToEditor": "Mở trình soạn thảo",
+      "loadError": "Không tải được đề thi. Đề có thể không tồn tại hoặc bạn không có quyền truy cập.",
+      "loading": "Đang tải đề thi...",
+      "backToList": "Quay lại danh sách",
+      "startAttemptError": "Không thể bắt đầu bài thi. Vui lòng thử lại.",
+      "submitError": "Không thể nộp bài. Vui lòng thử lại."
     },
-    "reviewBundles": {
-        "breadcrumb": "Ôn tập · Tổng hợp tuần",
-        "title": "Ôn lại điều bạn còn quên",
-        "subtitle": "Những thẻ bạn trả lời sai trong tuần — gom lại đây để bạn nắm chắc hơn.",
-        "stats": {
-            "bundles": "Bundle cần ôn",
-            "bundlesUnit": "bundle",
-            "bundlesHint": "Đang chờ bạn ôn lại",
-            "cards": "Thẻ cần ôn",
-            "cardsUnit": "thẻ",
-            "cardsHint": "Tổng các bundle",
-            "sets": "Bộ liên quan",
-            "setsUnit": "bộ",
-            "setsHint": "Phân bổ ôn tập"
-        },
-        "list": {
-            "kicker": "Tổng hợp theo tuần",
-            "title": "Tất cả bundle",
-            "count_one": "{{count}} bundle",
-            "count_other": "{{count}} bundle"
-        },
-        "item": {
-            "title": "Bundle #{{id}}",
-            "cardCount_one": "{{count}} thẻ sai",
-            "cardCount_other": "{{count}} thẻ sai"
-        },
-        "empty": {
-            "title": "Hiện chưa có bundle nào cần ôn",
-            "hint": "Khi bạn trả lời sai các thẻ trong tuần, hệ thống sẽ tự động gom lại tại đây — quay lại sau nhé."
-        },
-        "error": "Không tải được danh sách bundle. Vui lòng thử lại."
+    "results": {
+      "aiExplanation": "Giải thích AI",
+      "backToSet": "Về bộ học tập",
+      "congrats": "Chúc mừng!",
+      "correctBadge": "{{correct}}/{{total}} đúng",
+      "correctLabel": "Đúng",
+      "examCompleted": "Hoàn thành bài thi",
+      "examResults": "Kết quả bài thi",
+      "expectedAnswer": "Đáp án đúng",
+      "explainAI": "Giải thích bằng AI",
+      "feedback": "Nhận xét",
+      "failedExplanation": "Không tải được giải thích. Vui lòng thử lại.",
+      "generatingExplanation": "Đang tạo giải thích…",
+      "keepPracticing": "Tiếp tục luyện tập để cải thiện điểm số",
+      "markReviewed": "Đánh dấu đã xem",
+      "navReviewed": "Đã xem",
+      "navCorrect": "Đúng",
+      "navIncorrect": "Sai",
+      "navEssayPending": "Tự luận – chờ chấm",
+      "navigatorTitle": "Danh sách câu hỏi",
+      "noExplanation": "Không có giải thích.",
+      "passed": "Bạn đã đạt bài thi!",
+      "pendingGrading": "Chờ chấm",
+      "percentage": "Phần trăm",
+      "questionReview": "Xem lại câu hỏi",
+      "reviewed": "Đã xem ✓",
+      "reviewedCount": "Đã xem {{done}}/{{total}}",
+      "reviewExam": "Xem lại đề thi",
+      "attemptDetailAnswers": "Các câu trả lời",
+      "attemptDetailError": "Không tải được lần làm này.",
+      "attemptDetailLoading": "Đang tải…",
+      "attemptDetailTitle": "Chi tiết lần làm",
+      "attemptHistoryEmpty": "Chưa có lần làm nào.",
+      "attemptHistoryLoadError": "Không tải được lịch sử làm bài.",
+      "attemptHistoryLoading": "Đang tải lịch sử…",
+      "attemptHistoryTitle": "Các lần làm của bạn",
+      "score": "Điểm",
+      "timeFormatted": "{{mins}} phút {{secs}} giây",
+      "timeTaken": "Thời gian làm bài",
+      "tableActions": "Thao tác",
+      "tableAttemptId": "Lần làm",
+      "tableScore": "Điểm",
+      "tableStarted": "Bắt đầu",
+      "tableStatus": "Trạng thái",
+      "tableSubmitted": "Nộp bài",
+      "viewDetails": "Xem",
+      "viewExam": "Xem đề thi",
+      "viewHistory": "Xem lịch sử",
+      "yourAnswerLabel": "Bài làm của bạn:"
+    },
+    "taking": {
+      "answered": "Đã trả lời",
+      "answeredCount": "Đã trả lời:",
+      "back": "Quay lại",
+      "continueExam": "Tiếp tục làm bài",
+      "current": "Hiện tại",
+      "essayPlaceholder": "Nhập câu trả lời của bạn...",
+      "leaveConfirm": "Rời khỏi",
+      "leaveDescription": "Bạn sẽ quay lại màn hình giới thiệu đề thi. Phiên làm bài có thể vẫn còn trên server cho đến khi hết hạn hoặc bạn làm tiếp sau.",
+      "leaveTitle": "Rời khỏi bài thi?",
+      "legendNotAnswered": "Chưa trả lời",
+      "next": "Tiếp",
+      "notAnsweredWarning": "Bạn còn câu chưa trả lời",
+      "points": "{{n}} điểm",
+      "previous": "Trước",
+      "questionNofM": "Câu {{current}} / {{total}}",
+      "questionsSidebar": "Câu hỏi",
+      "submitConfirm": "Bạn chắc chắn muốn nộp bài? Bạn đã trả lời {{answered}} / {{total}} câu.",
+      "stayContinue": "Ở lại",
+      "submitExam": "Nộp bài",
+      "submitting": "Đang nộp…",
+      "submitTitle": "Nộp bài thi?",
+      "timeUp": "Hết giờ! Đang nộp bài...",
+      "totalScore": "Tổng điểm:",
+      "unansweredWarning": "Cảnh báo: Bạn vẫn còn câu chưa trả lời."
     }
+  },
+  "profile": {
+    "breadcrumb": "Tài khoản",
+    "title": "Hồ sơ của bạn",
+    "subtitle": "Quản lý thông tin, gói và sở thích học tập — chỉ bạn mới thấy được.",
+    "tabs": {
+      "profile": "Hồ sơ",
+      "preferences": "Tuỳ chỉnh",
+      "security": "Bảo mật",
+      "billing": "Gói & thanh toán"
+    },
+    "basicInfo": {
+      "title": "Thông tin cơ bản",
+      "sub": "Tên hiển thị, email, ảnh đại diện.",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "emailHint": "Dùng để đăng nhập và nhận thông báo.",
+      "accountType": "Account type",
+      "accountTypeHint": "Field này dạng để hiển thị (không sửa).",
+      "bio": "Bio",
+      "bioPlaceholder": "Giới thiệu ngắn về bản thân…"
+    },
+    "learningProfile": {
+      "title": "Hồ sơ học tập",
+      "sub": "Giúp ProLearning gợi ý nội dung phù hợp hơn.",
+      "language": "Language",
+      "languagePlaceholder": "Chọn ngôn ngữ",
+      "education": "Education",
+      "educationPlaceholder": "Chọn học vấn",
+      "hearAppFrom": "Hear app from",
+      "hearAppFromPlaceholder": "Chọn nguồn"
+    },
+    "actions": {
+      "cancel": "Huỷ",
+      "save": "Lưu thay đổi",
+      "saving": "Đang lưu…"
+    },
+    "preferences": {
+      "notifications": {
+        "title": "Thông báo",
+        "sub": "Bạn muốn ProLearning chạm vai bạn lúc nào?",
+        "push": "Push notifications",
+        "pushDesc": "Nhắc học flashcard, deadline goal.",
+        "email": "Email summaries",
+        "emailDesc": "Tổng kết tuần, bundle mới được đề xuất.",
+        "reminders": "Daily streak reminder",
+        "remindersDesc": "Nhắc nhẹ vào 20:00 nếu hôm đó chưa học."
+      },
+      "display": {
+        "title": "Hiển thị",
+        "sub": "Cách bạn nhìn ProLearning.",
+        "weekStart": "Tuần bắt đầu vào",
+        "monday": "Thứ Hai",
+        "sunday": "Chủ Nhật"
+      }
+    },
+    "security": {
+      "changePassword": {
+        "title": "Đổi mật khẩu",
+        "sub": "Mật khẩu mới phải ≥ 8 ký tự, có chữ và số.",
+        "currentPassword": "Current password",
+        "newPassword": "New password",
+        "submit": "Đổi mật khẩu"
+      },
+      "dangerZone": {
+        "title": "Vùng nguy hiểm",
+        "sub": "Hành động không thể hoàn tác.",
+        "deleteAccount": "Xoá tài khoản",
+        "deleteDesc": "Mọi sets, bundles, ghi chú và tiến độ sẽ bị xoá vĩnh viễn.",
+        "deleteBtn": "Xoá tài khoản"
+      }
+    },
+    "billing": {
+      "title": "Gói hiện tại",
+      "sub": "Bạn đang dùng gói {{plan}}.",
+      "planFree": "Miễn phí",
+      "planPro": "Pro",
+      "freeDesc": "Nâng cấp để mở khoá toàn bộ tính năng.",
+      "proDesc": "Cảm ơn bạn đã tin dùng ProLearning.",
+      "upgrade": "Nâng cấp Pro",
+      "features": {
+        "unlimited": "Không giới hạn sets và flashcards",
+        "ai": "AI generate từ note, file, web URL",
+        "sr": "Spaced repetition + interval scheduling",
+        "export": "Xuất dữ liệu sang Markdown / Anki",
+        "support": "Hỗ trợ ưu tiên qua email"
+      }
+    },
+    "toast": {
+      "noUser": "Không tìm thấy thông tin user.",
+      "noChanges": "Không có thay đổi nào để cập nhật.",
+      "updateSuccess": "Cập nhật profile thành công.",
+      "updateFailed": "Cập nhật thất bại. Vui lòng thử lại."
+    }
+  },
+  "todo": {
+    "breadcrumb": "To-Do · Goals",
+    "title": "Hôm nay bạn muốn hoàn thành điều gì?",
+    "subtitle": "Cứ ghi xuống — gắn vào goal khi thấy cần.",
+    "stats": {
+      "completed": "Đã hoàn thành",
+      "pending": "Đang chờ",
+      "total": "Tổng todos",
+      "goals": "Goals đang theo"
+    },
+    "filters": {
+      "all": "Tất cả",
+      "noGoal": "Chưa gắn goal",
+      "completed": "Đã xong"
+    },
+    "todoList": {
+      "add": "Thêm",
+      "placeholder": "Nhập nhanh todo… (Enter để tạo)",
+      "placeholderGoal": "Thêm todo vào \"{{title}}\"…",
+      "empty": "Chưa có todo nào ở đây.",
+      "emptyHint": "Dùng ô phía trên để thêm nhanh.",
+      "unassigned": "Chưa gắn goal",
+      "unassignedHint": "Gắn vào goal khi thấy cần →"
+    },
+    "item": {
+      "editTitle": "Chi tiết / chỉnh sửa",
+      "deleteTitle": "Xóa",
+      "shortBadge": "ngắn hạn"
+    },
+    "priority": {
+      "HIGH": "Cao",
+      "MEDIUM": "Trung bình",
+      "LOW": "Thấp"
+    },
+    "goalStatus": {
+      "IN_PROGRESS": "Đang thực hiện",
+      "COMPLETED": "Hoàn thành",
+      "ARCHIVED": "Lưu trữ"
+    },
+    "goalType": {
+      "LONG": "Dài hạn (≥ 6 tháng)",
+      "SHORT": "Ngắn hạn (1–6 tháng)"
+    },
+    "todoType": {
+      "DAILY": "Hằng ngày",
+      "WEEKLY": "Hằng tuần"
+    },
+    "todoStatus": {
+      "TODO": "Cần làm",
+      "DONE": "Hoàn thành",
+      "SKIPPED": "Bỏ qua"
+    },
+    "resource": {
+      "set": "Set",
+      "note": "Ghi chú",
+      "flashcard": "Flashcard",
+      "exam": "Bài kiểm tra"
+    },
+    "goalsSidebar": {
+      "goals": "Goals",
+      "newGoalTitle": "Tạo goal mới",
+      "empty": "Chưa có goal nào",
+      "createFirst": "Tạo goal đầu tiên →",
+      "progressTitle": "Tiến độ tổng",
+      "progressDetail": "{{done}} done · {{pending}} đang chờ",
+      "shortBadge": "ngắn",
+      "until": "đến {{date}}"
+    },
+    "goalModal": {
+      "createTitle": "Tạo Goal mới",
+      "editTitle": "Sửa Goal",
+      "goalType": "Loại goal",
+      "parentGoal": "Thuộc goal dài hạn",
+      "namePlaceholder": "Tên goal...",
+      "descPlaceholder": "Mô tả (tùy chọn)...",
+      "targetDate": "Ngày mục tiêu",
+      "color": "Màu sắc",
+      "noParent": "-- Không gắn --",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "create": "Tạo",
+      "longLabel": "Dài hạn",
+      "shortLabel": "Ngắn hạn",
+      "longDesc": "≥ 6 tháng",
+      "shortDesc": "1–6 tháng"
+    },
+    "detailModal": {
+      "title": "Chi tiết Todo",
+      "namePlaceholder": "Tên todo...",
+      "descPlaceholder": "Mô tả (tùy chọn)...",
+      "taskType": "Loại task",
+      "status": "Trạng thái",
+      "priority": "Ưu tiên",
+      "dueDate": "Ngày hết hạn",
+      "goal": "Goal",
+      "noGoal": "-- Không có goal --",
+      "resources": "Tài nguyên liên kết",
+      "addResource": "Thêm {{type}}",
+      "noResources": "Chưa có tài nguyên nào. Dùng các nút trên để thêm.",
+      "displayNamePlaceholder": "Tên hiển thị...",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "priorityLow": "Thấp",
+      "priorityMedium": "Trung bình",
+      "priorityHigh": "Cao"
+    },
+    "assignGoal": {
+      "noGoal": "Chưa có goal",
+      "unassign": "Không gắn goal"
+    },
+    "today": {
+      "label": "HÔM NAY",
+      "headline_one": "{{count}} task cần xử lý",
+      "headline_other": "{{count}} tasks cần xử lý",
+      "emptyHeadline": "Hôm nay chưa có task nào",
+      "done": "đã xong",
+      "pending": "còn lại",
+      "empty": "Chưa có task nào cho hôm nay — thêm bên trên.",
+      "quickAddPlaceholder": "Thêm nhanh todo cho hôm nay..."
+    },
+    "overall": {
+      "title": "Tiến độ tổng",
+      "newGoal": "Goal mới",
+      "detail": "{{done}} xong · {{pending}} còn lại trên {{count}} goals",
+      "longHeader": "Dài hạn",
+      "shortHeader": "Ngắn hạn",
+      "emptyLong": "Chưa có goal dài hạn.",
+      "emptyShort": "Chưa có goal ngắn hạn."
+    },
+    "week": {
+      "title": "Tuần này",
+      "planned_one": "{{count}} task",
+      "planned_other": "{{count}} tasks",
+      "today": "Hôm nay",
+      "selectedHeader": "NGÀY ĐANG CHỌN",
+      "dayEmpty": "Ngày này chưa có task nào.",
+      "more_one": "+ {{count}} nữa",
+      "more_other": "+ {{count}} nữa",
+      "addPlaceholder": "Thêm nhanh todo cho {{date}}..."
+    },
+    "year": {
+      "title": "Goals × Năm",
+      "subtitle_one": "{{count}} goal có lịch",
+      "subtitle_other": "{{count}} goals có lịch",
+      "progressHint": "Tiến độ: {{progress}}%",
+      "undatedHeader_one": "Chưa có ngày · {{count}} goal",
+      "undatedHeader_other": "Chưa có ngày · {{count}} goals"
+    },
+    "toast": {
+      "createFailed": "Tạo todo thất bại",
+      "deleteFailed": "Xóa todo thất bại",
+      "goalDeleted": "Đã xóa goal",
+      "goalDeleteFailed": "Xóa goal thất bại",
+      "goalCreated": "Tạo goal thành công!",
+      "goalCreateFailed": "Tạo goal thất bại",
+      "goalUpdated": "Cập nhật goal thành công!",
+      "goalUpdateFailed": "Cập nhật goal thất bại",
+      "todoUpdated": "Cập nhật todo thành công!",
+      "todoUpdateFailed": "Cập nhật todo thất bại",
+      "goalNameRequired": "Tên goal không được để trống",
+      "todoNameRequired": "Tên todo không được để trống",
+      "invalidId": "ID không hợp lệ",
+      "setIdRequired": "Cần nhập Set ID"
+    }
+  },
+  "common": {
+    "cancel": "Huỷ",
+    "close": "Đóng",
+    "delete": "Xoá",
+    "loading": "Đang tải...",
+    "save": "Lưu",
+    "saving": "Đang lưu...",
+    "timeAgo": {
+      "minutes_one": "{{count}} phút trước",
+      "minutes_other": "{{count}} phút trước",
+      "hours_one": "{{count}} giờ trước",
+      "hours_other": "{{count}} giờ trước",
+      "days_one": "{{count}} ngày trước",
+      "days_other": "{{count}} ngày trước"
+    },
+    "edit": "Sửa"
+  },
+  "pomodoro": {
+    "backToTimer": "Quay lại hẹn giờ",
+    "start": "Bắt đầu",
+    "pause": "Tạm dừng",
+    "reset": "Đặt lại",
+    "skip": "Bỏ qua",
+    "favorite": "Thêm vào yêu thích",
+    "unfavorite": "Bỏ yêu thích",
+    "completedToday": "Số pomodoro đã hoàn thành: {{count}}",
+    "types": {
+      "POMODORO": "Tập trung",
+      "SHORT_BREAK": "Nghỉ ngắn",
+      "LONG_BREAK": "Nghỉ dài"
+    },
+    "tabs": {
+      "all": "Tất cả",
+      "myUploads": "Của tôi",
+      "favorites": "Yêu thích"
+    },
+    "spaces": {
+      "title": "Không gian nền",
+      "button": "Không gian",
+      "searchPlaceholder": "Tìm không gian...",
+      "uploadName": "Tên không gian mới",
+      "upload": "Tải lên",
+      "uploading": "Đang tải...",
+      "empty": "Không tìm thấy không gian nào.",
+      "confirmDelete": "Xoá không gian này?",
+      "reset": "Mặc định"
+    },
+    "sounds": {
+      "title": "Trộn âm thanh",
+      "button": "Âm thanh",
+      "searchPlaceholder": "Tìm âm thanh...",
+      "uploadName": "Tên âm thanh mới",
+      "upload": "Tải lên",
+      "uploading": "Đang tải...",
+      "empty": "Không tìm thấy âm thanh nào.",
+      "active": "Đang phát",
+      "pause": "Tạm dừng",
+      "remove": "Bỏ",
+      "resume": "Tiếp tục",
+      "clearAll": "Bỏ tất cả",
+      "confirmDelete": "Xoá âm thanh này?"
+    },
+    "settings": {
+      "button": "Cài đặt",
+      "title": "Cài đặt hẹn giờ",
+      "focus": "Tập trung",
+      "short": "Nghỉ ngắn",
+      "long": "Nghỉ dài",
+      "minutes": "phút",
+      "longBreakInterval": "Chu kỳ nghỉ dài",
+      "intervalHint": "Số pomodoro trước khi nghỉ dài",
+      "autoStartBreak": "Tự động bắt đầu nghỉ",
+      "autoStartPomodoro": "Tự động bắt đầu pomodoro",
+      "invalid": "Một hoặc nhiều giá trị không hợp lệ."
+    },
+    "stats": {
+      "button": "Thống kê",
+      "title": "Tuần này",
+      "focusMinutes": "Phút tập trung",
+      "sessions": "Phiên",
+      "completion": "Hoàn thành",
+      "streak": "Streak (ngày)",
+      "daily": "Theo ngày",
+      "bestDay": "Ngày tốt nhất: {{date}} ({{minutes}} phút)"
+    },
+    "toast": {
+      "nameRequired": "Hãy nhập tên trước.",
+      "invalidSpaceFile": "Hãy chọn file ảnh hoặc video.",
+      "invalidSoundFile": "Hãy chọn file âm thanh.",
+      "uploadFailed": "Tải lên thất bại. Hãy thử lại.",
+      "spaceCreated": "Đã tạo không gian.",
+      "soundCreated": "Đã thêm âm thanh."
+    }
+  },
+  "list": {
+    "filter": {
+      "searchPlaceholder": "Tìm kiếm…",
+      "privacyAll": "Tất cả",
+      "public": "Công khai",
+      "private": "Riêng tư",
+      "methodAll": "Tất cả phương thức",
+      "methodManual": "Thủ công",
+      "methodAI": "Tạo bởi AI",
+      "methodReview": "Ôn tập",
+      "sortNewest": "Mới nhất trước",
+      "sortOldest": "Cũ nhất trước",
+      "sortTitleAsc": "Tiêu đề A → Z",
+      "sortTitleDesc": "Tiêu đề Z → A"
+    },
+    "noDescription": "Chưa có mô tả…",
+    "invalidSetId": "ID bộ học không hợp lệ",
+    "unknownError": "Lỗi không xác định",
+    "notes": {
+      "error": "Lỗi khi tải ghi chú. Vui lòng thử lại.",
+      "empty": "Chưa có ghi chú — hãy tạo ghi chú đầu tiên!"
+    },
+    "flashcards": {
+      "error": "Lỗi khi tải flashcard: {{message}}",
+      "empty": "Không tìm thấy flashcard nào"
+    },
+    "exams": {
+      "error": "Không thể tải bài thi. Vui lòng thử lại.",
+      "empty": "Không tìm thấy bài thi nào"
+    }
+  },
+  "set": {
+    "breadcrumb": "Thư viện bộ học",
+    "thisSet": "bộ này",
+    "header": {
+      "loadError": "Không thể tải chi tiết bộ học.",
+      "notes": "Ghi chú",
+      "cards": "Thẻ",
+      "mastery": "Thành thạo",
+      "streak": "Streak",
+      "deleteSet": "Xoá bộ học",
+      "continueLearning": "Tiếp tục học",
+      "analyzeKnowledge": "Phân tích kiến thức của tôi"
+    },
+    "actions": {
+      "generating": "Đang tạo với AI…",
+      "creating": "Đang tạo…",
+      "newNote": "Ghi chú mới",
+      "newFlashcard": "Flashcard mới",
+      "newExam": "Bài thi mới",
+      "newMindmap": "Sơ đồ tư duy mới",
+      "newRecord": "Bản ghi mới",
+      "newItem": "Mục mới"
+    }
+  },
+  "analysis": {
+    "title": {
+      "set": "Phân tích kiến thức bộ học",
+      "flashcard": "Phân tích kiến thức flashcard",
+      "exam": "Phân tích kiến thức bài thi"
+    },
+    "sections": {
+      "topics": "Độ chính xác theo chủ đề",
+      "strengths": "Điểm mạnh",
+      "weaknesses": "Điểm yếu",
+      "improvements": "Gợi ý cải thiện",
+      "contributingSources": "Nguồn dữ liệu"
+    },
+    "actions": {
+      "analyze": "Phân tích kiến thức",
+      "assignAndRetry": "Gán chủ đề và thử lại",
+      "retry": "Thử lại"
+    },
+    "errors": {
+      "notFound": "Không tìm thấy phân tích.",
+      "loadFailed": "Không thể tải phân tích.",
+      "unknown": "Đã có lỗi xảy ra. Vui lòng thử lại.",
+      "assignFailed": "Không thể gán chủ đề."
+    },
+    "loading": "Đang phân tích kiến thức của bạn…",
+    "noTopics": "Đang gán chủ đề, vui lòng thử lại sau ít phút.",
+    "setEmpty": "Hãy học flashcard hoặc làm bài thi trước, rồi thử lại.",
+    "stale": "Đã cũ",
+    "generatedAt": "Tạo lúc {{date}}"
+  },
+  "reviewBundles": {
+    "breadcrumb": "Ôn tập · Tổng hợp tuần",
+    "title": "Ôn lại điều bạn còn quên",
+    "subtitle": "Những thẻ bạn trả lời sai trong tuần — gom lại đây để bạn nắm chắc hơn.",
+    "stats": {
+      "bundles": "Bundle cần ôn",
+      "bundlesUnit": "bundle",
+      "bundlesHint": "Đang chờ bạn ôn lại",
+      "cards": "Thẻ cần ôn",
+      "cardsUnit": "thẻ",
+      "cardsHint": "Tổng các bundle",
+      "sets": "Bộ liên quan",
+      "setsUnit": "bộ",
+      "setsHint": "Phân bổ ôn tập"
+    },
+    "list": {
+      "kicker": "Tổng hợp theo tuần",
+      "title": "Tất cả bundle",
+      "count_one": "{{count}} bundle",
+      "count_other": "{{count}} bundle"
+    },
+    "item": {
+      "title": "Bundle #{{id}}",
+      "cardCount_one": "{{count}} thẻ sai",
+      "cardCount_other": "{{count}} thẻ sai"
+    },
+    "empty": {
+      "title": "Hiện chưa có bundle nào cần ôn",
+      "hint": "Khi bạn trả lời sai các thẻ trong tuần, hệ thống sẽ tự động gom lại tại đây — quay lại sau nhé."
+    },
+    "error": "Không tải được danh sách bundle. Vui lòng thử lại."
+  }
 }

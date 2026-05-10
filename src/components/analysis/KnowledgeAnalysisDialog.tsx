@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { isAxiosError } from 'axios';
 import {
   AlertCircle,
   BarChart3,
@@ -10,20 +9,22 @@ import {
   Sparkles,
   TriangleAlert,
 } from 'lucide-react';
-import { isAxiosError } from 'axios';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { knowledgeAnalysisAPI } from '@/services/endpoints/knowledge-analysis';
 import {
   useAssignExamTopics,
   useAssignFlashcardTopics,
 } from '@/hooks/useKnowledgeAnalysis';
+import { knowledgeAnalysisAPI } from '@/services/endpoints/knowledge-analysis';
+
 import type {
   ContributingSource,
   KnowledgeAnalysis,
@@ -122,22 +123,19 @@ const KnowledgeAnalysisDialog = ({ open, onOpenChange, target }: Props) => {
             target.flashcardId,
             target.sessionId,
           );
-          if (!cancelled)
-            setPhase({ state: 'ready', analysis: res.data.data });
+          if (!cancelled) setPhase({ state: 'ready', analysis: res.data.data });
         } else if (target.kind === 'exam') {
           const res = await knowledgeAnalysisAPI.triggerExamAnalysis(
             target.setId,
             target.examId,
             target.attemptId,
           );
-          if (!cancelled)
-            setPhase({ state: 'ready', analysis: res.data.data });
+          if (!cancelled) setPhase({ state: 'ready', analysis: res.data.data });
         } else {
           const res = await knowledgeAnalysisAPI.triggerSetAnalysis(
             target.setId,
           );
-          if (!cancelled)
-            setPhase({ state: 'ready', analysis: res.data.data });
+          if (!cancelled) setPhase({ state: 'ready', analysis: res.data.data });
         }
       } catch (error) {
         if (cancelled) return;
@@ -150,17 +148,19 @@ const KnowledgeAnalysisDialog = ({ open, onOpenChange, target }: Props) => {
                 target.setId,
                 target.flashcardId,
               );
-              latest = list.data.data.find(
-                (a) => a.sessionRefId === target.sessionId,
-              ) ?? list.data.data[0];
+              latest =
+                list.data.data.find(
+                  (a) => a.sessionRefId === target.sessionId,
+                ) ?? list.data.data[0];
             } else if (target.kind === 'exam') {
               const list = await knowledgeAnalysisAPI.getExamAnalyses(
                 target.setId,
                 target.examId,
               );
-              latest = list.data.data.find(
-                (a) => a.sessionRefId === target.attemptId,
-              ) ?? list.data.data[0];
+              latest =
+                list.data.data.find(
+                  (a) => a.sessionRefId === target.attemptId,
+                ) ?? list.data.data[0];
             } else {
               const list = await knowledgeAnalysisAPI.getSetAnalyses(
                 target.setId,
@@ -262,7 +262,7 @@ const KnowledgeAnalysisDialog = ({ open, onOpenChange, target }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='max-w-2xl max-h-[88vh] flex flex-col gap-0'>
+      <DialogContent className='max-w-3xl max-h-[88vh] flex flex-col gap-0'>
         <DialogHeader>
           <DialogTitle className='flex items-center gap-2'>
             <Brain className='w-5 h-5 text-[var(--pl-accent)]' />
@@ -354,9 +354,7 @@ const AnalysisResult = ({ analysis }: { analysis: KnowledgeAnalysis }) => {
       <TopicAccuracySection topics={sorted} />
 
       <NarrativeBlock
-        icon={
-          <CheckCircle2 className='w-4 h-4 text-emerald-500' />
-        }
+        icon={<CheckCircle2 className='w-4 h-4 text-emerald-500' />}
         label={t('analysis.sections.strengths', {
           defaultValue: 'Strengths',
         })}
@@ -377,12 +375,13 @@ const AnalysisResult = ({ analysis }: { analysis: KnowledgeAnalysis }) => {
         text={improvements}
       />
 
-      {analysis.contributingSources && analysis.contributingSources.length > 0 && (
-        <ContributingSources
-          createdAt={analysis.createdAt}
-          sources={analysis.contributingSources}
-        />
-      )}
+      {analysis.contributingSources &&
+        analysis.contributingSources.length > 0 && (
+          <ContributingSources
+            createdAt={analysis.createdAt}
+            sources={analysis.contributingSources}
+          />
+        )}
 
       <p className='text-[11px] text-muted-foreground flex items-center gap-1.5 pt-1'>
         <Sparkles className='w-3 h-3' />

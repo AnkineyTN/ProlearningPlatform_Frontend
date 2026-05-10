@@ -28,7 +28,7 @@ import type {
   SoundDto,
 } from "@/services/types/pomodoro.types";
 import { PRESET_SOUND_VOLUME } from "./constants";
-import type { ActiveSound } from "./SoundLayer";
+import type { ActiveSound } from "@/contexts/PomodoroContext";
 
 interface Props {
   open: boolean;

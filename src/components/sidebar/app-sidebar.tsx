@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard,
@@ -120,8 +120,8 @@ const AppSidebar = () => {
           </button>
         ) : (
           <>
-            <a
-              href='/dashboard'
+            <Link
+              to='/dashboard'
               className='flex items-center gap-[10px] no-underline'
             >
               <div className='w-8 h-8 rounded-[9px] bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] grid place-items-center font-bold text-[18px] tracking-[-0.02em] shrink-0'>
@@ -135,7 +135,7 @@ const AppSidebar = () => {
                   Platform
                 </div>
               </div>
-            </a>
+            </Link>
             <button
               onClick={toggle}
               title='Collapse sidebar'
@@ -203,14 +203,14 @@ const AppSidebar = () => {
           }
 
           return (
-            <a
+            <Link
               key={item.url}
-              href={item.url}
+              to={item.url!}
               title={collapsed ? item.title : undefined}
               className={className}
             >
               {inner}
-            </a>
+            </Link>
           );
         })}
       </nav>

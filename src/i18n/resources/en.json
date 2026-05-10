@@ -924,6 +924,7 @@
     "edit": "Edit"
   },
   "pomodoro": {
+    "backToTimer": "Back to timer",
     "start": "Start",
     "pause": "Pause",
     "reset": "Reset",
@@ -961,7 +962,9 @@
       "uploading": "Uploading...",
       "empty": "No sounds found.",
       "active": "Active",
+      "pause": "Pause",
       "remove": "Remove",
+      "resume": "Resume",
       "clearAll": "Clear all",
       "confirmDelete": "Delete this sound?"
     },

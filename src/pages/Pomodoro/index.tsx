@@ -9,13 +9,12 @@ import {
   RotateCcw,
   Settings as SettingsIcon,
   SkipForward,
+  VolumeOff,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   usePomodoroSetting,
-  useRecordSession,
-  useSoundsSearch,
   useSpacesSearch,
   useUpdatePomodoroSetting,
 } from "@/hooks/usePomodoro";
@@ -24,43 +23,29 @@ import type {
   SpaceDto,
 } from "@/services/types/pomodoro.types";
 import { DEFAULT_SETTING, STORAGE_KEYS, formatTime } from "./constants";
-import { usePomodoroEngine } from "./usePomodoroEngine";
+import { usePomodoroContext } from "@/contexts/PomodoroContext";
 import SpaceBackground from "./SpaceBackground";
 import SpacePicker from "./SpacePicker";
-import SoundLayer, { type ActiveSound } from "./SoundLayer";
 import SoundMixer from "./SoundMixer";
 import SettingsModal from "./SettingsModal";
 import StatsModal from "./StatsModal";
-
-type StoredSound = { id: number; volume: number };
 
 const Pomodoro = () => {
   const { t } = useTranslation();
   const { data: serverSetting } = usePomodoroSetting();
   const updateSetting = useUpdatePomodoroSetting();
-  const recordSession = useRecordSession();
 
   const setting = serverSetting ?? DEFAULT_SETTING;
 
-  // ── Persisted picks ─────────────────────────────────────────
+  const { engine, activeSounds, setActiveSounds } = usePomodoroContext();
+
+  // ── Persisted space pick ─────────────────────────────────────
   const [selectedSpaceId, setSelectedSpaceId] = useState<number | null>(() => {
     const v = localStorage.getItem(STORAGE_KEYS.spaceId);
     return v ? Number(v) : null;
   });
   const [selectedSpace, setSelectedSpace] = useState<SpaceDto | null>(null);
 
-  const [activeSounds, setActiveSounds] = useState<ActiveSound[]>([]);
-  const [storedSoundIds, setStoredSoundIds] = useState<StoredSound[]>(() => {
-    const v = localStorage.getItem(STORAGE_KEYS.sounds);
-    if (!v) return [];
-    try {
-      return JSON.parse(v) as StoredSound[];
-    } catch {
-      return [];
-    }
-  });
-
-  // Hydrate selected space + sounds by querying the catalog once it's available.
   const { data: spacesData } = useSpacesSearch({ tab: "ALL", page: 0, size: 50 });
   const { data: favSpacesData } = useSpacesSearch({ tab: "FAVORITES", page: 0, size: 50 });
   const { data: mySpacesData } = useSpacesSearch({ tab: "MY_UPLOADS", page: 0, size: 50 });
@@ -76,7 +61,6 @@ const Pomodoro = () => {
     if (found) setSelectedSpace(found);
   }, [spacesData, favSpacesData, mySpacesData, selectedSpaceId, selectedSpace]);
 
-  // Persist selected space
   useEffect(() => {
     if (selectedSpaceId !== null) {
       localStorage.setItem(STORAGE_KEYS.spaceId, String(selectedSpaceId));
@@ -85,28 +69,11 @@ const Pomodoro = () => {
     }
   }, [selectedSpaceId]);
 
-  // Persist sound IDs + volumes
-  useEffect(() => {
-    const compact: StoredSound[] = activeSounds.map((a) => ({
-      id: a.sound.id,
-      volume: a.volume,
-    }));
-    localStorage.setItem(STORAGE_KEYS.sounds, JSON.stringify(compact));
-  }, [activeSounds]);
-
   // ── UI state ────────────────────────────────────────────────
   const [spacePickerOpen, setSpacePickerOpen] = useState(false);
   const [soundMixerOpen, setSoundMixerOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
-
-  // ── Timer engine ────────────────────────────────────────────
-  const engine = usePomodoroEngine({
-    setting,
-    onSessionEnd: (s) => {
-      recordSession.mutate(s);
-    },
-  });
 
   // Tab title shows remaining time when running.
   useEffect(() => {
@@ -131,17 +98,9 @@ const Pomodoro = () => {
     [t],
   );
 
-  // Restore active sounds from localStorage once we have any sound list
-  // (we lazily resolve via sound catalog from the mixer).
-  // We trigger a one-time fetch by opening soundMixer in the background;
-  // simpler: fetch ALL sounds once on mount.
-  // Done by relying on the SoundMixer's own queries — for hydration,
-  // we just keep IDs and hydrate when SoundMixer is opened.
-
   return (
     <div className='relative min-h-screen overflow-hidden isolate'>
       <SpaceBackground space={selectedSpace} />
-      <SoundLayer activeSounds={activeSounds} />
 
       {/* Dim overlay over background (only when a space is set) */}
       {selectedSpace && (
@@ -252,15 +211,34 @@ const Pomodoro = () => {
       {/* Bottom bar — active sounds */}
       {activeSounds.length > 0 && (
         <div className='absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex flex-wrap gap-2 px-3 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white text-xs max-w-[90vw]'>
-          {activeSounds.map((a) => (
-            <div
-              key={a.sound.id}
-              className='flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/10'
-            >
-              <Music size={11} />
-              <span className='truncate max-w-[120px]'>{a.sound.name}</span>
-            </div>
-          ))}
+          {activeSounds.map((a) => {
+            const isPaused = !!a.paused;
+            return (
+              <div
+                key={a.sound.id}
+                className='flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/10'
+              >
+                <Music size={11} className={isPaused ? 'opacity-40' : ''} />
+                <span className={`truncate max-w-[120px] ${isPaused ? 'opacity-40' : ''}`}>
+                  {a.sound.name}
+                </span>
+                <button
+                  type='button'
+                  title={isPaused ? t('pomodoro.sounds.resume') : t('pomodoro.sounds.pause')}
+                  onClick={() =>
+                    setActiveSounds(
+                      activeSounds.map((s) =>
+                        s.sound.id === a.sound.id ? { ...s, paused: !s.paused } : s,
+                      ),
+                    )
+                  }
+                  className='ml-0.5 hover:text-white/60 transition-colors'
+                >
+                  {isPaused ? <Play size={10} /> : <VolumeOff size={10} />}
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
 
@@ -283,16 +261,7 @@ const Pomodoro = () => {
         open={soundMixerOpen}
         activeSounds={activeSounds}
         onClose={() => setSoundMixerOpen(false)}
-        onChange={(next) => {
-          setActiveSounds(next);
-        }}
-      />
-      {/* Hydrate sounds from storedSoundIds when mixer first opens */}
-      <SoundHydrator
-        storedSoundIds={storedSoundIds}
-        activeSounds={activeSounds}
-        setActiveSounds={setActiveSounds}
-        clearStored={() => setStoredSoundIds([])}
+        onChange={setActiveSounds}
       />
 
       <SettingsModal
@@ -335,35 +304,5 @@ const ToolbarButton = ({
     )}
   </button>
 );
-
-// Hydrate active sounds from stored IDs by issuing a one-time search on mount.
-const SoundHydrator = ({
-  storedSoundIds,
-  activeSounds,
-  setActiveSounds,
-  clearStored,
-}: {
-  storedSoundIds: StoredSound[];
-  activeSounds: ActiveSound[];
-  setActiveSounds: (s: ActiveSound[]) => void;
-  clearStored: () => void;
-}) => {
-  const { data } = useSoundsSearch({ tab: "ALL", page: 0, size: 50 });
-  useEffect(() => {
-    if (storedSoundIds.length === 0) return;
-    if (activeSounds.length > 0) return;
-    if (!data?.data) return;
-    const next: ActiveSound[] = [];
-    for (const s of storedSoundIds) {
-      const found = data.data.find((x) => x.id === s.id);
-      if (found) next.push({ sound: found, volume: s.volume });
-    }
-    if (next.length > 0) {
-      setActiveSounds(next);
-      clearStored();
-    }
-  }, [data, storedSoundIds, activeSounds.length, setActiveSounds, clearStored]);
-  return null;
-};
 
 export default Pomodoro;

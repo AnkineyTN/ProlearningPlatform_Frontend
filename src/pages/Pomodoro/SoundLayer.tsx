@@ -1,66 +1,42 @@
 import { useEffect, useRef } from "react";
-import type { SoundDto } from "@/services/types/pomodoro.types";
-
-export interface ActiveSound {
-  sound: SoundDto;
-  volume: number;
-}
+import type { ActiveSound } from "@/contexts/PomodoroContext";
 
 interface Props {
   activeSounds: ActiveSound[];
 }
 
-const SoundLayer = ({ activeSounds }: Props) => {
-  const audioRefs = useRef<Map<number, HTMLAudioElement>>(new Map());
+const SoundLayer = ({ activeSounds }: Props) => (
+  <>
+    {activeSounds.map(({ sound, volume, paused }) => (
+      <AudioTrack key={sound.id} src={sound.assetUrl} volume={volume} paused={paused} />
+    ))}
+  </>
+);
 
+// One stable component per sound — only mounts/unmounts when a sound is added/removed.
+const AudioTrack = ({ src, volume, paused }: { src: string; volume: number; paused?: boolean }) => {
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Play/pause based on the paused prop; also pause on unmount.
   useEffect(() => {
-    // Drop refs for sounds removed from the active list.
-    const activeIds = new Set(activeSounds.map((a) => a.sound.id));
-    audioRefs.current.forEach((el, id) => {
-      if (!activeIds.has(id)) {
-        el.pause();
-        audioRefs.current.delete(id);
-      }
-    });
-  }, [activeSounds]);
+    const el = audioRef.current;
+    if (!el) return;
+    if (paused) {
+      el.pause();
+    } else {
+      el.play().catch(() => {});
+    }
+    return () => {
+      el.pause();
+    };
+  }, [paused]);
 
-  return (
-    <>
-      {activeSounds.map(({ sound, volume }) => (
-        <audio
-          key={sound.id}
-          ref={(el) => {
-            if (!el) return;
-            audioRefs.current.set(sound.id, el);
-            el.volume = volume;
-            if (el.paused) {
-              el.play().catch(() => {});
-            }
-          }}
-          src={sound.assetUrl}
-          loop
-          preload="auto"
-        />
-      ))}
-      <VolumeSync activeSounds={activeSounds} audioRefs={audioRefs} />
-    </>
-  );
-};
-
-const VolumeSync = ({
-  activeSounds,
-  audioRefs,
-}: {
-  activeSounds: ActiveSound[];
-  audioRefs: React.MutableRefObject<Map<number, HTMLAudioElement>>;
-}) => {
+  // Sync volume without restarting.
   useEffect(() => {
-    activeSounds.forEach(({ sound, volume }) => {
-      const el = audioRefs.current.get(sound.id);
-      if (el) el.volume = volume;
-    });
-  }, [activeSounds, audioRefs]);
-  return null;
+    if (audioRef.current) audioRef.current.volume = volume;
+  }, [volume]);
+
+  return <audio ref={audioRef} src={src} loop preload="auto" />;
 };
 
 export default SoundLayer;
