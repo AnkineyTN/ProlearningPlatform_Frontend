@@ -12,7 +12,7 @@ import ResetOtp from '@/components/auth/ResetOtp';
 import ResetPassword from '@/components/auth/ResetPassword';
 import ProtectedLayout from '@/components/ProtectedLayout';
 import ProtectedLayoutNoSidebar from '@/components/ProtectedLayoutNoSidebar';
-import Dashboard from '@/pages/Dashboard';
+import Dashboard from '@/pages/DashboardPage';
 import FlashcardPage from '@/pages/FlashcardPage';
 import FlashcardEditor from '@/pages/FlashcardPage/FlashcardEditor';
 import LandingPage from '@/pages/LandingPage';

@@ -75,22 +75,21 @@ export function MiniCalendar() {
             const isToday = sameMonth && d === today;
             const hasActivity = studyDays.has(d);
             return (
-              <button
+              <Button
+                variant={isToday ? 'default' : 'ghost'}
                 key={d}
                 className={cn(
-                  'rounded-[6px] grid place-items-center text-[11px] relative border-0 cursor-pointer',
-                  isToday
-                    ? 'bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] font-semibold'
-                    : hasActivity
-                      ? 'bg-transparent text-[var(--pl-text)]'
-                      : 'bg-transparent text-[var(--pl-text-faint)]',
+                  'rounded-3xl grid place-items-center text-[11px] relative border-0',
+                  hasActivity
+                    ? 'text-[var(--pl-text)]'
+                    : 'text-[var(--pl-text-faint)]',
                 )}
               >
                 {d}
                 {!isToday && hasActivity && (
                   <span className='absolute bottom-[3px] w-[3px] h-[3px] rounded-full bg-[var(--pl-accent)]' />
                 )}
-              </button>
+              </Button>
             );
           })}
         </div>

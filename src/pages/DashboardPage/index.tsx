@@ -101,19 +101,15 @@ const Dashboard = () => {
           />
         )}
 
-        <StatsRow
-          streak={streak}
-          summary={summary}
-          setsCount={sets.length}
-        />
+        <StatsRow streak={streak} summary={summary} setsCount={sets.length} />
 
-        <div className='grid grid-cols-[1.55fr_1fr] gap-8'>
-          <div className='flex flex-col gap-8'>
+        <div className='grid grid-cols-2 gap-6'>
+          <div className='flex flex-col gap-6'>
             <ChecklistPanel />
             <RecentSetsPanel sets={sets} />
           </div>
 
-          <div className='flex flex-col gap-8'>
+          <div className='flex flex-col gap-6'>
             <MiniCalendar />
             <ActivityHeatmap months={6} />
           </div>

@@ -1,6 +1,9 @@
 import { Flame, Target, Timer, TrendingUp } from 'lucide-react';
 import { StatCard } from './StatCard';
-import type { StreakData, ActivitySummary } from '@/services/types/activityLog.types';
+import type {
+  StreakData,
+  ActivitySummary,
+} from '@/services/types/activityLog.types';
 
 type Props = {
   streak?: StreakData;
@@ -13,7 +16,7 @@ export function StatsRow({ streak, summary, setsCount }: Props) {
   const weekHours = (weekMinutes / 60).toFixed(1);
 
   return (
-    <div className='grid grid-cols-4 gap-[14px] mb-6'>
+    <div className='grid grid-cols-4 gap-6 mb-6'>
       <StatCard
         kicker='Current streak'
         value={streak ? String(streak.currentStreak) : '—'}

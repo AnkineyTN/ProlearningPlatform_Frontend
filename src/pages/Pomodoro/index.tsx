@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   BarChart3,
   Image as ImageIcon,
@@ -10,25 +10,22 @@ import {
   Settings as SettingsIcon,
   SkipForward,
   VolumeOff,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
   usePomodoroSetting,
   useSpacesSearch,
   useUpdatePomodoroSetting,
-} from "@/hooks/usePomodoro";
-import type {
-  SessionType,
-  SpaceDto,
-} from "@/services/types/pomodoro.types";
-import { DEFAULT_SETTING, STORAGE_KEYS, formatTime } from "./constants";
-import { usePomodoroContext } from "@/contexts/PomodoroContext";
-import SpaceBackground from "./SpaceBackground";
-import SpacePicker from "./SpacePicker";
-import SoundMixer from "./SoundMixer";
-import SettingsModal from "./SettingsModal";
-import StatsModal from "./StatsModal";
+} from '@/hooks/usePomodoro';
+import type { SessionType, SpaceDto } from '@/services/types/pomodoro.types';
+import { DEFAULT_SETTING, STORAGE_KEYS, formatTime } from './constants';
+import { usePomodoroContext } from '@/contexts/PomodoroContext';
+import SpaceBackground from './SpaceBackground';
+import SpacePicker from './SpacePicker';
+import SoundMixer from './SoundMixer';
+import SettingsModal from './SettingsModal';
+import StatsModal from './StatsModal';
 
 const Pomodoro = () => {
   const { t } = useTranslation();
@@ -46,9 +43,21 @@ const Pomodoro = () => {
   });
   const [selectedSpace, setSelectedSpace] = useState<SpaceDto | null>(null);
 
-  const { data: spacesData } = useSpacesSearch({ tab: "ALL", page: 0, size: 50 });
-  const { data: favSpacesData } = useSpacesSearch({ tab: "FAVORITES", page: 0, size: 50 });
-  const { data: mySpacesData } = useSpacesSearch({ tab: "MY_UPLOADS", page: 0, size: 50 });
+  const { data: spacesData } = useSpacesSearch({
+    tab: 'ALL',
+    page: 0,
+    size: 50,
+  });
+  const { data: favSpacesData } = useSpacesSearch({
+    tab: 'FAVORITES',
+    page: 0,
+    size: 50,
+  });
+  const { data: mySpacesData } = useSpacesSearch({
+    tab: 'MY_UPLOADS',
+    page: 0,
+    size: 50,
+  });
 
   useEffect(() => {
     if (selectedSpace || selectedSpaceId === null) return;
@@ -82,18 +91,18 @@ const Pomodoro = () => {
         `pomodoro.types.${engine.type}`,
       )}`;
     } else {
-      document.title = "ProLearning · Pomodoro";
+      document.title = 'ProLearning · Pomodoro';
     }
     return () => {
-      document.title = "ProLearning";
+      document.title = 'ProLearning';
     };
   }, [engine.remaining, engine.running, engine.type, t]);
 
   const tabs: { type: SessionType; label: string }[] = useMemo(
     () => [
-      { type: "POMODORO", label: t("pomodoro.types.POMODORO") },
-      { type: "SHORT_BREAK", label: t("pomodoro.types.SHORT_BREAK") },
-      { type: "LONG_BREAK", label: t("pomodoro.types.LONG_BREAK") },
+      { type: 'POMODORO', label: t('pomodoro.types.POMODORO') },
+      { type: 'SHORT_BREAK', label: t('pomodoro.types.SHORT_BREAK') },
+      { type: 'LONG_BREAK', label: t('pomodoro.types.LONG_BREAK') },
     ],
     [t],
   );
@@ -104,7 +113,7 @@ const Pomodoro = () => {
 
       {/* Dim overlay over background (only when a space is set) */}
       {selectedSpace && (
-        <div className='absolute inset-0 z-[1] bg-black/30 pointer-events-none' />
+        <div className='absolute inset-0 z-[1] bg-[var(--pl-bg)] pointer-events-none' />
       )}
 
       {/* Top toolbar */}
@@ -219,16 +228,24 @@ const Pomodoro = () => {
                 className='flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/10'
               >
                 <Music size={11} className={isPaused ? 'opacity-40' : ''} />
-                <span className={`truncate max-w-[120px] ${isPaused ? 'opacity-40' : ''}`}>
+                <span
+                  className={`truncate max-w-[120px] ${isPaused ? 'opacity-40' : ''}`}
+                >
                   {a.sound.name}
                 </span>
                 <button
                   type='button'
-                  title={isPaused ? t('pomodoro.sounds.resume') : t('pomodoro.sounds.pause')}
+                  title={
+                    isPaused
+                      ? t('pomodoro.sounds.resume')
+                      : t('pomodoro.sounds.pause')
+                  }
                   onClick={() =>
                     setActiveSounds(
                       activeSounds.map((s) =>
-                        s.sound.id === a.sound.id ? { ...s, paused: !s.paused } : s,
+                        s.sound.id === a.sound.id
+                          ? { ...s, paused: !s.paused }
+                          : s,
                       ),
                     )
                   }
@@ -293,12 +310,12 @@ const ToolbarButton = ({
   <button
     onClick={onClick}
     title={label}
-    className="cursor-pointer relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white text-xs hover:bg-black/60"
+    className='cursor-pointer relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white text-xs hover:bg-black/60'
   >
     {icon}
-    <span className="hidden sm:inline">{label}</span>
+    <span className='hidden sm:inline'>{label}</span>
     {badge !== undefined && (
-      <span className="ml-0.5 min-w-[16px] h-[16px] rounded-full bg-white text-black text-[10px] font-bold grid place-items-center px-1">
+      <span className='ml-0.5 min-w-[16px] h-[16px] rounded-full bg-white text-black text-[10px] font-bold grid place-items-center px-1'>
         {badge}
       </span>
     )}
