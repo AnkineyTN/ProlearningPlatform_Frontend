@@ -845,7 +845,9 @@
       "save": "Save",
       "priorityLow": "Low",
       "priorityMedium": "Medium",
-      "priorityHigh": "High"
+      "priorityHigh": "High",
+      "searchResource": "Search {{type}}...",
+      "noResults": "No results found"
     },
     "assignGoal": {
       "noGoal": "No goal",

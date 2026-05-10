@@ -1,15 +1,18 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Pencil, Plus, Trash2 } from "lucide-react";
-import type { Goal, Todo } from "@/services/types/todo.types";
+import type { Goal, ResourceRef, Todo } from "@/services/types/todo.types";
+import { ResourceMentionInput, renderTitleWithRefs, LinkedResourceChips, type MentionResourceType } from "./SetMentionInput";
 import { todayIso } from "./dateHelpers";
 
 type TodaySectionProps = {
   todos: Todo[];
   goals: Goal[];
   newTask: string;
+  newTaskRefs: Record<MentionResourceType, ResourceRef[]>;
   isCreating: boolean;
   onNewTaskChange: (v: string) => void;
+  onNewTaskRefAdded: (type: MentionResourceType, ref: ResourceRef) => void;
   onAddTask: () => void;
   onToggleTodo: (id: number) => void;
   onDeleteTodo: (id: number) => void;
@@ -82,9 +85,9 @@ const TodayTaskRow = ({
       </button>
       <button onClick={() => onOpen(todo)} className='flex-1 min-w-0 text-left'>
         <div className={`text-[13.5px] truncate ${isDone ? "line-through text-[var(--pl-text-faint)]" : "text-[var(--pl-text)]"}`}>
-          {todo.title}
+          {renderTitleWithRefs(todo.title, todo, isDone)}
         </div>
-        <div className='flex items-center gap-2 mt-0.5'>
+        <div className='flex items-center gap-1.5 mt-0.5 flex-wrap'>
           <span className='text-[10px] text-[var(--pl-text-faint)]'>{todo.priority}</span>
           {todo.goalTitle && (
             <>
@@ -92,6 +95,7 @@ const TodayTaskRow = ({
               <span className='text-[10px] truncate' style={{ color: accent }}>{todo.goalTitle}</span>
             </>
           )}
+          <LinkedResourceChips todo={todo} />
         </div>
       </button>
       <button
@@ -149,8 +153,10 @@ const TodaySection = ({
   todos,
   goals,
   newTask,
+  newTaskRefs,
   isCreating,
   onNewTaskChange,
+  onNewTaskRefAdded,
   onAddTask,
   onToggleTodo,
   onDeleteTodo,
@@ -207,24 +213,43 @@ const TodaySection = ({
           <Ring percent={todayPercent} />
         </div>
 
-        {/* Quick add */}
+        {/* Quick add — type /set, /note, /flashcard, /exam to link resources */}
         <div className='flex gap-2 rounded-[12px] p-1.5 mb-3 bg-[var(--pl-bg)] border border-[var(--pl-border)]'>
-          <input
+          <ResourceMentionInput
             value={newTask}
-            onChange={(e) => onNewTaskChange(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && onAddTask()}
+            onChange={onNewTaskChange}
+            onRefAdded={onNewTaskRefAdded}
+            onKeyDown={(e) => { if (e.key === "Enter" && !isCreating) { e.preventDefault(); onAddTask(); } }}
             placeholder={t("todo.today.quickAddPlaceholder")}
-            className='flex-1 bg-transparent outline-none text-sm text-[var(--pl-text)] px-3 py-2'
+            className='w-full bg-transparent outline-none text-sm text-[var(--pl-text)] px-3 py-2'
+            disabled={isCreating}
           />
           <button
+            type="button"
             onClick={onAddTask}
             disabled={isCreating}
-            className='inline-flex items-center gap-1.5 rounded-[8px] text-[12.5px] px-4 font-medium disabled:opacity-60 bg-[var(--pl-accent)] text-[var(--pl-accent-fg)]'
+            className='inline-flex items-center gap-1.5 rounded-[8px] text-[12.5px] px-4 font-medium disabled:opacity-60 bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] flex-shrink-0'
           >
             <Plus className='w-3.5 h-3.5' />
             {t("todo.todoList.add")}
           </button>
         </div>
+
+        {/* Linked resource pills preview */}
+        {Object.values(newTaskRefs).some((arr) => arr.length > 0) && (
+          <div className='flex flex-wrap gap-1.5 mb-2 px-1'>
+            {Object.entries(newTaskRefs).flatMap(([, refs]) =>
+              refs.map((ref) => (
+                <span
+                  key={`${ref.id}`}
+                  className='inline-flex items-center gap-1 text-[10.5px] px-2 py-0.5 rounded-full bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]'
+                >
+                  {ref.title}
+                </span>
+              )),
+            )}
+          </div>
+        )}
 
         {/* Today list */}
         {todayTodos.length === 0 ? (

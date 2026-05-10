@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, Plus, Trash2 } from "lucide-react";
-import type { Todo } from "@/services/types/todo.types";
+import type { ResourceRef, Todo } from "@/services/types/todo.types";
+import { ResourceMentionInput, renderTitleWithRefs, LinkedResourceChips, type MentionResourceType } from "./SetMentionInput";
 import { addDays, formatWeekRange, getMondayOfWeek, isSameDay, toIsoDate, todayIso } from "./dateHelpers";
 
 type WeekSectionProps = {
@@ -10,7 +11,7 @@ type WeekSectionProps = {
   onToggleTodo: (id: number) => void;
   onDeleteTodo: (id: number) => void;
   onOpenTodo: (todo: Todo) => void;
-  onCreateTodoForDate: (title: string, date: string) => void;
+  onCreateTodoForDate: (title: string, date: string, refs?: Partial<Record<MentionResourceType, ResourceRef[]>>) => void;
 };
 
 const DayCard = ({
@@ -117,9 +118,9 @@ const ExpandedTaskRow = ({
       </button>
       <button onClick={() => onOpen(todo)} className='flex-1 min-w-0 text-left'>
         <div className={`text-[13px] truncate ${isDone ? "line-through text-[var(--pl-text-faint)]" : "text-[var(--pl-text)]"}`}>
-          {todo.title}
+          {renderTitleWithRefs(todo.title, todo, isDone)}
         </div>
-        <div className='flex items-center gap-2 mt-0.5'>
+        <div className='flex items-center gap-1.5 mt-0.5 flex-wrap'>
           <span className='text-[10px] text-[var(--pl-text-faint)]'>{todo.priority}</span>
           {todo.goalTitle && (
             <>
@@ -127,6 +128,7 @@ const ExpandedTaskRow = ({
               <span className='text-[10px] truncate' style={{ color: accent }}>{todo.goalTitle}</span>
             </>
           )}
+          <LinkedResourceChips todo={todo} />
         </div>
       </button>
       <button
@@ -151,11 +153,23 @@ const WeekSection = ({
   const [weekStart, setWeekStart] = useState<Date>(() => getMondayOfWeek(new Date()));
   const [selectedDate, setSelectedDate] = useState<string>(() => todayIso());
   const [dayInput, setDayInput] = useState("");
+  const [dayRefs, setDayRefs] = useState<Record<MentionResourceType, ResourceRef[]>>({
+    set: [], note: [], flashcard: [], exam: [],
+  });
 
   const handleAddForSelected = () => {
     if (!dayInput.trim()) return;
-    onCreateTodoForDate(dayInput.trim(), selectedDate);
+    const hasRefs = Object.values(dayRefs).some((a) => a.length > 0);
+    onCreateTodoForDate(dayInput.trim(), selectedDate, hasRefs ? dayRefs : undefined);
     setDayInput("");
+    setDayRefs({ set: [], note: [], flashcard: [], exam: [] });
+  };
+
+  const handleDayRefAdded = (type: MentionResourceType, ref: ResourceRef) => {
+    setDayRefs((prev) => ({
+      ...prev,
+      [type]: prev[type].some((r) => r.id === ref.id) ? prev[type] : [...prev[type], ref],
+    }));
   };
 
   const days = useMemo(
@@ -252,22 +266,39 @@ const WeekSection = ({
         </div>
 
         <div className='flex gap-2 rounded-[12px] p-1.5 mb-3 bg-[var(--pl-bg)] border border-[var(--pl-border)]'>
-          <input
+          <ResourceMentionInput
             value={dayInput}
-            onChange={(e) => setDayInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleAddForSelected()}
+            onChange={setDayInput}
+            onRefAdded={handleDayRefAdded}
+            onKeyDown={(e) => { if (e.key === "Enter" && !isCreating) { e.preventDefault(); handleAddForSelected(); } }}
             placeholder={t("todo.week.addPlaceholder", { date: selectedLabel })}
-            className='flex-1 bg-transparent outline-none text-sm text-[var(--pl-text)] px-3 py-2'
+            className='w-full bg-transparent outline-none text-sm text-[var(--pl-text)] px-3 py-2'
+            disabled={isCreating}
           />
           <button
+            type="button"
             onClick={handleAddForSelected}
             disabled={isCreating}
-            className='inline-flex items-center gap-1.5 rounded-[8px] text-[12.5px] px-4 font-medium disabled:opacity-60 bg-[var(--pl-accent)] text-[var(--pl-accent-fg)]'
+            className='inline-flex items-center gap-1.5 rounded-[8px] text-[12.5px] px-4 font-medium disabled:opacity-60 bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] flex-shrink-0'
           >
             <Plus className='w-3.5 h-3.5' />
             {t("todo.todoList.add")}
           </button>
         </div>
+        {Object.values(dayRefs).some((arr) => arr.length > 0) && (
+          <div className='flex flex-wrap gap-1.5 mb-2 px-1'>
+            {Object.entries(dayRefs).flatMap(([, refs]) =>
+              refs.map((ref) => (
+                <span
+                  key={ref.id}
+                  className='inline-flex items-center gap-1 text-[10.5px] px-2 py-0.5 rounded-full bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]'
+                >
+                  {ref.title}
+                </span>
+              )),
+            )}
+          </div>
+        )}
 
         {selectedDayTodos.length === 0 ? (
           <div className='text-center py-6 text-[12.5px] text-[var(--pl-text-faint)]'>

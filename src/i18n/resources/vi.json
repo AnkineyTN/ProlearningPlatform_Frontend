@@ -845,7 +845,9 @@
       "save": "Lưu",
       "priorityLow": "Thấp",
       "priorityMedium": "Trung bình",
-      "priorityHigh": "Cao"
+      "priorityHigh": "Cao",
+      "searchResource": "Tìm {{type}}...",
+      "noResults": "Không tìm thấy kết quả"
     },
     "assignGoal": {
       "noGoal": "Chưa có goal",

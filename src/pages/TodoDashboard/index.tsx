@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { todoAPI } from "@/services/endpoints/todo";
-import type { Goal, Todo } from "@/services/types/todo.types";
+import type { Goal, ResourceRef, Todo } from "@/services/types/todo.types";
+import type { MentionResourceType } from "./SetMentionInput";
 import GoalModal from "./GoalModal";
 import TodoStats from "./TodoStats";
 import TodaySection from "./TodaySection";
@@ -16,6 +17,9 @@ const TodoDashboard = () => {
   const { t } = useTranslation();
   const qc = useQueryClient();
   const [newTask, setNewTask] = useState("");
+  const [newTaskRefs, setNewTaskRefs] = useState<Record<MentionResourceType, ResourceRef[]>>({
+    set: [], note: [], flashcard: [], exam: [],
+  });
   const [goalModalOpen, setGoalModalOpen] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [detailTodo, setDetailTodo] = useState<Todo | null>(null);
@@ -41,6 +45,7 @@ const TodoDashboard = () => {
       qc.invalidateQueries({ queryKey: ["todos"] });
       qc.invalidateQueries({ queryKey: ["goals"] });
       setNewTask("");
+      setNewTaskRefs({ set: [], note: [], flashcard: [], exam: [] });
     },
     onError: () => toast.error(t("todo.toast.createFailed")),
   });
@@ -73,17 +78,43 @@ const TodoDashboard = () => {
   });
 
   const handleAddTodayTask = () => {
-    if (!newTask.trim()) return;
-    createTodo.mutate({ title: newTask.trim(), dueDate: todayIso() });
+    if (!newTask.trim() || createTodo.isPending) return;
+    createTodo.mutate({
+      title: newTask.trim(),
+      dueDate: todayIso(),
+      setRefs: newTaskRefs.set.length ? newTaskRefs.set : undefined,
+      noteRefs: newTaskRefs.note.length ? newTaskRefs.note : undefined,
+      flashcardRefs: newTaskRefs.flashcard.length ? newTaskRefs.flashcard : undefined,
+      examRefs: newTaskRefs.exam.length ? newTaskRefs.exam : undefined,
+    });
   };
 
-  const handleCreateForDate = (title: string, date: string) => {
-    createTodo.mutate({ title, dueDate: date });
+  const handleNewTaskRefAdded = (type: MentionResourceType, ref: ResourceRef) => {
+    setNewTaskRefs((prev) => ({
+      ...prev,
+      [type]: prev[type].some((r) => r.id === ref.id) ? prev[type] : [...prev[type], ref],
+    }));
+  };
+
+  const handleCreateForDate = (
+    title: string,
+    date: string,
+    refs?: Partial<Record<MentionResourceType, ResourceRef[]>>,
+  ) => {
+    createTodo.mutate({
+      title,
+      dueDate: date,
+      setRefs: refs?.set?.length ? refs.set : undefined,
+      noteRefs: refs?.note?.length ? refs.note : undefined,
+      flashcardRefs: refs?.flashcard?.length ? refs.flashcard : undefined,
+      examRefs: refs?.exam?.length ? refs.exam : undefined,
+    });
   };
 
   return (
     <div className='min-h-screen py-8 px-10'>
       <GoalModal
+        key={editingGoal?.id ?? (goalModalOpen ? "new" : "")}
         open={goalModalOpen || editingGoal !== null}
         editGoal={editingGoal}
         longGoals={longGoals}
@@ -94,6 +125,7 @@ const TodoDashboard = () => {
       />
 
       <TodoDetailModal
+        key={detailTodo?.id}
         open={detailTodo !== null}
         todo={detailTodo}
         goals={goals}
@@ -128,8 +160,10 @@ const TodoDashboard = () => {
         todos={todos}
         goals={goals}
         newTask={newTask}
+        newTaskRefs={newTaskRefs}
         isCreating={createTodo.isPending}
         onNewTaskChange={setNewTask}
+        onNewTaskRefAdded={handleNewTaskRefAdded}
         onAddTask={handleAddTodayTask}
         onToggleTodo={(id) => toggleTodo.mutate(id)}
         onDeleteTodo={(id) => deleteTodo.mutate(id)}
