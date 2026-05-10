@@ -1,12 +1,21 @@
-import { useState } from "react";
-import { Brain, Loader2 } from "lucide-react";
+import { useState } from 'react';
+import {
+  Brain,
+  Loader2,
+  RotateCcw,
+  BookOpen,
+  Home,
+  Trophy,
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+} from 'lucide-react';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import KnowledgeAnalysisDialog from "@/components/analysis/KnowledgeAnalysisDialog";
+import { Button } from '@/components/ui/button';
+import KnowledgeAnalysisDialog from '@/components/analysis/KnowledgeAnalysisDialog';
 
-import type { ReviewLog } from "@/services/types/flashcard-session.types";
-import type { Card as Flashcard } from "@/services/types/flashcard.types";
+import type { ReviewLog } from '@/services/types/flashcard-session.types';
+import type { Card as Flashcard } from '@/services/types/flashcard.types';
 
 type ResultsViewProps = {
   setId?: number;
@@ -47,25 +56,27 @@ const ResultsView = ({
   sessionResult,
 }: ResultsViewProps) => {
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const [showLogs, setShowLogs] = useState(false);
+
   const sessionId = sessionResult?.sessionId;
   const canAnalyze =
     typeof setId === 'number' &&
     typeof flashcardId === 'number' &&
     typeof sessionId === 'number';
+
   const rawCorrect = sessionResult?.correctCount ?? 0;
   const rawIncorrect = sessionResult?.incorrectCount ?? 0;
 
-  // Spec: when progress tracking is disabled, the result screen reports
-  // knownCards = totalCards, learningCards = 0, remainingCards = 0.
+  // Spec: when progress tracking is disabled, report knownCards = totalCards
   const knownCards = isProgressTrackingEnabled ? rawCorrect : totalCards;
   const learningCards = isProgressTrackingEnabled ? rawIncorrect : 0;
   const remainingCards = isProgressTrackingEnabled
     ? Math.max(0, totalCards - knownCards - learningCards)
     : 0;
 
-  // Circular progress = knownCards / totalCards * 100 (clamped 0-100, NaN-guarded).
   const rawPct = totalCards > 0 ? (knownCards / totalCards) * 100 : 0;
   const pct = Number.isFinite(rawPct) ? Math.max(0, Math.min(100, rawPct)) : 0;
+  const isPerfect = pct === 100;
 
   const finishedAt = sessionResult?.finishedAt
     ? new Date(sessionResult.finishedAt).toLocaleString()
@@ -77,179 +88,292 @@ const ResultsView = ({
     return found ? found.frontCard : String(cardId);
   };
 
-  // Geometry for the SVG ring
-  const radius = 52;
+  const heroTitle = isPerfect
+    ? 'Perfect score.'
+    : pct >= 80
+      ? 'Great job.'
+      : 'Keep going.';
+
+  const heroSubtitle = isPerfect
+    ? `You knew all ${knownCards} cards in this session. Outstanding!`
+    : isProgressTrackingEnabled
+      ? `You knew ${knownCards} of ${totalCards} cards. Review the rest to master the set.`
+      : `You've completed this study session with ${studiedCards} of ${totalCards} cards studied.`;
+
+  // SVG ring geometry
+  const radius = 90;
   const circumference = 2 * Math.PI * radius;
   const dash = (pct / 100) * circumference;
 
   return (
-    <div className='max-w-4xl mx-auto px-6 py-8'>
-      <div className='min-h-[70vh] flex items-center justify-center'>
-        <Card className='max-w-2xl w-full'>
-          <CardContent className='p-8 text-center'>
-            <div className='mb-6 flex flex-col items-center'>
-              <div className='relative mb-4'>
-                <svg width={140} height={140} viewBox='0 0 140 140'>
-                  <circle
-                    cx={70}
-                    cy={70}
-                    r={radius}
-                    fill='none'
-                    strokeWidth={10}
-                    style={{ stroke: 'var(--pl-border)' }}
-                  />
-                  <circle
-                    cx={70}
-                    cy={70}
-                    r={radius}
-                    fill='none'
-                    strokeWidth={10}
-                    strokeLinecap='round'
-                    strokeDasharray={`${dash} ${circumference - dash}`}
-                    transform='rotate(-90 70 70)'
-                    style={{ stroke: 'var(--pl-accent)' }}
-                  />
-                </svg>
-                <div className='absolute inset-0 flex flex-col items-center justify-center'>
-                  <div className='text-3xl font-semibold'>{Math.round(pct)}%</div>
-                  <div className='text-xs text-muted-foreground mt-0.5'>
-                    {knownCards} / {totalCards}
-                  </div>
-                </div>
+    <div className='max-w-4xl mx-auto px-6 py-10 space-y-5'>
+      {/* ── Hero ── */}
+      <div className='relative rounded-2xl border border-border bg-[var(--pl-bg)] overflow-hidden p-10 text-center'>
+        <div
+          className='absolute inset-0 pointer-events-none'
+          style={{
+            background: isPerfect
+              ? 'radial-gradient(circle at 50% 40%, rgba(34,197,94,0.14), transparent 60%)'
+              : pct >= 80
+                ? 'radial-gradient(circle at 50% 40%, rgba(59,130,246,0.12), transparent 60%)'
+                : 'radial-gradient(circle at 50% 40%, rgba(239,68,68,0.10), transparent 60%)',
+          }}
+        />
+        <div className='relative'>
+          <h2 className='font-[family-name:var(--font-display)] italic text-5xl font-normal tracking-tight mb-3'>
+            {heroTitle}
+          </h2>
+          <p className='text-muted-foreground mb-8 max-w-md mx-auto text-sm'>
+            {heroSubtitle}
+          </p>
+
+          <div className='inline-flex relative items-center justify-center mb-8'>
+            <svg width='220' height='220' viewBox='0 0 220 220'>
+              <circle
+                cx='110'
+                cy='110'
+                r={radius}
+                fill='none'
+                strokeWidth='8'
+                stroke='var(--pl-border)'
+                opacity='0.3'
+              />
+              <circle
+                cx='110'
+                cy='110'
+                r={radius}
+                fill='none'
+                strokeWidth='8'
+                strokeLinecap='round'
+                stroke={
+                  isPerfect ? '#22c55e' : pct >= 80 ? '#3b82f6' : '#ef4444'
+                }
+                strokeDasharray={`${dash} ${circumference - dash}`}
+                transform='rotate(-90 110 110)'
+                style={{
+                  filter: `drop-shadow(0 0 8px ${
+                    isPerfect
+                      ? 'rgba(34,197,94,0.55)'
+                      : pct >= 80
+                        ? 'rgba(59,130,246,0.45)'
+                        : 'rgba(239,68,68,0.45)'
+                  })`,
+                  transition: 'stroke-dasharray 600ms ease',
+                }}
+              />
+            </svg>
+            <div className='absolute inset-0 flex flex-col items-center justify-center'>
+              <span className='text-[11px] font-[family-name:var(--font-mono-pl)] tracking-[0.2em] text-muted-foreground mb-1'>
+                KNOWN
+              </span>
+              <span className='font-[family-name:var(--font-display)] text-6xl font-medium leading-none'>
+                {Math.round(pct)}
+                <span className='text-2xl text-muted-foreground'>%</span>
+              </span>
+              <div className='flex items-center gap-1.5 mt-2'>
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    isPerfect
+                      ? 'bg-green-500'
+                      : pct >= 80
+                        ? 'bg-blue-500'
+                        : 'bg-red-500'
+                  }`}
+                />
+                <span className='text-xs text-muted-foreground'>
+                  {knownCards} / {totalCards} cards
+                </span>
               </div>
-              <h2 className='text-2xl font-bold mb-1'>Great job!</h2>
-              <p className='text-muted-foreground'>
-                You've completed this study session
+            </div>
+          </div>
+
+          <div className='flex gap-3 justify-center flex-wrap'>
+            <Button onClick={onContinue} className='gap-2'>
+              <RotateCcw className='w-4 h-4' />
+              Continue Studying
+            </Button>
+            {onPracticeWithExam && (
+              <Button
+                onClick={onPracticeWithExam}
+                disabled={isPracticeWithExamLoading}
+                className='gap-2'
+              >
+                {isPracticeWithExamLoading ? (
+                  <Loader2 className='w-4 h-4 animate-spin' />
+                ) : (
+                  <BookOpen className='w-4 h-4' />
+                )}
+                Practice with Test
+              </Button>
+            )}
+            {onMatching && (
+              <Button onClick={onMatching} className='gap-2'>
+                <Trophy className='w-4 h-4' />
+                Matching Mode
+              </Button>
+            )}
+            {canAnalyze && (
+              <Button onClick={() => setShowAnalysis(true)} className='gap-2'>
+                <Brain className='w-4 h-4' />
+                Analyze Knowledge
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Stats grid ── */}
+      {isProgressTrackingEnabled && (
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+          {/* Known */}
+          <div className='rounded-2xl border border-border bg-[var(--pl-bg)] p-5'>
+            <div className='flex items-center justify-between mb-4'>
+              <div className='w-9 h-9 rounded-lg bg-green-500/10 flex items-center justify-center'>
+                <CheckCircle2 className='w-4 h-4 text-green-500' />
+              </div>
+              <span className='inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full border border-green-500/30 bg-green-500/10 text-green-500'>
+                {Math.round(
+                  totalCards > 0 ? (knownCards / totalCards) * 100 : 0,
+                )}
+                %
+              </span>
+            </div>
+            <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)] mb-1'>
+              KNOWN
+            </p>
+            <p className='font-[family-name:var(--font-display)] text-3xl font-medium mb-1'>
+              {knownCards}{' '}
+              <span className='text-base text-muted-foreground'>cards</span>
+            </p>
+            <p className='text-xs text-muted-foreground'>
+              mastered this session
+            </p>
+          </div>
+
+          {/* Learning */}
+          <div className='rounded-2xl border border-border bg-[var(--pl-bg)] p-5'>
+            <div className='flex items-center justify-between mb-4'>
+              <div className='w-9 h-9 rounded-lg bg-red-500/10 flex items-center justify-center'>
+                <AlertCircle className='w-4 h-4 text-red-500' />
+              </div>
+              {learningCards > 0 && (
+                <span className='inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full border border-red-500/30 bg-red-500/10 text-red-500'>
+                  needs review
+                </span>
+              )}
+            </div>
+            <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)] mb-1'>
+              LEARNING
+            </p>
+            <p className='font-[family-name:var(--font-display)] text-3xl font-medium mb-1'>
+              {learningCards}{' '}
+              <span className='text-base text-muted-foreground'>cards</span>
+            </p>
+            <p className='text-xs text-muted-foreground'>
+              {learningCards === 0
+                ? 'none to review'
+                : `${learningCards} card${learningCards === 1 ? '' : 's'} to revisit`}
+            </p>
+          </div>
+
+          {/* Remaining */}
+          <div className='rounded-2xl border border-border bg-[var(--pl-bg)] p-5'>
+            <div className='flex items-center justify-between mb-4'>
+              <div className='w-9 h-9 rounded-lg bg-muted flex items-center justify-center'>
+                <Clock className='w-4 h-4 text-muted-foreground' />
+              </div>
+            </div>
+            <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)] mb-1'>
+              REMAINING
+            </p>
+            <p className='font-[family-name:var(--font-display)] text-3xl font-medium mb-1'>
+              {remainingCards}{' '}
+              <span className='text-base text-muted-foreground'>cards</span>
+            </p>
+            <p className='text-xs text-muted-foreground'>
+              {remainingCards === 0
+                ? 'all cards reviewed'
+                : `${remainingCards} not yet seen`}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ── Review logs ── */}
+      {logs.length > 0 && (
+        <div className='rounded-2xl border border-border bg-[var(--pl-bg)] p-5'>
+          <div className='flex items-center justify-between mb-4'>
+            <div>
+              <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)] mb-0.5'>
+                REVIEW LOGS
               </p>
-              {totalCards !== studiedCards && (
-                <p className='text-sm text-muted-foreground mt-1'>
-                  Studied {studiedCards} of {totalCards} cards
-                </p>
-              )}
+              <p className='font-medium'>{logs.length} entries</p>
             </div>
-
-            <div
-              className={`grid ${isProgressTrackingEnabled ? 'grid-cols-3' : 'grid-cols-1'} gap-4 mb-6`}
-            >
-              <div className='p-4 bg-muted rounded-lg'>
-                <div className='text-3xl font-bold mb-1'>{knownCards}</div>
-                <div className='text-sm text-muted-foreground'>Known</div>
-              </div>
-              {isProgressTrackingEnabled && (
-                <>
-                  <div className='p-4 bg-muted rounded-lg'>
-                    <div className='text-3xl font-bold text-destructive mb-1'>
-                      {learningCards}
-                    </div>
-                    <div className='text-sm text-muted-foreground'>Learning</div>
-                  </div>
-                  <div className='p-4 bg-muted rounded-lg'>
-                    <div className='text-3xl font-bold mb-1'>{remainingCards}</div>
-                    <div className='text-sm text-muted-foreground'>Remaining</div>
-                  </div>
-                </>
-              )}
-            </div>
-
             {finishedAt && (
-              <p className='text-xs text-muted-foreground mb-4'>
-                Finished at {finishedAt}
-              </p>
+              <span className='text-xs text-muted-foreground'>
+                Finished {finishedAt}
+              </span>
             )}
+          </div>
 
-            {logs.length > 0 && (
-              <div className='text-left mb-4'>
-                <h3 className='font-medium mb-2'>Review Logs</h3>
-                <div className='space-y-2 max-h-48 overflow-auto'>
-                  {logs.map((log, idx) => (
-                    <div
-                      key={idx}
-                      className='p-3 bg-background/50 rounded flex items-center justify-between'
-                    >
-                      <div className='flex-1'>
-                        <div className='font-medium'>
-                          {findCardTitle(log.cardId)}
-                        </div>
-                        <div className='text-sm text-muted-foreground'>
-                          {new Date(log.reviewedAt).toLocaleString()}
-                        </div>
-                      </div>
-                      <div className='ml-4'>
-                        {log.known ? (
-                          <span className='text-green-600'>Known</span>
-                        ) : (
-                          <span className='text-destructive'>Unknown</span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+          {showLogs && (
+            <div className='space-y-2 max-h-64 overflow-auto mb-3'>
+              {logs.map((log, idx) => (
+                <div
+                  key={idx}
+                  className='flex items-center justify-between p-3 rounded-xl bg-[var(--pl-bg-hover)]'
+                >
+                  <span className='text-sm font-medium truncate flex-1 mr-4'>
+                    {findCardTitle(log.cardId)}
+                  </span>
+                  <div className='flex items-center gap-2 shrink-0'>
+                    <span className='text-xs text-muted-foreground'>
+                      {new Date(log.reviewedAt).toLocaleTimeString()}
+                    </span>
+                    {log.known ? (
+                      <span className='inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border border-green-500/30 bg-green-500/10 text-green-500'>
+                        <CheckCircle2 className='w-3 h-3' />
+                        Known
+                      </span>
+                    ) : (
+                      <span className='inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border border-red-500/30 bg-red-500/10 text-red-500'>
+                        <AlertCircle className='w-3 h-3' />
+                        Unknown
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
-
-            <div className='grid grid-cols-2 gap-3'>
-              <Button
-                variant='default'
-                size='lg'
-                className='cursor-pointer'
-                onClick={onContinue}
-              >
-                Continue Studying
-              </Button>
-              {onPracticeWithExam && (
-                <Button
-                  variant='outline'
-                  size='lg'
-                  className='cursor-pointer'
-                  disabled={isPracticeWithExamLoading}
-                  onClick={onPracticeWithExam}
-                >
-                  {isPracticeWithExamLoading && (
-                    <Loader2 className='size-4 animate-spin mr-2' />
-                  )}
-                  Practice with Test
-                </Button>
-              )}
-              {canAnalyze && (
-                <Button
-                  variant='outline'
-                  size='lg'
-                  className='cursor-pointer'
-                  onClick={() => setShowAnalysis(true)}
-                >
-                  <Brain className='size-4 mr-2' />
-                  Analyze my knowledge
-                </Button>
-              )}
-              {onMatching && (
-                <Button
-                  variant='outline'
-                  size='lg'
-                  className='cursor-pointer'
-                  onClick={onMatching}
-                >
-                  Study in Matching Mode
-                </Button>
-              )}
-              <Button
-                variant='ghost'
-                size='lg'
-                className='cursor-pointer'
-                onClick={onHome}
-              >
-                Back to Flashcard
-              </Button>
-              <Button
-                variant='ghost'
-                size='lg'
-                className='cursor-pointer col-span-2 text-muted-foreground'
-                onClick={onReset}
-              >
-                Reset Progress
-              </Button>
+              ))}
             </div>
-          </CardContent>
-        </Card>
+          )}
+
+          <button
+            onClick={() => setShowLogs((v) => !v)}
+            className='text-xs text-muted-foreground hover:text-foreground transition-colors'
+          >
+            {showLogs ? 'Hide logs' : 'Show all logs'}
+          </button>
+        </div>
+      )}
+
+      {/* ── Footer actions ── */}
+      <div className='flex gap-3 justify-center flex-wrap pt-2'>
+        <Button
+          variant='outline'
+          onClick={onHome}
+          className='gap-2 text-muted-foreground'
+        >
+          <Home className='w-4 h-4' />
+          Back to Flashcard
+        </Button>
+        <Button
+          variant='outline'
+          onClick={onReset}
+          className='gap-2 text-muted-foreground'
+        >
+          <RotateCcw className='w-4 h-4' />
+          Reset Progress
+        </Button>
       </div>
 
       {canAnalyze && showAnalysis && (
