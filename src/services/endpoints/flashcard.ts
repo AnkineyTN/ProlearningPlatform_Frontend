@@ -11,7 +11,6 @@ import type {
   DeleteMultipleCardsResponse,
   UpdateMultipleCardsRequest,
   UpdateMultipleCardsResponse,
-  GenerateFlashcardsFromNoteRequest,
   GenerateFlashcardsFromWebRequest,
   GenerateFlashcardsFromNoteResponse,
   CreateFlashcardResponse,
