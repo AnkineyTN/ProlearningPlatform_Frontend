@@ -4,10 +4,11 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { Eye, EyeOff, Info, Save, X } from 'lucide-react';
+import { Camera, Eye, EyeOff, Info, Save, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import { useAuth, useUpdateMe } from '@/hooks/useAuth';
+import { useAuth, useSetAvatar, useUpdateMe } from '@/hooks/useAuth';
+import { useUploadImageFile } from '@/hooks/useImageUpload';
 import type { ApiErrorResponse } from '@/services/types/auth.types';
 import {
   useGlobalNotificationPreferences,
@@ -94,7 +95,10 @@ export default function ProfilePage() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const updateMe = useUpdateMe();
+  const setAvatar = useSetAvatar();
+  const uploadImage = useUploadImageFile();
   const [loading, setLoading] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
   const [activeTab, setActiveTab] = useState<ProfileTab>('profile');
   const [bio, setBio] = useState('');
   const [showOldPw, setShowOldPw] = useState(false);
@@ -216,6 +220,22 @@ export default function ProfilePage() {
   }, [reset, user]);
 
 
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarUploading(true);
+    try {
+      const uploaded = await uploadImage.mutateAsync(file);
+      await setAvatar.mutateAsync(uploaded.assetId);
+      toast.success(t('profile.avatar.success'));
+    } catch {
+      toast.error(t('profile.avatar.error'));
+    } finally {
+      setAvatarUploading(false);
+      e.target.value = '';
+    }
+  };
+
   const onSubmit = async (data: FormData) => {
     if (!initial) {
       toast.error(t('profile.toast.noUser'));
@@ -334,13 +354,37 @@ export default function ProfilePage() {
           >
             {/* Avatar + identity */}
             <div className='flex gap-7 items-start mb-6 pb-6 border-b border-dashed border-[var(--pl-border)]'>
-              <div className='relative flex-shrink-0'>
-                <div
-                  className='w-24 h-24 rounded-full grid place-items-center text-[36px] font-medium bg-[linear-gradient(135deg,_var(--pl-accent),_var(--pl-accent-strong))] text-[var(--pl-accent-fg)]'
-                  style={{ fontFamily: 'var(--font-display)' }}
+              <div className='relative flex-shrink-0 group'>
+                {user?.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt='avatar'
+                    className='w-24 h-24 rounded-full object-cover'
+                  />
+                ) : (
+                  <div
+                    className='w-24 h-24 rounded-full grid place-items-center text-[36px] font-medium bg-[linear-gradient(135deg,_var(--pl-accent),_var(--pl-accent-strong))] text-[var(--pl-accent-fg)]'
+                    style={{ fontFamily: 'var(--font-display)' }}
+                  >
+                    {avatarLetters}
+                  </div>
+                )}
+                <label
+                  className='absolute inset-0 rounded-full flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer'
+                  title={t('profile.avatar.change')}
                 >
-                  {avatarLetters}
-                </div>
+                  {avatarUploading
+                    ? <div className='w-5 h-5 border-2 border-white/60 border-t-white rounded-full animate-spin' />
+                    : <Camera size={20} className='text-white' />
+                  }
+                  <input
+                    type='file'
+                    accept='image/*'
+                    className='sr-only'
+                    disabled={avatarUploading}
+                    onChange={handleAvatarChange}
+                  />
+                </label>
               </div>
               <div className='flex-1 pt-1.5'>
                 <div

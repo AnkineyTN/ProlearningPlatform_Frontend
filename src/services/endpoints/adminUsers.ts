@@ -2,6 +2,7 @@ import type { AxiosResponse } from "axios";
 import api from "../client";
 import type {
   AdminApiEnvelope,
+  AdminBlockUserRequest,
   AdminDirectoryUser,
   AdminUpdateUserRequest,
   AdminUserDirectoryRow,
@@ -44,6 +45,17 @@ export const adminUsersAPI = {
     userId: number,
   ): Promise<AxiosResponse<AdminApiEnvelope<unknown>>> =>
     api.delete(`/admin/users/${userId}`),
+
+  blockUser: (
+    userId: number,
+    body: AdminBlockUserRequest,
+  ): Promise<AxiosResponse<AdminApiEnvelope<AdminDirectoryUser>>> =>
+    api.post(`/admin/users/${userId}/block`, body),
+
+  unblockUser: (
+    userId: number,
+  ): Promise<AxiosResponse<AdminApiEnvelope<AdminDirectoryUser>>> =>
+    api.post(`/admin/users/${userId}/unblock`),
 };
 
 export function extractAdminUsersList(data: unknown): AdminUserDirectoryRow[] {

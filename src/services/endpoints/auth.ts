@@ -61,4 +61,7 @@ export const authAPI = {
 
   resendVerifyOtp: (): Promise<AxiosResponse<ApiResponse<null>>> =>
     api.post("/users/me/resend-verify-otp"),
+
+  setAvatar: (assetId: number): Promise<AxiosResponse<UpdateMeResponse>> =>
+    api.post("/users/me/avatar", { assetId }),
 };

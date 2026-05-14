@@ -4,6 +4,8 @@ import UsersSection from './AdminDashboardPage/UsersSection';
 import AnalyticsSection from './AdminDashboardPage/AnalyticsSection';
 import EditUserDialog from './AdminDashboardPage/EditUserDialog';
 import DeleteUserDialog from './AdminDashboardPage/DeleteUserDialog';
+import BlockUserDialog from './AdminDashboardPage/BlockUserDialog';
+import AppealListDialog from './AdminDashboardPage/AppealListDialog';
 
 const AdminDashboardPage = () => {
   const {
@@ -19,6 +21,12 @@ const AdminDashboardPage = () => {
     setEditAccountType,
     deleteTarget,
     setDeleteTarget,
+    blockTarget,
+    setBlockTarget,
+    blockReason,
+    setBlockReason,
+    appealTarget,
+    setAppealTarget,
     usersQuery,
     analyticsQuery,
     rows,
@@ -29,6 +37,8 @@ const AdminDashboardPage = () => {
     saveEdit,
     updateMutation,
     deleteMutation,
+    blockMutation,
+    unblockMutation,
   } = useAdminDashboard();
 
   return (
@@ -48,6 +58,14 @@ const AdminDashboardPage = () => {
           formatDate={formatDate}
           onEdit={openEdit}
           onDelete={(id, label) => setDeleteTarget({ id, label })}
+          onBlock={(id, label, isBlocked) => {
+            if (isBlocked) {
+              unblockMutation.mutate(id);
+            } else {
+              setBlockTarget({ id, label, isBlocked });
+            }
+          }}
+          onViewAppeals={(id, label) => setAppealTarget({ id, label })}
           onPrevPage={() => setPage((p) => Math.max(0, p - 1))}
           onNextPage={() => setPage((p) => p + 1)}
         />
@@ -78,6 +96,27 @@ const AdminDashboardPage = () => {
         onClose={() => setDeleteTarget(null)}
         onConfirm={(id) => deleteMutation.mutate(id)}
       />
+
+      {blockTarget && !blockTarget.isBlocked && (
+        <BlockUserDialog
+          open={true}
+          userName={blockTarget.label}
+          reason={blockReason}
+          isSaving={blockMutation.isPending}
+          onReasonChange={setBlockReason}
+          onClose={() => { setBlockTarget(null); setBlockReason(''); }}
+          onConfirm={() => blockMutation.mutate({ userId: blockTarget.id, reason: blockReason })}
+        />
+      )}
+
+      {appealTarget && (
+        <AppealListDialog
+          open={true}
+          userId={appealTarget.id}
+          userName={appealTarget.label}
+          onClose={() => setAppealTarget(null)}
+        />
+      )}
     </div>
   );
 };

@@ -246,15 +246,23 @@ const AppSidebar = () => {
                 )}
               >
                 {/* Avatar */}
-                <div
-                  className='w-8 h-8 rounded-[9px] shrink-0 grid place-items-center text-white text-[12px] font-bold'
-                  style={{
-                    background:
-                      'linear-gradient(135deg, var(--pl-accent), oklch(var(--pl-accent-l) calc(var(--pl-accent-c) * 0.8) calc(var(--pl-accent-h) + 40)))',
-                  }}
-                >
-                  {initials}
-                </div>
+                {user?.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt=''
+                    className='w-8 h-8 rounded-[9px] shrink-0 object-cover'
+                  />
+                ) : (
+                  <div
+                    className='w-8 h-8 rounded-[9px] shrink-0 grid place-items-center text-white text-[12px] font-bold'
+                    style={{
+                      background:
+                        'linear-gradient(135deg, var(--pl-accent), oklch(var(--pl-accent-l) calc(var(--pl-accent-c) * 0.8) calc(var(--pl-accent-h) + 40)))',
+                    }}
+                  >
+                    {initials}
+                  </div>
+                )}
 
                 {!collapsed && (
                   <>
