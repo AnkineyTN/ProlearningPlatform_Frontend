@@ -8,6 +8,7 @@ import { addDays, formatWeekRange, getMondayOfWeek, isSameDay, toIsoDate, todayI
 type WeekSectionProps = {
   todos: Todo[];
   isCreating: boolean;
+  selectedGoalId: number | null;
   onToggleTodo: (id: number) => void;
   onDeleteTodo: (id: number) => void;
   onOpenTodo: (todo: Todo) => void;
@@ -144,6 +145,7 @@ const ExpandedTaskRow = ({
 const WeekSection = ({
   todos,
   isCreating,
+  selectedGoalId,
   onToggleTodo,
   onDeleteTodo,
   onOpenTodo,
@@ -177,16 +179,21 @@ const WeekSection = ({
     [weekStart],
   );
 
+  const visibleTodos = useMemo(
+    () => selectedGoalId ? todos.filter((td) => td.goalId === selectedGoalId) : todos,
+    [todos, selectedGoalId],
+  );
+
   const todosByDay = useMemo(() => {
     const map = new Map<string, Todo[]>();
     days.forEach((d) => map.set(toIsoDate(d), []));
-    todos.forEach((td) => {
+    visibleTodos.forEach((td) => {
       if (td.dueDate && map.has(td.dueDate)) {
         map.get(td.dueDate)!.push(td);
       }
     });
     return map;
-  }, [todos, days]);
+  }, [visibleTodos, days]);
 
   const selectedDayTodos = todosByDay.get(selectedDate) ?? [];
   const totalThisWeek = days.reduce((s, d) => s + (todosByDay.get(toIsoDate(d))?.length ?? 0), 0);

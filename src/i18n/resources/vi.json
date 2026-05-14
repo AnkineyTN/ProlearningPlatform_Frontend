@@ -65,7 +65,27 @@
     "userDeleted": "Đã xóa người dùng.",
     "userUpdated": "Đã cập nhật người dùng.",
     "usersLoadError": "Không tải được danh sách người dùng.",
-    "usersTitle": "Người dùng"
+    "usersTitle": "Người dùng",
+    "blocked": "Bị khoá",
+    "blockUser": "Khoá tài khoản",
+    "unblockUser": "Mở khoá",
+    "blockDialogTitle": "Khoá tài khoản",
+    "blockDialogDesc": "Bạn có chắc muốn khoá tài khoản {{name}}? Họ sẽ được thông báo và không thể đăng nhập.",
+    "blockReason": "Lý do khoá",
+    "blockReasonPlaceholder": "Mô tả lý do khoá tài khoản này...",
+    "blockConfirm": "Xác nhận khoá",
+    "blockError": "Khoá tài khoản thất bại",
+    "unblockError": "Mở khoá thất bại",
+    "userBlocked": "Đã khoá tài khoản",
+    "userUnblocked": "Đã mở khoá tài khoản",
+    "viewAppeals": "Xem khiếu nại",
+    "appealsDialogTitle": "Khiếu nại — {{name}}",
+    "appealsEmpty": "Không có khiếu nại từ người dùng này",
+    "adminNote": "Ghi chú admin",
+    "appealAccept": "Chấp thuận",
+    "appealReject": "Từ chối",
+    "appealReviewed": "Đã xem xét khiếu nại",
+    "appealReviewError": "Xem xét khiếu nại thất bại"
   },
   "calendar": {
     "days": {
@@ -459,7 +479,16 @@
     "passwordRequired": "Mật khẩu là bắt buộc",
     "subtitle": "Đăng nhập",
     "title": "Đăng Nhập Tài Khoản",
-    "wrongCredentials": "Sai tên người dùng hoặc mật khẩu"
+    "wrongCredentials": "Sai tên người dùng hoặc mật khẩu",
+    "accountBlocked": "Tài khoản bị khoá",
+    "accountBlockedDesc": "Tài khoản của bạn đã bị admin khoá. Bạn có thể gửi khiếu nại để yêu cầu xem xét lại.",
+    "submitAppeal": "Gửi khiếu nại",
+    "appealFormTitle": "Gửi khiếu nại",
+    "appealReasonPlaceholder": "Giải thích lý do bạn cho rằng tài khoản nên được mở khoá...",
+    "appealSubmit": "Gửi",
+    "cancel": "Huỷ",
+    "appealError": "Gửi khiếu nại thất bại",
+    "appealSubmitted": "Khiếu nại đã được gửi. Admin sẽ xem xét trong thời gian sớm nhất."
   },
   "signup": {
     "confirmPassword": "Xác nhận mật khẩu",
@@ -739,6 +768,11 @@
       "noChanges": "Không có thay đổi nào để cập nhật.",
       "updateSuccess": "Cập nhật profile thành công.",
       "updateFailed": "Cập nhật thất bại. Vui lòng thử lại."
+    },
+    "avatar": {
+      "change": "Đổi ảnh đại diện",
+      "success": "Đã cập nhật ảnh đại diện",
+      "error": "Tải ảnh đại diện thất bại"
     }
   },
   "todo": {
@@ -906,6 +940,16 @@
       "todoNameRequired": "Tên todo không được để trống",
       "invalidId": "ID không hợp lệ",
       "setIdRequired": "Cần nhập Set ID"
+    },
+    "whatsNext": {
+      "title": "Nên làm tiếp",
+      "overdue": "Quá hạn",
+      "urgent": "Ưu tiên cao",
+      "stuck": "Đang trì hoãn goal"
+    },
+    "filter": {
+      "clear": "Bỏ lọc",
+      "emptyForGoal": "Goal này chưa có task nào hôm nay."
     }
   },
   "common": {
@@ -1055,6 +1099,17 @@
       "newMindmap": "Sơ đồ tư duy mới",
       "newRecord": "Bản ghi mới",
       "newItem": "Mục mới"
+    },
+    "tasks": {
+      "tab": "Tasks",
+      "header": "TASKS CỦA SET NÀY",
+      "headline_one": "{{count}} task",
+      "headline_other": "{{count}} tasks",
+      "emptyHeadline": "Chưa có task nào",
+      "addPlaceholder": "Thêm task cho set này...",
+      "pendingSection": "CHƯA XONG",
+      "doneSection": "ĐÃ XONG",
+      "empty": "Thêm task đầu tiên cho set này ở trên."
     }
   },
   "analysis": {

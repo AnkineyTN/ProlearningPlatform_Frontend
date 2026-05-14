@@ -105,10 +105,10 @@ export function useSetSeriesHandlers({
     if (activeTab === 'Flashcards') {
       try {
         let result;
-        if (data.source === 'notes' && data.noteIds) {
+        if (data.source === 'notes' && data.notes) {
           result = await generateFlashcardsMutation.mutateAsync({
             setId: Number(setId),
-            noteIds: data.noteIds,
+            notes: data.notes,
             language: data.language,
             freeText: data.freeText,
           });
@@ -141,15 +141,16 @@ export function useSetSeriesHandlers({
           setIsCreateModalOpen(false);
 
           const description =
-            data.source === 'notes'
-              ? `Generated from ${data.noteIds?.length ?? 0} note(s)`
+            result.data.description ||
+            (data.source === 'notes'
+              ? `Generated from ${data.notes?.length ?? 0} note(s)`
               : data.source === 'files'
                 ? `Generated from ${data.files?.length ?? 0} file(s)`
-                : `Generated from ${data.urls?.length ?? 0} URL(s)`;
+                : `Generated from ${data.urls?.length ?? 0} URL(s)`);
 
           navigate(`/sets/${setId}/flashcards/editor`, {
             state: {
-              title: data.title || 'AI Generated Flashcards',
+              title: data.title || result.data.title || 'AI Generated Flashcards',
               description,
               privacy: data.privacy,
               generatedFlashcards: flashcards,
@@ -177,10 +178,10 @@ export function useSetSeriesHandlers({
           Hard: 20,
         };
 
-        if (data.source === 'notes' && data.noteIds) {
+        if (data.source === 'notes' && data.notes) {
           result = await generateExamFromNotesMutation.mutateAsync({
             setId: Number(setId),
-            noteIds: data.noteIds,
+            notes: data.notes,
             questionCounts,
             language: data.language,
             difficulty,
@@ -213,16 +214,17 @@ export function useSetSeriesHandlers({
         const content = result.data?.content ?? '';
         const sourceDesc =
           data.source === 'notes'
-            ? `${data.noteIds?.length ?? 0} note(s)`
+            ? `${data.notes?.length ?? 0} note(s)`
             : data.source === 'files'
               ? `${data.files?.length ?? 0} file(s)`
               : `${data.urls?.length ?? 0} URL(s)`;
 
         navigate(`/sets/${setId}/exams/editor`, {
           state: {
-            title: data.title || '',
-            description: `Generated from ${sourceDesc}`,
+            title: data.title || result.data?.title || '',
+            description: result.data?.description || `Generated from ${sourceDesc}`,
             privacy: data.privacy,
+            duration: result.data?.duration,
             aiContent: content,
           },
         });

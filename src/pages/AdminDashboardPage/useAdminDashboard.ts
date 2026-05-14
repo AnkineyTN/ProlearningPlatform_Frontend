@@ -27,6 +27,16 @@ export const useAdminDashboard = () => {
     id: number;
     label: string;
   } | null>(null);
+  const [blockTarget, setBlockTarget] = useState<{
+    id: number;
+    label: string;
+    isBlocked: boolean;
+  } | null>(null);
+  const [blockReason, setBlockReason] = useState('');
+  const [appealTarget, setAppealTarget] = useState<{
+    id: number;
+    label: string;
+  } | null>(null);
 
   const usersQuery = useQuery({
     queryKey: ['admin', 'users', page],
@@ -94,6 +104,28 @@ export const useAdminDashboard = () => {
     },
   });
 
+  const blockMutation = useMutation({
+    mutationFn: ({ userId, reason }: { userId: number; reason: string }) =>
+      adminUsersAPI.blockUser(userId, { reason }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
+      toast.success(t('adminDashboard.userBlocked'));
+      setBlockTarget(null);
+      setBlockReason('');
+    },
+    onError: () => toast.error(t('adminDashboard.blockError')),
+  });
+
+  const unblockMutation = useMutation({
+    mutationFn: (userId: number) => adminUsersAPI.unblockUser(userId),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
+      toast.success(t('adminDashboard.userUnblocked'));
+      setBlockTarget(null);
+    },
+    onError: () => toast.error(t('adminDashboard.unblockError')),
+  });
+
   const refreshAll = () => {
     void usersQuery.refetch();
     void analyticsQuery.refetch();
@@ -135,6 +167,12 @@ export const useAdminDashboard = () => {
     setEditAccountType,
     deleteTarget,
     setDeleteTarget,
+    blockTarget,
+    setBlockTarget,
+    blockReason,
+    setBlockReason,
+    appealTarget,
+    setAppealTarget,
     usersQuery,
     analyticsQuery,
     rows: usersQuery.data ?? [],
@@ -145,5 +183,7 @@ export const useAdminDashboard = () => {
     saveEdit,
     updateMutation,
     deleteMutation,
+    blockMutation,
+    unblockMutation,
   };
 };

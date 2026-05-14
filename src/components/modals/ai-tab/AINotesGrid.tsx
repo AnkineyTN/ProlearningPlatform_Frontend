@@ -9,7 +9,7 @@ import { getTimeAgo } from './utils';
 type Props = {
   setId: number;
   selectedIds: number[];
-  onToggle: (id: number) => void;
+  onToggle: (id: number, documentUrls: string[]) => void;
   disabled?: boolean;
 };
 
@@ -51,7 +51,8 @@ const AINotesGrid = ({ setId, selectedIds, onToggle, disabled }: Props) => {
               ),
             }}
             onSelected={() => {
-              if (!disabled) onToggle(note.id);
+              if (!disabled)
+                onToggle(note.id, note.noteDocs?.map((d) => d.fileUrl) ?? []);
             }}
             isSelected={selectedIds.includes(note.id)}
           />

@@ -16,6 +16,9 @@ export type AdminDirectoryUser = {
   education: string | null;
   hearAppFrom: string | null;
   accountType: string | null;
+  avatarUrl: string | null;
+  isBlocked: boolean;
+  blockReason: string | null;
 };
 
 export type AdminOnboardingSnapshot = {
@@ -36,3 +39,7 @@ export type AdminUpdateUserRequest = Partial<{
   lastName: string;
   accountType: string;
 }>;
+
+export type AdminBlockUserRequest = {
+  reason: string;
+};

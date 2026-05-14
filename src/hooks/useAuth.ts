@@ -12,6 +12,9 @@ export type User = {
   education: string;
   hearAppFrom: string;
   accountType?: string;
+  avatarUrl?: string | null;
+  isBlocked?: boolean;
+  blockReason?: string | null;
 };
 
 const TOKEN_KEY = "token";
@@ -109,6 +112,21 @@ export function useUpdateMe() {
   return useMutation({
     mutationFn: async (payload: UpdateMeRequest) => {
       const res = await authAPI.updateMe(payload);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      const u = data.data as User;
+      userStorage.set(u);
+      qc.setQueryData(authQueryKey, u);
+    },
+  });
+}
+
+export function useSetAvatar() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (assetId: number) => {
+      const res = await authAPI.setAvatar(assetId);
       return res.data;
     },
     onSuccess: (data) => {

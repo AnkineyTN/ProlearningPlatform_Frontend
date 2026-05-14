@@ -9,6 +9,7 @@ import type {
   DeleteMultipleCardsRequest,
   UpdateMultipleCardsRequest,
   SaveGameResultRequest,
+  NoteAIInput,
 } from "@/services/types/flashcard.types";
 
 interface UseFlashcardsParams {
@@ -280,24 +281,24 @@ export const useGenerateFlashcardsFromNotes = () => {
   return useMutation({
     mutationFn: async ({
       setId,
-      noteIds,
+      notes,
       language,
       freeText,
     }: {
       setId: number;
-      noteIds: number[];
+      notes: NoteAIInput[];
       language: string;
       freeText?: string;
     }) => {
-      const response = await flashcardAPI.generateFlashcardsFromNote(setId, {
-        noteIds,
+      const response = await flashcardAPI.generateFlashcardsFromNote(
+        setId,
+        notes,
         language,
-        freeText: freeText?.trim() ?? "",
-      });
+        freeText ?? "",
+      );
       return response.data;
     },
     onSuccess: (_, variables) => {
-      // Invalidate the flashcards query to refetch the list
       queryClient.invalidateQueries({
         queryKey: ["flashcards", variables.setId],
       });

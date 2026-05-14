@@ -1,4 +1,4 @@
-import { ChevronDown, Copy, PanelRightClose, Sparkles, X } from 'lucide-react';
+import { BookMarked, ChevronDown, Copy, PanelRightClose, Sparkles, X } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 
 interface AISummary {
   id: string;
+  backendId?: number;
   query: string;
   response: string;
   type: 'text' | 'file';
@@ -80,6 +81,16 @@ const SummaryCard = ({ summary, onRemove, onCopy }: SummaryCardProps) => {
           >
             {summary.type === 'file' ? 'Summary' : 'Explain'}
           </span>
+          {summary.backendId != null && (
+            <span
+              className='flex items-center gap-1 text-[10px] tracking-[0.14em] uppercase px-1.5 py-0.5 rounded-md shrink-0'
+              title='Saved to note'
+              style={{ color: 'var(--pl-text-faint)' }}
+            >
+              <BookMarked className='w-3 h-3' />
+              Saved
+            </span>
+          )}
           {collapsed ? (
             <span
               className='text-xs italic text-[var(--pl-text-muted)] truncate font-[var(--font-serif)] min-w-0'

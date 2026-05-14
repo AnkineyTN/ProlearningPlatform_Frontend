@@ -17,6 +17,8 @@ import {
   type NoteListResponse,
   type NotesBySetResult,
   type NoteFileRegionCommentDto,
+  type CreateNoteExplainRequest,
+  type UpdateNoteExplainRequest,
 } from "@/services/types/note.types";
 
 /** Merge image list from whichever field the API returns so reload shows attachments. */
@@ -348,6 +350,84 @@ export const useDeleteNoteImg = () => {
     },
     onError: (error) => {
       console.error("Delete note image failed:", error);
+    },
+  });
+};
+
+// ─── Note Explains hooks ──────────────────────────────────────────────────────
+
+export const useNoteExplains = (setId: number, noteId: number) => {
+  return useQuery({
+    queryKey: ["note", setId, noteId, "explains"] as const,
+    queryFn: async () => {
+      const response = await noteAPI.getExplains(setId, noteId);
+      return response.data.data;
+    },
+    enabled: !!setId && !!noteId,
+  });
+};
+
+export const useCreateNoteExplain = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      setId,
+      noteId,
+      data,
+    }: {
+      setId: number;
+      noteId: number;
+      data: CreateNoteExplainRequest;
+    }) => noteAPI.createExplain(setId, noteId, data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["note", variables.setId, variables.noteId, "explains"],
+      });
+    },
+  });
+};
+
+export const useUpdateNoteExplain = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      setId,
+      noteId,
+      explainId,
+      data,
+    }: {
+      setId: number;
+      noteId: number;
+      explainId: number;
+      data: UpdateNoteExplainRequest;
+    }) => noteAPI.updateExplain(setId, noteId, explainId, data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["note", variables.setId, variables.noteId, "explains"],
+      });
+    },
+  });
+};
+
+export const useDeleteNoteExplain = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      setId,
+      noteId,
+      explainId,
+    }: {
+      setId: number;
+      noteId: number;
+      explainId: number;
+    }) => noteAPI.deleteExplain(setId, noteId, explainId),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["note", variables.setId, variables.noteId, "explains"],
+      });
     },
   });
 };

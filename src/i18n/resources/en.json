@@ -65,7 +65,27 @@
     "userDeleted": "User deleted.",
     "userUpdated": "User updated.",
     "usersLoadError": "Could not load users.",
-    "usersTitle": "Users"
+    "usersTitle": "Users",
+    "blocked": "Blocked",
+    "blockUser": "Block user",
+    "unblockUser": "Unblock user",
+    "blockDialogTitle": "Block User",
+    "blockDialogDesc": "Are you sure you want to suspend {{name}}? They will be notified and unable to log in.",
+    "blockReason": "Reason for suspension",
+    "blockReasonPlaceholder": "Describe why this account is being suspended...",
+    "blockConfirm": "Suspend Account",
+    "blockError": "Failed to block user",
+    "unblockError": "Failed to unblock user",
+    "userBlocked": "User suspended",
+    "userUnblocked": "User reinstated",
+    "viewAppeals": "View appeals",
+    "appealsDialogTitle": "Appeals — {{name}}",
+    "appealsEmpty": "No appeals from this user",
+    "adminNote": "Admin note",
+    "appealAccept": "Accept",
+    "appealReject": "Reject",
+    "appealReviewed": "Appeal reviewed",
+    "appealReviewError": "Failed to review appeal"
   },
   "calendar": {
     "days": {
@@ -458,7 +478,16 @@
     "passwordRequired": "Password is required",
     "subtitle": "Sign in",
     "title": "Sign In to Your Account",
-    "wrongCredentials": "Wrong username or password"
+    "wrongCredentials": "Wrong username or password",
+    "accountBlocked": "Account suspended",
+    "accountBlockedDesc": "Your account has been suspended by an administrator. You may submit an appeal to request reinstatement.",
+    "submitAppeal": "Submit an appeal",
+    "appealFormTitle": "Submit Appeal",
+    "appealReasonPlaceholder": "Explain why you believe your account should be reinstated...",
+    "appealSubmit": "Submit",
+    "cancel": "Cancel",
+    "appealError": "Failed to submit appeal",
+    "appealSubmitted": "Your appeal has been submitted. An administrator will review it."
   },
   "signup": {
     "confirmPassword": "Confirm Password",
@@ -739,6 +768,11 @@
       "noChanges": "No changes to update.",
       "updateSuccess": "Profile updated successfully.",
       "updateFailed": "Update failed. Please try again."
+    },
+    "avatar": {
+      "change": "Change avatar",
+      "success": "Avatar updated",
+      "error": "Failed to upload avatar"
     }
   },
   "todo": {
@@ -906,6 +940,16 @@
       "todoNameRequired": "Todo name cannot be empty",
       "invalidId": "Invalid ID",
       "setIdRequired": "Set ID is required"
+    },
+    "whatsNext": {
+      "title": "What's Next",
+      "overdue": "Overdue",
+      "urgent": "High priority",
+      "stuck": "Behind on goal"
+    },
+    "filter": {
+      "clear": "Clear filter",
+      "emptyForGoal": "No tasks for this goal today."
     }
   },
   "common": {
@@ -1055,6 +1099,17 @@
       "newMindmap": "New mindmap",
       "newRecord": "New record",
       "newItem": "New item"
+    },
+    "tasks": {
+      "tab": "Tasks",
+      "header": "TASKS FOR THIS SET",
+      "headline_one": "{{count}} task",
+      "headline_other": "{{count}} tasks",
+      "emptyHeadline": "No tasks yet",
+      "addPlaceholder": "Add a task for this set...",
+      "pendingSection": "PENDING",
+      "doneSection": "DONE",
+      "empty": "Add your first task for this set above."
     }
   },
   "analysis": {

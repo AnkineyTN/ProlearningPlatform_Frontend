@@ -1,4 +1,4 @@
-import { Pencil, Trash2, ChevronLeft, ChevronRight, Users } from 'lucide-react';
+import { Pencil, Trash2, ChevronLeft, ChevronRight, Users, ShieldOff, ShieldCheck, MessageSquareWarning } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,6 +21,8 @@ type UsersSectionProps = {
   formatDate: (iso: string | null) => string | null;
   onEdit: (row: AdminUserDirectoryRow) => void;
   onDelete: (id: number, label: string) => void;
+  onBlock: (id: number, label: string, isBlocked: boolean) => void;
+  onViewAppeals: (id: number, label: string) => void;
   onPrevPage: () => void;
   onNextPage: () => void;
 };
@@ -34,6 +36,8 @@ const UsersSection = ({
   formatDate,
   onEdit,
   onDelete,
+  onBlock,
+  onViewAppeals,
   onPrevPage,
   onNextPage,
 }: UsersSectionProps) => {
@@ -121,7 +125,25 @@ const UsersSection = ({
                         {u.id}
                       </TableCell>
                       <TableCell className='text-sm font-medium'>
-                        {u.firstName} {u.lastName}
+                        <div className='flex items-center gap-2'>
+                          {u.avatarUrl ? (
+                            <img
+                              src={u.avatarUrl}
+                              alt=''
+                              className='w-6 h-6 rounded-full object-cover shrink-0'
+                            />
+                          ) : (
+                            <div className='w-6 h-6 rounded-full bg-[var(--pl-accent-soft)] grid place-items-center text-[10px] font-bold text-[var(--pl-accent-strong)] shrink-0'>
+                              {[u.firstName?.[0], u.lastName?.[0]].filter(Boolean).join('').toUpperCase() || 'U'}
+                            </div>
+                          )}
+                          <span>{u.firstName} {u.lastName}</span>
+                          {u.isBlocked && (
+                            <span className='text-[10px] px-1.5 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 font-medium'>
+                              {t('adminDashboard.blocked')}
+                            </span>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell className='text-sm text-muted-foreground'>
                         {u.email}
@@ -167,6 +189,37 @@ const UsersSection = ({
                             aria-label={t('adminDashboard.editUser')}
                           >
                             <Pencil className='w-3.5 h-3.5' />
+                          </Button>
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='icon'
+                            className='h-8 w-8'
+                            onClick={() => onViewAppeals(u.id, `${u.firstName} ${u.lastName}`.trim())}
+                            aria-label={t('adminDashboard.viewAppeals')}
+                            title={t('adminDashboard.viewAppeals')}
+                          >
+                            <MessageSquareWarning className='w-3.5 h-3.5' />
+                          </Button>
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='icon'
+                            className={`h-8 w-8 ${u.isBlocked ? 'text-green-600 hover:text-green-600' : 'text-amber-500 hover:text-amber-500'}`}
+                            onClick={() =>
+                              onBlock(
+                                u.id,
+                                `${u.firstName} ${u.lastName}`.trim(),
+                                u.isBlocked,
+                              )
+                            }
+                            aria-label={u.isBlocked ? t('adminDashboard.unblockUser') : t('adminDashboard.blockUser')}
+                            title={u.isBlocked ? t('adminDashboard.unblockUser') : t('adminDashboard.blockUser')}
+                          >
+                            {u.isBlocked
+                              ? <ShieldCheck className='w-3.5 h-3.5' />
+                              : <ShieldOff className='w-3.5 h-3.5' />
+                            }
                           </Button>
                           <Button
                             type='button'

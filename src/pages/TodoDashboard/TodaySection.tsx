@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Filter, Pencil, Plus, Trash2, X } from "lucide-react";
 import type { Goal, ResourceRef, Todo } from "@/services/types/todo.types";
 import { ResourceMentionInput, renderTitleWithRefs, LinkedResourceChips, type MentionResourceType } from "./SetMentionInput";
 import { todayIso } from "./dateHelpers";
@@ -11,6 +11,8 @@ type TodaySectionProps = {
   newTask: string;
   newTaskRefs: Record<MentionResourceType, ResourceRef[]>;
   isCreating: boolean;
+  selectedGoalId: number | null;
+  onSelectGoal: (id: number | null) => void;
   onNewTaskChange: (v: string) => void;
   onNewTaskRefAdded: (type: MentionResourceType, ref: ResourceRef) => void;
   onAddTask: () => void;
@@ -110,16 +112,27 @@ const TodayTaskRow = ({
 
 const GoalProgressRow = ({
   goal,
+  selected,
+  onSelect,
   onEdit,
   onDelete,
 }: {
   goal: Goal;
+  selected: boolean;
+  onSelect: (id: number) => void;
   onEdit: (g: Goal) => void;
   onDelete: (id: number) => void;
 }) => {
   const accent = goal.color ?? "#6366f1";
   return (
-    <div className='group flex items-center gap-3 py-2'>
+    <button
+      onClick={() => onSelect(goal.id)}
+      className='group w-full flex items-center gap-3 py-2 px-2 -mx-2 rounded-[8px] transition-colors text-left'
+      style={{
+        background: selected ? `color-mix(in oklch, ${accent} 12%, var(--pl-bg-elev))` : 'transparent',
+        outline: selected ? `1.5px solid color-mix(in oklch, ${accent} 40%, transparent)` : 'none',
+      }}
+    >
       <span className='w-2 h-2 rounded-full flex-shrink-0' style={{ background: accent }} />
       <div className='flex-1 min-w-0'>
         <div className='flex items-baseline justify-between gap-3 mb-1'>
@@ -138,14 +151,20 @@ const GoalProgressRow = ({
         </div>
       </div>
       <div className='flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0'>
-        <button onClick={() => onEdit(goal)} className='p-1 rounded hover:bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)]'>
+        <button
+          onClick={(e) => { e.stopPropagation(); onEdit(goal); }}
+          className='p-1 rounded hover:bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)]'
+        >
           <Pencil className='w-3 h-3' />
         </button>
-        <button onClick={() => onDelete(goal.id)} className='p-1 rounded hover:bg-[var(--pl-bg-hover)] text-destructive'>
+        <button
+          onClick={(e) => { e.stopPropagation(); onDelete(goal.id); }}
+          className='p-1 rounded hover:bg-[var(--pl-bg-hover)] text-destructive'
+        >
           <Trash2 className='w-3 h-3' />
         </button>
       </div>
-    </div>
+    </button>
   );
 };
 
@@ -155,6 +174,8 @@ const TodaySection = ({
   newTask,
   newTaskRefs,
   isCreating,
+  selectedGoalId,
+  onSelectGoal,
   onNewTaskChange,
   onNewTaskRefAdded,
   onAddTask,
@@ -169,9 +190,11 @@ const TodaySection = ({
   const today = todayIso();
 
   const todayTodos = useMemo(
-    () => todos.filter((td) => td.dueDate === today),
-    [todos, today],
+    () => todos.filter((td) => td.dueDate === today && (!selectedGoalId || td.goalId === selectedGoalId)),
+    [todos, today, selectedGoalId],
   );
+
+  const selectedGoal = selectedGoalId ? goals.find((g) => g.id === selectedGoalId) : null;
 
   const doneCount = todayTodos.filter((td) => td.completed || td.status === "DONE").length;
   const pendingCount = todayTodos.length - doneCount;
@@ -251,10 +274,32 @@ const TodaySection = ({
           </div>
         )}
 
+        {/* Filter indicator */}
+        {selectedGoal && (
+          <div className='flex items-center gap-2 mb-2'>
+            <span className='inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full font-medium'
+              style={{
+                background: `color-mix(in oklch, ${selectedGoal.color ?? "#6366f1"} 15%, transparent)`,
+                color: selectedGoal.color ?? "#6366f1",
+              }}
+            >
+              <Filter className='w-2.5 h-2.5' />
+              {selectedGoal.title}
+            </span>
+            <button
+              onClick={() => onSelectGoal(null)}
+              className='inline-flex items-center gap-1 text-[10.5px] text-[var(--pl-text-faint)] hover:text-[var(--pl-text)] transition-colors'
+            >
+              <X className='w-3 h-3' />
+              {t("todo.filter.clear")}
+            </button>
+          </div>
+        )}
+
         {/* Today list */}
         {todayTodos.length === 0 ? (
           <div className='text-center py-8 text-[var(--pl-text-faint)] text-[12.5px]'>
-            {t("todo.today.empty")}
+            {selectedGoal ? t("todo.filter.emptyForGoal") : t("todo.today.empty")}
           </div>
         ) : (
           <div className='flex flex-col gap-0.5'>
@@ -318,7 +363,7 @@ const TodaySection = ({
           ) : (
             <div className='flex flex-col'>
               {longGoals.map((g) => (
-                <GoalProgressRow key={g.id} goal={g} onEdit={onEditGoal} onDelete={onDeleteGoal} />
+                <GoalProgressRow key={g.id} goal={g} selected={selectedGoalId === g.id} onSelect={(id) => onSelectGoal(selectedGoalId === id ? null : id)} onEdit={onEditGoal} onDelete={onDeleteGoal} />
               ))}
             </div>
           )}
@@ -342,7 +387,7 @@ const TodaySection = ({
           ) : (
             <div className='flex flex-col'>
               {shortGoals.map((g) => (
-                <GoalProgressRow key={g.id} goal={g} onEdit={onEditGoal} onDelete={onDeleteGoal} />
+                <GoalProgressRow key={g.id} goal={g} selected={selectedGoalId === g.id} onSelect={(id) => onSelectGoal(selectedGoalId === id ? null : id)} onEdit={onEditGoal} onDelete={onDeleteGoal} />
               ))}
             </div>
           )}
