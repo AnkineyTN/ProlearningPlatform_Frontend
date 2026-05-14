@@ -7,6 +7,7 @@ import type { Goal, ResourceRef, Todo } from "@/services/types/todo.types";
 import type { MentionResourceType } from "./SetMentionInput";
 import GoalModal from "./GoalModal";
 import TodoStats from "./TodoStats";
+import WhatsNextPanel from "./WhatsNextPanel";
 import TodaySection from "./TodaySection";
 import WeekSection from "./WeekSection";
 import YearSection from "./YearSection";
@@ -154,6 +155,13 @@ const TodoDashboard = () => {
         completedCount={completedCount}
         totalTodos={todos.length}
         goalsCount={goals.length}
+      />
+
+      <WhatsNextPanel
+        todos={todos}
+        goals={goals}
+        onToggleTodo={(id) => toggleTodo.mutate(id)}
+        onOpenTodo={setDetailTodo}
       />
 
       <TodaySection

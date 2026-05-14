@@ -940,6 +940,12 @@
       "todoNameRequired": "Todo name cannot be empty",
       "invalidId": "Invalid ID",
       "setIdRequired": "Set ID is required"
+    },
+    "whatsNext": {
+      "title": "What's Next",
+      "overdue": "Overdue",
+      "urgent": "High priority",
+      "stuck": "Behind on goal"
     }
   },
   "common": {
@@ -1089,6 +1095,17 @@
       "newMindmap": "New mindmap",
       "newRecord": "New record",
       "newItem": "New item"
+    },
+    "tasks": {
+      "tab": "Tasks",
+      "header": "TASKS FOR THIS SET",
+      "headline_one": "{{count}} task",
+      "headline_other": "{{count}} tasks",
+      "emptyHeadline": "No tasks yet",
+      "addPlaceholder": "Add a task for this set...",
+      "pendingSection": "PENDING",
+      "doneSection": "DONE",
+      "empty": "Add your first task for this set above."
     }
   },
   "analysis": {

@@ -8,19 +8,21 @@ import NoteListPage from './components/NoteListPage';
 import ExamListPage from './components/ExamListPage';
 import SetSeriesTabs from './components/SetSeriesTabs';
 import SetSeriesActionBar from './components/SetSeriesActionBar';
+import SetTasksPanel from './components/SetTasksPanel';
 import { useSetSeriesHandlers } from './hooks/useSetSeriesHandlers';
 
 interface SetSeriesPageProps {
   setId: string;
 }
 
-const TABS = ['Notes', 'Flashcards', 'Exams'];
+const TABS = ['Notes', 'Flashcards', 'Exams', 'Tasks'];
 
 const TAB_SLUGS: Record<string, string> = {
   Notes: 'notes',
   Flashcards: 'flashcards',
   Exams: 'exams',
   Records: 'records',
+  Tasks: 'tasks',
 };
 
 function getInitialTab(pathname: string, setId: string): string {
@@ -28,6 +30,7 @@ function getInitialTab(pathname: string, setId: string): string {
   if (path.includes(`/sets/${setId}/flashcards`)) return 'Flashcards';
   if (path.includes(`/sets/${setId}/exams`)) return 'Exams';
   if (path.includes(`/sets/${setId}/records`)) return 'Records';
+  if (path.includes(`/sets/${setId}/tasks`)) return 'Tasks';
   return 'Notes';
 }
 
@@ -56,68 +59,74 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
         onTabClick={handleTabClick}
       />
 
-      <SetSeriesActionBar
-        activeTab={activeTab}
-        isDisabled={handlers.isCreatingNote || handlers.isGenerating}
-        isGenerating={handlers.isGenerating}
-        isCreatingNote={handlers.isCreatingNote}
-        onNewClick={handlers.handleCreateButtonClick}
-        notesSearch={handlers.notesSearch}
-        onNotesSearchChange={handlers.setNotesSearch}
-        notesPrivacy={handlers.notesPrivacy}
-        onNotesPrivacyChange={handlers.setNotesPrivacy}
-        flashcardsSearch={handlers.flashcardsSearch}
-        onFlashcardsSearchChange={handlers.setFlashcardsSearch}
-        flashcardsPrivacy={handlers.flashcardsPrivacy}
-        onFlashcardsPrivacyChange={handlers.setFlashcardsPrivacy}
-        flashcardsMethod={handlers.flashcardsMethod}
-        onFlashcardsMethodChange={handlers.setFlashcardsMethod}
-        flashcardsSort={handlers.flashcardsSort}
-        onFlashcardsSortChange={handlers.setFlashcardsSort}
-        examsSearch={handlers.examsSearch}
-        onExamsSearchChange={handlers.setExamsSearch}
-        examsPrivacy={handlers.examsPrivacy}
-        onExamsPrivacyChange={handlers.setExamsPrivacy}
-        examsMethod={handlers.examsMethod}
-        onExamsMethodChange={handlers.setExamsMethod}
-        examsSort={handlers.examsSort}
-        onExamsSortChange={handlers.setExamsSort}
-      />
+      {activeTab !== 'Tasks' && (
+        <SetSeriesActionBar
+          activeTab={activeTab}
+          isDisabled={handlers.isCreatingNote || handlers.isGenerating}
+          isGenerating={handlers.isGenerating}
+          isCreatingNote={handlers.isCreatingNote}
+          onNewClick={handlers.handleCreateButtonClick}
+          notesSearch={handlers.notesSearch}
+          onNotesSearchChange={handlers.setNotesSearch}
+          notesPrivacy={handlers.notesPrivacy}
+          onNotesPrivacyChange={handlers.setNotesPrivacy}
+          flashcardsSearch={handlers.flashcardsSearch}
+          onFlashcardsSearchChange={handlers.setFlashcardsSearch}
+          flashcardsPrivacy={handlers.flashcardsPrivacy}
+          onFlashcardsPrivacyChange={handlers.setFlashcardsPrivacy}
+          flashcardsMethod={handlers.flashcardsMethod}
+          onFlashcardsMethodChange={handlers.setFlashcardsMethod}
+          flashcardsSort={handlers.flashcardsSort}
+          onFlashcardsSortChange={handlers.setFlashcardsSort}
+          examsSearch={handlers.examsSearch}
+          onExamsSearchChange={handlers.setExamsSearch}
+          examsPrivacy={handlers.examsPrivacy}
+          onExamsPrivacyChange={handlers.setExamsPrivacy}
+          examsMethod={handlers.examsMethod}
+          onExamsMethodChange={handlers.setExamsMethod}
+          examsSort={handlers.examsSort}
+          onExamsSortChange={handlers.setExamsSort}
+        />
+      )}
 
       {/* Content Grid */}
-      <div className='px-10 pt-4'>
-        {activeTab === 'Notes' && (
-          <NoteListPage
-            setId={Number(setId)}
-            search={handlers.notesSearch}
-            privacy={handlers.notesPrivacy}
-            onUpdate={handlers.handleUpdate}
-            onDelete={handlers.handleDeleteNote}
-          />
-        )}
-        {activeTab === 'Flashcards' && (
-          <FlashcardListPage
-            setId={Number(setId)}
-            search={handlers.flashcardsSearch}
-            privacy={handlers.flashcardsPrivacy}
-            createMethod={handlers.flashcardsMethod}
-            sort={handlers.flashcardsSort}
-            onUpdate={handlers.handleUpdateFlashcard}
-            onDelete={handlers.handleDeleteFlashcard}
-          />
-        )}
-        {activeTab === 'Exams' && (
-          <ExamListPage
-            setId={Number(setId)}
-            search={handlers.examsSearch}
-            privacy={handlers.examsPrivacy}
-            createMethod={handlers.examsMethod}
-            sort={handlers.examsSort}
-            onUpdate={handlers.handleUpdateExam}
-            onDelete={handlers.handleDeleteExam}
-          />
-        )}
-      </div>
+      {activeTab === 'Tasks' ? (
+        <SetTasksPanel setId={Number(setId)} />
+      ) : (
+        <div className='px-10 pt-4'>
+          {activeTab === 'Notes' && (
+            <NoteListPage
+              setId={Number(setId)}
+              search={handlers.notesSearch}
+              privacy={handlers.notesPrivacy}
+              onUpdate={handlers.handleUpdate}
+              onDelete={handlers.handleDeleteNote}
+            />
+          )}
+          {activeTab === 'Flashcards' && (
+            <FlashcardListPage
+              setId={Number(setId)}
+              search={handlers.flashcardsSearch}
+              privacy={handlers.flashcardsPrivacy}
+              createMethod={handlers.flashcardsMethod}
+              sort={handlers.flashcardsSort}
+              onUpdate={handlers.handleUpdateFlashcard}
+              onDelete={handlers.handleDeleteFlashcard}
+            />
+          )}
+          {activeTab === 'Exams' && (
+            <ExamListPage
+              setId={Number(setId)}
+              search={handlers.examsSearch}
+              privacy={handlers.examsPrivacy}
+              createMethod={handlers.examsMethod}
+              sort={handlers.examsSort}
+              onUpdate={handlers.handleUpdateExam}
+              onDelete={handlers.handleDeleteExam}
+            />
+          )}
+        </div>
+      )}
 
       {/* Create modal */}
       <CreateNewModal

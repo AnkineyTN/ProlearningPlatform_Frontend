@@ -940,6 +940,12 @@
       "todoNameRequired": "Tên todo không được để trống",
       "invalidId": "ID không hợp lệ",
       "setIdRequired": "Cần nhập Set ID"
+    },
+    "whatsNext": {
+      "title": "Nên làm tiếp",
+      "overdue": "Quá hạn",
+      "urgent": "Ưu tiên cao",
+      "stuck": "Đang trì hoãn goal"
     }
   },
   "common": {
@@ -1089,6 +1095,17 @@
       "newMindmap": "Sơ đồ tư duy mới",
       "newRecord": "Bản ghi mới",
       "newItem": "Mục mới"
+    },
+    "tasks": {
+      "tab": "Tasks",
+      "header": "TASKS CỦA SET NÀY",
+      "headline_one": "{{count}} task",
+      "headline_other": "{{count}} tasks",
+      "emptyHeadline": "Chưa có task nào",
+      "addPlaceholder": "Thêm task cho set này...",
+      "pendingSection": "CHƯA XONG",
+      "doneSection": "ĐÃ XONG",
+      "empty": "Thêm task đầu tiên cho set này ở trên."
     }
   },
   "analysis": {
