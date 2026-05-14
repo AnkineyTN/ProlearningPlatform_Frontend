@@ -60,6 +60,7 @@ export type NoteListItem = {
   privacy: string;
   created_at: string;
   updated_at: string;
+  noteDocs?: NoteDocItem[];
 };
 
 /** Legacy nested pagination shape (some backends). */
@@ -231,4 +232,41 @@ export type ResponseDataVoid = {
   message: string;
   data: null;
   metadata: Record<string, never>;
+};
+
+// ─── Note Explains (saved AI explanations/definitions) ───────────────────────
+
+export type NoteExplain = {
+  id: number;
+  noteId: number;
+  source: string;
+  term: string;
+  explain: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type NoteExplainListResponse = {
+  status: number;
+  message: string;
+  data: NoteExplain[];
+};
+
+export type NoteExplainSingleResponse = {
+  status: number;
+  message: string;
+  data: NoteExplain;
+};
+
+export type CreateNoteExplainRequest = {
+  noteId: number;
+  source: string;
+  term: string;
+  explain: string;
+};
+
+export type UpdateNoteExplainRequest = {
+  source: string;
+  term: string;
+  explain: string;
 };

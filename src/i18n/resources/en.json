@@ -946,6 +946,10 @@
       "overdue": "Overdue",
       "urgent": "High priority",
       "stuck": "Behind on goal"
+    },
+    "filter": {
+      "clear": "Clear filter",
+      "emptyForGoal": "No tasks for this goal today."
     }
   },
   "common": {

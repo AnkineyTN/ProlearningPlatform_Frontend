@@ -24,6 +24,10 @@ import type {
   ResponseDataVoid,
   NoteFileRegionCommentDto,
   CreateNoteFileRegionCommentRequest,
+  NoteExplainListResponse,
+  NoteExplainSingleResponse,
+  CreateNoteExplainRequest,
+  UpdateNoteExplainRequest,
 } from '../types/note.types';
 
 export const noteAPI = {
@@ -152,4 +156,41 @@ export const noteAPI = {
     commentId: number,
   ): Promise<AxiosResponse<ResponseDataVoid>> =>
     api.delete(`/sets/${setId}/notes/${noteId}/file-region-comments/${commentId}`),
+
+  // ─── Explains (saved AI explanations/definitions) ──────────────────────────
+
+  getExplains: (
+    setId: number,
+    noteId: number,
+  ): Promise<AxiosResponse<NoteExplainListResponse>> =>
+    api.get(`/sets/${setId}/notes/${noteId}/explains`),
+
+  createExplain: (
+    setId: number,
+    noteId: number,
+    data: CreateNoteExplainRequest,
+  ): Promise<AxiosResponse<NoteExplainSingleResponse>> =>
+    api.post(`/sets/${setId}/notes/${noteId}/explains`, data),
+
+  getExplainById: (
+    setId: number,
+    noteId: number,
+    explainId: number,
+  ): Promise<AxiosResponse<NoteExplainSingleResponse>> =>
+    api.get(`/sets/${setId}/notes/${noteId}/explains/${explainId}`),
+
+  updateExplain: (
+    setId: number,
+    noteId: number,
+    explainId: number,
+    data: UpdateNoteExplainRequest,
+  ): Promise<AxiosResponse<NoteExplainSingleResponse>> =>
+    api.patch(`/sets/${setId}/notes/${noteId}/explains/${explainId}`, data),
+
+  deleteExplain: (
+    setId: number,
+    noteId: number,
+    explainId: number,
+  ): Promise<AxiosResponse<void>> =>
+    api.delete(`/sets/${setId}/notes/${noteId}/explains/${explainId}`),
 };

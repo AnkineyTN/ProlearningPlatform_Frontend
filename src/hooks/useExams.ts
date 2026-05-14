@@ -10,6 +10,7 @@ import type {
   Quiz,
   UpdateQuizRequest,
   UpdateQuestionRequest,
+  NoteAIInput,
 } from "@/services/types/exam.types";
 
 interface UseExamsParams {
@@ -320,26 +321,27 @@ export const useGenerateExamFromNotes = () => {
   return useMutation({
     mutationFn: async ({
       setId,
-      noteIds,
+      notes,
       questionCounts,
       language,
       difficulty,
       freeText,
     }: {
       setId: number;
-      noteIds: number[];
+      notes: NoteAIInput[];
       questionCounts: { MCQ: number; TF: number; ESS: number };
       language: string;
       difficulty: ExamAIDifficultyDistribution;
       freeText: string;
     }) => {
-      const response = await examAPI.generateExamFromNotes(setId, {
-        noteIds,
-        questions: questionCounts,
+      const response = await examAPI.generateExamFromNotes(
+        setId,
+        notes,
+        questionCounts,
         difficulty,
-        freeText: freeText.trim(),
+        freeText,
         language,
-      });
+      );
       return response.data;
     },
     onSuccess: (_, variables) => {

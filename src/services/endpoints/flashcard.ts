@@ -25,6 +25,7 @@ import type {
   SaveGameResultResponse,
   GameRankingResponse,
   GameHistoryResponse,
+  NoteAIInput,
 } from '../types/flashcard.types';
 
 export type GetFlashcardsBySetQuery = {
@@ -137,9 +138,15 @@ export const flashcardAPI = {
   // Generate flashcards from note
   generateFlashcardsFromNote: (
     setId: number,
-    data: GenerateFlashcardsFromNoteRequest,
+    notes: NoteAIInput[],
+    language: string,
+    freeText: string,
   ): Promise<AxiosResponse<GenerateFlashcardsFromNoteResponse>> =>
-    api.post(`/sets/${setId}/flashcards/ai-note`, data),
+    api.post(`/sets/${setId}/flashcards/ai-note`, {
+      notes,
+      language,
+      free_text: freeText.trim(),
+    }),
 
   generateFlashcardsFromWeb: (
     setId: number,

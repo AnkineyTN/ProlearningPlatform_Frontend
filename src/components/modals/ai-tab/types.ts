@@ -4,9 +4,14 @@ export type AISource = 'notes' | 'files' | 'web';
 
 export type AIPrivacy = 'PUBLIC' | 'PRIVATE' | 'UNLISTED';
 
+export type NoteAIInput = {
+  note_id: number;
+  document_urls: string[];
+};
+
 export type AISubmitData = {
   source: AISource;
-  noteIds?: number[];
+  notes?: NoteAIInput[];
   files?: File[];
   urls?: string[];
   title: string;

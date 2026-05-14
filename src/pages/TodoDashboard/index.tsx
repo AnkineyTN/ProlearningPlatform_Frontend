@@ -24,6 +24,7 @@ const TodoDashboard = () => {
   const [goalModalOpen, setGoalModalOpen] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [detailTodo, setDetailTodo] = useState<Todo | null>(null);
+  const [selectedGoalId, setSelectedGoalId] = useState<number | null>(null);
 
   const { data: todosData } = useQuery({
     queryKey: ["todos", "all"],
@@ -160,6 +161,7 @@ const TodoDashboard = () => {
       <WhatsNextPanel
         todos={todos}
         goals={goals}
+        selectedGoalId={selectedGoalId}
         onToggleTodo={(id) => toggleTodo.mutate(id)}
         onOpenTodo={setDetailTodo}
       />
@@ -170,6 +172,8 @@ const TodoDashboard = () => {
         newTask={newTask}
         newTaskRefs={newTaskRefs}
         isCreating={createTodo.isPending}
+        selectedGoalId={selectedGoalId}
+        onSelectGoal={setSelectedGoalId}
         onNewTaskChange={setNewTask}
         onNewTaskRefAdded={handleNewTaskRefAdded}
         onAddTask={handleAddTodayTask}
@@ -184,6 +188,7 @@ const TodoDashboard = () => {
       <WeekSection
         todos={todos}
         isCreating={createTodo.isPending}
+        selectedGoalId={selectedGoalId}
         onToggleTodo={(id) => toggleTodo.mutate(id)}
         onDeleteTodo={(id) => deleteTodo.mutate(id)}
         onOpenTodo={setDetailTodo}

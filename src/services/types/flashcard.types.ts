@@ -196,10 +196,15 @@ export type UpdateMultipleCardsResponse = {
   metadata: Record<string, never>;
 };
 
+export type NoteAIInput = {
+  note_id: number;
+  document_urls: string[];
+};
+
 export type GenerateFlashcardsFromNoteRequest = {
-  noteIds: number[];
+  notes: NoteAIInput[];
   language: string;
-  freeText?: string;
+  free_text: string;
 };
 
 /** POST /sets/{setId}/flashcards/ai-web */
@@ -210,10 +215,12 @@ export type GenerateFlashcardsFromWebRequest = {
 };
 
 export type GenerateFlashcardsFromNoteResponse = {
-  status: string;
+  status: number;
   message: string;
   data: {
     content: string;
+    title: string;
+    description: string;
   };
 };
 

@@ -168,11 +168,16 @@ export type VoidResponse = {
   metadata: Record<string, never>;
 };
 
-// AI Generation — ai-note, ai-file, ai-web return this shape
+// AI Generation — ai-note, ai-file, ai-web, ai-existing-exam return this shape
 export type GenerateExamAIResponse = {
   status: number | string;
   message: string;
-  data: { content: string };
+  data: {
+    title: string;
+    description: string;
+    duration: number;
+    content: string;
+  };
   metadata?: Record<string, unknown>;
 };
 
@@ -183,8 +188,13 @@ export type ExamAIDifficultyDistribution = {
   Hard: number;
 };
 
+export type NoteAIInput = {
+  note_id: number;
+  document_urls: string[];
+};
+
 export type GenerateExamFromNotesRequest = {
-  noteIds: number[];
+  notes: NoteAIInput[];
   questions: Record<string, number>;
   difficulty: ExamAIDifficultyDistribution;
   freeText: string;

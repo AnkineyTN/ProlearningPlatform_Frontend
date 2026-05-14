@@ -946,6 +946,10 @@
       "overdue": "Quá hạn",
       "urgent": "Ưu tiên cao",
       "stuck": "Đang trì hoãn goal"
+    },
+    "filter": {
+      "clear": "Bỏ lọc",
+      "emptyForGoal": "Goal này chưa có task nào hôm nay."
     }
   },
   "common": {

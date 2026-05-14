@@ -18,6 +18,7 @@ import {
   type AIPrivacy,
   type AISource,
   type AISubmitData,
+  type NoteAIInput,
 } from './ai-tab/types';
 
 import type { ExamAIDifficultyDistribution } from '@/services/types/exam.types';
@@ -41,7 +42,7 @@ const CreateAITab = ({
 }: Props) => {
   const { t, i18n } = useTranslation();
   const [source, setSource] = useState<AISource>('notes');
-  const [selectedNotes, setSelectedNotes] = useState<number[]>([]);
+  const [selectedNotes, setSelectedNotes] = useState<NoteAIInput[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [webUrlsText, setWebUrlsText] = useState('');
 
@@ -72,6 +73,7 @@ const CreateAITab = ({
   const isExam = type === 'Exam';
   const totalQuestions = counts.MCQ + counts.TF + counts.ESS;
   const difficultySum = difficulty.Easy + difficulty.Medium + difficulty.Hard;
+  const selectedNoteIds = selectedNotes.map((n) => n.note_id);
   const hasSource =
     (source === 'notes' && selectedNotes.length > 0) ||
     (source === 'files' && uploadedFiles.length > 0) ||
@@ -92,7 +94,7 @@ const CreateAITab = ({
       language,
       freeText: freeText.trim(),
     };
-    if (source === 'notes') data.noteIds = selectedNotes;
+    if (source === 'notes') data.notes = selectedNotes;
     if (source === 'files') data.files = uploadedFiles;
     if (source === 'web') data.urls = webUrls;
     if (isExam) {
@@ -115,9 +117,11 @@ const CreateAITab = ({
     onDataChange,
   ]);
 
-  const toggleNote = (id: number) =>
+  const toggleNote = (id: number, documentUrls: string[]) =>
     setSelectedNotes((prev) =>
-      prev.includes(id) ? prev.filter((n) => n !== id) : [...prev, id],
+      prev.some((n) => n.note_id === id)
+        ? prev.filter((n) => n.note_id !== id)
+        : [...prev, { note_id: id, document_urls: documentUrls }],
     );
 
   return (
@@ -135,7 +139,7 @@ const CreateAITab = ({
         {source === 'notes' && (
           <AINotesGrid
             setId={setId}
-            selectedIds={selectedNotes}
+            selectedIds={selectedNoteIds}
             onToggle={toggleNote}
             disabled={isLoading}
           />

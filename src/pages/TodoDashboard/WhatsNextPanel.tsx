@@ -23,17 +23,19 @@ const MAX_PER_REASON = 3;
 type WhatsNextPanelProps = {
   todos: Todo[];
   goals: Goal[];
+  selectedGoalId: number | null;
   onToggleTodo: (id: number) => void;
   onOpenTodo: (todo: Todo) => void;
 };
 
-export default function WhatsNextPanel({ todos, goals, onToggleTodo, onOpenTodo }: WhatsNextPanelProps) {
+export default function WhatsNextPanel({ todos, goals, selectedGoalId, onToggleTodo, onOpenTodo }: WhatsNextPanelProps) {
   const { t, i18n } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
 
   const suggestions = useMemo<SuggestedItem[]>(() => {
     const today = todayIso();
-    const pending = todos.filter(td => !td.completed && td.status !== 'DONE');
+    const sourceTodos = selectedGoalId ? todos.filter(td => td.goalId === selectedGoalId) : todos;
+    const pending = sourceTodos.filter(td => !td.completed && td.status !== 'DONE');
     const usedIds = new Set<number>();
 
     const overdue = pending

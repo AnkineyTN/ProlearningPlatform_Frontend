@@ -17,6 +17,9 @@ import {
   useAutoSaveNote,
   useNoteDetail,
   useNoteFileRegionComments,
+  useNoteExplains,
+  useCreateNoteExplain,
+  useDeleteNoteExplain,
 } from '@/hooks/useNotes';
 import { isImageExtension } from '@/lib/utils';
 import type { NoteDocItem } from '@/services/types/note.types';
@@ -61,6 +64,8 @@ function inferKindFromNoteDoc(doc: NoteDocItem): UploadedFile['kind'] {
 
 interface AISummary {
   id: string;
+  /** Backend explain ID — present for persisted AI explains, absent for session-only file summaries */
+  backendId?: number;
   query: string;
   response: string;
   type: 'text' | 'file';
@@ -97,6 +102,11 @@ export const NotePage = () => {
   const numericNoteId = noteId ? parseInt(noteId, 10) : 0;
   const setId = noteDetail?.setId ?? 0;
 
+  const createExplainMutation = useCreateNoteExplain();
+  const deleteExplainMutation = useDeleteNoteExplain();
+  const { data: savedExplains } = useNoteExplains(setId, numericNoteId);
+  const explainLoadedRef = useRef(false);
+
   const isInitialLoadRef = useRef(true);
 
   useEffect(() => {
@@ -125,6 +135,21 @@ export const NotePage = () => {
     for (const f of fromImgs) merged.set(attachmentKey(f), f);
     setNoteFiles([...merged.values()]);
   }, [noteDetail]);
+
+  // Populate summaries from saved explains once on first load
+  useEffect(() => {
+    if (!savedExplains || explainLoadedRef.current) return;
+    explainLoadedRef.current = true;
+    if (savedExplains.length === 0) return;
+    const loaded: AISummary[] = savedExplains.map((e) => ({
+      id: `explain-${e.id}`,
+      backendId: e.id,
+      query: e.term,
+      response: e.explain,
+      type: 'text',
+    }));
+    setSummaries(loaded);
+  }, [savedExplains]);
 
   useEffect(() => {
     if (isInitialLoadRef.current) return;
@@ -202,15 +227,30 @@ export const NotePage = () => {
   }, []);
 
   const handleAISummarize = async (selectedText: string, response: string) => {
-    const newSummary: AISummary = {
-      id: Date.now().toString(),
-      query: selectedText,
-      response,
-      type: 'text',
-    };
-
-    setSummaries((prev) => [newSummary, ...prev]);
+    const tempId = Date.now().toString();
+    setSummaries((prev) => [
+      { id: tempId, query: selectedText, response, type: 'text' },
+      ...prev,
+    ]);
     setShowAiPanel(true);
+
+    // Persist to backend (non-blocking)
+    if (setId && numericNoteId) {
+      try {
+        const saved = await createExplainMutation.mutateAsync({
+          setId,
+          noteId: numericNoteId,
+          data: { noteId: numericNoteId, source: 'editor', term: selectedText, explain: response },
+        });
+        setSummaries((prev) =>
+          prev.map((s) =>
+            s.id === tempId ? { ...s, backendId: saved.data.data.id } : s,
+          ),
+        );
+      } catch {
+        // Saving failed — keep card in session without backendId
+      }
+    }
   };
 
   const handleFileSummarize = (summary: string, fileName: string) => {
@@ -226,7 +266,15 @@ export const NotePage = () => {
   };
 
   const handleRemoveSummary = (id: string) => {
+    const target = summaries.find((s) => s.id === id);
     setSummaries((prev) => prev.filter((s) => s.id !== id));
+    if (target?.backendId && setId && numericNoteId) {
+      deleteExplainMutation.mutate({
+        setId,
+        noteId: numericNoteId,
+        explainId: target.backendId,
+      });
+    }
   };
 
   const handleDownloadHTML = useCallback(async () => {

@@ -22,6 +22,7 @@ import type {
   SubmitExamAttemptRequest,
   AiExplainWrongAnswerRequest,
   AiExplainWrongAnswerResponse,
+  NoteAIInput,
 } from '../types/exam.types';
 import type {
   QuestionStatsResponse,
@@ -194,9 +195,19 @@ export const examAPI = {
 
   generateExamFromNotes: (
     setId: number,
-    data: GenerateExamFromNotesRequest,
+    notes: NoteAIInput[],
+    questions: Record<string, number>,
+    difficulty: ExamAIDifficultyDistribution,
+    freeText: string,
+    language: string,
   ): Promise<AxiosResponse<GenerateExamAIResponse>> =>
-    api.post(`/sets/${setId}/exams/ai-note`, data),
+    api.post(`/sets/${setId}/exams/ai-note`, {
+      notes,
+      questions,
+      difficulty,
+      freeText: freeText.trim(),
+      language,
+    }),
 
   generateExamFromWeb: (
     setId: number,
