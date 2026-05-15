@@ -137,15 +137,6 @@ const RoadmapCard = ({
       }}
       onClick={onOpen}
     >
-      <div
-        className='h-1 w-full'
-        style={{
-          background: isDone
-            ? 'linear-gradient(90deg, var(--pl-accent), oklch(0.7 0.18 150))'
-            : 'var(--pl-accent)',
-          width: `${Math.max(2, roadmap.progressPercent)}%`,
-        }}
-      />
       <div className='p-5'>
         <div className='flex items-start justify-between gap-3 mb-3'>
           <div className='flex items-center gap-2'>
@@ -235,9 +226,7 @@ const RoadmapCard = ({
             className='h-full rounded-full transition-all'
             style={{
               width: `${roadmap.progressPercent}%`,
-              background: isDone
-                ? 'oklch(0.7 0.18 150)'
-                : 'var(--pl-accent)',
+              background: isDone ? 'oklch(0.7 0.18 150)' : 'var(--pl-accent)',
             }}
           />
         </div>
@@ -360,7 +349,9 @@ const ConfirmDeleteModal = ({
               color: 'white',
             }}
           >
-            {pending ? t('roadmap.delete.pending') : t('roadmap.delete.confirm')}
+            {pending
+              ? t('roadmap.delete.pending')
+              : t('roadmap.delete.confirm')}
           </button>
         </div>
       </div>

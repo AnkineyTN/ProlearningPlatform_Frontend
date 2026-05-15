@@ -114,3 +114,53 @@ export type CollabVoidResponse = {
   data: null;
   metadata: null;
 };
+
+export type SharedNote = {
+  id: number;
+  title: string;
+  description: string;
+  privacy: 'PUBLIC' | 'PRIVATE';
+  created_at: string;
+  updated_at: string;
+  setId: number;
+  userRole: CollabRole;
+};
+
+export type SharedFlashcard = {
+  id: string;
+  title: string;
+  description: string;
+  status: 'COMPLETED' | 'NOT_COMPLETED';
+  privacy: 'PUBLIC' | 'PRIVATE';
+  lastStudy: string;
+  known: number;
+  learning: number;
+  remain: number;
+  createMethod: 'MANUAL' | 'AI' | 'REVIEW';
+  numCards: number;
+  createdAt: string;
+  updatedAt: string;
+  userRole: CollabRole;
+  setId: number;
+};
+
+export type SharedExam = {
+  id: number;
+  title: string;
+  privacy: 'PUBLIC' | 'PRIVATE';
+  description: string;
+  duration: number;
+  numQuestions: number;
+  creationMethod: 'MANUAL' | 'AI' | 'REVIEW';
+  createdAt: string;
+  updatedAt: string;
+  userRole: CollabRole;
+  setId: number;
+};
+
+export type SharedResourcesResponse<T> = {
+  status: string;
+  message: string;
+  data: T[];
+  metadata: Record<string, unknown>;
+};

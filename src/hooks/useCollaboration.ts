@@ -12,6 +12,9 @@ export const collabKeys = {
   pendingNotes: () => ['collab', 'pending', 'notes'] as const,
   pendingFlashcards: () => ['collab', 'pending', 'flashcards'] as const,
   pendingExams: () => ['collab', 'pending', 'exams'] as const,
+  sharedNotes: () => ['shared', 'notes'] as const,
+  sharedFlashcards: () => ['shared', 'flashcards'] as const,
+  sharedExams: () => ['shared', 'exams'] as const,
 };
 
 // ─── Search users ─────────────────────────────────────────────────────────────
@@ -174,6 +177,32 @@ export function usePendingExamInvites() {
   return useQuery({
     queryKey: collabKeys.pendingExams(),
     queryFn: () => collaborationAPI.getPendingExamInvites().then((r) => r.data.data ?? []),
+    staleTime: 60_000,
+  });
+}
+
+// ─── Shared resources (invited by others) ─────────────────────────────────────
+
+export function useSharedNotes() {
+  return useQuery({
+    queryKey: collabKeys.sharedNotes(),
+    queryFn: () => collaborationAPI.getSharedNotes().then((r) => r.data.data ?? []),
+    staleTime: 60_000,
+  });
+}
+
+export function useSharedFlashcards() {
+  return useQuery({
+    queryKey: collabKeys.sharedFlashcards(),
+    queryFn: () => collaborationAPI.getSharedFlashcards().then((r) => r.data.data ?? []),
+    staleTime: 60_000,
+  });
+}
+
+export function useSharedExams() {
+  return useQuery({
+    queryKey: collabKeys.sharedExams(),
+    queryFn: () => collaborationAPI.getSharedExams().then((r) => r.data.data ?? []),
     staleTime: 60_000,
   });
 }

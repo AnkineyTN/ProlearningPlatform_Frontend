@@ -265,6 +265,24 @@ export const NotePage = () => {
     setShowAiPanel(true);
   };
 
+  const handleSaveSummary = async (id: string) => {
+    const target = summaries.find((s) => s.id === id);
+    if (!target || target.backendId != null || !setId || !numericNoteId) return;
+    try {
+      const saved = await createExplainMutation.mutateAsync({
+        setId,
+        noteId: numericNoteId,
+        data: { noteId: numericNoteId, source: 'file', term: target.query, explain: target.response },
+      });
+      setSummaries((prev) =>
+        prev.map((s) => (s.id === id ? { ...s, backendId: saved.data.data.id } : s)),
+      );
+      toast.success('Summary saved');
+    } catch {
+      toast.error('Failed to save summary');
+    }
+  };
+
   const handleRemoveSummary = (id: string) => {
     const target = summaries.find((s) => s.id === id);
     setSummaries((prev) => prev.filter((s) => s.id !== id));
@@ -438,6 +456,7 @@ export const NotePage = () => {
                 <AISummarizePanel
                   summaries={summaries}
                   onRemoveSummary={handleRemoveSummary}
+                  onSaveSummary={handleSaveSummary}
                   onClosePanel={() => setShowAiPanel(false)}
                 />
               </ResizablePanel>

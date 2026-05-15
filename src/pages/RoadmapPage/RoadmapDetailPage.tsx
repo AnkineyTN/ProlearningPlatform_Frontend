@@ -354,7 +354,7 @@ const ChapterBlock = ({
 
       {open && !locked && (
         <div
-          className='px-4 pb-4 flex flex-col gap-2'
+          className='px-4 py-4 flex flex-col gap-2'
           style={{ borderTop: '1px solid var(--pl-border)' }}
         >
           {chapter.topics

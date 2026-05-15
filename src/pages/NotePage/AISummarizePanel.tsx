@@ -1,4 +1,4 @@
-import { BookMarked, ChevronDown, Copy, PanelRightClose, Sparkles, X } from 'lucide-react';
+import { BookMarked, ChevronDown, Copy, PanelRightClose, Save, Sparkles, X } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -16,6 +16,7 @@ interface AISummary {
 interface AISummarizePanelProps {
   summaries: AISummary[];
   onRemoveSummary: (id: string) => void;
+  onSaveSummary?: (id: string) => Promise<void>;
   onClosePanel?: () => void;
 }
 
@@ -50,10 +51,22 @@ interface SummaryCardProps {
   summary: AISummary;
   onRemove: (id: string) => void;
   onCopy: (text: string) => void;
+  onSave?: (id: string) => Promise<void>;
 }
 
-const SummaryCard = ({ summary, onRemove, onCopy }: SummaryCardProps) => {
+const SummaryCard = ({ summary, onRemove, onCopy, onSave }: SummaryCardProps) => {
   const [collapsed, setCollapsed] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSave = async () => {
+    if (!onSave) return;
+    setIsSaving(true);
+    try {
+      await onSave(summary.id);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <Card className='p-4 gap-2 bg-[var(--pl-bg)] border-border shadow-none hover:border-[var(--pl-border-strong)] transition-colors'>
@@ -100,15 +113,30 @@ const SummaryCard = ({ summary, onRemove, onCopy }: SummaryCardProps) => {
             </span>
           ) : null}
         </div>
-        <Button
-          size='sm'
-          variant='ghost'
-          className='h-6 w-6 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-text)]'
-          onClick={() => onRemove(summary.id)}
-          aria-label='Remove summary'
-        >
-          <X className='w-4 h-4' />
-        </Button>
+        <div className='flex items-center gap-1'>
+          {summary.type === 'file' && summary.backendId == null && onSave ? (
+            <Button
+              size='sm'
+              variant='ghost'
+              className='h-6 w-6 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-accent)]'
+              onClick={handleSave}
+              disabled={isSaving}
+              aria-label='Save summary'
+              title='Save to note'
+            >
+              <Save className={`w-3.5 h-3.5 ${isSaving ? 'animate-pulse' : ''}`} />
+            </Button>
+          ) : null}
+          <Button
+            size='sm'
+            variant='ghost'
+            className='h-6 w-6 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-text)]'
+            onClick={() => onRemove(summary.id)}
+            aria-label='Remove summary'
+          >
+            <X className='w-4 h-4' />
+          </Button>
+        </div>
       </div>
 
       {collapsed ? null : (
@@ -149,6 +177,7 @@ const SummaryCard = ({ summary, onRemove, onCopy }: SummaryCardProps) => {
 export const AISummarizePanel = ({
   summaries,
   onRemoveSummary,
+  onSaveSummary,
   onClosePanel,
 }: AISummarizePanelProps) => {
   const handleCopyResponse = (text: string) => {
@@ -209,6 +238,7 @@ export const AISummarizePanel = ({
             summary={summary}
             onRemove={onRemoveSummary}
             onCopy={handleCopyResponse}
+            onSave={onSaveSummary}
           />
         ))}
       </div>

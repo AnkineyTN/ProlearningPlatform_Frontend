@@ -7,10 +7,7 @@ import {
   useImperativeHandle,
 } from 'react';
 import { useTheme } from '@/components/theme/theme-provider';
-import {
-  BlockNoteEditor as BlockNoteEditorClass,
-  type PartialBlock,
-} from '@blocknote/core';
+import { BlockNoteEditor as BlockNoteEditorClass } from '@blocknote/core';
 import { useCreateBlockNote } from '@blocknote/react';
 import { BlockNoteView } from '@blocknote/mantine';
 import '@blocknote/mantine/style.css';
@@ -143,14 +140,29 @@ function NoteEditorInner({
             (Array.isArray(blocks[0].content) &&
               blocks[0].content.length === 0)));
       if (!isEmpty) return;
-      try {
-        const parsed = JSON.parse(initialContent) as PartialBlock[];
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          editorInstance.replaceBlocks(editorInstance.document, parsed);
+      const doHydrate = async () => {
+        try {
+          const trimmed = initialContent.trim();
+          if (trimmed.startsWith('[')) {
+            try {
+              const parsed = JSON.parse(trimmed);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                editorInstance.replaceBlocks(editorInstance.document, parsed);
+                return;
+              }
+            } catch {
+              // fall through to HTML
+            }
+          }
+          const parsed = await editorInstance.tryParseHTMLToBlocks(initialContent);
+          if (parsed && parsed.length > 0) {
+            editorInstance.replaceBlocks(editorInstance.document, parsed);
+          }
+        } catch (e) {
+          console.error('[NoteEditor] Failed to hydrate collab content:', e);
         }
-      } catch {
-        // invalid JSON — leave editor empty
-      }
+      };
+      void doHydrate();
     };
 
     const onSynced = () => tryHydrate();
@@ -164,7 +176,7 @@ function NoteEditorInner({
   // Sync content changes to parent for auto-save
   const handleEditorChange = useCallback(() => {
     if (editorInstance) {
-      onContentChange(JSON.stringify(editorInstance.document));
+      onContentChange(editorInstance.blocksToHTMLLossy(editorInstance.document));
     }
   }, [editorInstance, onContentChange]);
 
@@ -359,25 +371,47 @@ function NoteEditorFallback({
     useState<BlockNoteEditorClass | null>(null);
   const explainTextMutation = useExplainText();
 
-  const blockNoteEditor = useCreateBlockNote({
-    initialContent: content
-      ? (() => {
-          try {
-            return JSON.parse(content) as PartialBlock[];
-          } catch {
-            return undefined;
-          }
-        })()
-      : undefined,
-  });
+  const blockNoteEditor = useCreateBlockNote({});
 
   useEffect(() => {
     setEditorInstance(blockNoteEditor);
   }, [blockNoteEditor]);
 
+  const hydratedRef = useRef(false);
+  useEffect(() => {
+    if (!editorInstance || !content || hydratedRef.current) return;
+    hydratedRef.current = true;
+
+    const hydrate = async () => {
+      try {
+        // Backward compat: old notes stored as BlockNote JSON
+        const trimmed = content.trim();
+        if (trimmed.startsWith('[')) {
+          try {
+            const parsed = JSON.parse(trimmed);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              editorInstance.replaceBlocks(editorInstance.document, parsed);
+              return;
+            }
+          } catch {
+            // not JSON, fall through to HTML parse
+          }
+        }
+        const parsed = await editorInstance.tryParseHTMLToBlocks(content);
+        if (parsed && parsed.length > 0) {
+          editorInstance.replaceBlocks(editorInstance.document, parsed);
+        }
+      } catch (e) {
+        console.error('[NoteEditor] Failed to hydrate content:', e);
+      }
+    };
+
+    void hydrate();
+  }, [editorInstance, content]);
+
   const handleEditorChange = useCallback(() => {
     if (editorInstance)
-      onContentChange(JSON.stringify(editorInstance.document));
+      onContentChange(editorInstance.blocksToHTMLLossy(editorInstance.document));
   }, [editorInstance, onContentChange]);
 
   useEffect(() => {

@@ -11,6 +11,10 @@ import type {
   PendingExamInvite,
   PendingInvitesResponse,
   AcceptByTokenResponse,
+  SharedNote,
+  SharedFlashcard,
+  SharedExam,
+  SharedResourcesResponse,
 } from '../types/collaboration.types';
 
 export type ResourceType = 'notes' | 'flashcards' | 'exams';
@@ -114,4 +118,15 @@ export const collaborationAPI = {
 
   acceptFlashcardByToken: (token: string): Promise<AxiosResponse<AcceptByTokenResponse>> =>
     publicApi.post(`/flashcard-invites/accept-by-token?token=${encodeURIComponent(token)}`),
+
+  // ─── Shared resources (invited by others) ─────────────────────────────────
+
+  getSharedNotes: (): Promise<AxiosResponse<SharedResourcesResponse<SharedNote>>> =>
+    api.get('/notes/shared'),
+
+  getSharedFlashcards: (): Promise<AxiosResponse<SharedResourcesResponse<SharedFlashcard>>> =>
+    api.get('/flashcards/shared'),
+
+  getSharedExams: (): Promise<AxiosResponse<SharedResourcesResponse<SharedExam>>> =>
+    api.get('/exams/shared'),
 };

@@ -14,6 +14,7 @@ import {
   PanelLeftOpen,
   Bell,
   Map as MapIcon,
+  Users,
 } from 'lucide-react';
 
 import { useAuth, useLogout } from '@/hooks/useAuth';
@@ -81,6 +82,7 @@ const AppSidebar = () => {
       url: '/review-bundles',
       badge: bundleCount > 0 ? bundleCount : undefined,
     },
+    { title: 'Shared with me', icon: Users, url: '/shared' },
     {
       title: t('sidebar.notifications'),
       icon: Bell,

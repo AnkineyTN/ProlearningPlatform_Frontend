@@ -23,6 +23,7 @@ import type {
   RoadmapLanguage,
   RoadmapLevel,
 } from '@/services/types/roadmap.types';
+import { Button } from '@/components/ui/button';
 
 type Step = 'goal' | 'preview' | 'done';
 
@@ -174,9 +175,7 @@ const StepIndicator = ({ step }: { step: Step }) => {
                 border: '1px solid var(--pl-border)',
               }}
             >
-              <span style={{ fontFamily: 'var(--font-mono-pl)' }}>
-                {i + 1}
-              </span>
+              <span style={{ fontFamily: 'var(--font-mono-pl)' }}>{i + 1}</span>
               {s.label}
             </div>
             {i < steps.length - 1 && (
@@ -240,7 +239,7 @@ const GoalForm = (props: {
           onChange={(e) => props.setGoal(e.target.value)}
           placeholder={t('roadmap.create.goalPlaceholder')}
           rows={4}
-          className='w-full px-4 py-3 rounded-[10px] text-[13px] resize-none outline-none'
+          className='w-full px-4 py-3 rounded-[10px] text-[13px] resize-none outline-none min-h-20'
           style={{
             background: 'var(--pl-bg-elev)',
             border: '1px solid var(--pl-border)',
@@ -267,10 +266,9 @@ const GoalForm = (props: {
       </div>
 
       <div className='mt-8 flex justify-end'>
-        <button
+        <Button
           onClick={props.onSubmit}
           disabled={props.loading}
-          className='flex items-center gap-2 px-6 py-3 rounded-full text-[13px] font-[500] disabled:opacity-60'
           style={{
             background: 'var(--pl-accent)',
             color: 'var(--pl-accent-fg)',
@@ -287,7 +285,7 @@ const GoalForm = (props: {
               {t('roadmap.create.generate')}
             </>
           )}
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -338,9 +336,7 @@ function SegmentedControl<T extends string | number>({
             className='px-4 py-[6px] rounded-[7px] text-[12.5px] transition-all'
             style={{
               background: active ? 'var(--pl-accent)' : 'transparent',
-              color: active
-                ? 'var(--pl-accent-fg)'
-                : 'var(--pl-text-muted)',
+              color: active ? 'var(--pl-accent-fg)' : 'var(--pl-text-muted)',
               fontWeight: active ? 500 : 400,
             }}
           >
@@ -448,7 +444,7 @@ const PreviewEditor = ({
             value={draft.overview}
             onChange={(e) => onChange({ ...draft, overview: e.target.value })}
             rows={2}
-            className='w-full px-4 py-3 rounded-[10px] text-[13px] resize-none outline-none'
+            className='w-full px-4 py-3 rounded-[10px] text-[13px] resize-none outline-none min-h-30'
             style={{
               background: 'var(--pl-bg-elev)',
               border: '1px solid var(--pl-border)',
@@ -459,7 +455,7 @@ const PreviewEditor = ({
       </div>
 
       <div
-        className='mt-5 rounded-[12px] p-4 flex items-center gap-3 mb-5'
+        className='mt-5 rounded-[12px] px-4 py-2 flex items-center gap-3 mb-5'
         style={{
           background: 'var(--pl-accent-soft)',
           border: '1px solid var(--pl-border)',
