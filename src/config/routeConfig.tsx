@@ -31,6 +31,9 @@ import ReviewBundlePage from '@/pages/ReviewBundle';
 import InviteAcceptPage from '@/pages/InviteAcceptPage';
 import ExamInviteAcceptPage from '@/pages/ExamInviteAcceptPage';
 import FlashcardInviteAcceptPage from '@/pages/FlashcardInviteAcceptPage';
+import RoadmapsListPage from '@/pages/RoadmapPage';
+import CreateRoadmapPage from '@/pages/RoadmapPage/CreateRoadmapPage';
+import RoadmapDetailPage from '@/pages/RoadmapPage/RoadmapDetailPage';
 import type { RouteObject } from 'react-router-dom';
 
 function LandingPageWrapper() {
@@ -287,6 +290,18 @@ export const routeConfig: RouteObject[] = [
       {
         path: 'pomodoro',
         element: <Pomodoro />,
+      },
+      {
+        path: 'roadmaps',
+        element: <RoadmapsListPage />,
+      },
+      {
+        path: 'roadmaps/new',
+        element: <CreateRoadmapPage />,
+      },
+      {
+        path: 'roadmaps/:id',
+        element: <RoadmapDetailPage />,
       },
     ],
   },

@@ -460,10 +460,119 @@
     "logout": "Logout",
     "pomodoro": "Pomodoro",
     "profile": "Profile",
+    "roadmaps": "Roadmaps",
     "setList": "Set Library",
     "notifications": "Notifications",
     "socials": "Socials",
     "todo": "To-Do"
+  },
+  "roadmap": {
+    "title": "Roadmaps",
+    "subtitle": "AI Learning Path",
+    "tagline": "Set a goal — AI breaks it into chapters, auto-generates Notes/Flashcards/Exams so you can go from zero to mastery.",
+    "createNew": "New Roadmap",
+    "backToList": "Back to Roadmaps",
+    "refresh": "Refresh",
+    "hours": "{{count}} h",
+    "level": {
+      "BEGINNER": "Beginner",
+      "INTERMEDIATE": "Intermediate",
+      "ADVANCED": "Advanced"
+    },
+    "language": {
+      "English": "English",
+      "Vietnamese": "Vietnamese"
+    },
+    "card": {
+      "chaptersTopics": "{{chapters}} chapters · {{topics}} topics",
+      "progress": "Progress",
+      "created": "Created {{time}}",
+      "done": "{{completed}}/{{total}} done",
+      "deleteTitle": "Delete roadmap?"
+    },
+    "list": {
+      "loading": "Loading…",
+      "emptyTitle": "Start your journey",
+      "emptyHint": "Example: \"Master React in one month\" — AI will create a chapter-by-chapter path and generate notes/flashcards/exams for you.",
+      "emptyCta": "Create your first Roadmap"
+    },
+    "delete": {
+      "description": "This roadmap will be permanently deleted. The generated Sets/Notes will still be accessible from the Sets page.",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "pending": "Deleting…",
+      "success": "Roadmap deleted",
+      "error": "Could not delete roadmap"
+    },
+    "create": {
+      "step1": "Goal",
+      "step2": "Review & edit",
+      "step3": "Done",
+      "stepLabel": "Step",
+      "title": "What do you want to learn?",
+      "subtitle": "Describe your goal clearly so AI can build the best path for you.",
+      "goal": "Learning goal",
+      "goalPlaceholder": "e.g. Master React (hooks, context, performance, testing) to build production-ready SPAs in 1 month…",
+      "currentLevel": "Current level",
+      "contentLanguage": "Content language",
+      "generate": "Generate preview with AI",
+      "generating": "AI is drafting your path…",
+      "missingGoal": "Please enter a learning goal",
+      "previewError": "Could not generate preview. Please try again.",
+      "previewBanner": "This is an AI-generated preview — you can edit titles or add/remove chapters and topics before confirming.",
+      "regenerate": "Regenerate",
+      "regenerating": "Regenerating…",
+      "summary": "{{chapters}} chapters · {{topics}} topics · ~{{hours}} h",
+      "overviewLabel": "Overview",
+      "objectiveLabel": "Objective",
+      "descriptionLabel": "Description",
+      "addChapter": "Add chapter",
+      "addTopic": "Add topic",
+      "newChapter": "New chapter",
+      "newChapterObjective": "Describe the goal of this chapter",
+      "newTopic": "New topic",
+      "newTopicDescription": "Describe what this topic covers",
+      "chapter": "Ch {{n}}",
+      "topicsCount": "{{count}} topics",
+      "deleteChapter": "Delete chapter",
+      "back": "Back",
+      "confirmCreate": "Confirm & create Roadmap",
+      "creating": "Creating Roadmap…",
+      "createError": "Could not create Roadmap. Please try again.",
+      "createSuccess": "Roadmap created. Let the journey begin!",
+      "doneTitle": "Roadmap is ready!",
+      "doneSubtitle": "Redirecting to the detail page…"
+    },
+    "detail": {
+      "progressLabel": "Learning progress",
+      "completedBannerTitle": "Roadmap completed!",
+      "completedBannerSubtitle": "You finished the whole journey. Keep reviewing through the generated Sets!",
+      "chapter": "Chapter {{n}}",
+      "topicsCount": "{{completed}}/{{total}} topics",
+      "lockedHint": "Finish the previous chapter to unlock this one.",
+      "estimatedHours": "~{{count}} h",
+      "status": {
+        "generating": "AI generating",
+        "failed": "Failed",
+        "ready": "Ready"
+      },
+      "actions": {
+        "start": "Start learning",
+        "generating": "Generating…",
+        "retry": "Retry",
+        "study": "Study now",
+        "toggleCompleted": "Completed",
+        "toggleNotCompleted": "Mark complete"
+      },
+      "toast": {
+        "starting": "AI is generating learning content…",
+        "startError": "Could not start topic. Please try again.",
+        "markedDone": "Marked as completed",
+        "chapterDone": "Chapter completed — next chapter unlocked!",
+        "roadmapDone": "🏆 You completed the whole Roadmap!",
+        "toggleError": "Could not update status"
+      }
+    }
   },
   "signin": {
     "createAccount": "Sign up",

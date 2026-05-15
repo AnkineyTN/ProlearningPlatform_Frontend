@@ -13,6 +13,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Bell,
+  Map as MapIcon,
 } from 'lucide-react';
 
 import { useAuth, useLogout } from '@/hooks/useAuth';
@@ -71,6 +72,7 @@ const AppSidebar = () => {
   const menuItems: MenuItem[] = [
     { title: t('sidebar.dashboard'), icon: LayoutDashboard, url: '/dashboard' },
     { title: t('sidebar.setList'), icon: LayoutList, url: '/sets' },
+    { title: t('sidebar.roadmaps'), icon: MapIcon, url: '/roadmaps' },
     { title: t('sidebar.todo'), icon: CheckCheck, url: '/todo' },
     { title: t('sidebar.pomodoro'), icon: Hourglass, url: '/pomodoro' },
     {
