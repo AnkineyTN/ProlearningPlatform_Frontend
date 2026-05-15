@@ -3,7 +3,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { ShieldCheck, ShieldOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { adminUsersAPI, extractAdminUsersList } from '@/services/endpoints/adminUsers';
+import {
+  adminUsersAPI,
+  extractAdminUsersList,
+} from '@/services/endpoints/adminUsers';
 
 const BlockedUsersSection = () => {
   const { t } = useTranslation();
@@ -36,7 +39,9 @@ const BlockedUsersSection = () => {
           <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)]'>
             MANAGEMENT
           </p>
-          <h2 className='font-semibold leading-tight'>{t('adminDashboard.blockedTitle')}</h2>
+          <h2 className='font-semibold leading-tight'>
+            {t('adminDashboard.blockedTitle')}
+          </h2>
         </div>
       </div>
 
@@ -58,7 +63,7 @@ const BlockedUsersSection = () => {
             {data.map(({ user }) => (
               <div
                 key={user.id}
-                className='p-4 flex items-center gap-3 hover:bg-muted/20 transition-colors'
+                className='p-4 flex items-center gap-3 hover:bg-[var(--pl-bg-hover)] transition-colors'
               >
                 {user.avatarUrl ? (
                   <img
@@ -68,7 +73,10 @@ const BlockedUsersSection = () => {
                   />
                 ) : (
                   <div className='w-8 h-8 rounded-full bg-[var(--pl-accent-soft)] grid place-items-center text-[11px] font-bold text-[var(--pl-accent-strong)] shrink-0'>
-                    {[user.firstName?.[0], user.lastName?.[0]].filter(Boolean).join('').toUpperCase() || 'U'}
+                    {[user.firstName?.[0], user.lastName?.[0]]
+                      .filter(Boolean)
+                      .join('')
+                      .toUpperCase() || 'U'}
                   </div>
                 )}
 
@@ -76,7 +84,9 @@ const BlockedUsersSection = () => {
                   <p className='text-sm font-medium truncate'>
                     {user.firstName} {user.lastName}
                   </p>
-                  <p className='text-xs text-muted-foreground truncate'>{user.email}</p>
+                  <p className='text-xs text-muted-foreground truncate'>
+                    {user.email}
+                  </p>
                   {user.blockReason && (
                     <p className='text-xs text-muted-foreground/70 italic mt-0.5 truncate'>
                       {t('adminDashboard.blockReason')}: {user.blockReason}

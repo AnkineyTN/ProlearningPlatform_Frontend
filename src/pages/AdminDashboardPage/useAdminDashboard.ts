@@ -48,7 +48,13 @@ export const useAdminDashboard = () => {
   } | null>(null);
   const [blockReason, setBlockReason] = useState('');
   const usersQuery = useQuery({
-    queryKey: ['admin', 'users', page, debouncedKeyword.current, accountTypeFilter],
+    queryKey: [
+      'admin',
+      'users',
+      page,
+      debouncedKeyword.current,
+      accountTypeFilter,
+    ],
     queryFn: async () => {
       const res = await adminUsersAPI.list({
         page,
@@ -185,7 +191,10 @@ export const useAdminDashboard = () => {
     searchKeyword,
     handleSearchChange,
     accountTypeFilter,
-    setAccountTypeFilter: (val: string) => { setAccountTypeFilter(val); setPage(0); },
+    setAccountTypeFilter: (val: string) => {
+      setAccountTypeFilter(val);
+      setPage(0);
+    },
     usersQuery,
     analyticsQuery,
     rows: usersQuery.data ?? [],

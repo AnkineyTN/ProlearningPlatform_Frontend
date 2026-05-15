@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAdminDashboard } from './AdminDashboardPage/useAdminDashboard';
-import AdminPageHeader from './AdminDashboardPage/AdminPageHeader';
-import UsersSection from './AdminDashboardPage/UsersSection';
-import AnalyticsSection from './AdminDashboardPage/AnalyticsSection';
-import AppealsSection from './AdminDashboardPage/AppealsSection';
-import BlockedUsersSection from './AdminDashboardPage/BlockedUsersSection';
-import PlatformStatsSection from './AdminDashboardPage/PlatformStatsSection';
-import PomodoroAssetsSection from './AdminDashboardPage/PomodoroAssetsSection';
-import UserDetailSheet from './AdminDashboardPage/UserDetailSheet';
-import EditUserDialog from './AdminDashboardPage/EditUserDialog';
-import DeleteUserDialog from './AdminDashboardPage/DeleteUserDialog';
-import BlockUserDialog from './AdminDashboardPage/BlockUserDialog';
+import { useAdminDashboard } from './useAdminDashboard';
+import AdminPageHeader from './AdminPageHeader';
+import UsersSection from './UsersSection';
+import AnalyticsSection from './AnalyticsSection';
+import AppealsSection from './AppealsSection';
+import BlockedUsersSection from './BlockedUsersSection';
+import PlatformStatsSection from './PlatformStatsSection';
+import PomodoroAssetsSection from './PomodoroAssetsSection';
+import UserDetailSheet from './UserDetailSheet';
+import EditUserDialog from './EditUserDialog';
+import DeleteUserDialog from './DeleteUserDialog';
+import BlockUserDialog from './BlockUserDialog';
 import type { AdminUserDirectoryRow } from '@/services/types/adminUsers.types';
 
 type AdminTab = 'users' | 'appeals' | 'blocked' | 'stats' | 'pomodoro';
@@ -19,7 +19,9 @@ type AdminTab = 'users' | 'appeals' | 'blocked' | 'stats' | 'pomodoro';
 const AdminDashboardPage = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<AdminTab>('users');
-  const [detailRow, setDetailRow] = useState<AdminUserDirectoryRow | null>(null);
+  const [detailRow, setDetailRow] = useState<AdminUserDirectoryRow | null>(
+    null,
+  );
 
   const {
     page,
@@ -57,10 +59,10 @@ const AdminDashboardPage = () => {
   } = useAdminDashboard();
 
   const tabs: { key: AdminTab; label: string }[] = [
-    { key: 'users',    label: t('adminDashboard.tabUsers') },
-    { key: 'appeals',  label: t('adminDashboard.tabAppeals') },
-    { key: 'blocked',  label: t('adminDashboard.tabBlocked') },
-    { key: 'stats',    label: t('adminDashboard.tabStats') },
+    { key: 'users', label: t('adminDashboard.tabUsers') },
+    { key: 'appeals', label: t('adminDashboard.tabAppeals') },
+    { key: 'blocked', label: t('adminDashboard.tabBlocked') },
+    { key: 'stats', label: t('adminDashboard.tabStats') },
     { key: 'pomodoro', label: t('adminDashboard.tabPomodoro') },
   ];
 
@@ -72,7 +74,7 @@ const AdminDashboardPage = () => {
           onRefresh={refreshAll}
         />
 
-        <div className='flex gap-1 border-b border-border overflow-x-auto'>
+        <div className='flex gap-1 border-b border-border'>
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -115,12 +117,12 @@ const AdminDashboardPage = () => {
           />
         )}
 
-        {activeTab === 'appeals'  && <AppealsSection />}
-        {activeTab === 'blocked'  && <BlockedUsersSection />}
-        {activeTab === 'stats'    && <PlatformStatsSection />}
+        {activeTab === 'appeals' && <AppealsSection />}
+        {activeTab === 'blocked' && <BlockedUsersSection />}
+        {activeTab === 'stats' && <PlatformStatsSection />}
         {activeTab === 'pomodoro' && <PomodoroAssetsSection />}
 
-        {(activeTab === 'users' || activeTab === 'stats') && (
+        {activeTab === 'stats' && (
           <AnalyticsSection
             analytics={analytics}
             isLoading={analyticsQuery.isLoading}
@@ -156,8 +158,16 @@ const AdminDashboardPage = () => {
           reason={blockReason}
           isSaving={blockMutation.isPending}
           onReasonChange={setBlockReason}
-          onClose={() => { setBlockTarget(null); setBlockReason(''); }}
-          onConfirm={() => blockMutation.mutate({ userId: blockTarget.id, reason: blockReason })}
+          onClose={() => {
+            setBlockTarget(null);
+            setBlockReason('');
+          }}
+          onConfirm={() =>
+            blockMutation.mutate({
+              userId: blockTarget.id,
+              reason: blockReason,
+            })
+          }
         />
       )}
 

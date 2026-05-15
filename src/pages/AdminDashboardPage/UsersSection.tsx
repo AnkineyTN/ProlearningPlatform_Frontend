@@ -1,4 +1,13 @@
-import { Pencil, Trash2, ChevronLeft, ChevronRight, Users, ShieldOff, ShieldCheck, Search, UserRound } from 'lucide-react';
+import {
+  Pencil,
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
+  Users,
+  ShieldOff,
+  ShieldCheck,
+  Search,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -81,17 +90,20 @@ const UsersSection = ({
             className='pl-8 h-8 text-sm'
             placeholder={t('adminDashboard.searchPlaceholder')}
             value={searchKeyword}
-            onChange={e => onSearchChange(e.target.value)}
+            onChange={(e) => onSearchChange(e.target.value)}
           />
         </div>
         <div className='flex gap-1.5'>
-          {ACCOUNT_TYPE_OPTIONS.map(opt => (
-            <button key={opt || 'all'} onClick={() => onAccountTypeChange(opt)}
+          {ACCOUNT_TYPE_OPTIONS.map((opt) => (
+            <button
+              key={opt || 'all'}
+              onClick={() => onAccountTypeChange(opt)}
               className={`text-[11px] px-3 py-1 rounded-full border font-medium transition-colors whitespace-nowrap ${
                 accountTypeFilter === opt
                   ? 'bg-foreground text-background border-foreground'
                   : 'border-border text-muted-foreground hover:border-foreground/40'
-              }`}>
+              }`}
+            >
               {opt || t('adminDashboard.filterAll')}
             </button>
           ))}
@@ -155,7 +167,11 @@ const UsersSection = ({
                   const u = row.user;
                   const submitted = formatDate(row.onboardingSubmittedAt) ?? na;
                   return (
-                    <TableRow key={u.id} className='border-border hover:bg-muted/30 transition-colors'>
+                    <TableRow
+                      key={u.id}
+                      className='border-border transition-colors cursor-pointer'
+                      onClick={() => onViewDetail(row)}
+                    >
                       <TableCell className='font-[family-name:var(--font-mono-pl)] text-sm text-muted-foreground'>
                         {u.id}
                       </TableCell>
@@ -169,10 +185,15 @@ const UsersSection = ({
                             />
                           ) : (
                             <div className='w-6 h-6 rounded-full bg-[var(--pl-accent-soft)] grid place-items-center text-[10px] font-bold text-[var(--pl-accent-strong)] shrink-0'>
-                              {[u.firstName?.[0], u.lastName?.[0]].filter(Boolean).join('').toUpperCase() || 'U'}
+                              {[u.firstName?.[0], u.lastName?.[0]]
+                                .filter(Boolean)
+                                .join('')
+                                .toUpperCase() || 'U'}
                             </div>
                           )}
-                          <span>{u.firstName} {u.lastName}</span>
+                          <span>
+                            {u.firstName} {u.lastName}
+                          </span>
                           {u.isBlocked && (
                             <span className='text-[10px] px-1.5 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 font-medium'>
                               {t('adminDashboard.blocked')}
@@ -207,7 +228,9 @@ const UsersSection = ({
                             {u.accountType}
                           </span>
                         ) : (
-                          <span className='text-sm text-muted-foreground'>{na}</span>
+                          <span className='text-sm text-muted-foreground'>
+                            {na}
+                          </span>
                         )}
                       </TableCell>
                       <TableCell className='hidden lg:table-cell text-xs whitespace-nowrap text-muted-foreground'>
@@ -215,17 +238,6 @@ const UsersSection = ({
                       </TableCell>
                       <TableCell className='text-right'>
                         <div className='flex justify-end gap-1'>
-                          <Button
-                            type='button'
-                            variant='ghost'
-                            size='icon'
-                            className='h-8 w-8'
-                            onClick={() => onViewDetail(row)}
-                            aria-label={t('adminDashboard.viewDetail')}
-                            title={t('adminDashboard.viewDetail')}
-                          >
-                            <UserRound className='w-3.5 h-3.5' />
-                          </Button>
                           <Button
                             type='button'
                             variant='ghost'
@@ -248,13 +260,22 @@ const UsersSection = ({
                                 u.isBlocked,
                               )
                             }
-                            aria-label={u.isBlocked ? t('adminDashboard.unblockUser') : t('adminDashboard.blockUser')}
-                            title={u.isBlocked ? t('adminDashboard.unblockUser') : t('adminDashboard.blockUser')}
-                          >
-                            {u.isBlocked
-                              ? <ShieldCheck className='w-3.5 h-3.5' />
-                              : <ShieldOff className='w-3.5 h-3.5' />
+                            aria-label={
+                              u.isBlocked
+                                ? t('adminDashboard.unblockUser')
+                                : t('adminDashboard.blockUser')
                             }
+                            title={
+                              u.isBlocked
+                                ? t('adminDashboard.unblockUser')
+                                : t('adminDashboard.blockUser')
+                            }
+                          >
+                            {u.isBlocked ? (
+                              <ShieldCheck className='w-3.5 h-3.5' />
+                            ) : (
+                              <ShieldOff className='w-3.5 h-3.5' />
+                            )}
                           </Button>
                           <Button
                             type='button'

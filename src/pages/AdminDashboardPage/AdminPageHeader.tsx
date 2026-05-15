@@ -17,7 +17,7 @@ const AdminPageHeader = ({ isFetching, onRefresh }: AdminPageHeaderProps) => {
         className='absolute inset-0 pointer-events-none'
         style={{
           background:
-            'radial-gradient(circle at 10% 50%, rgba(99,102,241,0.10), transparent 55%)',
+            'radial-gradient(circle at 10% 50%, rgb(196 196 196 / 12%), transparent 55%)',
         }}
       />
       <div className='relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
@@ -43,7 +43,9 @@ const AdminPageHeader = ({ isFetching, onRefresh }: AdminPageHeaderProps) => {
           disabled={isFetching}
           className='gap-2 shrink-0'
         >
-          <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
+          <RefreshCw
+            className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`}
+          />
           {t('adminDashboard.refresh')}
         </Button>
       </div>

@@ -4,14 +4,25 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { CheckCircle, XCircle, MessageSquareWarning } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { appealsAPI, type AppealDto, type AppealStatus } from '@/services/endpoints/appeals';
+import {
+  appealsAPI,
+  type AppealDto,
+  type AppealStatus,
+} from '@/services/endpoints/appeals';
 
-const STATUS_OPTIONS: (AppealStatus | 'ALL')[] = ['ALL', 'PENDING', 'ACCEPTED', 'REJECTED'];
+const STATUS_OPTIONS: (AppealStatus | 'ALL')[] = [
+  'ALL',
+  'PENDING',
+  'ACCEPTED',
+  'REJECTED',
+];
 
 const AppealsSection = () => {
   const { t } = useTranslation();
   const qc = useQueryClient();
-  const [statusFilter, setStatusFilter] = useState<AppealStatus | 'ALL'>('PENDING');
+  const [statusFilter, setStatusFilter] = useState<AppealStatus | 'ALL'>(
+    'PENDING',
+  );
   const [reviewingId, setReviewingId] = useState<number | null>(null);
 
   const { data, isLoading, isError } = useQuery({
@@ -30,8 +41,13 @@ const AppealsSection = () => {
   });
 
   const reviewMutation = useMutation({
-    mutationFn: ({ appealId, status }: { appealId: number; status: AppealStatus }) =>
-      appealsAPI.adminReview(appealId, { status }),
+    mutationFn: ({
+      appealId,
+      status,
+    }: {
+      appealId: number;
+      status: AppealStatus;
+    }) => appealsAPI.adminReview(appealId, { status }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['admin', 'appeals'] });
       void qc.invalidateQueries({ queryKey: ['admin', 'users'] });
@@ -60,7 +76,9 @@ const AppealsSection = () => {
           <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)]'>
             MANAGEMENT
           </p>
-          <h2 className='font-semibold leading-tight'>{t('adminDashboard.appealsTitle')}</h2>
+          <h2 className='font-semibold leading-tight'>
+            {t('adminDashboard.appealsTitle')}
+          </h2>
         </div>
       </div>
 
@@ -98,7 +116,7 @@ const AppealsSection = () => {
             {data.map((appeal) => (
               <div
                 key={appeal.id}
-                className='p-4 flex flex-col sm:flex-row sm:items-start gap-3 hover:bg-muted/20 transition-colors'
+                className='p-4 flex flex-col sm:flex-row sm:items-start gap-3 hover:bg-[var(--pl-bg-hover)] transition-colors'
               >
                 <div className='flex-1 space-y-1 min-w-0'>
                   <div className='flex items-center gap-2 flex-wrap'>
@@ -117,7 +135,9 @@ const AppealsSection = () => {
                       {new Date(appeal.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className='text-sm text-muted-foreground'>{appeal.reason}</p>
+                  <p className='text-sm text-muted-foreground'>
+                    {appeal.reason}
+                  </p>
                   {appeal.adminNote && (
                     <p className='text-xs italic text-muted-foreground'>
                       {t('adminDashboard.adminNote')}: {appeal.adminNote}
@@ -131,10 +151,15 @@ const AppealsSection = () => {
                       size='sm'
                       variant='outline'
                       className='gap-1.5 text-green-600 border-green-500/40 hover:bg-green-500/10'
-                      disabled={reviewMutation.isPending && reviewingId === appeal.id}
+                      disabled={
+                        reviewMutation.isPending && reviewingId === appeal.id
+                      }
                       onClick={() => {
                         setReviewingId(appeal.id);
-                        reviewMutation.mutate({ appealId: appeal.id, status: 'ACCEPTED' });
+                        reviewMutation.mutate({
+                          appealId: appeal.id,
+                          status: 'ACCEPTED',
+                        });
                       }}
                     >
                       <CheckCircle className='w-3.5 h-3.5' />
@@ -144,10 +169,15 @@ const AppealsSection = () => {
                       size='sm'
                       variant='outline'
                       className='gap-1.5 text-destructive border-destructive/40 hover:bg-destructive/10'
-                      disabled={reviewMutation.isPending && reviewingId === appeal.id}
+                      disabled={
+                        reviewMutation.isPending && reviewingId === appeal.id
+                      }
                       onClick={() => {
                         setReviewingId(appeal.id);
-                        reviewMutation.mutate({ appealId: appeal.id, status: 'REJECTED' });
+                        reviewMutation.mutate({
+                          appealId: appeal.id,
+                          status: 'REJECTED',
+                        });
                       }}
                     >
                       <XCircle className='w-3.5 h-3.5' />
