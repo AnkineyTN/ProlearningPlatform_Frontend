@@ -13,7 +13,6 @@ import type {
   UpdateQuestionRequest,
   VoidResponse,
   GenerateExamAIResponse,
-  GenerateExamFromNotesRequest,
   GenerateExamFromWebRequest,
   ExamAIDifficultyDistribution,
   ExamAttemptStartResponse,
