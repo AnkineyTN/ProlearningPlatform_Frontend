@@ -1,6 +1,7 @@
-import { Pencil, Trash2, ChevronLeft, ChevronRight, Users, ShieldOff, ShieldCheck, MessageSquareWarning } from 'lucide-react';
+import { Pencil, Trash2, ChevronLeft, ChevronRight, Users, ShieldOff, ShieldCheck, Search, UserRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -12,17 +13,23 @@ import {
 import type { AdminUserDirectoryRow } from '@/services/types/adminUsers.types';
 import { PAGE_SIZE } from './useAdminDashboard';
 
+const ACCOUNT_TYPE_OPTIONS = ['', 'PRO', 'FREE'] as const;
+
 type UsersSectionProps = {
   rows: AdminUserDirectoryRow[];
   page: number;
   isLoading: boolean;
   isFetching: boolean;
   isError: boolean;
+  searchKeyword: string;
+  accountTypeFilter: string;
+  onSearchChange: (v: string) => void;
+  onAccountTypeChange: (v: string) => void;
   formatDate: (iso: string | null) => string | null;
   onEdit: (row: AdminUserDirectoryRow) => void;
   onDelete: (id: number, label: string) => void;
   onBlock: (id: number, label: string, isBlocked: boolean) => void;
-  onViewAppeals: (id: number, label: string) => void;
+  onViewDetail: (row: AdminUserDirectoryRow) => void;
   onPrevPage: () => void;
   onNextPage: () => void;
 };
@@ -33,11 +40,15 @@ const UsersSection = ({
   isLoading,
   isFetching,
   isError,
+  searchKeyword,
+  accountTypeFilter,
+  onSearchChange,
+  onAccountTypeChange,
   formatDate,
   onEdit,
   onDelete,
   onBlock,
-  onViewAppeals,
+  onViewDetail,
   onPrevPage,
   onNextPage,
 }: UsersSectionProps) => {
@@ -60,6 +71,30 @@ const UsersSection = ({
           <h2 className='font-semibold leading-tight'>
             {t('adminDashboard.usersTitle')}
           </h2>
+        </div>
+      </div>
+
+      <div className='flex flex-col sm:flex-row gap-2'>
+        <div className='relative flex-1'>
+          <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none' />
+          <Input
+            className='pl-8 h-8 text-sm'
+            placeholder={t('adminDashboard.searchPlaceholder')}
+            value={searchKeyword}
+            onChange={e => onSearchChange(e.target.value)}
+          />
+        </div>
+        <div className='flex gap-1.5'>
+          {ACCOUNT_TYPE_OPTIONS.map(opt => (
+            <button key={opt || 'all'} onClick={() => onAccountTypeChange(opt)}
+              className={`text-[11px] px-3 py-1 rounded-full border font-medium transition-colors whitespace-nowrap ${
+                accountTypeFilter === opt
+                  ? 'bg-foreground text-background border-foreground'
+                  : 'border-border text-muted-foreground hover:border-foreground/40'
+              }`}>
+              {opt || t('adminDashboard.filterAll')}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -185,21 +220,21 @@ const UsersSection = ({
                             variant='ghost'
                             size='icon'
                             className='h-8 w-8'
-                            onClick={() => onEdit(row)}
-                            aria-label={t('adminDashboard.editUser')}
+                            onClick={() => onViewDetail(row)}
+                            aria-label={t('adminDashboard.viewDetail')}
+                            title={t('adminDashboard.viewDetail')}
                           >
-                            <Pencil className='w-3.5 h-3.5' />
+                            <UserRound className='w-3.5 h-3.5' />
                           </Button>
                           <Button
                             type='button'
                             variant='ghost'
                             size='icon'
                             className='h-8 w-8'
-                            onClick={() => onViewAppeals(u.id, `${u.firstName} ${u.lastName}`.trim())}
-                            aria-label={t('adminDashboard.viewAppeals')}
-                            title={t('adminDashboard.viewAppeals')}
+                            onClick={() => onEdit(row)}
+                            aria-label={t('adminDashboard.editUser')}
                           >
-                            <MessageSquareWarning className='w-3.5 h-3.5' />
+                            <Pencil className='w-3.5 h-3.5' />
                           </Button>
                           <Button
                             type='button'

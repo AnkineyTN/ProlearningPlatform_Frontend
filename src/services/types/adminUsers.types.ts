@@ -43,3 +43,23 @@ export type AdminUpdateUserRequest = Partial<{
 export type AdminBlockUserRequest = {
   reason: string;
 };
+
+export type AdminUserStats = {
+  noteCount: number;
+  flashcardCount: number;
+  examCount: number;
+  pomodoroSessionCount: number;
+  registeredAt: string | null;
+};
+
+export type AdminPlatformStats = {
+  totalUsers: number;
+  blockedUsers: number;
+  proUsers: number;
+  freeUsers: number;
+  totalNotes: number;
+  totalFlashcards: number;
+  totalExams: number;
+  totalPomodoroSessions: number;
+  totalStudySessions: number;
+};

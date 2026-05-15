@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
@@ -19,6 +19,20 @@ export const useAdminDashboard = () => {
   const queryClient = useQueryClient();
 
   const [page, setPage] = useState(0);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [accountTypeFilter, setAccountTypeFilter] = useState('');
+  const debouncedKeyword = useRef('');
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleSearchChange = (value: string) => {
+    setSearchKeyword(value);
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      debouncedKeyword.current = value;
+      setPage(0);
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
+    }, 400);
+  };
   const [editRow, setEditRow] = useState<AdminUserDirectoryRow | null>(null);
   const [editFirst, setEditFirst] = useState('');
   const [editLast, setEditLast] = useState('');
@@ -33,18 +47,15 @@ export const useAdminDashboard = () => {
     isBlocked: boolean;
   } | null>(null);
   const [blockReason, setBlockReason] = useState('');
-  const [appealTarget, setAppealTarget] = useState<{
-    id: number;
-    label: string;
-  } | null>(null);
-
   const usersQuery = useQuery({
-    queryKey: ['admin', 'users', page],
+    queryKey: ['admin', 'users', page, debouncedKeyword.current, accountTypeFilter],
     queryFn: async () => {
       const res = await adminUsersAPI.list({
         page,
         size: PAGE_SIZE,
         sort: 'id,DESC',
+        keyword: debouncedKeyword.current || undefined,
+        accountType: accountTypeFilter || undefined,
       });
       return extractAdminUsersList(res.data.data);
     },
@@ -171,8 +182,10 @@ export const useAdminDashboard = () => {
     setBlockTarget,
     blockReason,
     setBlockReason,
-    appealTarget,
-    setAppealTarget,
+    searchKeyword,
+    handleSearchChange,
+    accountTypeFilter,
+    setAccountTypeFilter: (val: string) => { setAccountTypeFilter(val); setPage(0); },
     usersQuery,
     analyticsQuery,
     rows: usersQuery.data ?? [],

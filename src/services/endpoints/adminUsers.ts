@@ -6,6 +6,7 @@ import type {
   AdminDirectoryUser,
   AdminUpdateUserRequest,
   AdminUserDirectoryRow,
+  AdminUserStats,
 } from "../types/adminUsers.types";
 
 function extractRows(data: unknown): AdminUserDirectoryRow[] {
@@ -26,12 +27,16 @@ export const adminUsersAPI = {
     page?: number;
     size?: number;
     sort?: string;
+    keyword?: string;
+    accountType?: string;
   }): Promise<AxiosResponse<AdminApiEnvelope<unknown>>> =>
     api.get("/admin/users", {
       params: {
         page: params.page ?? 0,
         size: params.size ?? 20,
         sort: params.sort ?? "id,DESC",
+        ...(params.keyword ? { keyword: params.keyword } : {}),
+        ...(params.accountType ? { accountType: params.accountType } : {}),
       },
     }),
 
@@ -56,6 +61,21 @@ export const adminUsersAPI = {
     userId: number,
   ): Promise<AxiosResponse<AdminApiEnvelope<AdminDirectoryUser>>> =>
     api.post(`/admin/users/${userId}/unblock`),
+
+  listBlocked: (params: {
+    page?: number;
+    size?: number;
+  }): Promise<AxiosResponse<AdminApiEnvelope<unknown>>> =>
+    api.get("/admin/users/blocked", {
+      params: {
+        page: params.page ?? 0,
+        size: params.size ?? 20,
+        sort: "id,DESC",
+      },
+    }),
+
+  getUserStats: (userId: number): Promise<AxiosResponse<AdminApiEnvelope<AdminUserStats>>> =>
+    api.get(`/admin/users/${userId}/stats`),
 };
 
 export function extractAdminUsersList(data: unknown): AdminUserDirectoryRow[] {
