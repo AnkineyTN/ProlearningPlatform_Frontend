@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
-import type { Goal } from "@/services/types/todo.types";
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import type { Goal } from '@/services/types/todo.types';
 
 type YearSectionProps = {
   goals: Goal[];
@@ -21,7 +21,9 @@ const MonthCell = ({
   onEditGoal: (g: Goal) => void;
 }) => {
   const { t, i18n } = useTranslation();
-  const monthLabel = new Date(year, monthIndex, 1).toLocaleDateString(i18n.language, { month: "short" }).toUpperCase();
+  const monthLabel = new Date(year, monthIndex, 1)
+    .toLocaleDateString(i18n.language, { month: 'short' })
+    .toUpperCase();
   const isCurrent =
     new Date().getFullYear() === year && new Date().getMonth() === monthIndex;
 
@@ -29,18 +31,22 @@ const MonthCell = ({
     <div
       className='rounded-[12px] p-3 border bg-[var(--pl-bg-elev)] min-h-[140px] flex flex-col'
       style={{
-        borderColor: isCurrent ? "var(--pl-accent-border)" : "var(--pl-border)",
+        borderColor: isCurrent ? 'var(--pl-accent-border)' : 'var(--pl-border)',
       }}
     >
       <div className='flex items-baseline justify-between mb-2'>
         <div
           className='text-[10.5px] tracking-[0.18em]'
-          style={{ color: isCurrent ? "var(--pl-accent-strong)" : "var(--pl-text-faint)" }}
+          style={{
+            color: isCurrent
+              ? 'var(--pl-accent-strong)'
+              : 'var(--pl-text-faint)',
+          }}
         >
           {monthLabel}
         </div>
         <span className='text-[10px] font-[var(--font-mono-pl)] text-[var(--pl-text-faint)]'>
-          {goals.length > 0 ? goals.length : ""}
+          {goals.length > 0 ? goals.length : ''}
         </span>
       </div>
 
@@ -51,17 +57,25 @@ const MonthCell = ({
       ) : (
         <div className='flex flex-col gap-1.5'>
           {goals.map((g) => {
-            const accent = g.color ?? "#6366f1";
+            const accent = g.color ?? '#6366f1';
             return (
               <button
                 key={g.id}
                 onClick={() => onEditGoal(g)}
                 className='text-left flex items-center gap-2 rounded-[6px] px-1.5 py-1 hover:bg-[var(--pl-bg-hover)]'
-                title={t("todo.year.progressHint", { progress: g.progress })}
+                title={t('todo.year.progressHint', { progress: g.progress })}
               >
-                <span className='w-1.5 h-1.5 rounded-full flex-shrink-0' style={{ background: accent }} />
-                <span className='text-[11.5px] truncate text-[var(--pl-text)]'>{g.title}</span>
-                <span className='ml-auto text-[10px] font-[var(--font-mono-pl)] flex-shrink-0' style={{ color: accent }}>
+                <span
+                  className='w-1.5 h-1.5 rounded-full flex-shrink-0'
+                  style={{ background: accent }}
+                />
+                <span className='text-[11.5px] truncate text-[var(--pl-text)]'>
+                  {g.title}
+                </span>
+                <span
+                  className='ml-auto text-[10px] font-[var(--font-mono-pl)] flex-shrink-0'
+                  style={{ color: accent }}
+                >
                   {g.progress}%
                 </span>
               </button>
@@ -89,7 +103,10 @@ const YearSection = ({ goals, onEditGoal, onNewGoal }: YearSectionProps) => {
     return buckets;
   }, [goals, year]);
 
-  const undatedGoals = useMemo(() => goals.filter((g) => !g.targetDate), [goals]);
+  const undatedGoals = useMemo(
+    () => goals.filter((g) => !g.targetDate),
+    [goals],
+  );
   const totalScheduled = goalsByMonth.reduce((s, b) => s + b.length, 0);
 
   return (
@@ -97,10 +114,10 @@ const YearSection = ({ goals, onEditGoal, onNewGoal }: YearSectionProps) => {
       <div className='flex items-center justify-between mb-3'>
         <div className='flex items-baseline gap-3'>
           <h2 className='text-[22px] font-[var(--font-display)] tracking-tight m-0 text-[var(--pl-text)]'>
-            {t("todo.year.title")}
+            {t('todo.year.title')}
           </h2>
           <span className='text-[12px] text-[var(--pl-text-muted)]'>
-            {t("todo.year.subtitle", { count: totalScheduled })}
+            {t('todo.year.subtitle', { count: totalScheduled })}
           </span>
         </div>
         <div className='flex items-center gap-1.5'>
@@ -109,7 +126,7 @@ const YearSection = ({ goals, onEditGoal, onNewGoal }: YearSectionProps) => {
             className='inline-flex items-center gap-1 text-[11.5px] px-3 py-1.5 rounded-[7px] border border-[var(--pl-border)] text-[var(--pl-text-muted)] hover:text-[var(--pl-text)]'
           >
             <Plus className='w-3 h-3' />
-            {t("todo.overall.newGoal")}
+            {t('todo.overall.newGoal')}
           </button>
           <button
             onClick={() => setYear((y) => y - 1)}
@@ -144,11 +161,11 @@ const YearSection = ({ goals, onEditGoal, onNewGoal }: YearSectionProps) => {
       {undatedGoals.length > 0 && (
         <div className='mt-4 rounded-[12px] p-4 border border-dashed border-[var(--pl-border)] bg-[var(--pl-bg-elev)]'>
           <div className='text-[10.5px] tracking-[0.18em] uppercase mb-2 text-[var(--pl-text-faint)]'>
-            {t("todo.year.undatedHeader", { count: undatedGoals.length })}
+            {t('todo.year.undatedHeader', { count: undatedGoals.length })}
           </div>
           <div className='flex flex-wrap gap-2'>
             {undatedGoals.map((g) => {
-              const accent = g.color ?? "#6366f1";
+              const accent = g.color ?? '#6366f1';
               return (
                 <button
                   key={g.id}
@@ -160,7 +177,10 @@ const YearSection = ({ goals, onEditGoal, onNewGoal }: YearSectionProps) => {
                     color: accent,
                   }}
                 >
-                  <span className='w-1.5 h-1.5 rounded-full' style={{ background: accent }} />
+                  <span
+                    className='w-1.5 h-1.5 rounded-full'
+                    style={{ background: accent }}
+                  />
                   {g.title}
                 </button>
               );

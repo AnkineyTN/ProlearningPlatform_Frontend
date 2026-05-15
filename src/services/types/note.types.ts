@@ -111,7 +111,7 @@ export type AutoSaveNoteRequest = {
 };
 
 export type ExplainTextRequest = {
-  language: "English" | "Vietnamese";
+  language: 'English' | 'Vietnamese';
   note_id: number;
   query_text: string;
 };
@@ -146,7 +146,7 @@ export type UploadFileResponse = {
 };
 
 export type SummarizeFileRequest = {
-  language: "English" | "Vietnamese";
+  language: 'English' | 'Vietnamese';
   limit: number;
   file_url: string;
 };

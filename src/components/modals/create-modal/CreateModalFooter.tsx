@@ -31,7 +31,10 @@ const CreateModalFooter = ({
   const submitLabel = isAI
     ? isGenerating
       ? t('modal.ai.generating', { defaultValue: 'Generating...' })
-      : t('modal.ai.generateButton', { type, defaultValue: 'Generate {{type}}' })
+      : t('modal.ai.generateButton', {
+          type,
+          defaultValue: 'Generate {{type}}',
+        })
     : isUpdateMode
       ? t('modal.updateButton')
       : t('modal.create');
@@ -54,11 +57,7 @@ const CreateModalFooter = ({
           <ArrowLeft className='w-4 h-4' />
           {t('modal.cancel')}
         </Button>
-        <Button
-          onClick={onSubmit}
-          variant='default'
-          disabled={submitDisabled}
-        >
+        <Button onClick={onSubmit} variant='default' disabled={submitDisabled}>
           {isAI && isGenerating && <Loader2 className='w-4 h-4 animate-spin' />}
           {isAI && !isGenerating && <Sparkles className='w-4 h-4' />}
           {submitLabel}

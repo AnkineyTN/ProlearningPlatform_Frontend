@@ -1,10 +1,10 @@
-import type { ApiMetadata } from "./auth.types";
+import type { ApiMetadata } from './auth.types';
 
-export type TodoPriority = "LOW" | "MEDIUM" | "HIGH";
-export type GoalStatus = "IN_PROGRESS" | "COMPLETED" | "ARCHIVED";
-export type GoalType = "LONG" | "SHORT";
-export type TodoType = "DAILY" | "WEEKLY";
-export type TodoStatus = "TODO" | "DONE" | "SKIPPED";
+export type TodoPriority = 'LOW' | 'MEDIUM' | 'HIGH';
+export type GoalStatus = 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
+export type GoalType = 'LONG' | 'SHORT';
+export type TodoType = 'DAILY' | 'WEEKLY';
+export type TodoStatus = 'TODO' | 'DONE' | 'SKIPPED';
 
 export type ResourceRef = {
   id: number;

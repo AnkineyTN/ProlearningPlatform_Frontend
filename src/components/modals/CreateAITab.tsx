@@ -4,9 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Label } from '@/components/ui/label';
 import { mapI18nToAiApiLanguage } from '@/lib/utils';
 
-import AIExamSettings, {
-  type QuestionCounts,
-} from './ai-tab/AIExamSettings';
+import AIExamSettings, { type QuestionCounts } from './ai-tab/AIExamSettings';
 import AIFileUploader from './ai-tab/AIFileUploader';
 import AINotesGrid from './ai-tab/AINotesGrid';
 import AISettingsCard from './ai-tab/AISettingsCard';

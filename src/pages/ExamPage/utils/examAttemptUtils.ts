@@ -56,9 +56,7 @@ export function examAttemptDetailToExamResult(
       : exam.totalScore;
   const rawScore = detail.score;
   const score =
-    rawScore != null && !Number.isNaN(Number(rawScore))
-      ? Number(rawScore)
-      : 0;
+    rawScore != null && !Number.isNaN(Number(rawScore)) ? Number(rawScore) : 0;
   const percentage = totalPoints > 0 ? (score / totalPoints) * 100 : 0;
   const passThreshold = exam.passingScore ?? 60;
   const passed = percentage >= passThreshold;

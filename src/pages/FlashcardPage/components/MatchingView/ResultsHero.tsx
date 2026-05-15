@@ -62,9 +62,7 @@ const MatchingResultsHero = ({
               transform='rotate(-90 110 110)'
               style={{
                 filter: `drop-shadow(0 0 8px ${
-                  isPerfect
-                    ? 'rgba(34,197,94,0.55)'
-                    : 'rgba(239,68,68,0.45)'
+                  isPerfect ? 'rgba(34,197,94,0.55)' : 'rgba(239,68,68,0.45)'
                 })`,
                 transition: 'stroke-dasharray 600ms ease',
               }}

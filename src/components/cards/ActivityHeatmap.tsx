@@ -1,15 +1,16 @@
 import { useState, useMemo } from 'react';
 import { useHeatmap } from '@/hooks/useActivityLog';
-import type { HeatmapDay, HeatmapMode } from '@/services/types/activityLog.types';
+import type {
+  HeatmapDay,
+  HeatmapMode,
+} from '@/services/types/activityLog.types';
 
 // Cell colour: empty → var(--pl-border); filled → accent at 4 opacity levels
 function cellBg(level: number, mode: HeatmapMode): string {
   if (level === 0) return 'var(--pl-border)';
   const opacity = 0.25 + level * 0.18;
-  if (mode === 'sessions')
-    return `oklch(0.62 0.16 230 / ${opacity})`; // blue
-  if (mode === 'score')
-    return `oklch(0.68 0.18 40 / ${opacity})`; // orange
+  if (mode === 'sessions') return `oklch(0.62 0.16 230 / ${opacity})`; // blue
+  if (mode === 'score') return `oklch(0.68 0.18 40 / ${opacity})`; // orange
   // time — use the theme accent
   return `oklch(var(--pl-accent-l) var(--pl-accent-c) var(--pl-accent-h) / ${opacity})`;
 }
@@ -69,7 +70,20 @@ function toKey(d: Date) {
 }
 
 const DOW_LABELS = ['Mon', '', 'Wed', '', 'Fri', '', 'Sun'];
-const MONTH_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTH_LABELS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
 type Tooltip = { x: number; y: number; day: HeatmapDay; date: string } | null;
 
@@ -102,7 +116,10 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
     let last = -1;
     weeks.forEach((week, wi) => {
       const m = week[0].getMonth();
-      if (m !== last) { labels.push({ weekIdx: wi, label: MONTH_LABELS[m] }); last = m; }
+      if (m !== last) {
+        labels.push({ weekIdx: wi, label: MONTH_LABELS[m] });
+        last = m;
+      }
     });
     return labels;
   }, [weeks]);
@@ -145,9 +162,12 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
                 border: 0,
                 cursor: 'pointer',
                 transition: 'all 0.15s',
-                background: mode === value ? 'var(--pl-bg-elev)' : 'transparent',
-                color: mode === value ? 'var(--pl-text)' : 'var(--pl-text-faint)',
-                boxShadow: mode === value ? '0 1px 3px rgba(0,0,0,0.12)' : 'none',
+                background:
+                  mode === value ? 'var(--pl-bg-elev)' : 'transparent',
+                color:
+                  mode === value ? 'var(--pl-text)' : 'var(--pl-text-faint)',
+                boxShadow:
+                  mode === value ? '0 1px 3px rgba(0,0,0,0.12)' : 'none',
                 fontWeight: mode === value ? 600 : 400,
               }}
             >
@@ -161,11 +181,25 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
       <div className='px-5 pt-1 pb-[18px]'>
         <div style={{ display: 'flex', gap: 0 }}>
           {/* Day-of-week labels */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: GAP, marginTop: 18, marginRight: 5, width: 22 }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: GAP,
+              marginTop: 18,
+              marginRight: 5,
+              width: 22,
+            }}
+          >
             {DOW_LABELS.map((lbl, i) => (
               <div
                 key={i}
-                style={{ height: CELL, fontSize: 8, color: 'var(--pl-text-faint)', lineHeight: `${CELL}px` }}
+                style={{
+                  height: CELL,
+                  fontSize: 8,
+                  color: 'var(--pl-text-faint)',
+                  lineHeight: `${CELL}px`,
+                }}
               >
                 {lbl}
               </div>
@@ -175,7 +209,14 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
           {/* Columns */}
           <div style={{ flex: 1, overflow: 'hidden' }}>
             {/* Month label row */}
-            <div style={{ display: 'flex', height: 16, position: 'relative', marginBottom: 2 }}>
+            <div
+              style={{
+                display: 'flex',
+                height: 16,
+                position: 'relative',
+                marginBottom: 2,
+              }}
+            >
               {monthLabels.map(({ weekIdx, label }) => (
                 <div
                   key={weekIdx}
@@ -195,7 +236,10 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
             {/* Week columns */}
             <div style={{ display: 'flex', gap: GAP }}>
               {weeks.map((week, wi) => (
-                <div key={wi} style={{ display: 'flex', flexDirection: 'column', gap: GAP }}>
+                <div
+                  key={wi}
+                  style={{ display: 'flex', flexDirection: 'column', gap: GAP }}
+                >
                   {week.map((date, di) => {
                     const key = toKey(date);
                     const day = dayMap.get(key);
@@ -209,11 +253,21 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
                           height: CELL,
                           borderRadius: 2,
                           background: cellBg(lv, mode),
-                          outline: isToday ? '1.5px solid var(--pl-accent)' : undefined,
+                          outline: isToday
+                            ? '1.5px solid var(--pl-accent)'
+                            : undefined,
                           outlineOffset: isToday ? '1px' : undefined,
                           cursor: day ? 'pointer' : 'default',
                         }}
-                        onMouseEnter={(e) => day && setTooltip({ x: e.clientX, y: e.clientY, day, date: key })}
+                        onMouseEnter={(e) =>
+                          day &&
+                          setTooltip({
+                            x: e.clientX,
+                            y: e.clientY,
+                            day,
+                            date: key,
+                          })
+                        }
                         onMouseLeave={() => setTooltip(null)}
                       />
                     );
@@ -256,22 +310,49 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
           }}
           className='bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[8px] shadow-lg px-3 py-2'
         >
-          <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--pl-text)', margin: 0 }}>
+          <p
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: 'var(--pl-text)',
+              margin: 0,
+            }}
+          >
             {tooltip.date}
           </p>
           {mode === 'time' && (
-            <p style={{ fontSize: 11, color: 'var(--pl-text-muted)', margin: '2px 0 0' }}>
+            <p
+              style={{
+                fontSize: 11,
+                color: 'var(--pl-text-muted)',
+                margin: '2px 0 0',
+              }}
+            >
               {tooltip.day.totalMinutes} min
             </p>
           )}
           {mode === 'sessions' && (
-            <p style={{ fontSize: 11, color: 'var(--pl-text-muted)', margin: '2px 0 0' }}>
+            <p
+              style={{
+                fontSize: 11,
+                color: 'var(--pl-text-muted)',
+                margin: '2px 0 0',
+              }}
+            >
               {tooltip.day.sessions} sessions
             </p>
           )}
           {mode === 'score' && (
-            <p style={{ fontSize: 11, color: 'var(--pl-text-muted)', margin: '2px 0 0' }}>
-              {tooltip.day.bestScore != null ? `${tooltip.day.bestScore}/100` : 'No exam'}
+            <p
+              style={{
+                fontSize: 11,
+                color: 'var(--pl-text-muted)',
+                margin: '2px 0 0',
+              }}
+            >
+              {tooltip.day.bestScore != null
+                ? `${tooltip.day.bestScore}/100`
+                : 'No exam'}
             </p>
           )}
         </div>

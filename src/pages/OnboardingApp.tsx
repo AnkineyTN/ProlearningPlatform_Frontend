@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { toast } from "react-toastify";
-import i18n from "@/i18n/config";
-import { type OnboardingData } from "@/components/onboarding/type";
-import LanguageSelection from "@/components/onboarding/LanguageSelection";
-import EducationSelection from "@/components/onboarding/EducationSelection";
-import SourceSelection from "@/components/onboarding/SourceSelection";
-import PremiumSelection from "@/components/onboarding/PremiumSelection";
-import CreateStudySet from "@/components/onboarding/CreateStudySet";
-import OnboardingProgress from "@/components/onboarding/OnboardingProgress";
-import { mapOnboardingDataToSubmissionPayload } from "@/lib/onboardingApiMapping";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import i18n from '@/i18n/config';
+import { type OnboardingData } from '@/components/onboarding/type';
+import LanguageSelection from '@/components/onboarding/LanguageSelection';
+import EducationSelection from '@/components/onboarding/EducationSelection';
+import SourceSelection from '@/components/onboarding/SourceSelection';
+import PremiumSelection from '@/components/onboarding/PremiumSelection';
+import CreateStudySet from '@/components/onboarding/CreateStudySet';
+import OnboardingProgress from '@/components/onboarding/OnboardingProgress';
+import { mapOnboardingDataToSubmissionPayload } from '@/lib/onboardingApiMapping';
 import {
   clearOnboardingDraft,
   loadOnboardingDraft,
   saveOnboardingDraft,
-} from "@/lib/onboardingStorage";
-import { authAPI } from "@/services/endpoints/auth";
-import { useAuth } from "@/hooks/useAuth";
+} from '@/lib/onboardingStorage';
+import { authAPI } from '@/services/endpoints/auth';
+import { useAuth } from '@/hooks/useAuth';
 
 const TOTAL_STEPS = 5;
 
@@ -28,14 +28,14 @@ function migrateOnboardingStep(savedStep: number): number {
 }
 
 const initialData: OnboardingData = {
-  language: "en",
-  education: "",
-  source: "",
+  language: 'en',
+  education: '',
+  source: '',
   premium: false,
   studySet: {
-    name: "",
-    description: "",
-    privacy: "public",
+    name: '',
+    description: '',
+    privacy: 'public',
   },
 };
 
@@ -70,16 +70,16 @@ const OnboardingApp: React.FC = () => {
 
   const persistFinish = async () => {
     if (user?.id == null) {
-      toast.error(t("onboarding.submitMissingUser"));
+      toast.error(t('onboarding.submitMissingUser'));
       return;
     }
     setFinishing(true);
     try {
       await authAPI.updateMe(mapOnboardingDataToSubmissionPayload(data));
       clearOnboardingDraft();
-      navigate("/dashboard");
+      navigate('/dashboard');
     } catch {
-      toast.error(t("onboarding.submitError"));
+      toast.error(t('onboarding.submitError'));
     } finally {
       setFinishing(false);
     }
@@ -123,17 +123,14 @@ const OnboardingApp: React.FC = () => {
   if (!hydrated) {
     return (
       <div className='min-h-screen flex items-center justify-center text-muted-foreground text-sm'>
-        {t("onboarding.loading")}
+        {t('onboarding.loading')}
       </div>
     );
   }
 
   return (
     <div className='pt-14'>
-      <OnboardingProgress
-        currentStep={currentStep}
-        totalSteps={TOTAL_STEPS}
-      />
+      <OnboardingProgress currentStep={currentStep} totalSteps={TOTAL_STEPS} />
       {currentStep === 1 && (
         <LanguageSelection
           selectedLanguage={data.language}

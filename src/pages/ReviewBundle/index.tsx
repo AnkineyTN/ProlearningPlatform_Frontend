@@ -236,7 +236,9 @@ export default function ReviewBundlePage() {
                     <p className='text-xs text-muted-foreground mb-3 uppercase tracking-wider'>
                       Mặt trước
                     </p>
-                    <p className='text-lg font-medium'>{currentCard.frontCard}</p>
+                    <p className='text-lg font-medium'>
+                      {currentCard.frontCard}
+                    </p>
                     <p className='text-xs text-muted-foreground mt-4'>
                       Nhấn để xem đáp án
                     </p>
@@ -251,7 +253,9 @@ export default function ReviewBundlePage() {
                     <p className='text-xs text-muted-foreground mb-3 uppercase tracking-wider'>
                       Mặt sau
                     </p>
-                    <p className='text-lg font-medium'>{currentCard.backCard}</p>
+                    <p className='text-lg font-medium'>
+                      {currentCard.backCard}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -295,7 +299,9 @@ export default function ReviewBundlePage() {
                   <div className='text-[11px] uppercase tracking-wider text-muted-foreground mb-1'>
                     Mặt trước · #{i + 1}
                   </div>
-                  <div className='text-base font-medium mb-3'>{c.frontCard}</div>
+                  <div className='text-base font-medium mb-3'>
+                    {c.frontCard}
+                  </div>
                   <div className='border-t border-border pt-3'>
                     <div className='text-[11px] uppercase tracking-wider text-muted-foreground mb-1'>
                       Mặt sau

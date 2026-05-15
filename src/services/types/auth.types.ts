@@ -1,4 +1,4 @@
-import type { User } from "@/hooks/useAuth";
+import type { User } from '@/hooks/useAuth';
 
 export type ApiMetadata = {
   code?: string;
@@ -14,7 +14,7 @@ export type ApiResponse<TData> = {
 };
 
 export type ApiErrorResponse = {
-  status: "error" | string;
+  status: 'error' | string;
   message: string;
   data: null;
   metadata: ApiMetadata | null;
@@ -29,11 +29,11 @@ export type AuthResponse = {
     refreshToken: string;
   };
   metadata: Record<string, unknown>;
-}
+};
 
 export type RefreshTokenRequest = {
   refreshToken: string;
-}
+};
 
 export type RefreshTokenResponse = {
   status: string;
@@ -43,7 +43,7 @@ export type RefreshTokenResponse = {
     refreshToken: string;
   };
   metadata: Record<string, unknown>;
-}
+};
 
 export type SignupData = {
   firstName: string;
@@ -51,12 +51,12 @@ export type SignupData = {
   email: string;
   password: string;
   role: string;
-}
+};
 
 export type LoginData = {
   email: string;
   password: string;
-}
+};
 
 export type GoogleAuthResponse = {
   status: string;
@@ -65,7 +65,7 @@ export type GoogleAuthResponse = {
     authorizationUrl: string;
   };
   metadata: Record<string, unknown>;
-}
+};
 
 export type MeResponse = {
   status: string;

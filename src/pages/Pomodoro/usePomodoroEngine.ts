@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type {
   PomodoroSetting,
   SessionType,
-} from "@/services/types/pomodoro.types";
-import { sessionTypeFromDuration } from "./constants";
+} from '@/services/types/pomodoro.types';
+import { sessionTypeFromDuration } from './constants';
 
 interface EngineOptions {
   setting: PomodoroSetting;
@@ -26,7 +26,7 @@ interface EngineState {
 
 export const usePomodoroEngine = ({ setting, onSessionEnd }: EngineOptions) => {
   const [state, setState] = useState<EngineState>(() => ({
-    type: "POMODORO",
+    type: 'POMODORO',
     remaining: setting.pomodoroDuration,
     running: false,
     pomodoroCount: 0,
@@ -52,7 +52,12 @@ export const usePomodoroEngine = ({ setting, onSessionEnd }: EngineOptions) => {
     }
     // We intentionally only react to type/setting changes here.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.type, setting.pomodoroDuration, setting.shortBreak, setting.longBreak]);
+  }, [
+    state.type,
+    setting.pomodoroDuration,
+    setting.shortBreak,
+    setting.longBreak,
+  ]);
 
   const clearTick = () => {
     if (intervalRef.current !== null) {
@@ -86,21 +91,19 @@ export const usePomodoroEngine = ({ setting, onSessionEnd }: EngineOptions) => {
       // Decide what comes next.
       let nextType: SessionType;
       let newCount = state.pomodoroCount;
-      if (finishedType === "POMODORO") {
+      if (finishedType === 'POMODORO') {
         newCount += 1;
         nextType =
-          newCount % cur.longBreakInterval === 0
-            ? "LONG_BREAK"
-            : "SHORT_BREAK";
+          newCount % cur.longBreakInterval === 0 ? 'LONG_BREAK' : 'SHORT_BREAK';
       } else {
-        nextType = "POMODORO";
+        nextType = 'POMODORO';
       }
 
       const nextPlanned = sessionTypeFromDuration(nextType, cur);
       plannedRef.current = nextPlanned;
 
       const shouldAutoStart = completed
-        ? finishedType === "POMODORO"
+        ? finishedType === 'POMODORO'
           ? cur.autoStartBreak
           : cur.autoStartPomodoro
         : false;
@@ -124,7 +127,10 @@ export const usePomodoroEngine = ({ setting, onSessionEnd }: EngineOptions) => {
     }
     if (!startedAtRef.current) {
       startedAtRef.current = new Date().toISOString();
-      plannedRef.current = sessionTypeFromDuration(state.type, settingRef.current);
+      plannedRef.current = sessionTypeFromDuration(
+        state.type,
+        settingRef.current,
+      );
     }
 
     intervalRef.current = window.setInterval(() => {

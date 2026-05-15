@@ -242,7 +242,6 @@ export type CardItemReviewRequest = {
   known: boolean;
 };
 
-
 export type CardLearnResponse = {
   id: number;
   frontCard: string;

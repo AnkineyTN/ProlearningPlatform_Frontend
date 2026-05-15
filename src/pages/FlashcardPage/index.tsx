@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import {
   useDeleteCard,
@@ -9,30 +9,30 @@ import {
   useFlashcardDetail,
   useGenerateExamFromFlashcard,
   useUpdateCard,
-} from "@/hooks/useFlashcards";
+} from '@/hooks/useFlashcards';
 import {
   useCancelSession,
   useSessionResult,
   useSessionStatus,
   useStartSession,
   useSyncProgress,
-} from "@/hooks/useFlashcardSession";
-import { useFlashcardStudySettings } from "@/hooks/useFlashcardStudySettings";
-import { useSessionTracker } from "@/hooks/useSessionTracker";
+} from '@/hooks/useFlashcardSession';
+import { useFlashcardStudySettings } from '@/hooks/useFlashcardStudySettings';
+import { useSessionTracker } from '@/hooks/useSessionTracker';
 
-import type { StudyMode } from "@/services/types/flashcard-session.types";
+import type { StudyMode } from '@/services/types/flashcard-session.types';
 
-import ContinueSessionDialog from "./components/ContinueSessionDialog";
-import FlashcardHeader from "./components/FlashcardHeader";
-import HomeView from "./components/HomeView";
-import MatchingView from "./components/MatchingView";
-import ResultsView from "./components/ResultsView";
-import StudyView from "./components/StudyView";
+import ContinueSessionDialog from './components/ContinueSessionDialog';
+import FlashcardHeader from './components/FlashcardHeader';
+import HomeView from './components/HomeView';
+import MatchingView from './components/MatchingView';
+import ResultsView from './components/ResultsView';
+import StudyView from './components/StudyView';
 
-import type { Card } from "@/services/types/flashcard.types";
+import type { Card } from '@/services/types/flashcard.types';
 
 // Types
-type ViewMode = "home" | "study" | "matching" | "results";
+type ViewMode = 'home' | 'study' | 'matching' | 'results';
 
 type Props = {
   setId: number;
@@ -42,7 +42,7 @@ type Props = {
 const FlashcardPage = ({ setId, flashcardId }: Props) => {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [viewMode, setViewMode] = useState<ViewMode>("home");
+  const [viewMode, setViewMode] = useState<ViewMode>('home');
   const [studiedCards, setStudiedCards] = useState<Set<number>>(new Set());
   const [shuffledIndices, setShuffledIndices] = useState<number[]>([]);
   const [isShuffled, setIsShuffled] = useState(false);
@@ -54,11 +54,11 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
   // Per spec: mobile flushes the buffer at SYNC_BATCH_SIZE = 5.
   const SYNC_BATCH_SIZE = 5;
   const [studyMode, setStudyMode] = useState<StudyMode | null>(null);
-  const [reviewBannerMessage, setReviewBannerMessage] = useState<string>("");
+  const [reviewBannerMessage, setReviewBannerMessage] = useState<string>('');
   const { isProgressTrackingEnabled } = useFlashcardStudySettings();
 
   const { recordItem } = useSessionTracker({
-    contentType: "FLASHCARD",
+    contentType: 'FLASHCARD',
     setId: Number(flashcardId),
   });
 
@@ -94,7 +94,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     } catch {
       // ignore
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [cardReviews, setCardReviews] = useState<
@@ -107,14 +107,14 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
   const { data: sessionStatus } = useSessionStatus(
     Number(setId),
     Number(flashcardId),
-    viewMode === "study" || viewMode === "home",
+    viewMode === 'study' || viewMode === 'home',
   );
 
   const { data: sessionResult } = useSessionResult(
     Number(setId),
     Number(flashcardId),
     sessionId || 0,
-    viewMode === "results",
+    viewMode === 'results',
   );
 
   // Fetch flashcard data from API
@@ -131,8 +131,8 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     }
   };
 
-  const title = useMemo(() => data?.data.title || "Flashcard Set", [data]);
-  const description = useMemo(() => data?.data.description || "", [data]);
+  const title = useMemo(() => data?.data.title || 'Flashcard Set', [data]);
+  const description = useMemo(() => data?.data.description || '', [data]);
 
   const flashcards: Array<Card> = useMemo(() => {
     const cards = data?.data.cards || [];
@@ -226,7 +226,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
   const startStudying = async () => {
     const statusData = sessionStatus?.data || [];
 
-    if (statusData.length > 0 && statusData[0].status === "IN_PROGRESS") {
+    if (statusData.length > 0 && statusData[0].status === 'IN_PROGRESS') {
       setPendingSessionData(statusData[0]);
       setShowContinueDialog(true);
       return;
@@ -247,15 +247,15 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       setSessionCards(sessionData.cards ?? []);
       setStudyMode(sessionData.studyMode ?? null);
       setReviewBannerMessage(
-        sessionData.studyMode === "REVIEW" ? sessionData.message ?? "" : "",
+        sessionData.studyMode === 'REVIEW' ? (sessionData.message ?? '') : '',
       );
       setCurrentCardIndex(0);
       setIsFlipped(false);
       setCardReviews([]);
       navigate(`/sets/${setId}/flashcards/${flashcardId}/study`);
     } catch (error) {
-      console.error("Failed to start session:", error);
-      toast.error("Không thể bắt đầu phiên học");
+      console.error('Failed to start session:', error);
+      toast.error('Không thể bắt đầu phiên học');
     }
   };
 
@@ -272,18 +272,21 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         setSessionCards(sessionData.cards ?? []);
         // Spec: preserve any studyMode from the existing session if present;
         // otherwise fall back to the start response.
-        setStudyMode(pendingSessionData.studyMode ?? sessionData.studyMode ?? null);
-        const effectiveMode = pendingSessionData.studyMode ?? sessionData.studyMode;
+        setStudyMode(
+          pendingSessionData.studyMode ?? sessionData.studyMode ?? null,
+        );
+        const effectiveMode =
+          pendingSessionData.studyMode ?? sessionData.studyMode;
         setReviewBannerMessage(
-          effectiveMode === "REVIEW" ? sessionData.message ?? "" : "",
+          effectiveMode === 'REVIEW' ? (sessionData.message ?? '') : '',
         );
         setCurrentCardIndex(0);
         setIsFlipped(false);
         setShowContinueDialog(false);
         navigate(`/sets/${setId}/flashcards/${flashcardId}/study`);
       } catch (error) {
-        console.error("Failed to continue session:", error);
-        toast.error("Không thể tiếp tục phiên học");
+        console.error('Failed to continue session:', error);
+        toast.error('Không thể tiếp tục phiên học');
       }
     }
   };
@@ -300,8 +303,8 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         setSessionId(null); // clears sessionStorage too
         await startNewSession();
       } catch (error) {
-        console.error("Failed to cancel session:", error);
-        toast.error("Không thể hủy phiên học cũ");
+        console.error('Failed to cancel session:', error);
+        toast.error('Không thể hủy phiên học cũ');
       }
     }
   };
@@ -322,12 +325,12 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
 
       setUnsyncedReviews([]);
 
-      if (response.data.data.status === "COMPLETED") {
+      if (response.data.data.status === 'COMPLETED') {
         navigate(`/sets/${setId}/flashcards/${flashcardId}/results`);
         return true;
       }
     } catch (error) {
-      console.error("Failed to sync progress:", error);
+      console.error('Failed to sync progress:', error);
     }
     return false;
   };
@@ -362,9 +365,9 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       }
     };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unsyncedReviews, sessionId]);
 
   const resetFlashcards = () => {
@@ -377,10 +380,10 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
   // Sync viewMode state with pathname so UI components still read viewMode
   useEffect(() => {
     const p = location.pathname.toLowerCase();
-    if (p.endsWith("/study")) setViewMode("study");
-    else if (p.endsWith("/matching")) setViewMode("matching");
-    else if (p.endsWith("/results")) setViewMode("results");
-    else setViewMode("home");
+    if (p.endsWith('/study')) setViewMode('study');
+    else if (p.endsWith('/matching')) setViewMode('matching');
+    else if (p.endsWith('/results')) setViewMode('results');
+    else setViewMode('home');
   }, [location.pathname]);
 
   // Loading state
@@ -403,7 +406,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
             Error loading flashcards
           </div>
           <div className='text-sm text-muted-foreground'>
-            {error instanceof Error ? error.message : "Unknown error"}
+            {error instanceof Error ? error.message : 'Unknown error'}
           </div>
         </div>
       </div>
@@ -431,7 +434,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     frontCard: string;
     backCard: string;
     imageAssetId?: number | null;
-    cardStatus?: "NEW" | "LEARNING" | "KNOWN";
+    cardStatus?: 'NEW' | 'LEARNING' | 'KNOWN';
   }) => {
     try {
       await updateCardMutation.mutateAsync({
@@ -441,10 +444,10 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         data,
       });
       await refetch();
-      toast.success("Card updated successfully");
+      toast.success('Card updated successfully');
     } catch (error) {
-      console.error("Failed to update card:", error);
-      toast.error("Failed to update card. Please try again.");
+      console.error('Failed to update card:', error);
+      toast.error('Failed to update card. Please try again.');
     }
   };
 
@@ -456,10 +459,10 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         cardId,
       });
       await refetch();
-      toast.success("Card deleted successfully");
+      toast.success('Card deleted successfully');
     } catch (error) {
-      console.error("Failed to delete card:", error);
-      toast.error("Failed to delete card. Please try again.");
+      console.error('Failed to delete card:', error);
+      toast.error('Failed to delete card. Please try again.');
     }
   };
 
@@ -469,11 +472,11 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         setId: Number(setId),
         flashcardId: Number(flashcardId),
       });
-      toast.success("Flashcard set deleted successfully");
+      toast.success('Flashcard set deleted successfully');
       navigate(`/sets/${setId}`);
     } catch (error) {
-      console.error("Error deleting flashcard:", error);
-      toast.error("Failed to delete flashcard. Please try again.");
+      console.error('Error deleting flashcard:', error);
+      toast.error('Failed to delete flashcard. Please try again.');
     }
   };
 
@@ -486,8 +489,8 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       const examId = response.data.data.id;
       navigate(`/sets/${setId}/exams/${examId}`);
     } catch (error) {
-      console.error("Failed to generate exam:", error);
-      toast.error("Failed to generate exam. Please try again.");
+      console.error('Failed to generate exam:', error);
+      toast.error('Failed to generate exam. Please try again.');
     }
   };
 
@@ -509,7 +512,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         onReset={handleResetSession}
         onOpenChange={setShowContinueDialog}
       />
-      {viewMode === "home" && (
+      {viewMode === 'home' && (
         <HomeView
           setId={setId}
           flashcardId={flashcardId}
@@ -536,7 +539,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         />
       )}
 
-      {viewMode === "study" && (
+      {viewMode === 'study' && (
         <StudyView
           flashcards={activeCards}
           currentCardIndex={currentCardIndex}
@@ -549,12 +552,12 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           onCardAnswer={handleCardAnswer}
           sessionProgress={sessionStatus?.data?.[0]}
           reviewBannerMessage={
-            studyMode === "REVIEW" ? reviewBannerMessage : undefined
+            studyMode === 'REVIEW' ? reviewBannerMessage : undefined
           }
         />
       )}
 
-      {viewMode === "results" && (
+      {viewMode === 'results' && (
         <ResultsView
           setId={Number(setId)}
           flashcardId={Number(flashcardId)}
@@ -576,7 +579,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         />
       )}
 
-      {viewMode === "matching" && (
+      {viewMode === 'matching' && (
         <MatchingView
           setId={Number(setId)}
           flashcardId={flashcardId}

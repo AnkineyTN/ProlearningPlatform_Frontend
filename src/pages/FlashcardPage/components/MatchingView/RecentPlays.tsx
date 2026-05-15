@@ -44,9 +44,9 @@ const MatchingRecentPlays = ({
       </div>
       <div className='space-y-1'>
         {visiblePlays.map((item, idx) => {
-          const wrongEntries = Object.entries(
-            item.wrongCardCounts ?? {},
-          ).sort((a, b) => b[1] - a[1]);
+          const wrongEntries = Object.entries(item.wrongCardCounts ?? {}).sort(
+            (a, b) => b[1] - a[1],
+          );
           const totalWrong = wrongEntries.reduce((s, [, c]) => s + c, 0);
           const isPerfectRun = totalWrong === 0;
           const barWidth = Math.max(

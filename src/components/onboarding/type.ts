@@ -23,7 +23,7 @@ type OnboardingSubmission = {
   email: string | null;
   displayName: string | null;
   data: OnboardingData;
-  completedVia: "complete" | "skip";
+  completedVia: 'complete' | 'skip';
 };
 
 export type { OnboardingData, OnboardingDraft, OnboardingSubmission };

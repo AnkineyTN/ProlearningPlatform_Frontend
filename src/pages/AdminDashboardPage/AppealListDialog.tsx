@@ -117,10 +117,15 @@ const AppealListDialog = ({
                       size='sm'
                       variant='outline'
                       className='gap-1.5 text-green-600 border-green-500/40 hover:bg-green-500/10'
-                      disabled={reviewMutation.isPending && reviewingId === appeal.id}
+                      disabled={
+                        reviewMutation.isPending && reviewingId === appeal.id
+                      }
                       onClick={() => {
                         setReviewingId(appeal.id);
-                        reviewMutation.mutate({ appealId: appeal.id, status: 'ACCEPTED' });
+                        reviewMutation.mutate({
+                          appealId: appeal.id,
+                          status: 'ACCEPTED',
+                        });
                       }}
                     >
                       <CheckCircle className='w-3.5 h-3.5' />
@@ -130,10 +135,15 @@ const AppealListDialog = ({
                       size='sm'
                       variant='outline'
                       className='gap-1.5 text-destructive border-destructive/40 hover:bg-destructive/10'
-                      disabled={reviewMutation.isPending && reviewingId === appeal.id}
+                      disabled={
+                        reviewMutation.isPending && reviewingId === appeal.id
+                      }
                       onClick={() => {
                         setReviewingId(appeal.id);
-                        reviewMutation.mutate({ appealId: appeal.id, status: 'REJECTED' });
+                        reviewMutation.mutate({
+                          appealId: appeal.id,
+                          status: 'REJECTED',
+                        });
                       }}
                     >
                       <XCircle className='w-3.5 h-3.5' />

@@ -19,10 +19,7 @@ export default function SetEmptyState({ activeTab, onCreateClick }: Props) {
       >
         No sets yet
       </h3>
-      <p
-        className='text-[13px] mb-6'
-        style={{ color: 'var(--pl-text-muted)' }}
-      >
+      <p className='text-[13px] mb-6' style={{ color: 'var(--pl-text-muted)' }}>
         {activeTab === 'all'
           ? 'Create your first study set to get started'
           : `No ${activeTab === 'completed' ? 'completed' : 'in progress'} sets yet`}
@@ -31,7 +28,10 @@ export default function SetEmptyState({ activeTab, onCreateClick }: Props) {
         <button
           onClick={onCreateClick}
           className='px-5 py-[10px] rounded-full text-[13px] font-[500]'
-          style={{ background: 'var(--pl-accent)', color: 'var(--pl-accent-fg)' }}
+          style={{
+            background: 'var(--pl-accent)',
+            color: 'var(--pl-accent-fg)',
+          }}
         >
           Create your first set
         </button>

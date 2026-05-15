@@ -11,7 +11,9 @@ export function extractSearchItems(data: unknown): SearchItem[] {
   return [];
 }
 
-export type SearchMeta = { currentPage: number; totalPages: number } | undefined;
+export type SearchMeta =
+  | { currentPage: number; totalPages: number }
+  | undefined;
 
 export function extractSearchMeta(page: unknown): SearchMeta {
   const o = page as Record<string, unknown> | undefined;

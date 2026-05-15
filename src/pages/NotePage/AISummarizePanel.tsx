@@ -1,4 +1,12 @@
-import { BookMarked, ChevronDown, Copy, PanelRightClose, Save, Sparkles, X } from 'lucide-react';
+import {
+  BookMarked,
+  ChevronDown,
+  Copy,
+  PanelRightClose,
+  Save,
+  Sparkles,
+  X,
+} from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -54,7 +62,12 @@ interface SummaryCardProps {
   onSave?: (id: string) => Promise<void>;
 }
 
-const SummaryCard = ({ summary, onRemove, onCopy, onSave }: SummaryCardProps) => {
+const SummaryCard = ({
+  summary,
+  onRemove,
+  onCopy,
+  onSave,
+}: SummaryCardProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -124,7 +137,9 @@ const SummaryCard = ({ summary, onRemove, onCopy, onSave }: SummaryCardProps) =>
               aria-label='Save summary'
               title='Save to note'
             >
-              <Save className={`w-3.5 h-3.5 ${isSaving ? 'animate-pulse' : ''}`} />
+              <Save
+                className={`w-3.5 h-3.5 ${isSaving ? 'animate-pulse' : ''}`}
+              />
             </Button>
           ) : null}
           <Button

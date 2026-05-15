@@ -1,8 +1,5 @@
 // Enums and constants
-export type QuestionType =
-  | 'MULTIPLE_CHOICE'
-  | 'TRUE_FALSE'
-  | 'ESSAY';
+export type QuestionType = 'MULTIPLE_CHOICE' | 'TRUE_FALSE' | 'ESSAY';
 export type QuizStatus = 'ONGOING' | 'COMPLETED' | 'NOT_STARTED';
 export type PrivacyType = 'PUBLIC' | 'PRIVATE';
 

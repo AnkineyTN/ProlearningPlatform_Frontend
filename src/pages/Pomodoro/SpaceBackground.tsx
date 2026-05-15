@@ -1,4 +1,4 @@
-import type { SpaceDto } from "@/services/types/pomodoro.types";
+import type { SpaceDto } from '@/services/types/pomodoro.types';
 
 interface Props {
   space: SpaceDto | null;
@@ -7,11 +7,11 @@ interface Props {
 const SpaceBackground = ({ space }: Props) => {
   if (!space) return null;
 
-  if (space.assetType === "VIDEO") {
+  if (space.assetType === 'VIDEO') {
     return (
       <video
         key={space.id}
-        className="absolute inset-0 z-0 w-full h-full object-cover"
+        className='absolute inset-0 z-0 w-full h-full object-cover'
         src={space.assetUrl}
         autoPlay
         muted
@@ -24,11 +24,11 @@ const SpaceBackground = ({ space }: Props) => {
   return (
     <div
       key={space.id}
-      className="absolute inset-0 z-0 w-full h-full"
+      className='absolute inset-0 z-0 w-full h-full'
       style={{
         backgroundImage: `url("${space.assetUrl}")`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
       }}
     />
   );

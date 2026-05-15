@@ -1,4 +1,9 @@
-import { BookOpen, FileText, FlipHorizontal, GraduationCap } from 'lucide-react';
+import {
+  BookOpen,
+  FileText,
+  FlipHorizontal,
+  GraduationCap,
+} from 'lucide-react';
 import type { SearchResourceType } from '@/services/types/search.types';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -23,9 +28,10 @@ export const RESOURCE_COMMANDS = [
   { id: 'exam' as MentionResourceType, label: 'Exam', Icon: GraduationCap },
 ];
 
-export const SEARCH_TYPE_MAP: Record<MentionResourceType, SearchResourceType> = {
-  set: 'SET',
-  note: 'NOTE',
-  flashcard: 'FLASHCARD',
-  exam: 'EXAM',
-};
+export const SEARCH_TYPE_MAP: Record<MentionResourceType, SearchResourceType> =
+  {
+    set: 'SET',
+    note: 'NOTE',
+    flashcard: 'FLASHCARD',
+    exam: 'EXAM',
+  };

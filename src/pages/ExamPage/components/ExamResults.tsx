@@ -381,7 +381,7 @@ export default function ExamResults({
                 let textColor = '';
                 let icon = null;
 
-if (correct === true) {
+                if (correct === true) {
                   tooltipText = t('exam.results.navCorrect');
                   bgColor =
                     'bg-green-500/10 border-green-500/40 hover:bg-green-500/20';
@@ -511,13 +511,15 @@ if (correct === true) {
                     const score = getQuestionScore(question.id);
                     const isOpen = openQuestions[question.id] ?? true;
 
-                    const borderColor = correct === true
+                    const borderColor =
+                      correct === true
                         ? 'border-green-200 bg-green-50/50 dark:bg-green-950/20 dark:border-green-800'
                         : correct === false
                           ? 'border-red-200 bg-red-50/50 dark:bg-red-950/20 dark:border-red-800'
                           : 'border-yellow-200 bg-yellow-50/50 dark:bg-yellow-950/20 dark:border-yellow-700';
 
-                    const iconBg = correct === true
+                    const iconBg =
+                      correct === true
                         ? 'bg-green-500 text-white'
                         : correct === false
                           ? 'bg-red-500 text-white'

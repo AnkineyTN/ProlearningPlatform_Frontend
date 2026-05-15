@@ -1,12 +1,12 @@
-import type { ApiMetadata } from "./auth.types";
+import type { ApiMetadata } from './auth.types';
 
-export type AssetType = "IMAGE" | "VIDEO" | "AUDIO" | "DOCUMENT";
-export type AssetSource = "SYSTEM" | "USER";
-export type SessionType = "POMODORO" | "SHORT_BREAK" | "LONG_BREAK";
-export type PomodoroTab = "ALL" | "MY_UPLOADS" | "FAVORITES";
-export type PomodoroSourceFilter = "SYSTEM" | "USER";
-export type PomodoroSortBy = "createdAt" | "name";
-export type PomodoroSortDir = "asc" | "desc";
+export type AssetType = 'IMAGE' | 'VIDEO' | 'AUDIO' | 'DOCUMENT';
+export type AssetSource = 'SYSTEM' | 'USER';
+export type SessionType = 'POMODORO' | 'SHORT_BREAK' | 'LONG_BREAK';
+export type PomodoroTab = 'ALL' | 'MY_UPLOADS' | 'FAVORITES';
+export type PomodoroSourceFilter = 'SYSTEM' | 'USER';
+export type PomodoroSortBy = 'createdAt' | 'name';
+export type PomodoroSortDir = 'asc' | 'desc';
 
 export interface PomodoroSetting {
   pomodoroDuration: number;

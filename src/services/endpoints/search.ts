@@ -1,7 +1,10 @@
 import type { AxiosResponse } from 'axios';
 import api from '../client';
 
-import type { GlobalSearchApiResponse, GlobalSearchParams } from '../types/search.types';
+import type {
+  GlobalSearchApiResponse,
+  GlobalSearchParams,
+} from '../types/search.types';
 
 function buildSearchQueryString(params: GlobalSearchParams): string {
   const sp = new URLSearchParams();

@@ -1,5 +1,5 @@
-import type { AxiosResponse } from "axios";
-import api from "../client";
+import type { AxiosResponse } from 'axios';
+import api from '../client';
 import type {
   CreateSoundRequest,
   CreateSpaceRequest,
@@ -11,7 +11,7 @@ import type {
   SoundDto,
   SpaceDto,
   WeeklyStats,
-} from "../types/pomodoro.types";
+} from '../types/pomodoro.types';
 
 const buildSearchParams = (params: SearchParams = {}) => {
   const out: Record<string, string | number> = {};
@@ -28,23 +28,23 @@ const buildSearchParams = (params: SearchParams = {}) => {
 export const pomodoroAPI = {
   // ── Settings ────────────────────────────────────────────────
   getSetting: (): Promise<AxiosResponse<PomodoroResponse<PomodoroSetting>>> =>
-    api.get("/pomodoro/setting"),
+    api.get('/pomodoro/setting'),
 
   updateSetting: (
     data: PomodoroSetting,
   ): Promise<AxiosResponse<PomodoroResponse<PomodoroSetting>>> =>
-    api.put("/pomodoro/setting", data),
+    api.put('/pomodoro/setting', data),
 
   // ── Spaces ──────────────────────────────────────────────────
   searchSpaces: (
     params: SearchParams = {},
   ): Promise<AxiosResponse<PaginatedResponse<SpaceDto>>> =>
-    api.get("/pomodoro/spaces/search", { params: buildSearchParams(params) }),
+    api.get('/pomodoro/spaces/search', { params: buildSearchParams(params) }),
 
   createSpace: (
     data: CreateSpaceRequest,
   ): Promise<AxiosResponse<PomodoroResponse<SpaceDto>>> =>
-    api.post("/pomodoro/spaces", data),
+    api.post('/pomodoro/spaces', data),
 
   deleteSpace: (spaceId: number): Promise<AxiosResponse<void>> =>
     api.delete(`/pomodoro/spaces/${spaceId}`),
@@ -56,12 +56,12 @@ export const pomodoroAPI = {
   searchSounds: (
     params: SearchParams = {},
   ): Promise<AxiosResponse<PaginatedResponse<SoundDto>>> =>
-    api.get("/pomodoro/sounds/search", { params: buildSearchParams(params) }),
+    api.get('/pomodoro/sounds/search', { params: buildSearchParams(params) }),
 
   createSound: (
     data: CreateSoundRequest,
   ): Promise<AxiosResponse<PomodoroResponse<SoundDto>>> =>
-    api.post("/pomodoro/sounds", data),
+    api.post('/pomodoro/sounds', data),
 
   deleteSound: (soundId: number): Promise<AxiosResponse<void>> =>
     api.delete(`/pomodoro/sounds/${soundId}`),
@@ -71,13 +71,13 @@ export const pomodoroAPI = {
 
   // ── Sessions & Stats ────────────────────────────────────────
   recordSession: (data: SessionRequest): Promise<AxiosResponse<void>> =>
-    api.post("/pomodoro/sessions", data),
+    api.post('/pomodoro/sessions', data),
 
   getWeeklyStats: (
     startDate: string,
     timezone?: string,
   ): Promise<AxiosResponse<PomodoroResponse<WeeklyStats>>> =>
-    api.get("/pomodoro/stats/weekly", {
+    api.get('/pomodoro/stats/weekly', {
       params: { startDate, ...(timezone ? { timezone } : {}) },
     }),
 };
@@ -85,7 +85,7 @@ export const pomodoroAPI = {
 // ── Asset upload (Cloudinary 3-step flow) ─────────────────────
 export const pomodoroUploadAPI = {
   getSignature: (
-    type: "IMAGE" | "VIDEO" | "AUDIO",
+    type: 'IMAGE' | 'VIDEO' | 'AUDIO',
   ): Promise<
     AxiosResponse<
       PomodoroResponse<{
@@ -106,5 +106,5 @@ export const pomodoroUploadAPI = {
     url: string;
     fileName: string;
   }): Promise<AxiosResponse<void>> =>
-    api.post("/assets/update-uploaded-asset", data),
+    api.post('/assets/update-uploaded-asset', data),
 };

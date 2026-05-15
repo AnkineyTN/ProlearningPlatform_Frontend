@@ -136,7 +136,11 @@ export const noteAPI = {
     noteId: number,
     assetId?: number,
   ): Promise<
-    AxiosResponse<{ status: number; message: string; data: NoteFileRegionCommentDto[] }>
+    AxiosResponse<{
+      status: number;
+      message: string;
+      data: NoteFileRegionCommentDto[];
+    }>
   > =>
     api.get(`/sets/${setId}/notes/${noteId}/file-region-comments`, {
       params: assetId ? { assetId } : undefined,
@@ -147,7 +151,11 @@ export const noteAPI = {
     noteId: number,
     body: CreateNoteFileRegionCommentRequest,
   ): Promise<
-    AxiosResponse<{ status: number; message: string; data: NoteFileRegionCommentDto }>
+    AxiosResponse<{
+      status: number;
+      message: string;
+      data: NoteFileRegionCommentDto;
+    }>
   > => api.post(`/sets/${setId}/notes/${noteId}/file-region-comments`, body),
 
   deleteFileRegionComment: (
@@ -155,7 +163,9 @@ export const noteAPI = {
     noteId: number,
     commentId: number,
   ): Promise<AxiosResponse<ResponseDataVoid>> =>
-    api.delete(`/sets/${setId}/notes/${noteId}/file-region-comments/${commentId}`),
+    api.delete(
+      `/sets/${setId}/notes/${noteId}/file-region-comments/${commentId}`,
+    ),
 
   // ─── Explains (saved AI explanations/definitions) ──────────────────────────
 

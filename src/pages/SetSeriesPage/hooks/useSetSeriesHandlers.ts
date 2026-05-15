@@ -150,7 +150,8 @@ export function useSetSeriesHandlers({
 
           navigate(`/sets/${setId}/flashcards/editor`, {
             state: {
-              title: data.title || result.data.title || 'AI Generated Flashcards',
+              title:
+                data.title || result.data.title || 'AI Generated Flashcards',
               description,
               privacy: data.privacy,
               generatedFlashcards: flashcards,
@@ -222,7 +223,8 @@ export function useSetSeriesHandlers({
         navigate(`/sets/${setId}/exams/editor`, {
           state: {
             title: data.title || result.data?.title || '',
-            description: result.data?.description || `Generated from ${sourceDesc}`,
+            description:
+              result.data?.description || `Generated from ${sourceDesc}`,
             privacy: data.privacy,
             duration: result.data?.duration,
             aiContent: content,

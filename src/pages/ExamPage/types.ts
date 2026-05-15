@@ -15,7 +15,7 @@ export interface ExamQuestion {
   answers: Answer[];
   score: number;
   explanation?: string;
-  _action?: "CREATE" | "UPDATE" | "DELETE" | null;
+  _action?: 'CREATE' | 'UPDATE' | 'DELETE' | null;
 }
 
 export interface Exam {

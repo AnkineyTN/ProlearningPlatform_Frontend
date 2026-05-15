@@ -1,32 +1,25 @@
-import { useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { toast } from "react-toastify";
-import { Heart, RotateCcw, Trash2, Upload, X } from "lucide-react";
+import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import { Heart, RotateCcw, Trash2, Upload, X } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 import {
   useCreateSpace,
   useDeleteSpace,
   useSpacesSearch,
   useToggleFavoriteSpace,
   useUploadPomodoroAsset,
-} from "@/hooks/usePomodoro";
-import type {
-  PomodoroTab,
-  SpaceDto,
-} from "@/services/types/pomodoro.types";
+} from '@/hooks/usePomodoro';
+import type { PomodoroTab, SpaceDto } from '@/services/types/pomodoro.types';
 
 interface Props {
   open: boolean;
@@ -36,11 +29,17 @@ interface Props {
   onReset: () => void;
 }
 
-const SpacePicker = ({ open, selectedId, onClose, onSelect, onReset }: Props) => {
+const SpacePicker = ({
+  open,
+  selectedId,
+  onClose,
+  onSelect,
+  onReset,
+}: Props) => {
   const { t } = useTranslation();
-  const [tab, setTab] = useState<PomodoroTab>("ALL");
-  const [keyword, setKeyword] = useState("");
-  const [uploadName, setUploadName] = useState("");
+  const [tab, setTab] = useState<PomodoroTab>('ALL');
+  const [keyword, setKeyword] = useState('');
+  const [uploadName, setUploadName] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
   const { data, isLoading } = useSpacesSearch({
@@ -59,29 +58,29 @@ const SpacePicker = ({ open, selectedId, onClose, onSelect, onReset }: Props) =>
 
   const handleUpload = async (file: File) => {
     if (!uploadName.trim()) {
-      toast.error(t("pomodoro.toast.nameRequired"));
+      toast.error(t('pomodoro.toast.nameRequired'));
       return;
     }
-    const isVideo = file.type.startsWith("video/");
-    const isImage = file.type.startsWith("image/");
+    const isVideo = file.type.startsWith('video/');
+    const isImage = file.type.startsWith('image/');
     if (!isVideo && !isImage) {
-      toast.error(t("pomodoro.toast.invalidSpaceFile"));
+      toast.error(t('pomodoro.toast.invalidSpaceFile'));
       return;
     }
     try {
       const asset = await upload.mutateAsync({
         file,
-        type: isVideo ? "VIDEO" : "IMAGE",
+        type: isVideo ? 'VIDEO' : 'IMAGE',
       });
       await createSpace.mutateAsync({
         name: uploadName.trim(),
         assetId: asset.assetId,
       });
-      setUploadName("");
-      if (fileRef.current) fileRef.current.value = "";
-      toast.success(t("pomodoro.toast.spaceCreated"));
+      setUploadName('');
+      if (fileRef.current) fileRef.current.value = '';
+      toast.success(t('pomodoro.toast.spaceCreated'));
     } catch {
-      toast.error(t("pomodoro.toast.uploadFailed"));
+      toast.error(t('pomodoro.toast.uploadFailed'));
     }
   };
 

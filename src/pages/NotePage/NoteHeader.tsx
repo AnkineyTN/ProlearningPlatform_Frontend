@@ -6,26 +6,23 @@ import {
   Share2,
   Sparkles,
   Upload,
-} from "lucide-react";
-import { useState } from "react";
-import toast from "react-hot-toast";
+} from 'lucide-react';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  useSaveDocumentInNote,
-  useSaveImageInNote,
-} from "@/hooks/useNotes";
-import { cn, isBrowserImageFile } from "@/lib/utils";
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useSaveDocumentInNote, useSaveImageInNote } from '@/hooks/useNotes';
+import { cn, isBrowserImageFile } from '@/lib/utils';
 import {
   useUploadDocumentFile,
   useUploadImageFile,
-} from "@/hooks/useImageUpload";
-import { useNavigate, useParams } from "react-router-dom";
-import { ShareDialog } from "@/components/collaboration/ShareDialog";
-import type { CollabRole } from "@/services/types/collaboration.types";
-import { useAuth } from "@/hooks/useAuth";
+} from '@/hooks/useImageUpload';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ShareDialog } from '@/components/collaboration/ShareDialog';
+import type { CollabRole } from '@/services/types/collaboration.types';
+import { useAuth } from '@/hooks/useAuth';
 
 interface NoteHeaderProps {
   title: string;
@@ -39,7 +36,7 @@ interface NoteHeaderProps {
     fileUrl: string;
     extension: string;
     publicId: string;
-    kind: "doc" | "image";
+    kind: 'doc' | 'image';
   }) => void;
   onDownloadHTML: () => void;
   attachedFileCount?: number;
@@ -56,7 +53,7 @@ export const NoteHeader = ({
   onTitleChange,
   noteId,
   setId,
-  userRole = "OWNER",
+  userRole = 'OWNER',
   onFileUploaded,
   onDownloadHTML,
   attachedFileCount = 0,
@@ -85,22 +82,22 @@ export const NoteHeader = ({
     if (!file) return;
 
     const validDocTypes = [
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "text/plain",
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain',
     ];
 
     const isImage = isBrowserImageFile(file);
     if (!isImage && !validDocTypes.includes(file.type)) {
       toast.error(
-        "Invalid file type. Please upload images, PDF, DOC, DOCX, or TXT.",
+        'Invalid file type. Please upload images, PDF, DOC, DOCX, or TXT.',
       );
       return;
     }
 
     if (!_setId || !noteId) {
-      toast.error("Invalid note");
+      toast.error('Invalid note');
       return;
     }
 
@@ -108,9 +105,9 @@ export const NoteHeader = ({
     try {
       if (isImage) {
         const result = await uploadImageMutation.mutateAsync(file);
-        const ext = file.name.includes(".")
-          ? file.name.split(".").pop() || ""
-          : "";
+        const ext = file.name.includes('.')
+          ? file.name.split('.').pop() || ''
+          : '';
 
         await saveImageMutation.mutateAsync({
           setId: _setId,
@@ -129,14 +126,14 @@ export const NoteHeader = ({
           fileUrl: result.url,
           extension: ext,
           publicId: result.publicId,
-          kind: "image",
+          kind: 'image',
         });
       } else {
         const result = await uploadDocumentMutation.mutateAsync(file);
 
         const ext =
           result.extension ||
-          (file.name.includes(".") ? file.name.split(".").pop() || "" : "");
+          (file.name.includes('.') ? file.name.split('.').pop() || '' : '');
 
         await saveDocumentMutation.mutateAsync({
           setId: _setId,
@@ -155,26 +152,26 @@ export const NoteHeader = ({
           fileUrl: result.url,
           extension: ext,
           publicId: result.publicId,
-          kind: "doc",
+          kind: 'doc',
         });
       }
 
-      toast.success("File uploaded successfully");
+      toast.success('File uploaded successfully');
     } catch (error) {
-      toast.error("Failed to upload file");
+      toast.error('Failed to upload file');
       console.error(error);
     } finally {
       setIsUploading(false);
-      event.target.value = "";
+      event.target.value = '';
     }
   };
 
   const togglePillBase =
-    "flex items-center gap-2 px-3 h-8 text-sm rounded-md border transition-colors cursor-pointer";
+    'flex items-center gap-2 px-3 h-8 text-sm rounded-md border transition-colors cursor-pointer';
   const togglePillActive =
-    "bg-[var(--pl-accent-soft)] border-[var(--pl-accent-border)] text-[var(--pl-accent-strong)]";
+    'bg-[var(--pl-accent-soft)] border-[var(--pl-accent-border)] text-[var(--pl-accent-strong)]';
   const togglePillInactive =
-    "border-border text-[var(--pl-text-muted)] hover:text-[var(--pl-text)] hover:bg-[var(--pl-bg-hover)]";
+    'border-border text-[var(--pl-text-muted)] hover:text-[var(--pl-text)] hover:bg-[var(--pl-bg-hover)]';
 
   return (
     <>
@@ -196,7 +193,7 @@ export const NoteHeader = ({
             onChange={(e) => onTitleChange(e.target.value)}
             placeholder='Untitled Note'
             className='flex-1 min-w-0 max-w-2xl border-none bg-transparent shadow-none px-2 h-auto py-1 font-[family-name:var(--font-display)] text-2xl font-medium tracking-tight focus-visible:ring-0'
-            readOnly={userRole === "VIEWER"}
+            readOnly={userRole === 'VIEWER'}
           />
 
           <div className='flex items-center gap-1.5 ml-auto'>
@@ -236,7 +233,7 @@ export const NoteHeader = ({
               Share
             </Button>
 
-            {userRole !== "VIEWER" && (
+            {userRole !== 'VIEWER' && (
               <>
                 <Button
                   onClick={onDownloadHTML}

@@ -1,7 +1,7 @@
-import type { AxiosResponse } from "axios";
-import api, { publicApi } from "../client";
+import type { AxiosResponse } from 'axios';
+import api, { publicApi } from '../client';
 
-export type AppealStatus = "PENDING" | "ACCEPTED" | "REJECTED";
+export type AppealStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED';
 
 export type AppealDto = {
   id: number;
@@ -22,23 +22,28 @@ type ApiEnvelope<T> = {
 };
 
 export const appealsAPI = {
-  submitAuthenticated: (reason: string): Promise<AxiosResponse<ApiEnvelope<AppealDto>>> =>
-    api.post("/users/me/appeal", { reason }),
+  submitAuthenticated: (
+    reason: string,
+  ): Promise<AxiosResponse<ApiEnvelope<AppealDto>>> =>
+    api.post('/users/me/appeal', { reason }),
 
-  submitPublic: (email: string, reason: string): Promise<AxiosResponse<ApiEnvelope<AppealDto>>> =>
-    publicApi.post("/public/appeals", { email, reason }),
+  submitPublic: (
+    email: string,
+    reason: string,
+  ): Promise<AxiosResponse<ApiEnvelope<AppealDto>>> =>
+    publicApi.post('/public/appeals', { email, reason }),
 
   adminList: (params: {
     status?: AppealStatus;
     page?: number;
     size?: number;
   }): Promise<AxiosResponse<ApiEnvelope<unknown>>> =>
-    api.get("/admin/appeals", {
+    api.get('/admin/appeals', {
       params: {
         status: params.status,
         page: params.page ?? 0,
         size: params.size ?? 20,
-        sort: "createdAt,DESC",
+        sort: 'createdAt,DESC',
       },
     }),
 

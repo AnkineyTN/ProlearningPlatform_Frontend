@@ -27,12 +27,14 @@ const PIE_COLORS = [
 ];
 
 type AnalyticsSectionProps = {
-  analytics: {
-    totalRegisteredUsers: number;
-    education: { label: string; count: number; percent?: number }[];
-    premium: { proCount: number; freeCount: number; proPercent: number };
-    hearAppFrom: { label: string; count: number; percent?: number }[];
-  } | undefined;
+  analytics:
+    | {
+        totalRegisteredUsers: number;
+        education: { label: string; count: number; percent?: number }[];
+        premium: { proCount: number; freeCount: number; proPercent: number };
+        hearAppFrom: { label: string; count: number; percent?: number }[];
+      }
+    | undefined;
   isLoading: boolean;
   isError: boolean;
 };
@@ -74,7 +76,9 @@ const AnalyticsSection = ({
         </p>
       )}
       {isLoading && (
-        <p className='text-sm text-muted-foreground px-1'>{t('onboarding.loading')}</p>
+        <p className='text-sm text-muted-foreground px-1'>
+          {t('onboarding.loading')}
+        </p>
       )}
 
       {analytics && (
@@ -143,9 +147,13 @@ const AnalyticsSection = ({
                           fontSize: 12,
                         }}
                         formatter={(value: number, _n, item) => {
-                          const p = (item.payload as { percent?: number })?.percent;
+                          const p = (item.payload as { percent?: number })
+                            ?.percent;
                           const pct = p != null ? ` (${p.toFixed(1)}%)` : '';
-                          return [`${value}${pct}`, t('adminOnboarding.chartCount')];
+                          return [
+                            `${value}${pct}`,
+                            t('adminOnboarding.chartCount'),
+                          ];
                         }}
                       />
                       <Legend wrapperStyle={{ fontSize: 11 }} />
@@ -173,9 +181,23 @@ const AnalyticsSection = ({
               <div className='h-[200px] w-full'>
                 <ResponsiveContainer width='100%' height='100%'>
                   <BarChart data={premiumBarData} barCategoryGap='40%'>
-                    <CartesianGrid strokeDasharray='3 3' opacity={0.15} vertical={false} />
-                    <XAxis dataKey='type' tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 11 }} allowDecimals={false} axisLine={false} tickLine={false} />
+                    <CartesianGrid
+                      strokeDasharray='3 3'
+                      opacity={0.15}
+                      vertical={false}
+                    />
+                    <XAxis
+                      dataKey='type'
+                      tick={{ fontSize: 12 }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 11 }}
+                      allowDecimals={false}
+                      axisLine={false}
+                      tickLine={false}
+                    />
                     <Tooltip
                       contentStyle={{
                         background: 'var(--pl-bg)',
@@ -183,7 +205,10 @@ const AnalyticsSection = ({
                         borderRadius: '12px',
                         fontSize: 12,
                       }}
-                      formatter={(v: number) => [v, t('adminOnboarding.chartCount')]}
+                      formatter={(v: number) => [
+                        v,
+                        t('adminOnboarding.chartCount'),
+                      ]}
                     />
                     <Bar dataKey='count' radius={[6, 6, 0, 0]}>
                       {premiumBarData.map((entry) => (
@@ -229,8 +254,17 @@ const AnalyticsSection = ({
                     data={analytics.hearAppFrom}
                     margin={{ left: 8, right: 16, top: 4, bottom: 4 }}
                   >
-                    <CartesianGrid strokeDasharray='3 3' opacity={0.15} horizontal={false} />
-                    <XAxis type='number' tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <CartesianGrid
+                      strokeDasharray='3 3'
+                      opacity={0.15}
+                      horizontal={false}
+                    />
+                    <XAxis
+                      type='number'
+                      tick={{ fontSize: 11 }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
                     <YAxis
                       dataKey='label'
                       type='category'
@@ -247,9 +281,13 @@ const AnalyticsSection = ({
                         fontSize: 12,
                       }}
                       formatter={(value: number, _n, item) => {
-                        const p = (item.payload as { percent?: number })?.percent;
+                        const p = (item.payload as { percent?: number })
+                          ?.percent;
                         const pct = p != null ? ` (${p.toFixed(1)}%)` : '';
-                        return [`${value}${pct}`, t('adminOnboarding.chartCount')];
+                        return [
+                          `${value}${pct}`,
+                          t('adminOnboarding.chartCount'),
+                        ];
                       }}
                     />
                     <Bar dataKey='count' fill='#6366f1' radius={[0, 6, 6, 0]} />

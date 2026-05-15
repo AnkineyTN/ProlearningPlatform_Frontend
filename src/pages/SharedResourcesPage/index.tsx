@@ -31,7 +31,8 @@ export default function SharedResourcesPage() {
   const navigate = useNavigate();
 
   const { data: sharedNotes = [], isLoading: loadingNotes } = useSharedNotes();
-  const { data: sharedFlashcards = [], isLoading: loadingFlashcards } = useSharedFlashcards();
+  const { data: sharedFlashcards = [], isLoading: loadingFlashcards } =
+    useSharedFlashcards();
   const { data: sharedExams = [], isLoading: loadingExams } = useSharedExams();
 
   const counts: Record<Tab, number> = {
@@ -81,7 +82,9 @@ export default function SharedResourcesPage() {
                 className='flex items-center gap-2 px-4 py-2 rounded-full text-[12.5px] transition-all'
                 style={{
                   background: active ? 'var(--pl-accent)' : 'var(--pl-bg-elev)',
-                  color: active ? 'var(--pl-accent-fg)' : 'var(--pl-text-muted)',
+                  color: active
+                    ? 'var(--pl-accent-fg)'
+                    : 'var(--pl-text-muted)',
                   border: active ? 'none' : '1px solid var(--pl-border)',
                   fontWeight: active ? 500 : 400,
                 }}
@@ -94,7 +97,9 @@ export default function SharedResourcesPage() {
                     background: active
                       ? 'rgba(255,255,255,0.2)'
                       : 'var(--pl-bg-hover)',
-                    color: active ? 'var(--pl-accent-fg)' : 'var(--pl-text-faint)',
+                    color: active
+                      ? 'var(--pl-accent-fg)'
+                      : 'var(--pl-text-faint)',
                   }}
                 >
                   {counts[tab]}

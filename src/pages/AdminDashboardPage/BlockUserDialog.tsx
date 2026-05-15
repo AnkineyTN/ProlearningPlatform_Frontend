@@ -42,7 +42,9 @@ const BlockUserDialog = ({
             {t('adminDashboard.blockDialogDesc', { name: userName })}
           </p>
           <div className='space-y-2'>
-            <Label htmlFor='block-reason'>{t('adminDashboard.blockReason')}</Label>
+            <Label htmlFor='block-reason'>
+              {t('adminDashboard.blockReason')}
+            </Label>
             <Textarea
               id='block-reason'
               value={reason}

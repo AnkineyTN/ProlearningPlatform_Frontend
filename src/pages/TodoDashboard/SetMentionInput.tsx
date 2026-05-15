@@ -13,7 +13,10 @@ import { useSetMentionQuery, useSearchMentionQuery } from './useMentionQueries';
 
 // ─── Re-exports for existing importers ───────────────────────────────────────
 export type { MentionResourceType } from './mentionTypes';
-export { renderTitleWithRefs, renderTitleWithSetRefs } from './mentionTitleRenderer';
+export {
+  renderTitleWithRefs,
+  renderTitleWithSetRefs,
+} from './mentionTitleRenderer';
 export { LinkedResourceChips } from './LinkedResourceChips';
 
 // ─── Props ────────────────────────────────────────────────────────────────────

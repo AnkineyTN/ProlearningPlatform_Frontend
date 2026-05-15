@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { toast } from "react-toastify";
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import type { PomodoroSetting } from "@/services/types/pomodoro.types";
-import { DURATION_LIMITS } from "./constants";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import type { PomodoroSetting } from '@/services/types/pomodoro.types';
+import { DURATION_LIMITS } from './constants';
 
 interface Props {
   open: boolean;
@@ -33,7 +33,7 @@ const SettingsModal = ({ open, setting, onClose, onSave, saving }: Props) => {
   }, [open, setting]);
 
   const setMinutes = (
-    key: "pomodoroDuration" | "shortBreak" | "longBreak",
+    key: 'pomodoroDuration' | 'shortBreak' | 'longBreak',
     minutes: number,
   ) => {
     const seconds = Math.round(minutes * 60);
@@ -42,15 +42,28 @@ const SettingsModal = ({ open, setting, onClose, onSave, saving }: Props) => {
 
   const handleSave = async () => {
     const limits = DURATION_LIMITS;
-    const checks: { key: keyof PomodoroSetting; value: number; min: number; max: number }[] = [
-      { key: "pomodoroDuration", value: draft.pomodoroDuration, ...limits.pomodoroDuration },
-      { key: "shortBreak", value: draft.shortBreak, ...limits.shortBreak },
-      { key: "longBreak", value: draft.longBreak, ...limits.longBreak },
-      { key: "longBreakInterval", value: draft.longBreakInterval, ...limits.longBreakInterval },
+    const checks: {
+      key: keyof PomodoroSetting;
+      value: number;
+      min: number;
+      max: number;
+    }[] = [
+      {
+        key: 'pomodoroDuration',
+        value: draft.pomodoroDuration,
+        ...limits.pomodoroDuration,
+      },
+      { key: 'shortBreak', value: draft.shortBreak, ...limits.shortBreak },
+      { key: 'longBreak', value: draft.longBreak, ...limits.longBreak },
+      {
+        key: 'longBreakInterval',
+        value: draft.longBreakInterval,
+        ...limits.longBreakInterval,
+      },
     ];
     for (const c of checks) {
       if (c.value < c.min || c.value > c.max) {
-        toast.error(t("pomodoro.settings.invalid"));
+        toast.error(t('pomodoro.settings.invalid'));
         return;
       }
     }

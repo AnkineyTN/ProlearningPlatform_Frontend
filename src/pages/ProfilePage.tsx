@@ -219,7 +219,6 @@ export default function ProfilePage() {
     });
   }, [reset, user]);
 
-
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -373,10 +372,11 @@ export default function ProfilePage() {
                   className='absolute inset-0 rounded-full flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer'
                   title={t('profile.avatar.change')}
                 >
-                  {avatarUploading
-                    ? <div className='w-5 h-5 border-2 border-white/60 border-t-white rounded-full animate-spin' />
-                    : <Camera size={20} className='text-white' />
-                  }
+                  {avatarUploading ? (
+                    <div className='w-5 h-5 border-2 border-white/60 border-t-white rounded-full animate-spin' />
+                  ) : (
+                    <Camera size={20} className='text-white' />
+                  )}
                   <input
                     type='file'
                     accept='image/*'
@@ -493,7 +493,11 @@ export default function ProfilePage() {
                   disabled={loading}
                 >
                   <SelectTrigger className={inputCls + ' cursor-pointer'}>
-                    <SelectValue placeholder={t('profile.learningProfile.languagePlaceholder')} />
+                    <SelectValue
+                      placeholder={t(
+                        'profile.learningProfile.languagePlaceholder',
+                      )}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {languages.map((v) => (
@@ -511,7 +515,9 @@ export default function ProfilePage() {
               </label>
 
               <label className='flex flex-col gap-1.5'>
-                <FieldLabel>{t('profile.learningProfile.education')}</FieldLabel>
+                <FieldLabel>
+                  {t('profile.learningProfile.education')}
+                </FieldLabel>
                 <Select
                   value={education}
                   onValueChange={(v) =>
@@ -520,7 +526,11 @@ export default function ProfilePage() {
                   disabled={loading}
                 >
                   <SelectTrigger className={inputCls + ' cursor-pointer'}>
-                    <SelectValue placeholder={t('profile.learningProfile.educationPlaceholder')} />
+                    <SelectValue
+                      placeholder={t(
+                        'profile.learningProfile.educationPlaceholder',
+                      )}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {educations.map((v) => (
@@ -538,7 +548,9 @@ export default function ProfilePage() {
               </label>
 
               <label className='flex flex-col gap-1.5'>
-                <FieldLabel>{t('profile.learningProfile.hearAppFrom')}</FieldLabel>
+                <FieldLabel>
+                  {t('profile.learningProfile.hearAppFrom')}
+                </FieldLabel>
                 <Select
                   value={hearAppFrom}
                   onValueChange={(v) =>
@@ -547,7 +559,11 @@ export default function ProfilePage() {
                   disabled={loading}
                 >
                   <SelectTrigger className={inputCls + ' cursor-pointer'}>
-                    <SelectValue placeholder={t('profile.learningProfile.hearAppFromPlaceholder')} />
+                    <SelectValue
+                      placeholder={t(
+                        'profile.learningProfile.hearAppFromPlaceholder',
+                      )}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {hearAppFromOptions.map((v) => (
@@ -583,7 +599,9 @@ export default function ProfilePage() {
               className='inline-flex items-center gap-1.5 px-[22px] py-2.5 rounded-full text-[13px] font-medium transition-opacity disabled:opacity-50 bg-[var(--pl-accent)] text-[var(--pl-accent-fg)]'
             >
               <Save className='w-3.5 h-3.5' />
-              {loading ? t('profile.actions.saving') : t('profile.actions.save')}
+              {loading
+                ? t('profile.actions.saving')
+                : t('profile.actions.save')}
             </button>
           </div>
         </>
@@ -664,7 +682,9 @@ export default function ProfilePage() {
           >
             <div className='grid grid-cols-1 sm:grid-cols-2 gap-[18px] max-w-[720px]'>
               <label className='flex flex-col gap-1.5'>
-                <FieldLabel>{t('profile.security.changePassword.currentPassword')}</FieldLabel>
+                <FieldLabel>
+                  {t('profile.security.changePassword.currentPassword')}
+                </FieldLabel>
                 <div className='relative'>
                   <Input
                     disabled={loading}
@@ -687,7 +707,9 @@ export default function ProfilePage() {
               </label>
 
               <label className='flex flex-col gap-1.5'>
-                <FieldLabel>{t('profile.security.changePassword.newPassword')}</FieldLabel>
+                <FieldLabel>
+                  {t('profile.security.changePassword.newPassword')}
+                </FieldLabel>
                 <div className='relative'>
                   <Input
                     disabled={loading}
@@ -716,7 +738,9 @@ export default function ProfilePage() {
                 disabled={loading}
                 className='px-[22px] py-2.5 rounded-full text-[13px] font-medium transition-opacity disabled:opacity-50 bg-[var(--pl-accent)] text-[var(--pl-accent-fg)]'
               >
-                {loading ? t('profile.actions.saving') : t('profile.security.changePassword.submit')}
+                {loading
+                  ? t('profile.actions.saving')
+                  : t('profile.security.changePassword.submit')}
               </button>
             </div>
           </Section>

@@ -17,9 +17,7 @@ export function searchResultTitle(item: Record<string, unknown>): string {
   return raw != null ? String(raw) : '—';
 }
 
-export function searchResultHref(
-  item: Record<string, unknown>,
-): string | null {
+export function searchResultHref(item: Record<string, unknown>): string | null {
   const id = item.id ?? item.resourceId;
   if (id == null) return null;
   const typeRaw = item.type ?? item.resourceType ?? item.searchType ?? '';

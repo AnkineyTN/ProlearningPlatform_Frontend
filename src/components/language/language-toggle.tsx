@@ -1,9 +1,9 @@
-import { useTranslation } from "react-i18next";
-import { Button } from "@/components/ui/button";
+import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
 
 const languages = [
-  { code: "en", name: "ENGLISH", flag: "US" },
-  { code: "vi", name: "TIẾNG VIỆT", flag: "VN" },
+  { code: 'en', name: 'ENGLISH', flag: 'US' },
+  { code: 'vi', name: 'TIẾNG VIỆT', flag: 'VN' },
 ];
 
 const LanguageToggle = () => {

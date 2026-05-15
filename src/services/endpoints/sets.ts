@@ -13,9 +13,8 @@ import type {
 
 export const setAPI = {
   /** GET /sets/:id — same envelope as PATCH response */
-  getSetById: (
-    id: number,
-  ): Promise<AxiosResponse<UpdateSetResponse>> => api.get(`/sets/${id}`),
+  getSetById: (id: number): Promise<AxiosResponse<UpdateSetResponse>> =>
+    api.get(`/sets/${id}`),
 
   getSetData: ({
     page,

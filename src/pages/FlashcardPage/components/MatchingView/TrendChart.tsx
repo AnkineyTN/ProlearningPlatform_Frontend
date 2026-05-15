@@ -90,9 +90,7 @@ const MatchingTrendChart = ({
               cx={p.x}
               cy={p.y}
               r={i === trendPoints.length - 1 ? 5 : 3}
-              fill={
-                i === trendPoints.length - 1 ? '#22c55e' : 'var(--pl-bg)'
-              }
+              fill={i === trendPoints.length - 1 ? '#22c55e' : 'var(--pl-bg)'}
               stroke='#22c55e'
               strokeWidth='2'
             />

@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { authAPI } from "@/services/endpoints/auth";
+import React, { useEffect } from 'react';
+import { authAPI } from '@/services/endpoints/auth';
 
 type Props = {
   children: React.ReactNode;
@@ -7,11 +7,11 @@ type Props = {
 
 const LayoutNoSidebar = ({ children }: Props) => {
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (token) {
       authAPI.getMe().catch(() => {
-        localStorage.removeItem("token");
-        window.location.href = "/login";
+        localStorage.removeItem('token');
+        window.location.href = '/login';
       });
     }
   }, []);

@@ -1,7 +1,7 @@
 export const toIsoDate = (d: Date): string => {
   const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${day}`;
 };
 
@@ -33,9 +33,12 @@ export const isSameDay = (a: Date, b: Date): boolean =>
 export const formatWeekRange = (start: Date, locale: string): string => {
   const end = addDays(start, 6);
   const sameMonth = start.getMonth() === end.getMonth();
-  const startLabel = start.toLocaleDateString(locale, { month: "short", day: "numeric" });
+  const startLabel = start.toLocaleDateString(locale, {
+    month: 'short',
+    day: 'numeric',
+  });
   const endLabel = sameMonth
-    ? end.toLocaleDateString(locale, { day: "numeric" })
-    : end.toLocaleDateString(locale, { month: "short", day: "numeric" });
+    ? end.toLocaleDateString(locale, { day: 'numeric' })
+    : end.toLocaleDateString(locale, { month: 'short', day: 'numeric' });
   return `${startLabel} – ${endLabel}`;
 };

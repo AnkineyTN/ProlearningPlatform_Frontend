@@ -9,8 +9,16 @@ import SetCard from '@/components/cards/SetCard';
 import { type Set } from '@/components/cards/SetCard';
 import CreateNewModal from '@/components/modals/CreateNewModal';
 import { Button } from '@/components/ui/button';
-import { useDeleteSet, useUpdateSet, useSetData, useCreateSet } from '@/hooks/useSets';
-import { type CreateSetPayload, type UpdateSetPayload } from '@/services/types/set.types';
+import {
+  useDeleteSet,
+  useUpdateSet,
+  useSetData,
+  useCreateSet,
+} from '@/hooks/useSets';
+import {
+  type CreateSetPayload,
+  type UpdateSetPayload,
+} from '@/services/types/set.types';
 import { getTimeAgo } from '@/lib/utils';
 import { type ListPrivacyFilter } from '@/components/lists/ResourceFiltersBar';
 
@@ -47,7 +55,9 @@ export default function SetListPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState<'all' | 'completed' | 'in_progress'>('all');
+  const [activeTab, setActiveTab] = useState<
+    'all' | 'completed' | 'in_progress'
+  >('all');
   const [currentPage, setCurrentPage] = useState(0);
   const [listSearch, setListSearch] = useState('');
   const [debouncedQ, setDebouncedQ] = useState('');
@@ -62,7 +72,10 @@ export default function SetListPage() {
   const updateSetMutation = useUpdateSet();
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setDebouncedQ(listSearch.trim()), 350);
+    const timer = window.setTimeout(
+      () => setDebouncedQ(listSearch.trim()),
+      350,
+    );
     return () => window.clearTimeout(timer);
   }, [listSearch]);
 
@@ -147,7 +160,10 @@ export default function SetListPage() {
           viewMode={viewMode}
           onViewModeChange={setViewMode}
         />
-        <div className='mt-4' style={{ borderBottom: '1px solid var(--pl-border)' }} />
+        <div
+          className='mt-4'
+          style={{ borderBottom: '1px solid var(--pl-border)' }}
+        />
       </div>
 
       <div className='px-10 pt-7 pb-16'>
@@ -195,7 +211,9 @@ export default function SetListPage() {
               </span>
               <Button
                 variant='ghost'
-                onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
+                }
                 disabled={currentPage >= totalPages - 1}
                 className='p-2 rounded-lg disabled:opacity-30'
                 style={{ color: 'var(--pl-text-muted)' }}

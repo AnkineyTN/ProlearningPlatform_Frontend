@@ -49,8 +49,12 @@ export default function SetFilterBar({
                 className='text-[10.5px] px-[6px] py-[1px] rounded-full'
                 style={{
                   fontFamily: 'var(--font-mono-pl)',
-                  background: active ? 'rgba(255,255,255,0.2)' : 'var(--pl-bg-hover)',
-                  color: active ? 'var(--pl-accent-fg)' : 'var(--pl-text-faint)',
+                  background: active
+                    ? 'rgba(255,255,255,0.2)'
+                    : 'var(--pl-bg-hover)',
+                  color: active
+                    ? 'var(--pl-accent-fg)'
+                    : 'var(--pl-text-faint)',
                 }}
               >
                 {tab.count}
@@ -75,7 +79,9 @@ export default function SetFilterBar({
         <input
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder={t('setlist.searchPlaceholder', { defaultValue: 'Search sets…' })}
+          placeholder={t('setlist.searchPlaceholder', {
+            defaultValue: 'Search sets…',
+          })}
           className='bg-transparent outline-none flex-1 text-[12.5px]'
           style={{ color: 'var(--pl-text)' }}
         />
@@ -105,8 +111,12 @@ export default function SetFilterBar({
           onClick={() => onViewModeChange('grid')}
           className='px-2 py-2 transition-all'
           style={{
-            background: viewMode === 'grid' ? 'var(--pl-accent-soft)' : 'transparent',
-            color: viewMode === 'grid' ? 'var(--pl-accent-strong)' : 'var(--pl-text-faint)',
+            background:
+              viewMode === 'grid' ? 'var(--pl-accent-soft)' : 'transparent',
+            color:
+              viewMode === 'grid'
+                ? 'var(--pl-accent-strong)'
+                : 'var(--pl-text-faint)',
           }}
         >
           <Grid2x2 className='size-4' />
@@ -115,8 +125,12 @@ export default function SetFilterBar({
           onClick={() => onViewModeChange('table')}
           className='px-2 py-2 transition-all'
           style={{
-            background: viewMode === 'table' ? 'var(--pl-accent-soft)' : 'transparent',
-            color: viewMode === 'table' ? 'var(--pl-accent-strong)' : 'var(--pl-text-faint)',
+            background:
+              viewMode === 'table' ? 'var(--pl-accent-soft)' : 'transparent',
+            color:
+              viewMode === 'table'
+                ? 'var(--pl-accent-strong)'
+                : 'var(--pl-text-faint)',
           }}
         >
           <List className='size-4' />

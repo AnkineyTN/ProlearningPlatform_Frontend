@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type ImageSignatureResponse = {
   status: string;
   message: string;
@@ -15,7 +16,7 @@ export type ImageSignatureResponse = {
 
 export type ImageUploadFromUrlRequest = {
   sourceUrl: string;
-  assetType: "IMAGE" | "DOCUMENT";
+  assetType: 'IMAGE' | 'DOCUMENT';
 };
 
 export type ImageUploadFromUrlResponse = {

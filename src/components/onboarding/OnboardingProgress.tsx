@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   currentStep: number;
@@ -16,13 +16,13 @@ const OnboardingProgress = ({ currentStep, totalSteps = TOTAL }: Props) => {
       <div className='max-w-2xl mx-auto pointer-events-auto'>
         <div className='flex items-center justify-between text-xs text-muted-foreground mb-1.5'>
           <span>
-            {t("onboarding.progress.step", {
+            {t('onboarding.progress.step', {
               current: currentStep,
               total: totalSteps,
             })}
           </span>
           <span>
-            {t("onboarding.progress.percent", {
+            {t('onboarding.progress.percent', {
               pct,
             })}
           </span>

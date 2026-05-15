@@ -1,4 +1,4 @@
-export type ContentType = "NOTE" | "FLASHCARD" | "EXAM" | "EDIT";
+export type ContentType = 'NOTE' | 'FLASHCARD' | 'EXAM' | 'EDIT';
 
 export type ActivityLogRequest = {
   contentType: ContentType;
@@ -40,4 +40,4 @@ export type ActivitySummary = {
   breakdown: ContentTypeSummary[];
 };
 
-export type HeatmapMode = "time" | "sessions" | "score";
+export type HeatmapMode = 'time' | 'sessions' | 'score';

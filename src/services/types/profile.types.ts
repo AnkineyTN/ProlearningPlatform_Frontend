@@ -1,4 +1,4 @@
-import type { User } from "@/hooks/useAuth";
+import type { User } from '@/hooks/useAuth';
 
 export type ChangePasswordData = {
   currentPassword: string;

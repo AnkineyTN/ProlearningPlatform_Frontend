@@ -41,10 +41,12 @@ function SetTableRow({ set, onAccess, onDelete, onUpdate }: RowProps) {
           'var(--pl-bg-hover)';
       }}
       onMouseLeave={(e) => {
-        (e.currentTarget as HTMLTableRowElement).style.background = 'transparent';
+        (e.currentTarget as HTMLTableRowElement).style.background =
+          'transparent';
       }}
       onClick={() => {
-        if (!showMenu && !showDeleteDialog && !showNotifDialog) onAccess(set.id);
+        if (!showMenu && !showDeleteDialog && !showNotifDialog)
+          onAccess(set.id);
       }}
     >
       {/* Title */}
@@ -210,26 +212,39 @@ type Props = {
   onUpdate: (set: Set) => void;
 };
 
-export default function SetTableView({ sets, onAccess, onDelete, onUpdate }: Props) {
+export default function SetTableView({
+  sets,
+  onAccess,
+  onDelete,
+  onUpdate,
+}: Props) {
   return (
     <div
       className='rounded-[12px] overflow-hidden mb-8'
-      style={{ border: '1px solid var(--pl-border)', background: 'var(--pl-bg-elev)' }}
+      style={{
+        border: '1px solid var(--pl-border)',
+        background: 'var(--pl-bg-elev)',
+      }}
     >
       <table className='w-full'>
         <thead>
           <tr style={{ borderBottom: '1px solid var(--pl-border)' }}>
-            {['Title', 'Description', 'Resources', 'Created', 'Updated', ''].map(
-              (col) => (
-                <th
-                  key={col}
-                  className='py-2.5 px-4 text-left text-[10.5px] uppercase tracking-[0.1em]'
-                  style={{ color: 'var(--pl-text-faint)', fontWeight: 500 }}
-                >
-                  {col}
-                </th>
-              ),
-            )}
+            {[
+              'Title',
+              'Description',
+              'Resources',
+              'Created',
+              'Updated',
+              '',
+            ].map((col) => (
+              <th
+                key={col}
+                className='py-2.5 px-4 text-left text-[10.5px] uppercase tracking-[0.1em]'
+                style={{ color: 'var(--pl-text-faint)', fontWeight: 500 }}
+              >
+                {col}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>

@@ -30,9 +30,14 @@ export const collaborationAPI = {
     page = 0,
     size = 10,
   ): Promise<AxiosResponse<UserSearchResponse>> => {
-    const params = new URLSearchParams({ page: String(page), size: String(size) });
+    const params = new URLSearchParams({
+      page: String(page),
+      size: String(size),
+    });
     if (keyword.trim()) params.set('keyword', keyword.trim());
-    return api.get(`/sets/${setId}/${resourceType}/${resourceId}/users/search?${params}`);
+    return api.get(
+      `/sets/${setId}/${resourceType}/${resourceId}/users/search?${params}`,
+    );
   },
 
   // ─── Invite members ────────────────────────────────────────────────────────
@@ -43,7 +48,10 @@ export const collaborationAPI = {
     resourceId: number,
     payload: InviteRequest,
   ): Promise<AxiosResponse<InviteResponse>> =>
-    api.post(`/sets/${setId}/${resourceType}/${resourceId}/members/invite`, payload),
+    api.post(
+      `/sets/${setId}/${resourceType}/${resourceId}/members/invite`,
+      payload,
+    ),
 
   // ─── List members ──────────────────────────────────────────────────────────
 
@@ -55,9 +63,14 @@ export const collaborationAPI = {
     page = 0,
     size = 20,
   ): Promise<AxiosResponse<MembersListResponse>> => {
-    const params = new URLSearchParams({ page: String(page), size: String(size) });
+    const params = new URLSearchParams({
+      page: String(page),
+      size: String(size),
+    });
     if (keyword.trim()) params.set('keyword', keyword.trim());
-    return api.get(`/sets/${setId}/${resourceType}/${resourceId}/members?${params}`);
+    return api.get(
+      `/sets/${setId}/${resourceType}/${resourceId}/members?${params}`,
+    );
   },
 
   // ─── Change role (notes only) ──────────────────────────────────────────────
@@ -77,7 +90,9 @@ export const collaborationAPI = {
     resourceId: number,
     targetUserId: number,
   ): Promise<AxiosResponse<CollabVoidResponse>> =>
-    api.delete(`/sets/${setId}/${resourceType}/${resourceId}/members/${targetUserId}`),
+    api.delete(
+      `/sets/${setId}/${resourceType}/${resourceId}/members/${targetUserId}`,
+    ),
 
   // ─── Accept invite (in-app) ────────────────────────────────────────────────
 
@@ -99,34 +114,52 @@ export const collaborationAPI = {
 
   // ─── Pending invites ───────────────────────────────────────────────────────
 
-  getPendingNoteInvites: (): Promise<AxiosResponse<PendingInvitesResponse<PendingNoteInvite>>> =>
-    api.get('/notes/invites/pending'),
+  getPendingNoteInvites: (): Promise<
+    AxiosResponse<PendingInvitesResponse<PendingNoteInvite>>
+  > => api.get('/notes/invites/pending'),
 
-  getPendingFlashcardInvites: (): Promise<AxiosResponse<PendingInvitesResponse<PendingFlashcardInvite>>> =>
-    api.get('/flashcards/pending'),
+  getPendingFlashcardInvites: (): Promise<
+    AxiosResponse<PendingInvitesResponse<PendingFlashcardInvite>>
+  > => api.get('/flashcards/pending'),
 
-  getPendingExamInvites: (): Promise<AxiosResponse<PendingInvitesResponse<PendingExamInvite>>> =>
-    api.get('/exams/pending'),
+  getPendingExamInvites: (): Promise<
+    AxiosResponse<PendingInvitesResponse<PendingExamInvite>>
+  > => api.get('/exams/pending'),
 
   // ─── Accept by token (email link) ─────────────────────────────────────────
 
-  acceptNoteByToken: (token: string): Promise<AxiosResponse<AcceptByTokenResponse>> =>
-    publicApi.post(`/notes/invites/accept-by-token?token=${encodeURIComponent(token)}`),
+  acceptNoteByToken: (
+    token: string,
+  ): Promise<AxiosResponse<AcceptByTokenResponse>> =>
+    publicApi.post(
+      `/notes/invites/accept-by-token?token=${encodeURIComponent(token)}`,
+    ),
 
-  acceptExamByToken: (token: string): Promise<AxiosResponse<AcceptByTokenResponse>> =>
-    publicApi.post(`/exam-invites/accept-by-token?token=${encodeURIComponent(token)}`),
+  acceptExamByToken: (
+    token: string,
+  ): Promise<AxiosResponse<AcceptByTokenResponse>> =>
+    publicApi.post(
+      `/exam-invites/accept-by-token?token=${encodeURIComponent(token)}`,
+    ),
 
-  acceptFlashcardByToken: (token: string): Promise<AxiosResponse<AcceptByTokenResponse>> =>
-    publicApi.post(`/flashcard-invites/accept-by-token?token=${encodeURIComponent(token)}`),
+  acceptFlashcardByToken: (
+    token: string,
+  ): Promise<AxiosResponse<AcceptByTokenResponse>> =>
+    publicApi.post(
+      `/flashcard-invites/accept-by-token?token=${encodeURIComponent(token)}`,
+    ),
 
   // ─── Shared resources (invited by others) ─────────────────────────────────
 
-  getSharedNotes: (): Promise<AxiosResponse<SharedResourcesResponse<SharedNote>>> =>
-    api.get('/notes/shared'),
+  getSharedNotes: (): Promise<
+    AxiosResponse<SharedResourcesResponse<SharedNote>>
+  > => api.get('/notes/shared'),
 
-  getSharedFlashcards: (): Promise<AxiosResponse<SharedResourcesResponse<SharedFlashcard>>> =>
-    api.get('/flashcards/shared'),
+  getSharedFlashcards: (): Promise<
+    AxiosResponse<SharedResourcesResponse<SharedFlashcard>>
+  > => api.get('/flashcards/shared'),
 
-  getSharedExams: (): Promise<AxiosResponse<SharedResourcesResponse<SharedExam>>> =>
-    api.get('/exams/shared'),
+  getSharedExams: (): Promise<
+    AxiosResponse<SharedResourcesResponse<SharedExam>>
+  > => api.get('/exams/shared'),
 };

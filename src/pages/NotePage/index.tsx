@@ -240,7 +240,12 @@ export const NotePage = () => {
         const saved = await createExplainMutation.mutateAsync({
           setId,
           noteId: numericNoteId,
-          data: { noteId: numericNoteId, source: 'editor', term: selectedText, explain: response },
+          data: {
+            noteId: numericNoteId,
+            source: 'editor',
+            term: selectedText,
+            explain: response,
+          },
         });
         setSummaries((prev) =>
           prev.map((s) =>
@@ -272,10 +277,17 @@ export const NotePage = () => {
       const saved = await createExplainMutation.mutateAsync({
         setId,
         noteId: numericNoteId,
-        data: { noteId: numericNoteId, source: 'file', term: target.query, explain: target.response },
+        data: {
+          noteId: numericNoteId,
+          source: 'file',
+          term: target.query,
+          explain: target.response,
+        },
       });
       setSummaries((prev) =>
-        prev.map((s) => (s.id === id ? { ...s, backendId: saved.data.data.id } : s)),
+        prev.map((s) =>
+          s.id === id ? { ...s, backendId: saved.data.data.id } : s,
+        ),
       );
       toast.success('Summary saved');
     } catch {

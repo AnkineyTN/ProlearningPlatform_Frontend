@@ -1,7 +1,7 @@
-import type { AxiosResponse } from "axios";
-import api from "../client";
-import type { AdminApiEnvelope } from "../types/adminUsers.types";
-import type { AssetType } from "../types/pomodoro.types";
+import type { AxiosResponse } from 'axios';
+import api from '../client';
+import type { AdminApiEnvelope } from '../types/adminUsers.types';
+import type { AssetType } from '../types/pomodoro.types';
 
 export type AdminSpaceDto = {
   id: number;
@@ -9,7 +9,7 @@ export type AdminSpaceDto = {
   description: string | null;
   assetUrl: string;
   assetType: AssetType;
-  source: "SYSTEM" | "USER";
+  source: 'SYSTEM' | 'USER';
 };
 
 export type AdminSoundDto = {
@@ -17,7 +17,7 @@ export type AdminSoundDto = {
   name: string;
   description: string | null;
   assetUrl: string;
-  source: "SYSTEM" | "USER";
+  source: 'SYSTEM' | 'USER';
 };
 
 export type AdminCreateFromUrlRequest = {
@@ -47,30 +47,44 @@ export type AdminCreateSoundFromAssetRequest = {
 
 export const adminPomodoroAPI = {
   listSpaces: (): Promise<AxiosResponse<AdminApiEnvelope<AdminSpaceDto[]>>> =>
-    api.get("/admin/pomodoro/spaces"),
+    api.get('/admin/pomodoro/spaces'),
 
-  createSpaceFromUrl: (body: AdminCreateFromUrlRequest): Promise<AxiosResponse<AdminApiEnvelope<AdminSpaceDto>>> =>
-    api.post("/admin/pomodoro/spaces/url", body),
+  createSpaceFromUrl: (
+    body: AdminCreateFromUrlRequest,
+  ): Promise<AxiosResponse<AdminApiEnvelope<AdminSpaceDto>>> =>
+    api.post('/admin/pomodoro/spaces/url', body),
 
-  createSpaceFromFile: (body: AdminCreateSpaceFromAssetRequest): Promise<AxiosResponse<AdminApiEnvelope<AdminSpaceDto>>> =>
-    api.post("/admin/pomodoro/spaces", body),
+  createSpaceFromFile: (
+    body: AdminCreateSpaceFromAssetRequest,
+  ): Promise<AxiosResponse<AdminApiEnvelope<AdminSpaceDto>>> =>
+    api.post('/admin/pomodoro/spaces', body),
 
-  updateSpace: (id: number, body: AdminUpdateAssetRequest): Promise<AxiosResponse<AdminApiEnvelope<AdminSpaceDto>>> =>
+  updateSpace: (
+    id: number,
+    body: AdminUpdateAssetRequest,
+  ): Promise<AxiosResponse<AdminApiEnvelope<AdminSpaceDto>>> =>
     api.put(`/admin/pomodoro/spaces/${id}`, body),
 
   deleteSpace: (id: number): Promise<AxiosResponse<AdminApiEnvelope<void>>> =>
     api.delete(`/admin/pomodoro/spaces/${id}`),
 
   listSounds: (): Promise<AxiosResponse<AdminApiEnvelope<AdminSoundDto[]>>> =>
-    api.get("/admin/pomodoro/sounds"),
+    api.get('/admin/pomodoro/sounds'),
 
-  createSoundFromUrl: (body: AdminCreateFromUrlRequest): Promise<AxiosResponse<AdminApiEnvelope<AdminSoundDto>>> =>
-    api.post("/admin/pomodoro/sounds/url", body),
+  createSoundFromUrl: (
+    body: AdminCreateFromUrlRequest,
+  ): Promise<AxiosResponse<AdminApiEnvelope<AdminSoundDto>>> =>
+    api.post('/admin/pomodoro/sounds/url', body),
 
-  createSoundFromFile: (body: AdminCreateSoundFromAssetRequest): Promise<AxiosResponse<AdminApiEnvelope<AdminSoundDto>>> =>
-    api.post("/admin/pomodoro/sounds", body),
+  createSoundFromFile: (
+    body: AdminCreateSoundFromAssetRequest,
+  ): Promise<AxiosResponse<AdminApiEnvelope<AdminSoundDto>>> =>
+    api.post('/admin/pomodoro/sounds', body),
 
-  updateSound: (id: number, body: AdminUpdateAssetRequest): Promise<AxiosResponse<AdminApiEnvelope<AdminSoundDto>>> =>
+  updateSound: (
+    id: number,
+    body: AdminUpdateAssetRequest,
+  ): Promise<AxiosResponse<AdminApiEnvelope<AdminSoundDto>>> =>
     api.put(`/admin/pomodoro/sounds/${id}`, body),
 
   deleteSound: (id: number): Promise<AxiosResponse<AdminApiEnvelope<void>>> =>

@@ -1,25 +1,30 @@
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
-import { useTranslation } from "react-i18next";
-import { todoAPI } from "@/services/endpoints/todo";
-import type { Goal, ResourceRef, Todo } from "@/services/types/todo.types";
-import type { MentionResourceType } from "./SetMentionInput";
-import GoalModal from "./GoalModal";
-import TodoStats from "./TodoStats";
-import WhatsNextPanel from "./WhatsNextPanel";
-import TodaySection from "./TodaySection";
-import WeekSection from "./WeekSection";
-import YearSection from "./YearSection";
-import TodoDetailModal from "./TodoDetailModal";
-import { todayIso } from "./dateHelpers";
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
+import { todoAPI } from '@/services/endpoints/todo';
+import type { Goal, ResourceRef, Todo } from '@/services/types/todo.types';
+import type { MentionResourceType } from './SetMentionInput';
+import GoalModal from './GoalModal';
+import TodoStats from './TodoStats';
+import WhatsNextPanel from './WhatsNextPanel';
+import TodaySection from './TodaySection';
+import WeekSection from './WeekSection';
+import YearSection from './YearSection';
+import TodoDetailModal from './TodoDetailModal';
+import { todayIso } from './dateHelpers';
 
 const TodoDashboard = () => {
   const { t } = useTranslation();
   const qc = useQueryClient();
-  const [newTask, setNewTask] = useState("");
-  const [newTaskRefs, setNewTaskRefs] = useState<Record<MentionResourceType, ResourceRef[]>>({
-    set: [], note: [], flashcard: [], exam: [],
+  const [newTask, setNewTask] = useState('');
+  const [newTaskRefs, setNewTaskRefs] = useState<
+    Record<MentionResourceType, ResourceRef[]>
+  >({
+    set: [],
+    note: [],
+    flashcard: [],
+    exam: [],
   });
   const [goalModalOpen, setGoalModalOpen] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
@@ -27,56 +32,58 @@ const TodoDashboard = () => {
   const [selectedGoalId, setSelectedGoalId] = useState<number | null>(null);
 
   const { data: todosData } = useQuery({
-    queryKey: ["todos", "all"],
+    queryKey: ['todos', 'all'],
     queryFn: () => todoAPI.getTodos({ size: 200 }),
   });
 
   const { data: goalsData } = useQuery({
-    queryKey: ["goals"],
+    queryKey: ['goals'],
     queryFn: () => todoAPI.getGoals({ size: 100 }),
   });
 
   const todos: Todo[] = todosData?.data?.data ?? [];
   const goals: Goal[] = goalsData?.data?.data ?? [];
-  const longGoals = goals.filter((g) => g.type === "LONG");
-  const completedCount = todos.filter((td) => td.completed || td.status === "DONE").length;
+  const longGoals = goals.filter((g) => g.type === 'LONG');
+  const completedCount = todos.filter(
+    (td) => td.completed || td.status === 'DONE',
+  ).length;
 
   const createTodo = useMutation({
     mutationFn: todoAPI.createTodo,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["todos"] });
-      qc.invalidateQueries({ queryKey: ["goals"] });
-      setNewTask("");
+      qc.invalidateQueries({ queryKey: ['todos'] });
+      qc.invalidateQueries({ queryKey: ['goals'] });
+      setNewTask('');
       setNewTaskRefs({ set: [], note: [], flashcard: [], exam: [] });
     },
-    onError: () => toast.error(t("todo.toast.createFailed")),
+    onError: () => toast.error(t('todo.toast.createFailed')),
   });
 
   const toggleTodo = useMutation({
     mutationFn: todoAPI.toggleTodo,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["todos"] });
-      qc.invalidateQueries({ queryKey: ["goals"] });
+      qc.invalidateQueries({ queryKey: ['todos'] });
+      qc.invalidateQueries({ queryKey: ['goals'] });
     },
   });
 
   const deleteTodo = useMutation({
     mutationFn: todoAPI.deleteTodo,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["todos"] });
-      qc.invalidateQueries({ queryKey: ["goals"] });
+      qc.invalidateQueries({ queryKey: ['todos'] });
+      qc.invalidateQueries({ queryKey: ['goals'] });
     },
-    onError: () => toast.error(t("todo.toast.deleteFailed")),
+    onError: () => toast.error(t('todo.toast.deleteFailed')),
   });
 
   const deleteGoal = useMutation({
     mutationFn: todoAPI.deleteGoal,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["goals"] });
-      qc.invalidateQueries({ queryKey: ["todos"] });
-      toast.success(t("todo.toast.goalDeleted"));
+      qc.invalidateQueries({ queryKey: ['goals'] });
+      qc.invalidateQueries({ queryKey: ['todos'] });
+      toast.success(t('todo.toast.goalDeleted'));
     },
-    onError: () => toast.error(t("todo.toast.goalDeleteFailed")),
+    onError: () => toast.error(t('todo.toast.goalDeleteFailed')),
   });
 
   const handleAddTodayTask = () => {
@@ -86,15 +93,22 @@ const TodoDashboard = () => {
       dueDate: todayIso(),
       setRefs: newTaskRefs.set.length ? newTaskRefs.set : undefined,
       noteRefs: newTaskRefs.note.length ? newTaskRefs.note : undefined,
-      flashcardRefs: newTaskRefs.flashcard.length ? newTaskRefs.flashcard : undefined,
+      flashcardRefs: newTaskRefs.flashcard.length
+        ? newTaskRefs.flashcard
+        : undefined,
       examRefs: newTaskRefs.exam.length ? newTaskRefs.exam : undefined,
     });
   };
 
-  const handleNewTaskRefAdded = (type: MentionResourceType, ref: ResourceRef) => {
+  const handleNewTaskRefAdded = (
+    type: MentionResourceType,
+    ref: ResourceRef,
+  ) => {
     setNewTaskRefs((prev) => ({
       ...prev,
-      [type]: prev[type].some((r) => r.id === ref.id) ? prev[type] : [...prev[type], ref],
+      [type]: prev[type].some((r) => r.id === ref.id)
+        ? prev[type]
+        : [...prev[type], ref],
     }));
   };
 
@@ -116,7 +130,7 @@ const TodoDashboard = () => {
   return (
     <div className='min-h-screen py-8 px-10'>
       <GoalModal
-        key={editingGoal?.id ?? (goalModalOpen ? "new" : "")}
+        key={editingGoal?.id ?? (goalModalOpen ? 'new' : '')}
         open={goalModalOpen || editingGoal !== null}
         editGoal={editingGoal}
         longGoals={longGoals}
@@ -138,16 +152,16 @@ const TodoDashboard = () => {
       <div className='flex justify-between items-start mb-7'>
         <div>
           <div className='text-[11px] tracking-[0.18em] uppercase mb-2 text-[var(--pl-text-faint)]'>
-            {t("todo.breadcrumb")}
+            {t('todo.breadcrumb')}
           </div>
           <h1
             className='text-[44px] tracking-tight leading-[1.05] m-0 mb-1.5 text-[var(--pl-text)]'
             style={{ fontFamily: 'var(--font-display)' }}
           >
-            {t("todo.title")}
+            {t('todo.title')}
           </h1>
           <p className='text-[17px] italic m-0 font-[var(--font-serif)] text-[var(--pl-text-muted)]'>
-            {t("todo.subtitle")}
+            {t('todo.subtitle')}
           </p>
         </div>
       </div>

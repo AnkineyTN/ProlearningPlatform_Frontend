@@ -1,7 +1,7 @@
 // Device token registration
 export type DeviceTokenRegistration = {
   deviceToken: string;
-  deviceType?: "WEB" | "MOBILE" | "DESKTOP";
+  deviceType?: 'WEB' | 'MOBILE' | 'DESKTOP';
 };
 
 /** One notification from GET /notifications or GET /notifications/unread */

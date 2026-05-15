@@ -1,5 +1,5 @@
-import type { AxiosResponse } from "axios";
-import api from "../client";
+import type { AxiosResponse } from 'axios';
+import api from '../client';
 import type {
   AdminApiEnvelope,
   AdminBlockUserRequest,
@@ -7,14 +7,14 @@ import type {
   AdminUpdateUserRequest,
   AdminUserDirectoryRow,
   AdminUserStats,
-} from "../types/adminUsers.types";
+} from '../types/adminUsers.types';
 
 function extractRows(data: unknown): AdminUserDirectoryRow[] {
   if (Array.isArray(data)) return data as AdminUserDirectoryRow[];
   if (
     data &&
-    typeof data === "object" &&
-    "content" in data &&
+    typeof data === 'object' &&
+    'content' in data &&
     Array.isArray((data as { content: unknown }).content)
   ) {
     return (data as { content: AdminUserDirectoryRow[] }).content;
@@ -30,11 +30,11 @@ export const adminUsersAPI = {
     keyword?: string;
     accountType?: string;
   }): Promise<AxiosResponse<AdminApiEnvelope<unknown>>> =>
-    api.get("/admin/users", {
+    api.get('/admin/users', {
       params: {
         page: params.page ?? 0,
         size: params.size ?? 20,
-        sort: params.sort ?? "id,DESC",
+        sort: params.sort ?? 'id,DESC',
         ...(params.keyword ? { keyword: params.keyword } : {}),
         ...(params.accountType ? { accountType: params.accountType } : {}),
       },
@@ -46,9 +46,7 @@ export const adminUsersAPI = {
   ): Promise<AxiosResponse<AdminApiEnvelope<AdminDirectoryUser>>> =>
     api.patch(`/admin/users/${userId}`, body),
 
-  delete: (
-    userId: number,
-  ): Promise<AxiosResponse<AdminApiEnvelope<unknown>>> =>
+  delete: (userId: number): Promise<AxiosResponse<AdminApiEnvelope<unknown>>> =>
     api.delete(`/admin/users/${userId}`),
 
   blockUser: (
@@ -66,15 +64,17 @@ export const adminUsersAPI = {
     page?: number;
     size?: number;
   }): Promise<AxiosResponse<AdminApiEnvelope<unknown>>> =>
-    api.get("/admin/users/blocked", {
+    api.get('/admin/users/blocked', {
       params: {
         page: params.page ?? 0,
         size: params.size ?? 20,
-        sort: "id,DESC",
+        sort: 'id,DESC',
       },
     }),
 
-  getUserStats: (userId: number): Promise<AxiosResponse<AdminApiEnvelope<AdminUserStats>>> =>
+  getUserStats: (
+    userId: number,
+  ): Promise<AxiosResponse<AdminApiEnvelope<AdminUserStats>>> =>
     api.get(`/admin/users/${userId}/stats`),
 };
 

@@ -31,8 +31,9 @@ export function ChecklistPanel() {
     },
   });
 
-  const done = todayTodos.filter((t) => t.completed || t.status === 'DONE')
-    .length;
+  const done = todayTodos.filter(
+    (t) => t.completed || t.status === 'DONE',
+  ).length;
   const pct =
     todayTodos.length > 0 ? Math.round((done / todayTodos.length) * 100) : 0;
 

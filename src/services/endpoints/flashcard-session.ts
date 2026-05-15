@@ -1,5 +1,5 @@
-import type { AxiosResponse } from "axios";
-import api from "../client";
+import type { AxiosResponse } from 'axios';
+import api from '../client';
 import type {
   StartSessionRequest,
   StartSessionResponse,
@@ -8,7 +8,7 @@ import type {
   SyncProgressResponse,
   SessionResultResponse,
   CancelSessionResponse,
-} from "@/services/types/flashcard-session.types";
+} from '@/services/types/flashcard-session.types';
 
 export const flashcardSessionAPI = {
   /**

@@ -7,46 +7,49 @@ import {
   PanelRightClose,
   Sparkles,
   Trash2,
-} from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Document, Page, pdfjs } from "react-pdf";
-import toast from "react-hot-toast";
-import { useTranslation } from "react-i18next";
+} from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Document, Page, pdfjs } from 'react-pdf';
+import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from '@/components/ui/collapsible';
 import {
   useDeleteNoteDoc,
   useDeleteNoteImg,
   useSummarizeFile,
-} from "@/hooks/useNotes";
-import { isImageExtension, mapI18nToAiApiLanguage } from "@/lib/utils";
-import { noteAPI } from "@/services/endpoints/notes";
-import type { NoteFileRegionCommentDto } from "@/services/types/note.types";
+} from '@/hooks/useNotes';
+import { isImageExtension, mapI18nToAiApiLanguage } from '@/lib/utils';
+import { noteAPI } from '@/services/endpoints/notes';
+import type { NoteFileRegionCommentDto } from '@/services/types/note.types';
 
 import {
   fileRegionCommentDtoToRegion,
   RegionCommentOverlay,
-} from "@/pages/NotePage/NoteFileRegionComments";
+} from '@/pages/NotePage/NoteFileRegionComments';
 import type {
   NoteAttachedFile,
   RegionComment,
   RegionCommentSavePayload,
-} from "@/pages/NotePage/NoteFileRegionComments";
+} from '@/pages/NotePage/NoteFileRegionComments';
 
-export type { NoteAttachedFile, NoteFileRegionCommentPayload } from "@/pages/NotePage/NoteFileRegionComments";
+export type {
+  NoteAttachedFile,
+  NoteFileRegionCommentPayload,
+} from '@/pages/NotePage/NoteFileRegionComments';
 
-import "react-pdf/dist/Page/AnnotationLayer.css";
-import "react-pdf/dist/Page/TextLayer.css";
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
+  'pdfjs-dist/build/pdf.worker.min.mjs',
   import.meta.url,
 ).toString();
 
@@ -93,9 +96,9 @@ function NoteFileRow({
   const [commentSaving, setCommentSaving] = useState(false);
 
   const { fileName, fileUrl, extension, publicId, id: fileId } = file;
-  const kind = file.kind ?? (isImageExtension(extension) ? "image" : "doc");
-  const isPdf = extension.toLowerCase() === "pdf";
-  const isImage = kind === "image" || isImageExtension(extension);
+  const kind = file.kind ?? (isImageExtension(extension) ? 'image' : 'doc');
+  const isPdf = extension.toLowerCase() === 'pdf';
+  const isImage = kind === 'image' || isImageExtension(extension);
   const canRegionComment = isPdf || (isImage && !isPdf);
 
   useEffect(() => {
@@ -121,19 +124,19 @@ function NoteFileRow({
   useEffect(() => {
     if (!isCommentMode || !open) return;
     const h = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         setIsCommentMode(false);
         setActiveCommentId(null);
       }
     };
-    window.addEventListener("keydown", h);
-    return () => window.removeEventListener("keydown", h);
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
   }, [isCommentMode, open]);
 
   const invalidateFileComments = useCallback(() => {
     if (setId && noteId) {
       void queryClient.invalidateQueries({
-        queryKey: ["note", noteId, "file-region-comments", setId],
+        queryKey: ['note', noteId, 'file-region-comments', setId],
       });
     }
   }, [queryClient, setId, noteId]);
@@ -141,7 +144,7 @@ function NoteFileRow({
   const persistComment = useCallback(
     async (
       pageNumber: number,
-      rect: RegionComment["rect"],
+      rect: RegionComment['rect'],
       payload: RegionCommentSavePayload,
     ) => {
       const trimmed = payload.text.trim();
@@ -149,7 +152,9 @@ function NoteFileRow({
       setIsCommentMode(false);
       setActiveCommentId(null);
       if (!setId) {
-        toast.error("Missing set context — cannot save comment (need setId on note detail).");
+        toast.error(
+          'Missing set context — cannot save comment (need setId on note detail).',
+        );
         return;
       }
       setCommentSaving(true);
@@ -166,10 +171,10 @@ function NoteFileRow({
           publicId,
         });
         invalidateFileComments();
-        toast.success("Comment saved");
+        toast.success('Comment saved');
       } catch (e) {
         console.error(e);
-        toast.error("Failed to save comment");
+        toast.error('Failed to save comment');
       } finally {
         setCommentSaving(false);
       }
@@ -183,10 +188,10 @@ function NoteFileRow({
       try {
         await noteAPI.deleteFileRegionComment(setId, noteId, serverNumeric);
         invalidateFileComments();
-        toast.success("Comment removed");
+        toast.success('Comment removed');
       } catch (e) {
         console.error(e);
-        toast.error("Failed to delete comment");
+        toast.error('Failed to delete comment');
         return;
       }
     }
@@ -206,9 +211,9 @@ function NoteFileRow({
 
       const summary = response.data.data.summary;
       onFileSummarize(summary, fileName);
-      toast.success("File summarized successfully");
+      toast.success('File summarized successfully');
     } catch (error) {
-      toast.error("Failed to summarize file");
+      toast.error('Failed to summarize file');
       console.error(error);
     }
   };
@@ -216,12 +221,12 @@ function NoteFileRow({
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!setId || !noteId) {
-      toast.error("Invalid note");
+      toast.error('Invalid note');
       return;
     }
     setIsDeleting(true);
     try {
-      if (kind === "image") {
+      if (kind === 'image') {
         await deleteNoteImgMutation.mutateAsync({
           setId,
           data: {
@@ -242,9 +247,9 @@ function NoteFileRow({
       }
 
       onDeleted();
-      toast.success("File deleted successfully");
+      toast.success('File deleted successfully');
     } catch (error) {
-      toast.error("Failed to delete file");
+      toast.error('Failed to delete file');
       console.error(error);
     } finally {
       setIsDeleting(false);
@@ -312,7 +317,7 @@ function NoteFileRow({
                   }
                   onLoadSuccess={({ numPages: n }) => setNumPages(n)}
                   onLoadError={() => {
-                    toast.error("Could not load PDF preview");
+                    toast.error('Could not load PDF preview');
                   }}
                 >
                   {numPages !== null &&
@@ -335,7 +340,9 @@ function NoteFileRow({
                             activeId={activeCommentId}
                             setActiveId={setActiveCommentId}
                             onDeleteComment={deleteComment}
-                            onSaveComment={(rect, p) => persistComment(i + 1, rect, p)}
+                            onSaveComment={(rect, p) =>
+                              persistComment(i + 1, rect, p)
+                            }
                           />
                         </div>
                       </div>
@@ -370,7 +377,8 @@ function NoteFileRow({
 
             {!isPdf && !isImage && (
               <p className='text-xs text-[var(--pl-text-muted)] italic font-[var(--font-serif)]'>
-                Preview is available for PDF and images. You can still summarize this file with AI.
+                Preview is available for PDF and images. You can still summarize
+                this file with AI.
               </p>
             )}
 
@@ -378,7 +386,7 @@ function NoteFileRow({
               <div className='flex flex-col gap-2'>
                 <Button
                   type='button'
-                  variant={isCommentMode ? "secondary" : "outline"}
+                  variant={isCommentMode ? 'secondary' : 'outline'}
                   size='sm'
                   className='w-full gap-2'
                   disabled={commentSaving}
@@ -388,7 +396,7 @@ function NoteFileRow({
                   }}
                 >
                   <MessageSquarePlus className='w-4 h-4' />
-                  {isCommentMode ? "Cancel commenting" : "Add region comment"}
+                  {isCommentMode ? 'Cancel commenting' : 'Add region comment'}
                 </Button>
                 {isCommentMode && (
                   <p className='text-xs text-[var(--pl-text-muted)] text-center animate-pulse'>
@@ -397,8 +405,8 @@ function NoteFileRow({
                 )}
                 {comments.length > 0 && (
                   <p className='text-[10px] tracking-[0.14em] uppercase text-[var(--pl-text-faint)] text-center'>
-                    {comments.length} comment{comments.length !== 1 ? "s" : ""}
-                    {!setId ? " · not synced" : ""}
+                    {comments.length} comment{comments.length !== 1 ? 's' : ''}
+                    {!setId ? ' · not synced' : ''}
                   </p>
                 )}
               </div>
@@ -451,7 +459,7 @@ export const NoteFilesPanel = ({
             Documents
           </h3>
           <span className='text-[10px] tracking-[0.18em] uppercase text-[var(--pl-text-faint)] font-[family-name:var(--font-mono-pl)]'>
-            {files.length} {files.length === 1 ? "file" : "files"}
+            {files.length} {files.length === 1 ? 'file' : 'files'}
           </span>
         </div>
         <Button
@@ -483,4 +491,3 @@ export const NoteFilesPanel = ({
     </div>
   );
 };
-

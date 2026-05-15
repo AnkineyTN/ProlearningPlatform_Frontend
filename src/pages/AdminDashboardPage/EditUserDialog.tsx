@@ -77,10 +77,14 @@ const EditUserDialog = ({
             <Label>{t('adminDashboard.fieldAccountType')}</Label>
             <Select
               value={accountType === '' ? '__unset__' : accountType}
-              onValueChange={(v) => onAccountTypeChange(v === '__unset__' ? '' : v)}
+              onValueChange={(v) =>
+                onAccountTypeChange(v === '__unset__' ? '' : v)
+              }
             >
               <SelectTrigger className='w-full'>
-                <SelectValue placeholder={t('adminDashboard.accountTypeUnset')} />
+                <SelectValue
+                  placeholder={t('adminDashboard.accountTypeUnset')}
+                />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value='__unset__'>
@@ -99,7 +103,9 @@ const EditUserDialog = ({
           <Button
             type='button'
             onClick={onSave}
-            disabled={isSaving || firstName.trim() === '' || lastName.trim() === ''}
+            disabled={
+              isSaving || firstName.trim() === '' || lastName.trim() === ''
+            }
           >
             {t('adminDashboard.save')}
           </Button>

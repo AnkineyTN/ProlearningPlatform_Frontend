@@ -154,7 +154,8 @@ function NoteEditorInner({
               // fall through to HTML
             }
           }
-          const parsed = await editorInstance.tryParseHTMLToBlocks(initialContent);
+          const parsed =
+            await editorInstance.tryParseHTMLToBlocks(initialContent);
           if (parsed && parsed.length > 0) {
             editorInstance.replaceBlocks(editorInstance.document, parsed);
           }
@@ -176,7 +177,9 @@ function NoteEditorInner({
   // Sync content changes to parent for auto-save
   const handleEditorChange = useCallback(() => {
     if (editorInstance) {
-      onContentChange(editorInstance.blocksToHTMLLossy(editorInstance.document));
+      onContentChange(
+        editorInstance.blocksToHTMLLossy(editorInstance.document),
+      );
     }
   }, [editorInstance, onContentChange]);
 
@@ -411,7 +414,9 @@ function NoteEditorFallback({
 
   const handleEditorChange = useCallback(() => {
     if (editorInstance)
-      onContentChange(editorInstance.blocksToHTMLLossy(editorInstance.document));
+      onContentChange(
+        editorInstance.blocksToHTMLLossy(editorInstance.document),
+      );
   }, [editorInstance, onContentChange]);
 
   useEffect(() => {

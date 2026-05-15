@@ -61,8 +61,9 @@ const SignIn = () => {
       await login.mutateAsync(data);
       navigate('/dashboard');
     } catch (err: unknown) {
-      const status = (err as { response?: { data?: { metadata?: { code?: string } } } })
-        ?.response?.data?.metadata?.code;
+      const status = (
+        err as { response?: { data?: { metadata?: { code?: string } } } }
+      )?.response?.data?.metadata?.code;
       if (status === 'ACCOUNT_BLOCKED') {
         setIsBlocked(true);
         setAppealEmail(data.email);
@@ -106,7 +107,10 @@ const SignIn = () => {
       <div className='absolute bottom-10 left-1/4 w-[350px] h-[350px] rounded-full bg-[radial-gradient(circle,var(--pl-accent-soft)_0%,transparent_70%)] blur-[50px] pointer-events-none' />
 
       {/* Logo */}
-      <a href='/dashboard' className='absolute top-8 left-8 flex items-center gap-2'>
+      <a
+        href='/dashboard'
+        className='absolute top-8 left-8 flex items-center gap-2'
+      >
         <div className='w-8 h-8 grid place-items-center'>
           <LogoFG />
         </div>

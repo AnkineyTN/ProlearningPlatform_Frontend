@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import type { ActiveSound } from "@/contexts/PomodoroContext";
+import { useEffect, useRef } from 'react';
+import type { ActiveSound } from '@/contexts/PomodoroContext';
 
 interface Props {
   activeSounds: ActiveSound[];
@@ -8,13 +8,26 @@ interface Props {
 const SoundLayer = ({ activeSounds }: Props) => (
   <>
     {activeSounds.map(({ sound, volume, paused }) => (
-      <AudioTrack key={sound.id} src={sound.assetUrl} volume={volume} paused={paused} />
+      <AudioTrack
+        key={sound.id}
+        src={sound.assetUrl}
+        volume={volume}
+        paused={paused}
+      />
     ))}
   </>
 );
 
 // One stable component per sound — only mounts/unmounts when a sound is added/removed.
-const AudioTrack = ({ src, volume, paused }: { src: string; volume: number; paused?: boolean }) => {
+const AudioTrack = ({
+  src,
+  volume,
+  paused,
+}: {
+  src: string;
+  volume: number;
+  paused?: boolean;
+}) => {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // Play/pause based on the paused prop; also pause on unmount.
@@ -36,7 +49,7 @@ const AudioTrack = ({ src, volume, paused }: { src: string; volume: number; paus
     if (audioRef.current) audioRef.current.volume = volume;
   }, [volume]);
 
-  return <audio ref={audioRef} src={src} loop preload="auto" />;
+  return <audio ref={audioRef} src={src} loop preload='auto' />;
 };
 
 export default SoundLayer;

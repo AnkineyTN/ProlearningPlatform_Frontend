@@ -13,18 +13,39 @@ const Ring = ({ percent, size = 52 }: { percent: number; size?: number }) => {
   const c = 2 * Math.PI * r;
   const offset = c - (percent / 100) * c;
   return (
-    <div className='relative grid place-items-center' style={{ width: size, height: size }}>
+    <div
+      className='relative grid place-items-center'
+      style={{ width: size, height: size }}
+    >
       <svg width={size} height={size} className='-rotate-90'>
-        <circle cx={size / 2} cy={size / 2} r={r} fill='none' stroke='var(--pl-border)' strokeWidth={stroke} />
         <circle
-          cx={size / 2} cy={size / 2} r={r} fill='none' stroke='var(--pl-accent)' strokeWidth={stroke}
-          strokeLinecap='round' strokeDasharray={c} strokeDashoffset={offset}
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill='none'
+          stroke='var(--pl-border)'
+          strokeWidth={stroke}
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill='none'
+          stroke='var(--pl-accent)'
+          strokeWidth={stroke}
+          strokeLinecap='round'
+          strokeDasharray={c}
+          strokeDashoffset={offset}
           style={{ transition: 'stroke-dashoffset 360ms ease' }}
         />
       </svg>
       <div className='absolute text-center'>
-        <div className='text-[13px] font-[var(--font-display)] leading-none text-[var(--pl-text)]'>{percent}</div>
-        <div className='text-[7.5px] tracking-[0.14em] uppercase text-[var(--pl-text-faint)]'>%</div>
+        <div className='text-[13px] font-[var(--font-display)] leading-none text-[var(--pl-text)]'>
+          {percent}
+        </div>
+        <div className='text-[7.5px] tracking-[0.14em] uppercase text-[var(--pl-text-faint)]'>
+          %
+        </div>
       </div>
     </div>
   );
@@ -44,7 +65,10 @@ const TaskRow = ({
 
   return (
     <div className='group flex items-center gap-3 rounded-[10px] px-3 py-2.5 hover:bg-[var(--pl-bg-hover)] transition-colors'>
-      <span className='w-[3px] self-stretch rounded-full flex-shrink-0' style={{ background: accent }} />
+      <span
+        className='w-[3px] self-stretch rounded-full flex-shrink-0'
+        style={{ background: accent }}
+      />
       <button
         onClick={() => onToggle(todo.id)}
         className={`w-[18px] h-[18px] rounded-full grid place-items-center flex-shrink-0 border transition-all ${
@@ -54,27 +78,47 @@ const TaskRow = ({
         }`}
       >
         {isDone && (
-          <svg viewBox='0 0 24 24' width={11} height={11} stroke='var(--pl-accent-fg)' fill='none' strokeWidth={2.8} strokeLinecap='round' strokeLinejoin='round'>
+          <svg
+            viewBox='0 0 24 24'
+            width={11}
+            height={11}
+            stroke='var(--pl-accent-fg)'
+            fill='none'
+            strokeWidth={2.8}
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          >
             <path d='M20 6L9 17l-5-5' />
           </svg>
         )}
       </button>
       <div className='flex-1 min-w-0'>
-        <div className={`text-[13.5px] truncate ${isDone ? 'line-through text-[var(--pl-text-faint)]' : 'text-[var(--pl-text)]'}`}>
+        <div
+          className={`text-[13.5px] truncate ${isDone ? 'line-through text-[var(--pl-text-faint)]' : 'text-[var(--pl-text)]'}`}
+        >
           {todo.title}
         </div>
         <div className='flex items-center gap-1.5 mt-0.5 flex-wrap'>
-          <span className='text-[10px] text-[var(--pl-text-faint)]'>{todo.priority}</span>
+          <span className='text-[10px] text-[var(--pl-text-faint)]'>
+            {todo.priority}
+          </span>
           {todo.goalTitle && (
             <>
               <span className='text-[10px] text-[var(--pl-text-faint)]'>·</span>
-              <span className='text-[10px] truncate max-w-[120px]' style={{ color: accent }}>{todo.goalTitle}</span>
+              <span
+                className='text-[10px] truncate max-w-[120px]'
+                style={{ color: accent }}
+              >
+                {todo.goalTitle}
+              </span>
             </>
           )}
           {todo.dueDate && (
             <>
               <span className='text-[10px] text-[var(--pl-text-faint)]'>·</span>
-              <span className='text-[10px] text-[var(--pl-text-faint)]'>{todo.dueDate}</span>
+              <span className='text-[10px] text-[var(--pl-text-faint)]'>
+                {todo.dueDate}
+              </span>
             </>
           )}
         </div>
@@ -108,10 +152,19 @@ export default function SetTasksPanel({ setId }: SetTasksPanelProps) {
   });
 
   const allTodos: Todo[] = todosData?.data?.data ?? [];
-  const setTodos = allTodos.filter(td => td.setRefs?.some(r => r.id === setId));
-  const doneTodos = setTodos.filter(td => td.completed || td.status === 'DONE');
-  const pendingTodos = setTodos.filter(td => !td.completed && td.status !== 'DONE');
-  const percent = setTodos.length > 0 ? Math.round((doneTodos.length / setTodos.length) * 100) : 0;
+  const setTodos = allTodos.filter((td) =>
+    td.setRefs?.some((r) => r.id === setId),
+  );
+  const doneTodos = setTodos.filter(
+    (td) => td.completed || td.status === 'DONE',
+  );
+  const pendingTodos = setTodos.filter(
+    (td) => !td.completed && td.status !== 'DONE',
+  );
+  const percent =
+    setTodos.length > 0
+      ? Math.round((doneTodos.length / setTodos.length) * 100)
+      : 0;
 
   const createTodo = useMutation({
     mutationFn: todoAPI.createTodo,
@@ -155,10 +208,14 @@ export default function SetTasksPanel({ setId }: SetTasksPanelProps) {
                 : t('set.tasks.headline', { count: setTodos.length })}
             </h2>
             <div className='text-[12px] text-[var(--pl-text-muted)] mt-1'>
-              <span className='font-semibold text-[var(--pl-text)]'>{doneTodos.length}</span>{' '}
+              <span className='font-semibold text-[var(--pl-text)]'>
+                {doneTodos.length}
+              </span>{' '}
               {t('todo.today.done')}
               <span className='mx-1.5 text-[var(--pl-text-faint)]'>·</span>
-              <span className='font-semibold text-[var(--pl-text)]'>{pendingTodos.length}</span>{' '}
+              <span className='font-semibold text-[var(--pl-text)]'>
+                {pendingTodos.length}
+              </span>{' '}
               {t('todo.today.pending')}
             </div>
           </div>
@@ -169,8 +226,10 @@ export default function SetTasksPanel({ setId }: SetTasksPanelProps) {
         <div className='flex gap-2 rounded-[12px] p-1.5 mb-4 bg-[var(--pl-bg)] border border-[var(--pl-border)]'>
           <input
             value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') handleAdd(); }}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleAdd();
+            }}
             placeholder={t('set.tasks.addPlaceholder')}
             className='w-full bg-transparent outline-none text-sm text-[var(--pl-text)] px-3 py-2 placeholder:text-[var(--pl-text-faint)]'
             disabled={createTodo.isPending}
@@ -198,12 +257,19 @@ export default function SetTasksPanel({ setId }: SetTasksPanelProps) {
                   <span className='text-[10px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)]'>
                     {t('set.tasks.pendingSection')}
                   </span>
-                  <span className='text-[10px] font-[var(--font-mono-pl)] text-[var(--pl-text-faint)]'>{pendingTodos.length}</span>
+                  <span className='text-[10px] font-[var(--font-mono-pl)] text-[var(--pl-text-faint)]'>
+                    {pendingTodos.length}
+                  </span>
                   <div className='flex-1 h-px bg-[var(--pl-border)]' />
                 </div>
                 <div className='flex flex-col gap-0.5'>
-                  {pendingTodos.map(td => (
-                    <TaskRow key={td.id} todo={td} onToggle={id => toggleTodo.mutate(id)} onDelete={id => deleteTodo.mutate(id)} />
+                  {pendingTodos.map((td) => (
+                    <TaskRow
+                      key={td.id}
+                      todo={td}
+                      onToggle={(id) => toggleTodo.mutate(id)}
+                      onDelete={(id) => deleteTodo.mutate(id)}
+                    />
                   ))}
                 </div>
               </div>
@@ -212,23 +278,31 @@ export default function SetTasksPanel({ setId }: SetTasksPanelProps) {
             {doneTodos.length > 0 && (
               <div>
                 <button
-                  onClick={() => setShowDone(v => !v)}
+                  onClick={() => setShowDone((v) => !v)}
                   className='flex items-center gap-2 mb-2 w-full text-left'
                 >
                   <span className='text-[10px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)]'>
                     {t('set.tasks.doneSection')}
                   </span>
-                  <span className='text-[10px] font-[var(--font-mono-pl)] text-[var(--pl-text-faint)]'>{doneTodos.length}</span>
+                  <span className='text-[10px] font-[var(--font-mono-pl)] text-[var(--pl-text-faint)]'>
+                    {doneTodos.length}
+                  </span>
                   <div className='flex-1 h-px bg-[var(--pl-border)]' />
-                  {showDone
-                    ? <ChevronUp className='w-3 h-3 text-[var(--pl-text-faint)]' />
-                    : <ChevronDown className='w-3 h-3 text-[var(--pl-text-faint)]' />
-                  }
+                  {showDone ? (
+                    <ChevronUp className='w-3 h-3 text-[var(--pl-text-faint)]' />
+                  ) : (
+                    <ChevronDown className='w-3 h-3 text-[var(--pl-text-faint)]' />
+                  )}
                 </button>
                 {showDone && (
                   <div className='flex flex-col gap-0.5'>
-                    {doneTodos.map(td => (
-                      <TaskRow key={td.id} todo={td} onToggle={id => toggleTodo.mutate(id)} onDelete={id => deleteTodo.mutate(id)} />
+                    {doneTodos.map((td) => (
+                      <TaskRow
+                        key={td.id}
+                        todo={td}
+                        onToggle={(id) => toggleTodo.mutate(id)}
+                        onDelete={(id) => deleteTodo.mutate(id)}
+                      />
                     ))}
                   </div>
                 )}

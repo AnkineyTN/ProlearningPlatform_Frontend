@@ -13,8 +13,7 @@ import type {
 } from '../types/roadmap.types';
 
 export const roadmapAPI = {
-  list: (): Promise<AxiosResponse<RoadmapListResponse>> =>
-    api.get('/roadmaps'),
+  list: (): Promise<AxiosResponse<RoadmapListResponse>> => api.get('/roadmaps'),
 
   getById: (id: number): Promise<AxiosResponse<RoadmapDetailResponse>> =>
     api.get(`/roadmaps/${id}`),

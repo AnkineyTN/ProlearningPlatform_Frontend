@@ -2,26 +2,26 @@ import axios, {
   type AxiosError,
   type AxiosRequestConfig,
   type InternalAxiosRequestConfig,
-} from "axios";
+} from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-const TOKEN_KEY = "token";
-const REFRESH_TOKEN_KEY = "refreshToken";
-const USER_KEY = "user";
+const TOKEN_KEY = 'token';
+const REFRESH_TOKEN_KEY = 'refreshToken';
+const USER_KEY = 'user';
 
 // For public endpoints that must NOT send Authorization header
 export const publicApi = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
@@ -32,7 +32,7 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
     if (config.data instanceof FormData) {
-      delete config.headers["Content-Type"];
+      delete config.headers['Content-Type'];
     }
     return config;
   },
@@ -47,26 +47,26 @@ const clearAuthAndRedirect = () => {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
-  if (window.location.pathname !== "/login") {
-    window.location.href = "/login";
+  if (window.location.pathname !== '/login') {
+    window.location.href = '/login';
   }
 };
 
 const refreshAccessToken = async (): Promise<string> => {
   const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-  if (!refreshToken) throw new Error("No refresh token");
+  if (!refreshToken) throw new Error('No refresh token');
 
-  console.debug("[auth] access token expired, refreshing...");
+  console.debug('[auth] access token expired, refreshing...');
   const res = await publicApi.post<{
     status: string;
     message: string;
     data: { accessToken: string; refreshToken: string };
-  }>("/auth/refresh", { refreshToken });
+  }>('/auth/refresh', { refreshToken });
 
   const { accessToken, refreshToken: newRefreshToken } = res.data.data;
   localStorage.setItem(TOKEN_KEY, accessToken);
   if (newRefreshToken) localStorage.setItem(REFRESH_TOKEN_KEY, newRefreshToken);
-  console.debug("[auth] refresh OK, replaying original request");
+  console.debug('[auth] refresh OK, replaying original request');
   return accessToken;
 };
 
@@ -97,7 +97,8 @@ api.interceptors.response.use(
       }
       const newToken = await refreshPromise;
       original.headers = original.headers ?? {};
-      (original.headers as Record<string, string>).Authorization = `Bearer ${newToken}`;
+      (original.headers as Record<string, string>).Authorization =
+        `Bearer ${newToken}`;
       return api(original as AxiosRequestConfig);
     } catch (refreshError) {
       clearAuthAndRedirect();

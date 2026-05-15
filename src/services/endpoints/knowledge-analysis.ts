@@ -21,9 +21,7 @@ export const knowledgeAnalysisAPI = {
     examId: number,
     attemptId: number,
   ): Promise<AxiosResponse<AnalysisResponse>> =>
-    api.post(
-      `/sets/${setId}/exams/${examId}/attempts/${attemptId}/analysis`,
-    ),
+    api.post(`/sets/${setId}/exams/${examId}/attempts/${attemptId}/analysis`),
 
   triggerSetAnalysis: (
     setId: number,

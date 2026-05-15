@@ -1,5 +1,5 @@
-import type { AxiosResponse } from "axios";
-import api from "../client";
+import type { AxiosResponse } from 'axios';
+import api from '../client';
 import type {
   CreateGoalRequest,
   CreateTodoRequest,
@@ -15,7 +15,7 @@ import type {
   TodoType,
   UpdateGoalRequest,
   UpdateTodoRequest,
-} from "../types/todo.types";
+} from '../types/todo.types';
 
 export const todoAPI = {
   // ---- Todos ----
@@ -28,16 +28,14 @@ export const todoAPI = {
     status?: TodoStatus;
     page?: number;
     size?: number;
-  }): Promise<AxiosResponse<TodoListResponse>> =>
-    api.get("/todos", { params }),
+  }): Promise<AxiosResponse<TodoListResponse>> => api.get('/todos', { params }),
 
   getTodoById: (id: number): Promise<AxiosResponse<TodoSingleResponse>> =>
     api.get(`/todos/${id}`),
 
   createTodo: (
     data: CreateTodoRequest,
-  ): Promise<AxiosResponse<TodoSingleResponse>> =>
-    api.post("/todos", data),
+  ): Promise<AxiosResponse<TodoSingleResponse>> => api.post('/todos', data),
 
   updateTodo: (
     id: number,
@@ -57,16 +55,14 @@ export const todoAPI = {
     type?: GoalType;
     page?: number;
     size?: number;
-  }): Promise<AxiosResponse<GoalListResponse>> =>
-    api.get("/goals", { params }),
+  }): Promise<AxiosResponse<GoalListResponse>> => api.get('/goals', { params }),
 
   getGoalById: (id: number): Promise<AxiosResponse<GoalWithTodosResponse>> =>
     api.get(`/goals/${id}`),
 
   createGoal: (
     data: CreateGoalRequest,
-  ): Promise<AxiosResponse<GoalSingleResponse>> =>
-    api.post("/goals", data),
+  ): Promise<AxiosResponse<GoalSingleResponse>> => api.post('/goals', data),
 
   updateGoal: (
     id: number,

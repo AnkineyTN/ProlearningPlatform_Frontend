@@ -1,5 +1,5 @@
-import { Trash2 } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import {
   AlertDialog,
@@ -10,7 +10,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 
 type Props = {
   isOpen: boolean;
@@ -20,7 +20,13 @@ type Props = {
   itemName?: string;
 };
 
-const DeleteConfirmDialog = ({ isOpen, onClose, onConfirm, title, itemName }: Props) => {
+const DeleteConfirmDialog = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+  itemName,
+}: Props) => {
   const { t } = useTranslation();
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
@@ -35,8 +41,7 @@ const DeleteConfirmDialog = ({ isOpen, onClose, onConfirm, title, itemName }: Pr
                 {title}
               </AlertDialogTitle>
               <AlertDialogDescription className='text-sm text-muted-foreground mt-1.5'>
-                {t('modal.deleteConfirmation')}{' '}
-                {itemName ? `${itemName}` : ''}?
+                {t('modal.deleteConfirmation')} {itemName ? `${itemName}` : ''}?
                 <span className='block mt-1 text-muted-foreground/70'>
                   {t('modal.deleteConfirmationWarning')}
                 </span>

@@ -1,17 +1,23 @@
 /* eslint-disable react-refresh/only-export-components */
-import { ImagePlus } from "lucide-react";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { ImagePlus } from 'lucide-react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
+import { createPortal } from 'react-dom';
 
-import { Button } from "@/components/ui/button";
-import { useUploadImageFile } from "@/hooks/useImageUpload";
+import { Button } from '@/components/ui/button';
+import { useUploadImageFile } from '@/hooks/useImageUpload';
 
 export interface NoteFileRegionCommentPayload {
   noteId: number;
   noteAssetId: number;
   publicId: string;
   extension: string;
-  kind: "doc" | "image";
+  kind: 'doc' | 'image';
   fileUrl: string;
   fileName: string;
   /** 1-based; images always use `1`. */
@@ -34,7 +40,7 @@ export interface NoteAttachedFile {
   fileUrl: string;
   extension: string;
   publicId: string;
-  kind?: "doc" | "image";
+  kind?: 'doc' | 'image';
 }
 
 interface Rect {
@@ -91,7 +97,7 @@ function norm(x1: number, y1: number, x2: number, y2: number): Rect {
 
 const COMMENT_FLOAT_W = 288;
 const COMMENT_FLOAT_H = 240;
-const NOTE_FILE_SCROLL_SEL = "[data-note-file-scroll]";
+const NOTE_FILE_SCROLL_SEL = '[data-note-file-scroll]';
 
 function getClampedFloatingPanelPosition(overlayEl: HTMLElement, rect: Rect) {
   const r = overlayEl.getBoundingClientRect();
@@ -132,11 +138,11 @@ function useFloatingCommentPosition(
     const onReposition = () => {
       requestAnimationFrame(update);
     };
-    scrollRoot?.addEventListener("scroll", onReposition, { passive: true });
-    window.addEventListener("resize", onReposition);
+    scrollRoot?.addEventListener('scroll', onReposition, { passive: true });
+    window.addEventListener('resize', onReposition);
     return () => {
-      scrollRoot?.removeEventListener("scroll", onReposition);
-      window.removeEventListener("resize", onReposition);
+      scrollRoot?.removeEventListener('scroll', onReposition);
+      window.removeEventListener('resize', onReposition);
     };
   }, [active, rect, overlayRef, update]);
 
@@ -146,7 +152,7 @@ function useFloatingCommentPosition(
 export function buildRegionCommentPayload(
   noteId: number,
   file: NoteAttachedFile,
-  kind: "doc" | "image",
+  kind: 'doc' | 'image',
   c: RegionComment,
 ): NoteFileRegionCommentPayload {
   return {
@@ -179,7 +185,7 @@ export function fileRegionCommentDtoToRegion(d: {
     id: String(d.id),
     pageNumber: d.pageNumber,
     rect: { ...d.rectPercent },
-    text: d.content ?? "",
+    text: d.content ?? '',
     createdAt: d.createdAt ?? new Date().toISOString(),
     imageUrl: d.attachmentImageUrl ?? undefined,
     attachmentAssetId: d.attachmentAssetId ?? undefined,
@@ -205,15 +211,15 @@ function CommentPin({
           onClick();
         }}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
+          if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             onClick();
           }
         }}
         className={`absolute rounded cursor-pointer transition-all z-10 border-2 pointer-events-auto ${
           isActive
-            ? "border-amber-500 bg-amber-300/30"
-            : "border-amber-400/60 bg-amber-200/25 hover:bg-amber-200/40"
+            ? 'border-amber-500 bg-amber-300/30'
+            : 'border-amber-400/60 bg-amber-200/25 hover:bg-amber-200/40'
         }`}
         style={{
           left: `${comment.rect.x}%`,
@@ -229,7 +235,7 @@ function CommentPin({
           onClick();
         }}
         className={`absolute z-20 w-6 h-6 rounded-full text-xs shadow-md transition-transform hover:scale-110 flex items-center justify-center text-white pointer-events-auto ${
-          isActive ? "bg-amber-500 scale-110" : "bg-amber-500/85"
+          isActive ? 'bg-amber-500 scale-110' : 'bg-amber-500/85'
         }`}
         style={{
           left: `calc(${comment.rect.x + comment.rect.width}% + 4px)`,
@@ -258,7 +264,7 @@ function CommentPopover({
     <div
       className='w-64 rounded-lg shadow-lg border bg-popover text-popover-foreground p-3'
       style={{
-        position: "fixed",
+        position: 'fixed',
         left: pos.left,
         top: pos.top,
         zIndex: 9999,
@@ -287,7 +293,9 @@ function CommentPopover({
         </div>
       ) : null}
       {comment.text ? (
-        <p className='text-sm bg-muted/50 rounded-md px-3 py-2'>{comment.text}</p>
+        <p className='text-sm bg-muted/50 rounded-md px-3 py-2'>
+          {comment.text}
+        </p>
       ) : null}
       {!comment.text && !comment.imageUrl ? (
         <p className='text-xs text-muted-foreground'>(Empty)</p>
@@ -319,8 +327,11 @@ function NewCommentBox({
   onSave: (payload: RegionCommentSavePayload) => void;
   onCancel: () => void;
 }) {
-  const [text, setText] = useState("");
-  const [attachment, setAttachment] = useState<{ assetId: number; url: string } | null>(null);
+  const [text, setText] = useState('');
+  const [attachment, setAttachment] = useState<{
+    assetId: number;
+    url: string;
+  } | null>(null);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadImageMutation = useUploadImageFile();
@@ -328,7 +339,7 @@ function NewCommentBox({
   const pos = useFloatingCommentPosition(overlayRef, rect, true);
 
   const handleImageFile = async (file: File | null) => {
-    if (!file || !file.type.startsWith("image/")) return;
+    if (!file || !file.type.startsWith('image/')) return;
     setUploading(true);
     try {
       const r = await uploadImageMutation.mutateAsync(file);
@@ -345,7 +356,7 @@ function NewCommentBox({
     if (!items) return;
     for (let i = 0; i < items.length; i++) {
       const it = items[i];
-      if (it.kind === "file" && it.type.startsWith("image/")) {
+      if (it.kind === 'file' && it.type.startsWith('image/')) {
         e.preventDefault();
         const f = it.getAsFile();
         if (f) void handleImageFile(f);
@@ -354,8 +365,7 @@ function NewCommentBox({
     }
   };
 
-  const canSave =
-    !uploading && (text.trim().length > 0 || attachment != null);
+  const canSave = !uploading && (text.trim().length > 0 || attachment != null);
 
   const submit = () => {
     if (!canSave) return;
@@ -370,14 +380,16 @@ function NewCommentBox({
     <div
       className='w-72 max-w-[min(100vw-24px,288px)] rounded-lg shadow-lg border bg-popover text-popover-foreground p-3 max-h-[min(90vh,420px)] overflow-y-auto'
       style={{
-        position: "fixed",
+        position: 'fixed',
         left: pos.left,
         top: pos.top,
         zIndex: 9999,
       }}
       onMouseDown={(e) => e.stopPropagation()}
     >
-      <p className='text-xs font-medium text-muted-foreground mb-2'>New comment</p>
+      <p className='text-xs font-medium text-muted-foreground mb-2'>
+        New comment
+      </p>
       {attachment ? (
         <div className='relative mb-2 rounded-md overflow-hidden border bg-muted/30'>
           <img
@@ -402,7 +414,7 @@ function NewCommentBox({
         onChange={(e) => {
           const f = e.target.files?.[0];
           void handleImageFile(f ?? null);
-          e.target.value = "";
+          e.target.value = '';
         }}
       />
       <div className='flex gap-1 mb-2'>
@@ -415,9 +427,11 @@ function NewCommentBox({
           onClick={() => fileInputRef.current?.click()}
         >
           <ImagePlus className='w-3.5 h-3.5' />
-          {uploading ? "Uploading…" : "Image"}
+          {uploading ? 'Uploading…' : 'Image'}
         </Button>
-        <span className='text-[10px] text-muted-foreground self-center'>or paste screenshot</span>
+        <span className='text-[10px] text-muted-foreground self-center'>
+          or paste screenshot
+        </span>
       </div>
       <textarea
         autoFocus
@@ -425,8 +439,9 @@ function NewCommentBox({
         onChange={(e) => setText(e.target.value)}
         onPaste={onPaste}
         onKeyDown={(e) => {
-          if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && canSave) submit();
-          if (e.key === "Escape") onCancel();
+          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && canSave)
+            submit();
+          if (e.key === 'Escape') onCancel();
         }}
         placeholder='Comment… (optional if image). Ctrl+Enter to save'
         rows={3}
@@ -543,7 +558,7 @@ export function RegionCommentOverlay({
     <div
       ref={overlayRef}
       className={`absolute inset-0 z-[15] rounded-sm select-none ${
-        drawEnabled ? "cursor-crosshair" : "pointer-events-none"
+        drawEnabled ? 'cursor-crosshair' : 'pointer-events-none'
       }`}
       onMouseDown={drawEnabled ? onMouseDown : undefined}
       onMouseMove={drawEnabled ? onMouseMove : undefined}

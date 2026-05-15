@@ -88,7 +88,9 @@ const ResourceSearchPicker = ({
   });
 
   const allItems = extractSearchItems(searchResult?.data);
-  const items = user ? allItems.filter((item) => Number(item.userId) === user.id) : allItems;
+  const items = user
+    ? allItems.filter((item) => Number(item.userId) === user.id)
+    : allItems;
 
   const handleSelect = (item: Record<string, unknown>) => {
     const id = Number(item.id ?? item.resourceId);
@@ -262,11 +264,16 @@ const TodoDetailModal = ({
               onChange={setTitle}
               onRefAdded={(type, ref) => {
                 const setter =
-                  type === "set" ? setSetRefs
-                  : type === "note" ? setNoteRefs
-                  : type === "flashcard" ? setFlashcardRefs
-                  : setExamRefs;
-                setter((prev) => prev.some((r) => r.id === ref.id) ? prev : [...prev, ref]);
+                  type === 'set'
+                    ? setSetRefs
+                    : type === 'note'
+                      ? setNoteRefs
+                      : type === 'flashcard'
+                        ? setFlashcardRefs
+                        : setExamRefs;
+                setter((prev) =>
+                  prev.some((r) => r.id === ref.id) ? prev : [...prev, ref],
+                );
               }}
               placeholder={t('todo.detailModal.namePlaceholder')}
               className='w-full bg-transparent outline-none text-sm text-[var(--pl-text)]'
