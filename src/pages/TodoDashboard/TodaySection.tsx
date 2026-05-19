@@ -163,7 +163,7 @@ const GoalProgressRow = ({
 }) => {
   const accent = goal.color ?? '#6366f1';
   return (
-    <button
+    <div
       onClick={() => onSelect(goal.id)}
       className='group w-full flex items-center gap-3 py-2 px-2 -mx-2 rounded-[8px] transition-colors text-left cursor-pointer'
       style={{
@@ -223,7 +223,7 @@ const GoalProgressRow = ({
           <Trash2 className='w-3 h-3' />
         </button>
       </div>
-    </button>
+    </div>
   );
 };
 

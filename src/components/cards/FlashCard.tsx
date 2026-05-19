@@ -16,8 +16,8 @@ export interface Flashcard {
 type Props = {
   flashcard: Flashcard;
   onAccess: (id: number | string) => void;
-  onUpdate: (flashcard: Flashcard) => void;
-  onDelete: (flashcardId: number | string) => void;
+  onUpdate?: (flashcard: Flashcard) => void;
+  onDelete?: (flashcardId: number | string) => void;
 };
 
 const FlashCard = ({ flashcard, onAccess, onUpdate, onDelete }: Props) => {
@@ -83,7 +83,7 @@ const FlashCard = ({ flashcard, onAccess, onUpdate, onDelete }: Props) => {
                   action: (e: React.MouseEvent) => {
                     e.stopPropagation();
                     setShowMenu(false);
-                    onUpdate(flashcard);
+                    onUpdate?.(flashcard);
                   },
                   danger: false,
                 },
@@ -171,7 +171,7 @@ const FlashCard = ({ flashcard, onAccess, onUpdate, onDelete }: Props) => {
         isOpen={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
         onConfirm={() => {
-          onDelete(flashcard.id);
+          onDelete?.(flashcard.id);
           setShowDeleteDialog(false);
         }}
         title='Delete Flashcard'

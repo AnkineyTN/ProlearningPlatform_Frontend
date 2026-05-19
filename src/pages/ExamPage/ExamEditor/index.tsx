@@ -272,7 +272,7 @@ export default function ExamEditor() {
         await updateExamMutation.mutateAsync({
           setId: setIdNum,
           examId,
-          data: { title, description, privacy, duration: timeLimit },
+          data: { title, description, privacy, duration: timeLimit * 60 },
         });
 
         for (const q of questions.filter(
@@ -312,7 +312,7 @@ export default function ExamEditor() {
       } else {
         const { data } = await createExamMutation.mutateAsync({
           setId: setIdNum,
-          data: { title, description, privacy, duration: timeLimit },
+          data: { title, description, privacy, duration: timeLimit * 60 },
         });
         const newExamId = data?.data?.id;
         if (!newExamId) {

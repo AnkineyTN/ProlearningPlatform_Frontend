@@ -24,8 +24,8 @@ export type ExamCardData = {
 type Props = {
   exam: ExamCardData;
   onAccess: (id: string) => void;
-  onUpdate: (exam: ExamCardData) => void;
-  onDelete: (examId: number | string) => void;
+  onUpdate?: (exam: ExamCardData) => void;
+  onDelete?: (examId: number | string) => void;
 };
 
 const ExamCard = ({ exam, onAccess, onUpdate, onDelete }: Props) => {
@@ -50,7 +50,7 @@ const ExamCard = ({ exam, onAccess, onUpdate, onDelete }: Props) => {
   const date = exam.createdAt ? formatDate(exam.createdAt) : '—';
 
   const numQ = exam.numQuestions ?? 0;
-  const dur = exam.duration ?? 30;
+  const dur = exam.duration ? Math.floor(exam.duration / 60) : 30;
 
   return (
     <div
@@ -87,7 +87,7 @@ const ExamCard = ({ exam, onAccess, onUpdate, onDelete }: Props) => {
                   action: (e: React.MouseEvent) => {
                     e.stopPropagation();
                     setShowMenu(false);
-                    onUpdate(exam);
+                    onUpdate?.(exam);
                   },
                   danger: false,
                 },
@@ -171,7 +171,7 @@ const ExamCard = ({ exam, onAccess, onUpdate, onDelete }: Props) => {
         isOpen={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
         onConfirm={() => {
-          onDelete(exam.id);
+          onDelete?.(exam.id);
           setShowDeleteDialog(false);
         }}
         title={t('card.exam.deleteTitle')}

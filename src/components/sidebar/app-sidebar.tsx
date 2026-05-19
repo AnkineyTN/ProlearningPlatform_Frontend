@@ -15,6 +15,7 @@ import {
   Bell,
   Map as MapIcon,
   Users,
+  Globe,
 } from 'lucide-react';
 
 import { useAuth, useLogout } from '@/hooks/useAuth';
@@ -89,6 +90,11 @@ const AppSidebar = () => {
       onClick: () => setNotifOpen(true),
       badge:
         unreadCount > 0 ? (unreadCount > 99 ? '99+' : unreadCount) : undefined,
+    },
+    {
+      title: t('sidebar.socials'),
+      icon: Globe,
+      url: '/social',
     },
   ];
 

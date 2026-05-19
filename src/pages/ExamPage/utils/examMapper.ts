@@ -186,7 +186,7 @@ export function apiQuizDetailToExam(
     description: quiz.description ?? '',
     privacy: quiz.privacy === 'PUBLIC' ? 'Public' : 'Private',
     totalScore,
-    timeLimit: quiz.duration ?? 30,
+    timeLimit: quiz.duration ? Math.floor(quiz.duration / 60) : 30,
     passingScore:
       quiz.passingScore != null && !Number.isNaN(Number(quiz.passingScore))
         ? Number(quiz.passingScore)

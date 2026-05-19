@@ -35,6 +35,7 @@ import RoadmapsListPage from '@/pages/RoadmapPage';
 import CreateRoadmapPage from '@/pages/RoadmapPage/CreateRoadmapPage';
 import RoadmapDetailPage from '@/pages/RoadmapPage/RoadmapDetailPage';
 import SharedResourcesPage from '@/pages/SharedResourcesPage';
+import SocialPage from '@/pages/SocialPage';
 import type { RouteObject } from 'react-router-dom';
 
 function LandingPageWrapper() {
@@ -307,6 +308,10 @@ export const routeConfig: RouteObject[] = [
       {
         path: 'shared',
         element: <SharedResourcesPage />,
+      },
+      {
+        path: 'social',
+        element: <SocialPage />,
       },
     ],
   },
