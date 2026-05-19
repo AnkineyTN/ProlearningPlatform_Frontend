@@ -603,11 +603,13 @@
       "status": {
         "generating": "AI generating",
         "failed": "Failed",
-        "ready": "Ready"
+        "ready": "Ready",
+        "slowGenerating": "Slower than usual"
       },
       "actions": {
         "start": "Start learning",
         "generating": "Generating…",
+        "peek": "Peek",
         "retry": "Retry",
         "study": "Study now",
         "toggleCompleted": "Completed",
@@ -619,7 +621,14 @@
         "markedDone": "Marked as completed",
         "chapterDone": "Chapter completed — next chapter unlocked!",
         "roadmapDone": "🏆 You completed the whole Roadmap!",
-        "toggleError": "Could not update status"
+        "toggleError": "Could not update status",
+        "peekGenerating": "AI is still generating this Set — content may be incomplete. Check back in a moment for the full version."
+      },
+      "generatingBanner": {
+        "title_one": "AI is generating content for {{count}} topic",
+        "title_other": "AI is generating content for {{count}} topics",
+        "subtitle": "The page will refresh automatically when done. You can continue with other topics meanwhile.",
+        "slowWarning": "Some topics are taking longer than expected. If you wait too long, try the \"Retry\" button."
       }
     }
   },

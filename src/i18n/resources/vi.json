@@ -628,11 +628,13 @@
         "status": {
           "generating": "AI đang tạo",
           "failed": "Lỗi",
-          "ready": "Sẵn sàng"
+          "ready": "Sẵn sàng",
+          "slowGenerating": "Lâu hơn dự kiến"
         },
         "actions": {
           "start": "Bắt đầu học",
           "generating": "Đang tạo…",
+          "peek": "Xem trước",
           "retry": "Thử lại",
           "study": "Học ngay",
           "toggleCompleted": "Đã hoàn thành",
@@ -644,7 +646,14 @@
           "markedDone": "Đã đánh dấu hoàn thành",
           "chapterDone": "Hoàn thành chương — đã mở khóa chương kế tiếp!",
           "roadmapDone": "🏆 Bạn đã hoàn thành toàn bộ Roadmap!",
-          "toggleError": "Không thể cập nhật trạng thái"
+          "toggleError": "Không thể cập nhật trạng thái",
+          "peekGenerating": "Set đang được AI tạo nội dung — có thể chưa đầy đủ. Quay lại sau ít phút để xem đầy đủ nhé."
+        },
+        "generatingBanner": {
+          "title_one": "AI đang tạo nội dung cho {{count}} chủ đề",
+          "title_other": "AI đang tạo nội dung cho {{count}} chủ đề",
+          "subtitle": "Trang sẽ tự cập nhật khi hoàn tất. Bạn có thể tiếp tục với các chủ đề khác.",
+          "slowWarning": "Có chủ đề đang xử lý lâu hơn dự kiến. Nếu chờ quá lâu, hãy thử lại bằng nút \"Thử lại\"."
         }
       }
     },

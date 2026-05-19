@@ -89,7 +89,7 @@ const SignUp = () => {
     );
 
   return (
-    <div className='min-h-screen w-screen flex items-center justify-center text-[var(--pl-text)] px-6 py-10 relative overflow-hidden'>
+    <div className='min-h-screen flex items-center justify-center text-[var(--pl-text)] px-6 py-10 relative overflow-hidden'>
       {/* Gradient orbs */}
       <div className='absolute -top-40 -right-10 w-[650px] h-[650px] rounded-full bg-[radial-gradient(circle,var(--pl-accent-border)_0%,var(--pl-accent-soft)_50%,transparent_70%)] blur-[70px] pointer-events-none' />
       <div className='absolute -bottom-32 -left-20 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,var(--pl-accent-soft)_0%,var(--pl-accent-soft)_50%,transparent_70%)] blur-[60px] pointer-events-none' />
