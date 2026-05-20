@@ -1,6 +1,8 @@
 import {
+  AlertTriangle,
   ChevronDown,
   ChevronRight,
+  ExternalLink,
   FileText,
   LoaderCircle,
   MessageSquarePlus,
@@ -48,10 +50,7 @@ export type {
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url,
-).toString();
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface NoteFilesPanelProps {
   noteId: number;
@@ -94,6 +93,7 @@ function NoteFileRow({
   const [comments, setComments] = useState<RegionComment[]>([]);
   const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
   const [commentSaving, setCommentSaving] = useState(false);
+  const [previewError, setPreviewError] = useState<string | null>(null);
 
   const { fileName, fileUrl, extension, publicId, id: fileId } = file;
   const kind = file.kind ?? (isImageExtension(extension) ? 'image' : 'doc');
@@ -103,6 +103,7 @@ function NoteFileRow({
 
   useEffect(() => {
     setNumPages(null);
+    setPreviewError(null);
   }, [fileUrl]);
 
   useEffect(() => {
@@ -302,7 +303,30 @@ function NoteFileRow({
       <CollapsibleContent>
         <div className='px-3 py-2'>
           <Card className='p-2 bg-[var(--pl-bg)] shadow-none gap-4'>
-            {isPdf && (
+            {previewError && (
+              <div className='rounded-md border border-[var(--border-error)] bg-[var(--bg-error)] p-3 flex flex-col gap-2'>
+                <div className='flex items-start gap-2 text-[var(--text-error)]'>
+                  <AlertTriangle className='w-4 h-4 shrink-0 mt-0.5' />
+                  <div className='text-xs leading-relaxed'>
+                    <p className='font-medium'>Could not load preview</p>
+                    <p className='text-[var(--pl-text-muted)] mt-0.5 break-words'>
+                      {previewError}
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href={fileUrl}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='inline-flex items-center justify-center gap-1.5 text-xs font-medium text-[var(--pl-accent)] hover:underline'
+                >
+                  <ExternalLink className='w-3.5 h-3.5' />
+                  Open file in new tab
+                </a>
+              </div>
+            )}
+
+            {isPdf && !previewError && (
               <div
                 ref={pdfWrapRef}
                 data-note-file-scroll
@@ -316,8 +340,18 @@ function NoteFileRow({
                     </div>
                   }
                   onLoadSuccess={({ numPages: n }) => setNumPages(n)}
-                  onLoadError={() => {
+                  onLoadError={(error) => {
+                    const message =
+                      error?.message ?? 'Unknown error rendering PDF';
+                    setPreviewError(message);
                     toast.error('Could not load PDF preview');
+                    console.error('PDF load error', error);
+                  }}
+                  onSourceError={(error) => {
+                    const message =
+                      error?.message ?? 'Failed to fetch PDF file';
+                    setPreviewError(message);
+                    console.error('PDF source error', error);
                   }}
                 >
                   {numPages !== null &&
@@ -332,6 +366,9 @@ function NoteFileRow({
                             width={pageWidth}
                             renderTextLayer
                             renderAnnotationLayer
+                            onRenderError={(error) => {
+                              console.error('PDF page render error', error);
+                            }}
                           />
                           <RegionCommentOverlay
                             drawEnabled={isCommentMode}
@@ -351,7 +388,7 @@ function NoteFileRow({
               </div>
             )}
 
-            {isImage && !isPdf && (
+            {isImage && !isPdf && !previewError && (
               <div
                 data-note-file-scroll
                 className='rounded-md border border-border bg-[var(--pl-bg-sunken)] max-h-[calc(100vh-380px)] overflow-y-auto overflow-x-auto flex justify-center p-2'
@@ -361,6 +398,10 @@ function NoteFileRow({
                     src={fileUrl}
                     alt={fileName}
                     className='max-w-full h-auto object-contain block'
+                    onError={() => {
+                      setPreviewError(`Image could not be loaded from ${fileUrl}`);
+                      toast.error('Could not load image preview');
+                    }}
                   />
                   <RegionCommentOverlay
                     drawEnabled={isCommentMode}
