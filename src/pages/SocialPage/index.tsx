@@ -1,286 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { BookOpen, Brain, ClipboardList, Search, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import NoteCard from '@/components/cards/NoteCard';
-import FlashcardCard from '@/components/cards/FlashCard';
-import ExamCard from '@/components/cards/ExamCard';
-import { socialAPI } from '@/services/endpoints/social';
-import type { SocialNote } from '@/services/types/social.types';
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type SectionType = 'NOTE' | 'FLASHCARD' | 'EXAM';
-
-type PaginationMeta = {
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
-  pageSize: number;
-};
-
-type SectionState = {
-  items: SocialNote[];
-  meta: PaginationMeta | null;
-  loading: boolean;
-  error: string | null;
-  query: string;
-  page: number;
-};
-
-const DEFAULT_SECTION: SectionState = {
-  items: [],
-  meta: null,
-  loading: false,
-  error: null,
-  query: '',
-  page: 1,
-};
-
-// ─── Section config ────────────────────────────────────────────────────────────
-
-const SECTIONS: {
-  type: SectionType;
-  labelKey: string;
-  icon: React.ElementType;
-  fetchFn: (params?: {
-    q: string;
-    page?: number;
-    size?: number;
-  }) => Promise<any>;
-}[] = [
-  {
-    type: 'NOTE',
-    labelKey: 'social.notes',
-    icon: BookOpen,
-    fetchFn: (p) => socialAPI.getSharedNotes<'NOTE'>(p),
-  },
-  {
-    type: 'FLASHCARD',
-    labelKey: 'social.flashcards',
-    icon: Brain,
-    fetchFn: (p) => socialAPI.getSharedFlashcards<'FLASHCARD'>(p),
-  },
-  {
-    type: 'EXAM',
-    labelKey: 'social.exams',
-    icon: ClipboardList,
-    fetchFn: (p) => socialAPI.getSharedExams<'EXAM'>(p),
-  },
-];
-
-const PAGE_SIZE = 8;
-
-// ─── SearchBar ─────────────────────────────────────────────────────────────────
-
-type SearchBarProps = {
-  value: string;
-  onChange: (v: string) => void;
-  onSearch: () => void;
-  placeholder?: string;
-};
-
-const SearchBar = ({
-  value,
-  onChange,
-  onSearch,
-  placeholder,
-}: SearchBarProps) => {
-  const handleKey = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') onSearch();
-  };
-
-  return (
-    <div className='relative flex items-center gap-2'>
-      <div className='relative flex-1'>
-        <Search
-          size={14}
-          className='absolute left-3 top-1/2 -translate-y-1/2 text-[var(--pl-text-faint)] pointer-events-none'
-        />
-        <input
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={handleKey}
-          placeholder={placeholder ?? 'Search…'}
-          className='w-full h-9 pl-9 pr-8 text-[13px] rounded-[9px] border border-[var(--pl-border)] bg-[var(--pl-bg-elev)] text-[var(--pl-text)] placeholder:text-[var(--pl-text-faint)] outline-none focus:border-[var(--pl-accent-border)] transition-colors'
-        />
-        {value && (
-          <button
-            onClick={() => {
-              onChange('');
-              onSearch();
-            }}
-            className='absolute right-2 top-1/2 -translate-y-1/2 text-[var(--pl-text-faint)] hover:text-[var(--pl-text)] transition-colors'
-          >
-            <X size={13} />
-          </button>
-        )}
-      </div>
-      <button
-        onClick={onSearch}
-        className='h-9 px-4 rounded-[9px] bg-[oklch(var(--pl-accent-l)_var(--pl-accent-c)_var(--pl-accent-h))] text-white text-[13px] font-medium hover:opacity-90 transition-opacity shrink-0'
-      >
-        Search
-      </button>
-    </div>
-  );
-};
-
-// ─── SectionHeader ─────────────────────────────────────────────────────────────
-
-type SectionHeaderProps = {
-  icon: React.ElementType;
-  label: string;
-  count?: number;
-  sectionType: SectionType;
-  sectionState: SectionState;
-  onQueryChange: (type: SectionType, q: string) => void;
-  onSearch: (type: SectionType) => void;
-};
-
-const SectionHeader = ({
-  icon: Icon,
-  label,
-  count,
-  sectionType,
-  sectionState,
-  onQueryChange,
-  onSearch,
-}: SectionHeaderProps) => (
-  <div className='mb-5'>
-    <div className='flex items-center gap-2 mb-4'>
-      <div
-        className='w-8 h-8 rounded-[8px] grid place-items-center shrink-0'
-        style={{
-          background:
-            'oklch(var(--pl-accent-l) var(--pl-accent-c) var(--pl-accent-h) / 0.12)',
-          color:
-            'oklch(var(--pl-accent-l) var(--pl-accent-c) calc(var(--pl-accent-h) - 10))',
-        }}
-      >
-        <Icon size={15} />
-      </div>
-      <h2 className='text-[16px] font-semibold text-[var(--pl-text)] tracking-[-0.01em]'>
-        {label}
-      </h2>
-      {count !== undefined && (
-        <span className='ml-1 px-2 py-[2px] rounded-full bg-[var(--pl-bg-hover)] text-[11px] font-medium text-[var(--pl-text-muted)]'>
-          {count}
-        </span>
-      )}
-    </div>
-    <SearchBar
-      value={sectionState.query}
-      onChange={(q) => onQueryChange(sectionType, q)}
-      onSearch={() => onSearch(sectionType)}
-      placeholder={`Search ${label.toLowerCase()}…`}
-    />
-  </div>
-);
-
-// ─── LoadMore ──────────────────────────────────────────────────────────────────
-
-type LoadMoreProps = {
-  meta: PaginationMeta | null;
-  loading: boolean;
-  onLoadMore: () => void;
-};
-
-const LoadMore = ({ meta, loading, onLoadMore }: LoadMoreProps) => {
-  if (!meta || meta.currentPage >= meta.totalPages) return null;
-  return (
-    <div className='flex justify-center mt-5'>
-      <button
-        onClick={onLoadMore}
-        disabled={loading}
-        className='px-5 py-2 rounded-[9px] border border-[var(--pl-border)] text-[13px] text-[var(--pl-text-muted)] hover:border-[var(--pl-accent-border)] hover:text-[var(--pl-text)] transition-all disabled:opacity-50 disabled:cursor-not-allowed'
-      >
-        {loading ? 'Loading…' : 'Load more'}
-      </button>
-    </div>
-  );
-};
-
-// ─── SkeletonCard ──────────────────────────────────────────────────────────────
-
-const SkeletonCard = () => (
-  <div className='bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[14px] p-[18px] flex flex-col gap-3 animate-pulse'>
-    <div className='flex justify-between'>
-      <div className='w-9 h-9 rounded-[9px] bg-[var(--pl-bg-hover)]' />
-      <div className='w-7 h-7 rounded-[6px] bg-[var(--pl-bg-hover)]' />
-    </div>
-    <div className='h-4 w-3/4 rounded-md bg-[var(--pl-bg-hover)]' />
-    <div className='h-3 w-full rounded-md bg-[var(--pl-bg-hover)]' />
-    <div className='h-3 w-5/6 rounded-md bg-[var(--pl-bg-hover)]' />
-    <div className='mt-auto pt-3 border-t border-[var(--pl-border)] flex justify-between'>
-      <div className='h-3 w-16 rounded-md bg-[var(--pl-bg-hover)]' />
-      <div className='h-3 w-12 rounded-md bg-[var(--pl-bg-hover)]' />
-    </div>
-  </div>
-);
-
-// ─── CardGrid ──────────────────────────────────────────────────────────────────
-
-type CardGridProps = {
-  type: SectionType;
-  state: SectionState;
-};
-
-const CardGrid = ({ type, state }: CardGridProps) => {
-  const { loading, error, items } = state;
-
-  if (error) {
-    return (
-      <div className='py-10 text-center text-[13px] text-[oklch(0.65_0.2_25)]'>
-        Failed to load. Please try again.
-      </div>
-    );
-  }
-
-  if (!loading && items.length === 0) {
-    return (
-      <div className='py-10 text-center text-[13px] text-[var(--pl-text-faint)]'>
-        No results found.
-      </div>
-    );
-  }
-
-  return (
-    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
-      {items.map((item) => {
-        if (type === 'NOTE')
-          return (
-            <NoteCard
-              key={item.id}
-              note={item as any}
-              onAccess={(id) => console.log('access note', id)}
-            />
-          );
-        if (type === 'FLASHCARD')
-          return (
-            <FlashcardCard
-              key={item.id}
-              flashcard={item as any}
-              onAccess={(id) => console.log('access flashcard', id)}
-            />
-          );
-        return (
-          <ExamCard
-            key={item.id}
-            exam={item as any}
-            onAccess={(id) => console.log('access exam', id)}
-          />
-        );
-      })}
-      {loading &&
-        Array.from({ length: 4 }).map((_, i) => (
-          <SkeletonCard key={`sk-${i}`} />
-        ))}
-    </div>
-  );
-};
-
-// ─── Main Page ─────────────────────────────────────────────────────────────────
+import FilterBar from './components/FilterBar';
+import RailSidebar from './components/RailSidebar';
+import SectionBlock from './components/SectionBlock';
+import { SECTIONS, PAGE_SIZE } from './sectionConfig';
+import { DEFAULT_SECTION } from './types';
+import type { FilterType, SectionState, SectionType, SortType } from './types';
 
 const SocialExplorePage = () => {
   const { t } = useTranslation();
@@ -290,13 +16,14 @@ const SocialExplorePage = () => {
     FLASHCARD: { ...DEFAULT_SECTION },
     EXAM: { ...DEFAULT_SECTION },
   });
+  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+  const [sort, setSort] = useState<SortType>('trending');
+  const [query, setQuery] = useState('');
 
-  // Track active fetch (abort stale requests)
   const abortRefs = useRef<Partial<Record<SectionType, AbortController>>>({});
 
   const fetchSection = useCallback(
-    async (type: SectionType, page: number, query: string, append = false) => {
-      // Abort previous fetch for this section
+    async (type: SectionType, page: number, q: string, append = false) => {
       abortRefs.current[type]?.abort();
       const controller = new AbortController();
       abortRefs.current[type] = controller;
@@ -308,9 +35,8 @@ const SocialExplorePage = () => {
 
       try {
         const section = SECTIONS.find((s) => s.type === type)!;
-        const res = await section.fetchFn({ q: query, page, size: PAGE_SIZE });
+        const res = await section.fetchFn({ q, page, size: PAGE_SIZE });
         const { data, metadata } = res.data;
-
         setSections((prev) => ({
           ...prev,
           [type]: {
@@ -325,84 +51,111 @@ const SocialExplorePage = () => {
         if (err?.name === 'CanceledError' || err?.name === 'AbortError') return;
         setSections((prev) => ({
           ...prev,
-          [type]: {
-            ...prev[type],
-            loading: false,
-            error: 'Failed to fetch.',
-          },
+          [type]: { ...prev[type], loading: false, error: 'Failed to fetch.' },
         }));
       }
     },
     [],
   );
 
-  // Initial fetch for all sections
   useEffect(() => {
-    (['NOTE', 'FLASHCARD', 'EXAM'] as SectionType[]).forEach((type) => {
-      fetchSection(type, 1, '');
-    });
+    (['NOTE', 'FLASHCARD', 'EXAM'] as SectionType[]).forEach((type) =>
+      fetchSection(type, 0, ''),
+    );
+    const controllers = abortRefs.current;
     return () => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      Object.values(abortRefs.current).forEach((c) => c?.abort());
+      Object.values(controllers).forEach((c) => c?.abort());
     };
   }, [fetchSection]);
 
-  const handleQueryChange = (type: SectionType, q: string) => {
-    setSections((prev) => ({
-      ...prev,
-      [type]: { ...prev[type], query: q },
-    }));
+  const handleSearch = useCallback(() => {
+    const types: SectionType[] =
+      activeFilter === 'all'
+        ? ['NOTE', 'FLASHCARD', 'EXAM']
+        : [activeFilter as SectionType];
+    types.forEach((type) => fetchSection(type, 0, query, false));
+  }, [activeFilter, query, fetchSection]);
+
+  const handleFilterChange = (f: FilterType) => {
+    setActiveFilter(f);
+    if (f !== 'all') {
+      const type = f as SectionType;
+      if (sections[type].items.length === 0 && !sections[type].loading)
+        fetchSection(type, 0, query);
+    }
   };
 
-  const handleSearch = (type: SectionType) => {
-    const q = sections[type].query;
-    fetchSection(type, 1, q, false);
+  const counts = {
+    NOTE: sections.NOTE.meta?.totalItems ?? null,
+    FLASHCARD: sections.FLASHCARD.meta?.totalItems ?? null,
+    EXAM: sections.EXAM.meta?.totalItems ?? null,
   };
 
-  const handleLoadMore = (type: SectionType) => {
-    const { page, query } = sections[type];
-    fetchSection(type, page + 1, query, true);
-  };
+  const visibleSections = SECTIONS.filter(
+    (s) => activeFilter === 'all' || s.type === activeFilter,
+  );
 
   return (
-    <div className='min-h-screen bg-[var(--pl-bg)] px-4 py-8 md:px-8'>
-      {/* Page header */}
-      <div className='mb-10'>
-        <h1
-          style={{ fontFamily: 'var(--font-display)' }}
-          className='text-[28px] font-bold text-[var(--pl-text)] tracking-[-0.02em] mb-1'
-        >
-          {t('social.explore', 'Explore')}
-        </h1>
-        <p className='text-[13.5px] text-[var(--pl-text-muted)]'>
-          {t(
-            'social.exploreDesc',
-            'Discover notes, flashcards, and exams shared by the community.',
-          )}
-        </p>
+    <div className='min-h-screen bg-[var(--pl-bg)]'>
+      {/* Header */}
+      <div className='px-6 md:px-10 pt-8 pb-6 border-b border-[var(--pl-border)]'>
+        <div className='max-w-[1400px] mx-auto'>
+          <div
+            style={{ fontFamily: 'var(--font-mono-pl)' }}
+            className='text-[10.5px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)] mb-1'
+          >
+            Community · 12,840 learners sharing
+          </div>
+          <h1
+            style={{ fontFamily: 'var(--font-display)' }}
+            className='text-[28px] font-medium tracking-[-0.02em] text-[var(--pl-text)] mb-1'
+          >
+            {t('social.explore', 'The public library')}
+          </h1>
+          <p className='text-[13.5px] text-[var(--pl-text-muted)]'>
+            {t(
+              'social.exploreDesc',
+              'Notes, flashcard decks, and exams shared by learners around the world. Save, fork, remix.',
+            )}
+          </p>
+        </div>
       </div>
 
-      {/* Sections */}
-      <div className='flex flex-col gap-12'>
-        {SECTIONS.map(({ type, labelKey, icon }) => (
-          <section key={type}>
-            <SectionHeader
-              icon={icon}
-              label={t(labelKey, type)}
-              count={sections[type].meta?.totalItems}
-              sectionType={type}
-              sectionState={sections[type]}
-              onQueryChange={handleQueryChange}
+      {/* Body */}
+      <div className='px-6 md:px-10 py-8 max-w-[1400px] mx-auto'>
+        <div className='grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 items-start'>
+          {/* Main feed */}
+          <div className='min-w-0'>
+            <FilterBar
+              filter={activeFilter}
+              setFilter={handleFilterChange}
+              sort={sort}
+              setSort={setSort}
+              query={query}
+              setQuery={setQuery}
               onSearch={handleSearch}
+              counts={counts}
             />
-            <CardGrid type={type} state={sections[type]} />
-            <LoadMore
-              meta={sections[type].meta}
-              loading={sections[type].loading}
-              onLoadMore={() => handleLoadMore(type)}
-            />
-          </section>
-        ))}
+            <div className='flex flex-col gap-10'>
+              {visibleSections.map(({ type, labelKey, icon }) => (
+                <SectionBlock
+                  key={type}
+                  type={type}
+                  label={t(labelKey, type)}
+                  icon={icon}
+                  state={sections[type]}
+                  sort={sort}
+                  onLoadMore={() =>
+                    fetchSection(type, sections[type].page + 1, query, true)
+                  }
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Right rail */}
+          <RailSidebar />
+        </div>
       </div>
     </div>
   );

@@ -4,9 +4,12 @@ import type { SocialParams } from '@/services/types/social.types';
 
 export const socialKeys = {
   all: ['social'] as const,
-  notes: (params?: SocialParams) => [...socialKeys.all, 'notes', params] as const,
-  flashcards: (params?: SocialParams) => [...socialKeys.all, 'flashcards', params] as const,
-  exams: (params?: SocialParams) => [...socialKeys.all, 'exams', params] as const,
+  notes: (params?: SocialParams) =>
+    [...socialKeys.all, 'notes', params] as const,
+  flashcards: (params?: SocialParams) =>
+    [...socialKeys.all, 'flashcards', params] as const,
+  exams: (params?: SocialParams) =>
+    [...socialKeys.all, 'exams', params] as const,
 };
 
 export function usePublicNotes(params?: SocialParams) {
@@ -19,7 +22,8 @@ export function usePublicNotes(params?: SocialParams) {
 export function usePublicFlashcards(params?: SocialParams) {
   return useQuery({
     queryKey: socialKeys.flashcards(params),
-    queryFn: () => socialAPI.getSharedFlashcards(params).then((r) => r.data.data),
+    queryFn: () =>
+      socialAPI.getSharedFlashcards(params).then((r) => r.data.data),
   });
 }
 
