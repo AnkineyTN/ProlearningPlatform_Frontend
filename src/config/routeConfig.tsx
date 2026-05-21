@@ -24,7 +24,7 @@ import SetSeriesPage from '@/pages/SetSeriesPage';
 import TodoDashboard from '@/pages/TodoDashboard';
 import Pomodoro from '@/pages/Pomodoro';
 import ExamPage from '@/pages/ExamPage';
-import ExamEditor from '@/pages/ExamPage/ExamEditor';
+import ExamEditor from '@/pages/ExamPage/components/ExamEditor';
 import ProfilePage from '@/pages/ProfilePage';
 import ReviewBundlesPage from '@/pages/ReviewBundle/ReviewBundlesPage';
 import ReviewBundlePage from '@/pages/ReviewBundle';

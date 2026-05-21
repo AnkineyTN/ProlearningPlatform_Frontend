@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
 import QuestionItem from './QuestionItem';
-import type { ExamQuestion } from '../types';
+import type { ExamQuestion } from '../../types';
 import {
   useCreateExam,
   useUpdateExam,
@@ -23,7 +23,7 @@ import {
   apiQuizDetailToExam,
   uiQuestionToCreateRequest,
   parseAIGeneratedContent,
-} from '../utils/examMapper';
+} from '../../utils/examMapper';
 import type { PrivacyType } from '@/services/types/exam.types';
 
 export type QuestionErrors = {

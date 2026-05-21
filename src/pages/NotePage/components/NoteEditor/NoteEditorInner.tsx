@@ -1,0 +1,147 @@
+import {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
+import { BlockNoteEditor as BlockNoteEditorClass } from '@blocknote/core';
+import { useCreateBlockNote } from '@blocknote/react';
+import { BlockNoteView } from '@blocknote/mantine';
+import '@blocknote/mantine/style.css';
+import '@blocknote/react/style.css';
+import AiExplainTooltip from './AiExplainTooltip';
+import { useAiExplain } from './useAiExplain';
+import { useBlockNoteScheme } from './useBlockNoteScheme';
+import { useTextSelection } from './useTextSelection';
+import { hydrateBlocks, isEditorEmpty } from './utils';
+import type { CollabReady, NoteEditorHandle } from './types';
+
+interface NoteEditorInnerProps {
+  collab: CollabReady;
+  userName: string;
+  userColor: string;
+  editable: boolean;
+  noteId: number;
+  setId: number;
+  /** Persisted note content (BlockNote JSON) loaded from API. Used to hydrate
+   * the Y.Doc the first time we sync if the server's doc is empty. */
+  initialContent: string;
+  onContentChange: (content: string) => void;
+  onAISummarize: (selectedText: string, response: string) => void;
+  innerRef: React.Ref<NoteEditorHandle>;
+}
+
+export default function NoteEditorInner({
+  collab,
+  userName,
+  userColor,
+  editable,
+  noteId,
+  setId,
+  initialContent,
+  onContentChange,
+  onAISummarize,
+  innerRef,
+}: NoteEditorInnerProps) {
+  const blockNoteScheme = useBlockNoteScheme();
+  const editorContainerRef = useRef<HTMLDivElement>(null);
+  const [editorInstance, setEditorInstance] =
+    useState<BlockNoteEditorClass | null>(null);
+
+  const blockNoteEditor = useCreateBlockNote({
+    collaboration: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      provider: collab.provider as any,
+      fragment: collab.yjsDoc.getXmlFragment('document-store'),
+      user: { name: userName, color: userColor },
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setEditorInstance(blockNoteEditor as any);
+  }, [blockNoteEditor]);
+
+  // BlockNote ignores `initialContent` when collaboration is enabled. If the
+  // server's Y.Doc is empty after first sync, hydrate it from the API content.
+  const hydratedRef = useRef(false);
+  useEffect(() => {
+    if (!editorInstance || !initialContent || hydratedRef.current) return;
+
+    const tryHydrate = () => {
+      if (hydratedRef.current) return;
+      hydratedRef.current = true;
+      if (!isEditorEmpty(editorInstance)) return;
+      void hydrateBlocks(editorInstance, initialContent);
+    };
+
+    const onSynced = () => tryHydrate();
+    collab.provider.on('synced', onSynced);
+    if (collab.provider.isSynced) tryHydrate();
+    return () => {
+      collab.provider.off('synced', onSynced);
+    };
+  }, [editorInstance, collab.provider, initialContent]);
+
+  const handleEditorChange = useCallback(() => {
+    if (editorInstance) {
+      onContentChange(
+        editorInstance.blocksToHTMLLossy(editorInstance.document),
+      );
+    }
+  }, [editorInstance, onContentChange]);
+
+  useImperativeHandle(
+    innerRef,
+    () => ({
+      getHTML: async () => {
+        if (editorInstance) {
+          return await editorInstance.blocksToHTMLLossy(
+            editorInstance.document,
+          );
+        }
+        return '';
+      },
+    }),
+    [editorInstance],
+  );
+
+  const selection = useTextSelection(editorContainerRef);
+  const { explain, isPending } = useAiExplain({
+    setId,
+    noteId,
+    onResult: onAISummarize,
+    onSuccess: selection.hide,
+  });
+
+  return (
+    <div className='relative w-full h-full overflow-hidden flex flex-col bg-[var(--pl-bg)]'>
+      {selection.showSummarizeBtn && selection.selectedText && (
+        <AiExplainTooltip
+          ref={selection.tooltipRef}
+          containerRef={editorContainerRef}
+          tooltipPos={selection.tooltipPos}
+          isPending={isPending}
+          onClick={() => void explain(selection.selectedText)}
+        />
+      )}
+
+      <div
+        ref={editorContainerRef}
+        className='flex-1 overflow-auto focus-within:outline-none px-8 py-6 text-[var(--pl-text)] bg-[var(--pl-bg)]'
+      >
+        {editorInstance && (
+          <BlockNoteView
+            editor={editorInstance}
+            theme={blockNoteScheme}
+            onChange={handleEditorChange}
+            editable={editable}
+            className='block-note-editor'
+          />
+        )}
+      </div>
+    </div>
+  );
+}

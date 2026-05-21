@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { Answer, ExamQuestion, QuestionType } from '../types';
+import type { Answer, ExamQuestion, QuestionType } from '../../types';
 import { Checkbox } from '@/components/ui/checkbox';
 import type { QuestionErrors } from './index';
 
