@@ -1,12 +1,12 @@
-import { useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 import LogoFG from '@/assets/logo_fg';
 import { authAPI } from '@/services/endpoints/auth';
 import type { ApiErrorResponse } from '@/services/types/auth.types';
-import { Button } from '@/components/ui/button';
 import { useCountdown } from '@/hooks/useCountdown';
 import OtpInput from './OtpInput';
 
@@ -22,20 +22,24 @@ export default function VerifyEmail() {
 
   const email = useMemo(() => state.email ?? '', [state.email]);
   const after = state.after ?? 'signup';
+  const { t } = useTranslation();
 
   const [submitting, setSubmitting] = useState(false);
+  const succeededRef = useRef(false);
   const resendLock = useCountdown({ seconds: 60, autoStart: true });
   const otpTtl = useCountdown({ seconds: 60, autoStart: true });
 
   const handleVerify = async (otp: string) => {
+    if (succeededRef.current) return;
     if (!email) {
-      toast.error('Thiếu email. Vui lòng bắt đầu lại flow.');
+      toast.error(t('verifyEmail.missingEmailError'));
       return;
     }
     setSubmitting(true);
     try {
       await authAPI.verifyEmail({ email, otp });
-      toast.success('Xác nhận email thành công.');
+      succeededRef.current = true;
+      toast.success(t('verifyEmail.verifySuccess'));
 
       if (after === 'forgot') {
         navigate('/forgot-password', { state: { email, autoSubmit: true } });
@@ -48,7 +52,7 @@ export default function VerifyEmail() {
         ? (err.response?.data as ApiErrorResponse | undefined)
         : undefined;
       const code = payload?.metadata?.code;
-      const msg = payload?.message ?? 'OTP không đúng hoặc đã hết hạn.';
+      const msg = payload?.message ?? t('verifyEmail.otpError');
 
       if (code === 'OTP_ERROR') {
         toast.error(msg);
@@ -57,27 +61,33 @@ export default function VerifyEmail() {
 
       toast.error(msg);
     } finally {
-      setSubmitting(false);
+      if (!succeededRef.current) {
+        setSubmitting(false);
+      }
     }
+  };
+
+  const handleReturnToLogin = () => {
+    // Signup flow: user is already auto-logged in, so going back means
+    // continuing into the app. Forgot flow: not authenticated → go to login.
+    navigate(after === 'forgot' ? '/login' : '/dashboard');
   };
 
   const handleResend = async () => {
     if (!resendLock.isDone) return;
     if (!email) {
-      toast.error('Thiếu email. Vui lòng bắt đầu lại flow.');
+      toast.error(t('verifyEmail.missingEmailError'));
       return;
     }
 
     setSubmitting(true);
     try {
       if (after === 'forgot') {
-        // Spec: resend OTP via calling forgot-password again (no JWT required)
         await authAPI.forgotPassword({ email });
-        toast.success('Mã OTP đã được gửi lại.');
+        toast.success(t('verifyEmail.otpResent'));
       } else {
-        // Signup flow: resend verify OTP requires JWT
         await authAPI.resendVerifyOtp();
-        toast.success('Mã OTP đã được gửi lại.');
+        toast.success(t('verifyEmail.otpResent'));
       }
       resendLock.reset(60);
       otpTtl.reset(60);
@@ -85,9 +95,7 @@ export default function VerifyEmail() {
       const payload: ApiErrorResponse | undefined = axios.isAxiosError(err)
         ? (err.response?.data as ApiErrorResponse | undefined)
         : undefined;
-      toast.error(
-        payload?.message ?? 'Không thể gửi lại OTP. Vui lòng thử lại.',
-      );
+      toast.error(payload?.message ?? t('verifyEmail.resendFailed'));
     } finally {
       setSubmitting(false);
     }
@@ -95,70 +103,100 @@ export default function VerifyEmail() {
 
   return (
     <div className='min-h-screen w-screen flex items-center justify-center relative overflow-hidden'>
-      <div className='absolute -top-40 -right-10 w-[650px] h-[650px] rounded-full bg-[radial-gradient(circle,rgba(236,72,153,0.3)_0%,rgba(168,85,247,0.15)_50%,transparent_70%)] blur-[70px] pointer-events-none' />
-      <div className='absolute -bottom-32 -left-20 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.35)_0%,rgba(59,130,246,0.15)_50%,transparent_70%)] blur-[60px] pointer-events-none' />
+      {/* Gradient orbs */}
+      <div className='absolute -top-32 -left-20 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,var(--pl-accent-border)_0%,var(--pl-accent-soft)_50%,transparent_70%)] blur-[60px] pointer-events-none' />
+      <div className='absolute -bottom-40 -right-20 w-[700px] h-[700px] rounded-full bg-[radial-gradient(circle,var(--pl-accent-soft)_0%,var(--pl-accent-soft)_50%,transparent_70%)] blur-[70px] pointer-events-none' />
+      <div className='absolute top-1/2 right-1/4 w-[400px] h-[400px] rounded-full bg-[radial-gradient(circle,var(--pl-accent-soft)_0%,transparent_70%)] blur-[50px] pointer-events-none' />
 
-      <a href='/' className='absolute top-8 left-20'>
-        <div className='w-10 h-10 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(139,92,246,0.5)]'>
+      {/* Logo */}
+      <a
+        href='/dashboard'
+        className='absolute top-8 left-8 flex items-center gap-2'
+      >
+        <div className='w-8 h-8 grid place-items-center'>
           <LogoFG />
         </div>
+        <span
+          className='text-[16px] font-semibold tracking-[-0.015em] text-[var(--pl-text)]'
+          style={{ fontFamily: 'var(--font-display)' }}
+        >
+          ProLearning
+        </span>
       </a>
 
-      <div className='relative z-10 w-[460px] my-10 bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-3xl px-10 py-11 shadow-[0_25px_60px_rgba(0,0,0,0.5)]'>
-        <div className='absolute top-0 left-[15%] right-[15%] h-px bg-gradient-to-r from-transparent via-pink-500 to-transparent' />
-
+      {/* Card */}
+      <div className='relative w-[420px] max-w-full bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[14px] px-9 py-10'>
+        {/* Header */}
         <div className='mb-7'>
-          <h1 className='text-[28px] font-bold tracking-tight mb-2'>
-            Xác nhận email
+          <div className='text-[10px] tracking-[0.18em] uppercase mb-2 text-[var(--pl-text-faint)]'>
+            {t('verifyEmail.subtitle')}
+          </div>
+          <h1
+            className='text-[32px] tracking-[-0.02em] leading-[1.1] m-0 mb-2 text-[var(--pl-text)]'
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            {t('verifyEmail.title')}
           </h1>
-          <p className='text-muted-foreground text-sm'>
-            Nhập mã OTP 6 số đã gửi về email.
+          <p
+            className='text-[15px] italic m-0 text-[var(--pl-text-muted)]'
+            style={{ fontFamily: 'var(--font-serif)' }}
+          >
+            {t('verifyEmail.description')}
           </p>
         </div>
 
-        <div className='mb-5 text-sm'>
-          <div className='text-muted-foreground'>Email</div>
-          <div className='font-semibold'>{email || '(thiếu email)'}</div>
+        {/* Email display */}
+        <div className='mb-6'>
+          <div className='text-[11px] font-semibold tracking-[0.12em] uppercase text-[var(--pl-text-muted)] mb-1.5'>
+            {t('verifyEmail.emailLabel')}
+          </div>
+          <div className='text-[13.5px] font-semibold text-[var(--pl-text)]'>
+            {email || t('verifyEmail.emailMissing')}
+          </div>
         </div>
 
         <div className='flex flex-col gap-5'>
           <OtpInput disabled={submitting} onComplete={handleVerify} />
 
-          <div className='flex items-center justify-between text-xs text-muted-foreground'>
-            <span>OTP hết hạn sau {otpTtl.format()}.</span>
+          <div className='flex items-center justify-between text-[11.5px] text-[var(--pl-text-faint)]'>
+            <span>
+              {t('verifyEmail.otpExpiresIn', { time: otpTtl.format() })}
+            </span>
             {resendLock.isDone ? (
               <button
                 type='button'
                 onClick={handleResend}
                 disabled={submitting}
-                className='underline underline-offset-4 hover:text-foreground disabled:opacity-60'
+                className='font-semibold text-[var(--pl-accent-strong)] hover:opacity-80 transition-opacity disabled:opacity-60 cursor-pointer'
               >
-                Gửi lại mã
+                {t('verifyEmail.resendCode')}
               </button>
             ) : (
-              <span>Gửi lại sau {resendLock.format()}.</span>
+              <span>
+                {t('verifyEmail.resendIn', { time: resendLock.format() })}
+              </span>
             )}
           </div>
 
-          <Button
+          <button
             type='button'
-            variant='default'
-            className='w-full py-3 rounded-xl cursor-pointer'
             disabled
-            title='Mã OTP đủ 6 số sẽ tự verify'
+            title={t('verifyEmail.autoVerifyTitle')}
+            className='w-full py-3 rounded-full text-[13.5px] font-semibold bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] opacity-50 cursor-not-allowed'
           >
-            Tự động xác nhận khi đủ 6 số
-          </Button>
-
-          <div className='text-center text-[13px] text-muted-foreground'>
-            <Link
-              to='/login'
-              className='text-violet-400/90 font-semibold hover:text-violet-300 transition-colors'
-            >
-              Quay lại đăng nhập
-            </Link>
-          </div>
+            {t('verifyEmail.autoVerifyButton')}
+          </button>
         </div>
+
+        <p className='mt-6 text-center text-[12.5px] text-[var(--pl-text-muted)]'>
+          <button
+            type='button'
+            onClick={handleReturnToLogin}
+            className='font-semibold text-[var(--pl-accent-strong)] hover:opacity-80 transition-opacity cursor-pointer'
+          >
+            {t('verifyEmail.back')}
+          </button>
+        </p>
       </div>
     </div>
   );

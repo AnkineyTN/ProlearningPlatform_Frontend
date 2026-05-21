@@ -5,13 +5,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { Eye, EyeOff, Lock, RefreshCw } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import LogoFG from '@/assets/logo_fg';
 import { authAPI } from '@/services/endpoints/auth';
 import type { ApiErrorResponse } from '@/services/types/auth.types';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
 
 type LocationState = {
   email?: string;
@@ -23,25 +25,32 @@ type FormData = {
   confirmPassword: string;
 };
 
-const schema = z
-  .object({
-    newPassword: z.string().min(8, 'Mật khẩu phải tối thiểu 8 ký tự'),
-    confirmPassword: z.string().min(1, 'Vui lòng nhập lại mật khẩu'),
-  })
-  .refine((d) => d.newPassword === d.confirmPassword, {
-    message: 'Mật khẩu không khớp',
-    path: ['confirmPassword'],
-  });
-
 export default function ResetPassword() {
   const navigate = useNavigate();
   const location = useLocation();
   const state = (location.state ?? {}) as LocationState;
+  const { t } = useTranslation();
 
   const email = useMemo(() => state.email ?? '', [state.email]);
   const resetToken = useMemo(() => state.resetToken ?? '', [state.resetToken]);
 
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const schema = useMemo(
+    () =>
+      z
+        .object({
+          newPassword: z.string().min(8, t('resetPassword.passwordMin')),
+          confirmPassword: z.string().min(1, t('resetPassword.confirmRequired')),
+        })
+        .refine((d) => d.newPassword === d.confirmPassword, {
+          message: t('resetPassword.passwordNotMatch'),
+          path: ['confirmPassword'],
+        }),
+    [t],
+  );
 
   const {
     register,
@@ -53,7 +62,7 @@ export default function ResetPassword() {
 
   const onSubmit = async (data: FormData) => {
     if (!resetToken) {
-      toast.error('Thiếu reset token. Vui lòng bắt đầu lại flow.');
+      toast.error(t('resetPassword.missingToken'));
       return;
     }
     setSubmitting(true);
@@ -62,7 +71,7 @@ export default function ResetPassword() {
         resetToken,
         newPassword: data.newPassword,
       });
-      toast.success('Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại.');
+      toast.success(t('resetPassword.success'));
       navigate('/login');
     } catch (err: unknown) {
       const payload: ApiErrorResponse | undefined = axios.isAxiosError(err)
@@ -70,9 +79,7 @@ export default function ResetPassword() {
         : undefined;
 
       const code = payload?.metadata?.code;
-      const msg =
-        payload?.message ??
-        'Token không hợp lệ hoặc đã hết hạn. Vui lòng thử lại.';
+      const msg = payload?.message ?? t('resetPassword.failed');
 
       if (code === 'OTP_ERROR') {
         toast.error(msg);
@@ -84,88 +91,153 @@ export default function ResetPassword() {
     }
   };
 
+  const inputClass = (hasError: boolean) =>
+    cn(
+      'w-full pl-10 pr-3.5 py-2.5 text-[13.5px] outline-none transition-colors',
+      'bg-[var(--pl-bg)] border rounded-[10px]',
+      'placeholder:text-[var(--pl-text-faint)]',
+      'focus:border-[var(--pl-accent-border)] focus:bg-[var(--pl-bg-hover)]',
+      hasError
+        ? 'border-[var(--pl-danger,oklch(0.65_0.2_25))]'
+        : 'border-[var(--pl-border-strong)]',
+    );
+
   return (
     <div className='min-h-screen w-screen flex items-center justify-center relative overflow-hidden'>
-      <div className='absolute -top-40 -right-10 w-[650px] h-[650px] rounded-full bg-[radial-gradient(circle,rgba(236,72,153,0.3)_0%,rgba(168,85,247,0.15)_50%,transparent_70%)] blur-[70px] pointer-events-none' />
-      <div className='absolute -bottom-32 -left-20 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.35)_0%,rgba(59,130,246,0.15)_50%,transparent_70%)] blur-[60px] pointer-events-none' />
+      {/* Gradient orbs */}
+      <div className='absolute -top-32 -left-20 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,var(--pl-accent-border)_0%,var(--pl-accent-soft)_50%,transparent_70%)] blur-[60px] pointer-events-none' />
+      <div className='absolute -bottom-40 -right-20 w-[700px] h-[700px] rounded-full bg-[radial-gradient(circle,var(--pl-accent-soft)_0%,var(--pl-accent-soft)_50%,transparent_70%)] blur-[70px] pointer-events-none' />
+      <div className='absolute top-1/2 right-1/4 w-[400px] h-[400px] rounded-full bg-[radial-gradient(circle,var(--pl-accent-soft)_0%,transparent_70%)] blur-[50px] pointer-events-none' />
 
-      <a href='/' className='absolute top-8 left-20'>
-        <div className='w-10 h-10 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(139,92,246,0.5)]'>
+      {/* Logo */}
+      <a
+        href='/dashboard'
+        className='absolute top-8 left-8 flex items-center gap-2'
+      >
+        <div className='w-8 h-8 grid place-items-center'>
           <LogoFG />
         </div>
+        <span
+          className='text-[16px] font-semibold tracking-[-0.015em] text-[var(--pl-text)]'
+          style={{ fontFamily: 'var(--font-display)' }}
+        >
+          ProLearning
+        </span>
       </a>
 
-      <div className='relative z-10 w-[460px] my-10 bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-3xl px-10 py-11 shadow-[0_25px_60px_rgba(0,0,0,0.5)]'>
-        <div className='absolute top-0 left-[15%] right-[15%] h-px bg-gradient-to-r from-transparent via-pink-500 to-transparent' />
-
+      {/* Card */}
+      <div className='relative w-[420px] max-w-full bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[14px] px-9 py-10'>
+        {/* Header */}
         <div className='mb-7'>
-          <h1 className='text-[28px] font-bold tracking-tight mb-2'>
-            Đặt lại mật khẩu
+          <div className='text-[10px] tracking-[0.18em] uppercase mb-2 text-[var(--pl-text-faint)]'>
+            {t('resetPassword.subtitle')}
+          </div>
+          <h1
+            className='text-[32px] tracking-[-0.02em] leading-[1.1] m-0 mb-2 text-[var(--pl-text)]'
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            {t('resetPassword.title')}
           </h1>
-          <p className='text-muted-foreground text-sm'>
-            Nhập mật khẩu mới cho tài khoản của bạn.
+          <p
+            className='text-[15px] italic m-0 text-[var(--pl-text-muted)]'
+            style={{ fontFamily: 'var(--font-serif)' }}
+          >
+            {t('resetPassword.description')}
           </p>
         </div>
 
-        <div className='mb-5 text-sm'>
-          <div className='text-muted-foreground'>Email</div>
-          <div className='font-semibold'>{email || '(không lưu email)'}</div>
+        {/* Email display */}
+        <div className='mb-6'>
+          <div className='text-[11px] font-semibold tracking-[0.12em] uppercase text-[var(--pl-text-muted)] mb-1.5'>
+            {t('resetPassword.emailLabel')}
+          </div>
+          <div className='text-[13.5px] font-semibold text-[var(--pl-text)]'>
+            {email || t('resetPassword.emailMissing')}
+          </div>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
+          {/* New password */}
           <div>
-            <Label className='block text-[13px] font-semibold text-foreground mb-2 tracking-wide'>
-              Mật khẩu mới <span className='text-pink-400'>*</span>
+            <Label className='block text-[11px] font-semibold tracking-[0.12em] uppercase text-[var(--pl-text-muted)] mb-2'>
+              {t('resetPassword.newPassword')}{' '}
+              <span className='text-[var(--pl-accent-strong)]'>*</span>
             </Label>
-            <Input
-              type='password'
-              {...register('newPassword')}
-              placeholder='••••••••'
-              disabled={submitting}
-              className={`w-full py-2.5 text-sm outline-none transition-all ${errors.newPassword ? 'border-red-400/60' : 'border-ring'}`}
-            />
+            <div className='relative'>
+              <span className='absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--pl-text-faint)]'>
+                <Lock size={14} />
+              </span>
+              <Input
+                type={showPassword ? 'text' : 'password'}
+                {...register('newPassword')}
+                placeholder='••••••••'
+                disabled={submitting}
+                className={cn(inputClass(!!errors.newPassword), 'pr-10')}
+              />
+              <span
+                onClick={() => setShowPassword(!showPassword)}
+                className='absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--pl-text-faint)] cursor-pointer hover:text-[var(--pl-text)] transition-colors'
+              >
+                {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+              </span>
+            </div>
             {errors.newPassword && (
-              <p className='text-red-400 text-xs mt-1'>
+              <p className='text-[var(--pl-danger,oklch(0.65_0.2_25))] text-[11.5px] mt-1.5'>
                 {errors.newPassword.message}
               </p>
             )}
           </div>
 
+          {/* Confirm password */}
           <div>
-            <Label className='block text-[13px] font-semibold text-foreground mb-2 tracking-wide'>
-              Nhập lại mật khẩu <span className='text-pink-400'>*</span>
+            <Label className='block text-[11px] font-semibold tracking-[0.12em] uppercase text-[var(--pl-text-muted)] mb-2'>
+              {t('resetPassword.confirmPassword')}{' '}
+              <span className='text-[var(--pl-accent-strong)]'>*</span>
             </Label>
-            <Input
-              type='password'
-              {...register('confirmPassword')}
-              placeholder='••••••••'
-              disabled={submitting}
-              className={`w-full py-2.5 text-sm outline-none transition-all ${errors.confirmPassword ? 'border-red-400/60' : 'border-ring'}`}
-            />
+            <div className='relative'>
+              <span className='absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--pl-text-faint)]'>
+                <Lock size={14} />
+              </span>
+              <Input
+                type={showConfirmPassword ? 'text' : 'password'}
+                {...register('confirmPassword')}
+                placeholder='••••••••'
+                disabled={submitting}
+                className={cn(inputClass(!!errors.confirmPassword), 'pr-10')}
+              />
+              <span
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className='absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--pl-text-faint)] cursor-pointer hover:text-[var(--pl-text)] transition-colors'
+              >
+                {showConfirmPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+              </span>
+            </div>
             {errors.confirmPassword && (
-              <p className='text-red-400 text-xs mt-1'>
+              <p className='text-[var(--pl-danger,oklch(0.65_0.2_25))] text-[11.5px] mt-1.5'>
                 {errors.confirmPassword.message}
               </p>
             )}
           </div>
 
-          <Button
+          {/* Submit */}
+          <button
             type='submit'
             disabled={submitting}
-            className='w-full py-3 rounded-xl cursor-pointer bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white text-sm font-bold tracking-wide'
+            className='w-full mt-1 py-3 rounded-full text-[13.5px] font-semibold inline-flex items-center justify-center gap-2 bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity cursor-pointer'
           >
-            Đặt lại mật khẩu
-          </Button>
-
-          <div className='text-center text-[13px] text-muted-foreground'>
-            <Link
-              to='/login'
-              className='text-violet-400/90 font-semibold hover:text-violet-300 transition-colors'
-            >
-              Quay lại đăng nhập
-            </Link>
-          </div>
+            {submitting && <RefreshCw size={13} className='animate-spin' />}
+            {t('resetPassword.submit')}
+          </button>
         </form>
+
+        <p className='mt-6 text-center text-[12.5px] text-[var(--pl-text-muted)]'>
+          <Link
+            to='/login'
+            className='font-semibold text-[var(--pl-accent-strong)] hover:opacity-80 transition-opacity'
+          >
+            {t('resetPassword.backToLogin')}
+          </Link>
+        </p>
       </div>
     </div>
   );

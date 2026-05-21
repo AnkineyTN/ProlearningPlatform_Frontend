@@ -5,13 +5,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { Mail, RefreshCw } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import LogoFG from '@/assets/logo_fg';
 import { authAPI } from '@/services/endpoints/auth';
 import type { ApiErrorResponse } from '@/services/types/auth.types';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
 import { useCountdown } from '@/hooks/useCountdown';
 
 type LocationState = {
@@ -23,14 +25,19 @@ type FormData = {
   email: string;
 };
 
-const schema = z.object({
-  email: z.string().email('Email không hợp lệ'),
-});
-
 export default function ForgotPassword() {
   const navigate = useNavigate();
   const location = useLocation();
   const state = (location.state ?? {}) as LocationState;
+  const { t } = useTranslation();
+
+  const schema = useMemo(
+    () =>
+      z.object({
+        email: z.string().email(t('forgotPassword.invalidEmail')),
+      }),
+    [t],
+  );
 
   const [submitting, setSubmitting] = useState(false);
   const resendLock = useCountdown({ seconds: 60, autoStart: true });
@@ -58,7 +65,7 @@ export default function ForgotPassword() {
     setSubmitting(true);
     try {
       await authAPI.forgotPassword({ email: data.email });
-      toast.success('Nếu email tồn tại, bạn sẽ nhận được mã OTP.');
+      toast.success(t('forgotPassword.otpSent'));
       resendLock.reset(60);
       navigate('/reset-otp', { state: { email: data.email } });
     } catch (err: unknown) {
@@ -67,7 +74,7 @@ export default function ForgotPassword() {
         : undefined;
 
       const code = payload?.metadata?.code;
-      const msg = payload?.message ?? 'Không thể gửi OTP. Vui lòng thử lại.';
+      const msg = payload?.message ?? t('forgotPassword.otpSendFailed');
 
       if (code === 'EMAIL_NOT_VERIFIED') {
         toast.info(msg);
@@ -90,80 +97,123 @@ export default function ForgotPassword() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const inputClass = (hasError: boolean) =>
+    cn(
+      'w-full pl-10 pr-3.5 py-2.5 text-[13.5px] outline-none transition-colors',
+      'bg-[var(--pl-bg)] border rounded-[10px]',
+      'placeholder:text-[var(--pl-text-faint)]',
+      'focus:border-[var(--pl-accent-border)] focus:bg-[var(--pl-bg-hover)]',
+      hasError
+        ? 'border-[var(--pl-danger,oklch(0.65_0.2_25))]'
+        : 'border-[var(--pl-border-strong)]',
+    );
+
   return (
     <div className='min-h-screen w-screen flex items-center justify-center relative overflow-hidden'>
-      <div className='absolute -top-40 -right-10 w-[650px] h-[650px] rounded-full bg-[radial-gradient(circle,rgba(236,72,153,0.3)_0%,rgba(168,85,247,0.15)_50%,transparent_70%)] blur-[70px] pointer-events-none' />
-      <div className='absolute -bottom-32 -left-20 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.35)_0%,rgba(59,130,246,0.15)_50%,transparent_70%)] blur-[60px] pointer-events-none' />
+      {/* Gradient orbs */}
+      <div className='absolute -top-32 -left-20 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,var(--pl-accent-border)_0%,var(--pl-accent-soft)_50%,transparent_70%)] blur-[60px] pointer-events-none' />
+      <div className='absolute -bottom-40 -right-20 w-[700px] h-[700px] rounded-full bg-[radial-gradient(circle,var(--pl-accent-soft)_0%,var(--pl-accent-soft)_50%,transparent_70%)] blur-[70px] pointer-events-none' />
+      <div className='absolute top-1/2 right-1/4 w-[400px] h-[400px] rounded-full bg-[radial-gradient(circle,var(--pl-accent-soft)_0%,transparent_70%)] blur-[50px] pointer-events-none' />
 
-      <a href='/' className='absolute top-8 left-20'>
-        <div className='w-10 h-10 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(139,92,246,0.5)]'>
+      {/* Logo */}
+      <a
+        href='/dashboard'
+        className='absolute top-8 left-8 flex items-center gap-2'
+      >
+        <div className='w-8 h-8 grid place-items-center'>
           <LogoFG />
         </div>
+        <span
+          className='text-[16px] font-semibold tracking-[-0.015em] text-[var(--pl-text)]'
+          style={{ fontFamily: 'var(--font-display)' }}
+        >
+          ProLearning
+        </span>
       </a>
 
-      <div className='relative z-10 w-[460px] my-10 bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-3xl px-10 py-11 shadow-[0_25px_60px_rgba(0,0,0,0.5)]'>
-        <div className='absolute top-0 left-[15%] right-[15%] h-px bg-gradient-to-r from-transparent via-violet-500 to-transparent' />
-
-        <div className='mb-7'>
-          <h1 className='text-[28px] font-bold tracking-tight mb-2'>
-            Quên mật khẩu
+      {/* Card */}
+      <div className='relative w-[420px] max-w-full bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[14px] px-9 py-10'>
+        {/* Header */}
+        <div className='mb-8'>
+          <div className='text-[10px] tracking-[0.18em] uppercase mb-2 text-[var(--pl-text-faint)]'>
+            {t('forgotPassword.subtitle')}
+          </div>
+          <h1
+            className='text-[32px] tracking-[-0.02em] leading-[1.1] m-0 mb-2 text-[var(--pl-text)]'
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            {t('forgotPassword.title')}
           </h1>
-          <p className='text-muted-foreground text-sm'>
-            Nhập email để nhận OTP đặt lại mật khẩu.
+          <p
+            className='text-[15px] italic m-0 text-[var(--pl-text-muted)]'
+            style={{ fontFamily: 'var(--font-serif)' }}
+          >
+            {t('forgotPassword.description')}
           </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
+          {/* Email */}
           <div>
-            <Label className='block text-[13px] font-semibold text-foreground mb-2 tracking-wide'>
-              Email <span className='text-pink-400'>*</span>
+            <Label className='block text-[11px] font-semibold tracking-[0.12em] uppercase text-[var(--pl-text-muted)] mb-2'>
+              {t('forgotPassword.email')}{' '}
+              <span className='text-[var(--pl-accent-strong)]'>*</span>
             </Label>
-            <Input
-              type='email'
-              {...register('email')}
-              placeholder='user@example.com'
-              className={`w-full py-2.5 text-sm outline-none transition-all ${errors.email ? 'border-red-400/60' : 'border-ring'}`}
-              disabled={submitting}
-            />
+            <div className='relative'>
+              <span className='absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--pl-text-faint)]'>
+                <Mail size={14} />
+              </span>
+              <Input
+                type='email'
+                {...register('email')}
+                placeholder={t('forgotPassword.emailPlaceholder')}
+                disabled={submitting}
+                className={inputClass(!!errors.email)}
+              />
+            </div>
             {errors.email && (
-              <p className='text-red-400 text-xs mt-1'>
+              <p className='text-[var(--pl-danger,oklch(0.65_0.2_25))] text-[11.5px] mt-1.5'>
                 {errors.email.message}
               </p>
             )}
           </div>
 
-          <Button
+          {/* Submit */}
+          <button
             type='submit'
             disabled={submitting}
-            className='w-full py-3 rounded-xl cursor-pointer bg-gradient-to-r from-violet-500 via-indigo-500 to-pink-500 text-white text-sm font-bold tracking-wide'
+            className='w-full mt-1 py-3 rounded-full text-[13.5px] font-semibold inline-flex items-center justify-center gap-2 bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity cursor-pointer'
           >
-            Gửi OTP
-          </Button>
+            {submitting && <RefreshCw size={13} className='animate-spin' />}
+            {t('forgotPassword.submit')}
+          </button>
 
-          <div className='text-xs text-muted-foreground text-center'>
+          <div className='text-[11.5px] text-[var(--pl-text-faint)] text-center'>
             {resendLock.isDone ? (
-              <span>Bạn có thể gửi lại OTP nếu chưa nhận được.</span>
+              <span>{t('forgotPassword.canResend')}</span>
             ) : (
-              <span>Gửi lại sau {resendLock.format()}.</span>
+              <span>
+                {t('forgotPassword.resendIn', { time: resendLock.format() })}
+              </span>
             )}
-          </div>
-
-          <div className='text-center text-[13px] text-muted-foreground'>
-            <Link
-              to='/login'
-              className='text-violet-400/90 font-semibold hover:text-violet-300 transition-colors'
-            >
-              Quay lại đăng nhập
-            </Link>
           </div>
         </form>
 
         {email ? (
-          <div className='mt-6 text-center text-xs text-muted-foreground'>
-            Email hiện tại:{' '}
-            <span className='font-semibold text-foreground'>{email}</span>
+          <div className='mt-5 text-center text-[11.5px] text-[var(--pl-text-faint)]'>
+            {t('forgotPassword.currentEmail')}{' '}
+            <span className='font-semibold text-[var(--pl-text)]'>{email}</span>
           </div>
         ) : null}
+
+        <p className='mt-6 text-center text-[12.5px] text-[var(--pl-text-muted)]'>
+          <Link
+            to='/login'
+            className='font-semibold text-[var(--pl-accent-strong)] hover:opacity-80 transition-opacity'
+          >
+            {t('forgotPassword.backToLogin')}
+          </Link>
+        </p>
       </div>
     </div>
   );

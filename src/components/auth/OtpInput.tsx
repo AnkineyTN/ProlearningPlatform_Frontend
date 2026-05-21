@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   length?: number;
@@ -16,6 +17,7 @@ export default function OtpInput({
   const [values, setValues] = useState<string[]>(() => Array(length).fill(''));
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
   const [isCompleting, setIsCompleting] = useState(false);
+  const { t } = useTranslation();
 
   const otp = useMemo(() => values.join(''), [values]);
 
@@ -118,22 +120,22 @@ export default function OtpInput({
             autoComplete={idx === 0 ? 'one-time-code' : 'off'}
             maxLength={length}
             disabled={disabled}
-            className='h-12 w-11 rounded-xl border border-white/10 bg-white/[0.04] text-center text-lg font-semibold outline-none transition-all focus:border-violet-500/60 focus:bg-white/[0.07] disabled:opacity-60'
+            className='h-12 w-11 rounded-[10px] border border-[var(--pl-border-strong)] bg-[var(--pl-bg)] text-center text-lg font-semibold text-[var(--pl-text)] outline-none transition-colors focus:border-[var(--pl-accent-border)] focus:bg-[var(--pl-bg-hover)] disabled:opacity-60'
           />
         ))}
       </div>
 
-      <div className='flex items-center justify-center gap-2 text-xs text-muted-foreground'>
+      <div className='flex items-center justify-center gap-2 text-[11.5px] text-[var(--pl-text-faint)]'>
         <button
           type='button'
           disabled={disabled}
-          className='underline underline-offset-4 hover:text-foreground disabled:opacity-60'
+          className='font-semibold text-[var(--pl-accent-strong)] hover:opacity-80 transition-opacity disabled:opacity-60 cursor-pointer'
           onClick={() => {
             clearAll();
             inputsRef.current[0]?.focus();
           }}
         >
-          Clear
+          {t('otpInput.clear')}
         </button>
         <span>•</span>
         <span>

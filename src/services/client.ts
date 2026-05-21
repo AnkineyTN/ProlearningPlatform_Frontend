@@ -43,13 +43,25 @@ type RetriableRequest = InternalAxiosRequestConfig & { _retry?: boolean };
 
 let refreshPromise: Promise<string> | null = null;
 
+// Routes that don't require auth — we should NOT redirect away from them when a
+// background auth request fails (e.g. a stale token on the landing page).
+const PUBLIC_PATHS = new Set([
+  '/',
+  '/login',
+  '/signup',
+  '/forgot-password',
+  '/verify-email',
+  '/reset-otp',
+  '/reset-password',
+]);
+
 const clearAuthAndRedirect = () => {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
-  if (window.location.pathname !== '/login') {
-    window.location.href = '/login';
-  }
+  const path = window.location.pathname;
+  if (PUBLIC_PATHS.has(path)) return;
+  window.location.href = '/login';
 };
 
 const refreshAccessToken = async (): Promise<string> => {
