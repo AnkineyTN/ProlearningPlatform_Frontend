@@ -35,17 +35,25 @@ import type { NoteFileRegionCommentDto } from '@/services/types/note.types';
 import {
   fileRegionCommentDtoToRegion,
   RegionCommentOverlay,
-} from '@/pages/NotePage/NoteFileRegionComments';
+} from '@/pages/NotePage/components/FilePanel/NoteFileRegionComments';
 import type {
   NoteAttachedFile,
   RegionComment,
   RegionCommentSavePayload,
-} from '@/pages/NotePage/NoteFileRegionComments';
+} from '@/pages/NotePage/components/FilePanel/NoteFileRegionComments';
+import {
+  DocxViewer,
+  isDocxExtension,
+  isPptxExtension,
+  isTxtExtension,
+  PptxViewer,
+  TxtViewer,
+} from '@/pages/NotePage/components/FilePanel/NoteFileViewers';
 
 export type {
   NoteAttachedFile,
   NoteFileRegionCommentPayload,
-} from '@/pages/NotePage/NoteFileRegionComments';
+} from '@/pages/NotePage/components/FilePanel/NoteFileRegionComments';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -99,7 +107,10 @@ function NoteFileRow({
   const kind = file.kind ?? (isImageExtension(extension) ? 'image' : 'doc');
   const isPdf = extension.toLowerCase() === 'pdf';
   const isImage = kind === 'image' || isImageExtension(extension);
-  const canRegionComment = isPdf || (isImage && !isPdf);
+  const isTxt = !isPdf && !isImage && isTxtExtension(extension);
+  const isDocx = !isPdf && !isImage && isDocxExtension(extension);
+  const isPptx = !isPdf && !isImage && isPptxExtension(extension);
+  const canRegionComment = isPdf || isImage || isTxt || isDocx || isPptx;
 
   useEffect(() => {
     setNumPages(null);
@@ -198,6 +209,25 @@ function NoteFileRow({
     }
     setActiveCommentId(null);
   };
+
+  const renderOverlay = useCallback(
+    (pageNumber: number) => (
+      <RegionCommentOverlay
+        drawEnabled={isCommentMode}
+        pageNumber={pageNumber}
+        comments={comments}
+        activeId={activeCommentId}
+        setActiveId={setActiveCommentId}
+        onDeleteComment={deleteComment}
+        onSaveComment={(rect, p) => persistComment(pageNumber, rect, p)}
+      />
+    ),
+    // deleteComment is declared as a non-memoized function below; capturing
+    // current values via closure is fine because the overlay re-renders on
+    // every state change of the parent anyway.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isCommentMode, comments, activeCommentId, persistComment],
+  );
 
   const handleSummarize = async () => {
     try {
@@ -399,7 +429,9 @@ function NoteFileRow({
                     alt={fileName}
                     className='max-w-full h-auto object-contain block'
                     onError={() => {
-                      setPreviewError(`Image could not be loaded from ${fileUrl}`);
+                      setPreviewError(
+                        `Image could not be loaded from ${fileUrl}`,
+                      );
                       toast.error('Could not load image preview');
                     }}
                   />
@@ -416,10 +448,46 @@ function NoteFileRow({
               </div>
             )}
 
-            {!isPdf && !isImage && (
+            {isTxt && !previewError && (
+              <div
+                data-note-file-scroll
+                className='rounded-md border border-border bg-[var(--pl-bg-sunken)] max-h-[calc(100vh-380px)] overflow-y-auto overflow-x-auto'
+              >
+                <TxtViewer
+                  fileUrl={fileUrl}
+                  renderPageOverlay={renderOverlay}
+                />
+              </div>
+            )}
+
+            {isDocx && !previewError && (
+              <div
+                data-note-file-scroll
+                className='rounded-md border border-border bg-[var(--pl-bg-sunken)] max-h-[calc(100vh-380px)] overflow-y-auto overflow-x-auto'
+              >
+                <DocxViewer
+                  fileUrl={fileUrl}
+                  renderPageOverlay={renderOverlay}
+                />
+              </div>
+            )}
+
+            {isPptx && !previewError && (
+              <div
+                data-note-file-scroll
+                className='rounded-md border border-border bg-[var(--pl-bg-sunken)] max-h-[calc(100vh-380px)] overflow-y-auto overflow-x-auto'
+              >
+                <PptxViewer
+                  fileUrl={fileUrl}
+                  renderPageOverlay={renderOverlay}
+                />
+              </div>
+            )}
+
+            {!isPdf && !isImage && !isTxt && !isDocx && !isPptx && (
               <p className='text-xs text-[var(--pl-text-muted)] italic font-[var(--font-serif)]'>
-                Preview is available for PDF and images. You can still summarize
-                this file with AI.
+                Preview is available for PDF, images, TXT, DOCX and PPTX. You
+                can still summarize this file with AI.
               </p>
             )}
 

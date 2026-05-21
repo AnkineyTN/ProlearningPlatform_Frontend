@@ -109,3 +109,7 @@
 .block-note-editor .bn-editor {
   background-color: transparent !important;
 }
+
+.docx-preview-wrapper {
+  padding: 0 !important;
+}

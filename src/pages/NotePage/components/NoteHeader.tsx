@@ -8,21 +8,16 @@ import {
   Upload,
 } from 'lucide-react';
 import { useState } from 'react';
-import toast from 'react-hot-toast';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { ShareDialog } from '@/components/collaboration/ShareDialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useSaveDocumentInNote, useSaveImageInNote } from '@/hooks/useNotes';
-import { cn, isBrowserImageFile } from '@/lib/utils';
-import {
-  useUploadDocumentFile,
-  useUploadImageFile,
-} from '@/hooks/useImageUpload';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ShareDialog } from '@/components/collaboration/ShareDialog';
-import type { CollabRole } from '@/services/types/collaboration.types';
 import { useAuth } from '@/hooks/useAuth';
+import { cn } from '@/lib/utils';
+import { OnlineUsersAvatars } from '@/pages/NotePage/components/OnlineUsersAvatars';
+import { useNoteFileUpload } from '@/pages/NotePage/hooks/useNoteFileUpload';
+import type { CollabRole } from '@/services/types/collaboration.types';
 
 interface NoteHeaderProps {
   title: string;
@@ -48,6 +43,13 @@ interface NoteHeaderProps {
   onlineUsers?: { name: string; color: string }[];
 }
 
+const togglePillBase =
+  'flex items-center gap-2 px-3 h-8 text-sm rounded-md border transition-colors cursor-pointer';
+const togglePillActive =
+  'bg-[var(--pl-accent-soft)] border-[var(--pl-accent-border)] text-[var(--pl-accent-strong)]';
+const togglePillInactive =
+  'border-border text-[var(--pl-text-muted)] hover:text-[var(--pl-text)] hover:bg-[var(--pl-bg-hover)]';
+
 export const NoteHeader = ({
   title,
   onTitleChange,
@@ -68,110 +70,13 @@ export const NoteHeader = ({
   const { setId: setIdParam } = useParams<{ setId: string }>();
   const _setId = setId || (setIdParam ? Number(setIdParam) : 0);
   const currentUserId = useAuth().user?.id;
-  const [isUploading, setIsUploading] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
-  const uploadDocumentMutation = useUploadDocumentFile();
-  const uploadImageMutation = useUploadImageFile();
-  const saveDocumentMutation = useSaveDocumentInNote();
-  const saveImageMutation = useSaveImageInNote();
 
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const validDocTypes = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'text/plain',
-    ];
-
-    const isImage = isBrowserImageFile(file);
-    if (!isImage && !validDocTypes.includes(file.type)) {
-      toast.error(
-        'Invalid file type. Please upload images, PDF, DOC, DOCX, or TXT.',
-      );
-      return;
-    }
-
-    if (!_setId || !noteId) {
-      toast.error('Invalid note');
-      return;
-    }
-
-    setIsUploading(true);
-    try {
-      if (isImage) {
-        const result = await uploadImageMutation.mutateAsync(file);
-        const ext = file.name.includes('.')
-          ? file.name.split('.').pop() || ''
-          : '';
-
-        await saveImageMutation.mutateAsync({
-          setId: _setId,
-          data: {
-            noteId,
-            assetId: result.assetId,
-            publicId: result.publicId,
-            extension: ext,
-            fileName: file.name,
-          },
-        });
-
-        onFileUploaded({
-          id: result.assetId,
-          fileName: file.name,
-          fileUrl: result.url,
-          extension: ext,
-          publicId: result.publicId,
-          kind: 'image',
-        });
-      } else {
-        const result = await uploadDocumentMutation.mutateAsync(file);
-
-        const ext =
-          result.extension ||
-          (file.name.includes('.') ? file.name.split('.').pop() || '' : '');
-
-        await saveDocumentMutation.mutateAsync({
-          setId: _setId,
-          data: {
-            noteId,
-            assetId: result.assetId,
-            publicId: result.publicId,
-            extension: ext,
-            fileName: result.fileName,
-          },
-        });
-
-        onFileUploaded({
-          id: result.assetId,
-          fileName: result.fileName,
-          fileUrl: result.url,
-          extension: ext,
-          publicId: result.publicId,
-          kind: 'doc',
-        });
-      }
-
-      toast.success('File uploaded successfully');
-    } catch (error) {
-      toast.error('Failed to upload file');
-      console.error(error);
-    } finally {
-      setIsUploading(false);
-      event.target.value = '';
-    }
-  };
-
-  const togglePillBase =
-    'flex items-center gap-2 px-3 h-8 text-sm rounded-md border transition-colors cursor-pointer';
-  const togglePillActive =
-    'bg-[var(--pl-accent-soft)] border-[var(--pl-accent-border)] text-[var(--pl-accent-strong)]';
-  const togglePillInactive =
-    'border-border text-[var(--pl-text-muted)] hover:text-[var(--pl-text)] hover:bg-[var(--pl-bg-hover)]';
+  const { isUploading, handleFileUpload } = useNoteFileUpload({
+    setId: _setId,
+    noteId,
+    onFileUploaded,
+  });
 
   return (
     <>
@@ -197,31 +102,7 @@ export const NoteHeader = ({
           />
 
           <div className='flex items-center gap-1.5 ml-auto'>
-            {onlineUsers.length > 0 && (
-              <div className='flex items-center gap-1.5 mr-1'>
-                <div className='flex items-center -space-x-1.5'>
-                  {onlineUsers.slice(0, 8).map((u, i) => (
-                    <Avatar
-                      key={i}
-                      className='size-6 border-2 ring-2 ring-[var(--pl-bg)]'
-                      style={{ borderColor: u.color }}
-                    >
-                      <AvatarFallback
-                        className='text-[10px] font-medium'
-                        style={{ backgroundColor: u.color, color: '#fff' }}
-                      >
-                        {u.name.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  ))}
-                </div>
-                {onlineUsers.length > 8 && (
-                  <span className='text-xs text-[var(--pl-text-muted)] font-[family-name:var(--font-mono-pl)]'>
-                    +{onlineUsers.length - 8}
-                  </span>
-                )}
-              </div>
-            )}
+            <OnlineUsersAvatars users={onlineUsers} />
 
             <Button
               variant='ghost'

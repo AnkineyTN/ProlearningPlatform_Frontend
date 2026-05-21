@@ -4,72 +4,32 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 
-import { AISummarizePanel } from '@/pages/NotePage/AISummarizePanel';
-import { NoteFilesPanel } from '@/pages/NotePage/NoteFilesPanel';
-import { NoteEditor, type NoteEditorHandle } from '@/pages/NotePage/NoteEditor';
-import { NoteHeader } from '@/pages/NotePage/NoteHeader';
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui/resizable';
+import { useAuth } from '@/hooks/useAuth';
 import {
   useAutoSaveNote,
   useNoteDetail,
   useNoteFileRegionComments,
-  useNoteExplains,
-  useCreateNoteExplain,
-  useDeleteNoteExplain,
 } from '@/hooks/useNotes';
-import { isImageExtension } from '@/lib/utils';
-import type { NoteDocItem } from '@/services/types/note.types';
-import { useAuth } from '@/hooks/useAuth';
-
-interface UploadedFile {
-  id: number;
-  fileName: string;
-  fileUrl: string;
-  extension: string;
-  publicId: string;
-  kind: 'doc' | 'image';
-}
-
-function noteItemToUploadedFile(
-  doc: NoteDocItem,
-  kind: UploadedFile['kind'],
-): UploadedFile {
-  const ext = doc.fileName.includes('.')
-    ? doc.fileName.split('.').pop() || ''
-    : '';
-  return {
-    id: doc.assetId,
-    fileName: doc.fileName,
-    fileUrl: doc.fileUrl,
-    extension: ext,
-    publicId: doc.publicId,
-    kind,
-  };
-}
-
-function attachmentKey(f: UploadedFile) {
-  return `${f.id}-${f.publicId}`;
-}
-
-function inferKindFromNoteDoc(doc: NoteDocItem): UploadedFile['kind'] {
-  const ext = doc.fileName.includes('.')
-    ? doc.fileName.split('.').pop() || ''
-    : '';
-  return isImageExtension(ext) ? 'image' : 'doc';
-}
-
-interface AISummary {
-  id: string;
-  /** Backend explain ID — present for persisted AI explains, absent for session-only file summaries */
-  backendId?: number;
-  query: string;
-  response: string;
-  type: 'text' | 'file';
-}
+import { AISummarizePanel } from '@/pages/NotePage/components/AISummarizePanel';
+import { downloadNoteAsHtml } from '@/pages/NotePage/downloadNoteHtml';
+import {
+  NoteEditor,
+  type NoteEditorHandle,
+} from '@/pages/NotePage/components/NoteEditor';
+import { NoteFilesPanel } from '@/pages/NotePage/components/FilePanel/NoteFilesPanel';
+import { NoteHeader } from '@/pages/NotePage/components/NoteHeader';
+import {
+  attachmentKey,
+  inferKindFromNoteDoc,
+  noteItemToUploadedFile,
+  type UploadedFile,
+} from '@/pages/NotePage/components/noteTypes';
+import { useNoteSummaries } from '@/pages/NotePage/hooks/useNoteSummaries';
 
 export const NotePage = () => {
   const { setId: setIdParam, id: noteId } = useParams<{
@@ -84,7 +44,6 @@ export const NotePage = () => {
   const [noteFiles, setNoteFiles] = useState<UploadedFile[]>([]);
   const [showFilesPanel, setShowFilesPanel] = useState(true);
   const [showAiPanel, setShowAiPanel] = useState(true);
-  const [summaries, setSummaries] = useState<AISummary[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<
     { name: string; color: string }[]
   >([]);
@@ -102,10 +61,17 @@ export const NotePage = () => {
   const numericNoteId = noteId ? parseInt(noteId, 10) : 0;
   const setId = noteDetail?.setId ?? 0;
 
-  const createExplainMutation = useCreateNoteExplain();
-  const deleteExplainMutation = useDeleteNoteExplain();
-  const { data: savedExplains } = useNoteExplains(setId, numericNoteId);
-  const explainLoadedRef = useRef(false);
+  const {
+    summaries,
+    addTextSummary,
+    addFileSummary,
+    saveSummary,
+    removeSummary,
+  } = useNoteSummaries({
+    setId,
+    noteId: numericNoteId,
+    onSummaryAdded: () => setShowAiPanel(true),
+  });
 
   const isInitialLoadRef = useRef(true);
 
@@ -136,21 +102,6 @@ export const NotePage = () => {
     setNoteFiles([...merged.values()]);
   }, [noteDetail]);
 
-  // Populate summaries from saved explains once on first load
-  useEffect(() => {
-    if (!savedExplains || explainLoadedRef.current) return;
-    explainLoadedRef.current = true;
-    if (savedExplains.length === 0) return;
-    const loaded: AISummary[] = savedExplains.map((e) => ({
-      id: `explain-${e.id}`,
-      backendId: e.id,
-      query: e.term,
-      response: e.explain,
-      type: 'text',
-    }));
-    setSummaries(loaded);
-  }, [savedExplains]);
-
   useEffect(() => {
     if (isInitialLoadRef.current) return;
 
@@ -172,14 +123,6 @@ export const NotePage = () => {
 
     return () => clearTimeout(timer);
   }, [title, content, noteId, setId]);
-
-  const handleTitleChange = (newTitle: string) => {
-    setTitle(newTitle);
-  };
-
-  const handleContentChange = (newContent: string) => {
-    setContent(newContent);
-  };
 
   const handleSave = useCallback(() => {
     if (setId && noteId) {
@@ -226,141 +169,9 @@ export const NotePage = () => {
     setNoteFiles((prev) => prev.filter((f) => f.id !== fileId));
   }, []);
 
-  const handleAISummarize = async (selectedText: string, response: string) => {
-    const tempId = Date.now().toString();
-    setSummaries((prev) => [
-      { id: tempId, query: selectedText, response, type: 'text' },
-      ...prev,
-    ]);
-    setShowAiPanel(true);
-
-    // Persist to backend (non-blocking)
-    if (setId && numericNoteId) {
-      try {
-        const saved = await createExplainMutation.mutateAsync({
-          setId,
-          noteId: numericNoteId,
-          data: {
-            noteId: numericNoteId,
-            source: 'editor',
-            term: selectedText,
-            explain: response,
-          },
-        });
-        setSummaries((prev) =>
-          prev.map((s) =>
-            s.id === tempId ? { ...s, backendId: saved.data.data.id } : s,
-          ),
-        );
-      } catch {
-        // Saving failed — keep card in session without backendId
-      }
-    }
-  };
-
-  const handleFileSummarize = (summary: string, fileName: string) => {
-    const newSummary: AISummary = {
-      id: Date.now().toString(),
-      query: `Summarize content of ${fileName}`,
-      response: summary,
-      type: 'file',
-    };
-
-    setSummaries((prev) => [newSummary, ...prev]);
-    setShowAiPanel(true);
-  };
-
-  const handleSaveSummary = async (id: string) => {
-    const target = summaries.find((s) => s.id === id);
-    if (!target || target.backendId != null || !setId || !numericNoteId) return;
-    try {
-      const saved = await createExplainMutation.mutateAsync({
-        setId,
-        noteId: numericNoteId,
-        data: {
-          noteId: numericNoteId,
-          source: 'file',
-          term: target.query,
-          explain: target.response,
-        },
-      });
-      setSummaries((prev) =>
-        prev.map((s) =>
-          s.id === id ? { ...s, backendId: saved.data.data.id } : s,
-        ),
-      );
-      toast.success('Summary saved');
-    } catch {
-      toast.error('Failed to save summary');
-    }
-  };
-
-  const handleRemoveSummary = (id: string) => {
-    const target = summaries.find((s) => s.id === id);
-    setSummaries((prev) => prev.filter((s) => s.id !== id));
-    if (target?.backendId && setId && numericNoteId) {
-      deleteExplainMutation.mutate({
-        setId,
-        noteId: numericNoteId,
-        explainId: target.backendId,
-      });
-    }
-  };
-
   const handleDownloadHTML = useCallback(async () => {
     const editorHtml = (await editorRef.current?.getHTML()) || '';
-
-    const htmlContent = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>${title}</title>
-          <style>
-              body {
-                  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                  line-height: 1.6;
-                  max-width: 900px;
-                  margin: 0 auto;
-                  padding: 40px 20px;
-                  color: #333;
-              }
-              h1 {
-                  color: #1a1a1a;
-                  border-bottom: 2px solid #0066cc;
-                  padding-bottom: 10px;
-              }
-              .content {
-                  background-color: #f9f9f9;
-                  padding: 20px;
-                  border-radius: 8px;
-                  border-left: 4px solid #0066cc;
-              }
-          </style>
-      </head>
-      <body>
-          <h1>${title}</h1>
-          <div class="content">
-              ${editorHtml}
-          </div>
-          <p style="text-align: center; color: #999; font-size: 12px; margin-top: 40px;">
-              Generated from Prolearning Platform
-          </p>
-      </body>
-      </html>
-    `;
-
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${title || 'note'}.html`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-
+    downloadNoteAsHtml(title, editorHtml);
     toast.success('Note downloaded successfully');
   }, [title]);
 
@@ -399,7 +210,7 @@ export const NotePage = () => {
     <div className='flex flex-col w-full h-screen bg-[var(--pl-bg-sunken)]'>
       <NoteHeader
         title={title}
-        onTitleChange={handleTitleChange}
+        onTitleChange={setTitle}
         noteId={numericNoteId}
         setId={setId}
         userRole={noteDetail?.userRole ?? 'OWNER'}
@@ -425,8 +236,8 @@ export const NotePage = () => {
                 ref={editorRef}
                 noteId={numericNoteId}
                 content={content}
-                onContentChange={handleContentChange}
-                onAISummarize={handleAISummarize}
+                onContentChange={setContent}
+                onAISummarize={addTextSummary}
                 userRole={noteDetail?.userRole ?? 'OWNER'}
                 currentUserId={currentUser?.id ?? 0}
                 currentUserName={
@@ -453,7 +264,7 @@ export const NotePage = () => {
                   setId={setId}
                   fileComments={fileRegionComments}
                   files={noteFiles}
-                  onFileSummarize={handleFileSummarize}
+                  onFileSummarize={addFileSummary}
                   onFileDeleted={handleFileDeleted}
                   onClosePanel={() => setShowFilesPanel(false)}
                 />
@@ -467,8 +278,8 @@ export const NotePage = () => {
               <ResizablePanel defaultSize={aiDefaultSize} minSize={18}>
                 <AISummarizePanel
                   summaries={summaries}
-                  onRemoveSummary={handleRemoveSummary}
-                  onSaveSummary={handleSaveSummary}
+                  onRemoveSummary={removeSummary}
+                  onSaveSummary={saveSummary}
                   onClosePanel={() => setShowAiPanel(false)}
                 />
               </ResizablePanel>

@@ -19,7 +19,7 @@ import { mapI18nToAiApiLanguage } from '@/lib/utils';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import './notes.css';
+import '../notes.css';
 import * as Y from 'yjs';
 import { HocuspocusProvider } from '@hocuspocus/provider';
 import type { CollabRole } from '@/services/types/collaboration.types';
