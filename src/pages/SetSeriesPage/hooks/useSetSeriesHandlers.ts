@@ -55,6 +55,7 @@ export function useSetSeriesHandlers({
   // --- Per-tab filter state ---
   const [notesSearch, setNotesSearch] = useState('');
   const [notesPrivacy, setNotesPrivacy] = useState<ListPrivacyFilter>('');
+  const [notesSort, setNotesSort] = useState<ListSortOption>('id,DESC');
 
   const [flashcardsSearch, setFlashcardsSearch] = useState('');
   const [flashcardsPrivacy, setFlashcardsPrivacy] =
@@ -440,6 +441,8 @@ export function useSetSeriesHandlers({
     setNotesSearch,
     notesPrivacy,
     setNotesPrivacy,
+    notesSort,
+    setNotesSort,
 
     // Filter state — Flashcards
     flashcardsSearch,

@@ -21,6 +21,8 @@ interface SetSeriesActionBarProps {
   onNotesSearchChange: (v: string) => void;
   notesPrivacy: ListPrivacyFilter;
   onNotesPrivacyChange: (v: ListPrivacyFilter) => void;
+  notesSort: ListSortOption;
+  onNotesSortChange: (v: ListSortOption) => void;
 
   // Flashcards filters
   flashcardsSearch: string;
@@ -53,6 +55,8 @@ export default function SetSeriesActionBar({
   onNotesSearchChange,
   notesPrivacy,
   onNotesPrivacyChange,
+  notesSort,
+  onNotesSortChange,
   flashcardsSearch,
   onFlashcardsSearchChange,
   flashcardsPrivacy,
@@ -105,6 +109,8 @@ export default function SetSeriesActionBar({
           onSearchChange={onNotesSearchChange}
           privacy={notesPrivacy}
           onPrivacyChange={onNotesPrivacyChange}
+          sort={notesSort}
+          onSortChange={onNotesSortChange}
         />
       )}
       {activeTab === 'Flashcards' && (

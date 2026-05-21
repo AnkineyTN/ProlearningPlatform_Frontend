@@ -20,15 +20,18 @@ import {
   type UpdateSetPayload,
 } from '@/services/types/set.types';
 import { getTimeAgo } from '@/lib/utils';
-import { type ListPrivacyFilter } from '@/components/lists/ResourceFiltersBar';
+import {
+  type ListPrivacyFilter,
+  type ListSortOption,
+} from '@/components/lists/ResourceFiltersBar';
 
 import SetListHeader from './SetListHeader';
 import SetFilterBar, { type ViewMode } from './SetFilterBar';
 import SetTableView from './SetTableView';
 import SetEmptyState from './SetEmptyState';
+import SetListSkeleton from './SetListSkeleton';
 
 const PAGE_SIZE = 9;
-const SORT_CONFIG = [{ property: 'id', direction: 'ASC' }];
 
 const mapSetData = (items: any[]): Set[] =>
   items.map((item) => ({
@@ -61,7 +64,8 @@ export default function SetListPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [listSearch, setListSearch] = useState('');
   const [debouncedQ, setDebouncedQ] = useState('');
-  const [privacyFilter] = useState<ListPrivacyFilter>('');
+  const [privacyFilter, setPrivacyFilter] = useState<ListPrivacyFilter>('');
+  const [sortOption, setSortOption] = useState<ListSortOption>('id,DESC');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -81,12 +85,14 @@ export default function SetListPage() {
 
   useEffect(() => {
     setCurrentPage(0);
-  }, [debouncedQ, privacyFilter]);
+  }, [debouncedQ, privacyFilter, sortOption]);
 
-  const { data: setData } = useSetData({
+  const [sortProp, sortDir] = sortOption.split(',');
+
+  const { data: setData, isPending } = useSetData({
     page: currentPage,
     size: PAGE_SIZE,
-    sort: SORT_CONFIG,
+    sort: [{ property: sortProp, direction: sortDir }],
     q: debouncedQ || undefined,
     privacy: privacyFilter || undefined,
   });
@@ -157,6 +163,10 @@ export default function SetListPage() {
           onTabChange={setActiveTab}
           search={listSearch}
           onSearchChange={setListSearch}
+          privacy={privacyFilter}
+          onPrivacyChange={setPrivacyFilter}
+          sort={sortOption}
+          onSortChange={setSortOption}
           viewMode={viewMode}
           onViewModeChange={setViewMode}
         />
@@ -167,7 +177,9 @@ export default function SetListPage() {
       </div>
 
       <div className='px-10 pt-7 pb-16'>
-        {filteredSets.length > 0 ? (
+        {isPending ? (
+          <SetListSkeleton count={PAGE_SIZE} viewMode={viewMode} />
+        ) : filteredSets.length > 0 ? (
           <>
             {viewMode === 'grid' ? (
               <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[14px] mb-8'>

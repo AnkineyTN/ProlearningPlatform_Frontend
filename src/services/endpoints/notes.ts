@@ -59,6 +59,7 @@ export const noteAPI = {
     const sp = new URLSearchParams();
     sp.set('page', String(query.page));
     sp.set('size', String(query.size));
+    sp.set('sort', query.sort ?? 'id,DESC');
     const q = query.q?.trim();
     if (q) {
       sp.set('q', q);

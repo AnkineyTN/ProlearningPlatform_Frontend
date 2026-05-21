@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import NoteCard, { type Note } from '@/components/cards/NoteCard';
-import type { ListPrivacyFilter } from '@/components/lists/ResourceFiltersBar';
+import type {
+  ListPrivacyFilter,
+  ListSortOption,
+} from '@/components/lists/ResourceFiltersBar';
 import {
   CardGrid,
   CardGridSkeleton,
@@ -16,6 +19,7 @@ type Props = {
   setId?: number;
   search: string;
   privacy: ListPrivacyFilter;
+  sort: ListSortOption;
   onUpdate: (note: Note) => void;
   onDelete: (noteId: number) => void;
 };
@@ -24,6 +28,7 @@ const NoteListPage = ({
   setId: propSetId,
   search,
   privacy,
+  sort,
   onUpdate,
   onDelete,
 }: Props) => {
@@ -42,7 +47,7 @@ const NoteListPage = ({
 
   useEffect(() => {
     setCurrentPage(0);
-  }, [debouncedQ, privacy]);
+  }, [debouncedQ, privacy, sort]);
 
   const {
     data: notesData,
@@ -53,6 +58,7 @@ const NoteListPage = ({
     size: pageSize,
     q: debouncedQ || undefined,
     privacy: privacy || undefined,
+    sort,
   });
 
   const notes = notesData?.items || [];

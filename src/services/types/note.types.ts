@@ -96,6 +96,7 @@ export type GetAllNotesBySetQuery = {
   size: number;
   q?: string;
   privacy?: 'PUBLIC' | 'PRIVATE';
+  sort?: string;
 };
 
 export type CreateNotePayload = {

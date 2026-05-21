@@ -74,7 +74,7 @@ export function NewCommentBox({
 
   return createPortal(
     <div
-      className='w-72 max-w-[min(100vw-24px,288px)] rounded-lg shadow-lg border bg-popover text-popover-foreground p-3 max-h-[min(90vh,420px)] overflow-y-auto'
+      className='w-72 max-w-[min(100vw-24px,288px)] rounded-lg shadow-lg border border-[var(--pl-border)] bg-[var(--pl-bg-elev)] text-[var(--pl-text)] p-3 max-h-[min(90vh,420px)] overflow-y-auto'
       style={{
         position: 'fixed',
         left: pos.left,
@@ -83,11 +83,11 @@ export function NewCommentBox({
       }}
       onMouseDown={(e) => e.stopPropagation()}
     >
-      <p className='text-xs font-medium text-muted-foreground mb-2'>
+      <p className='text-xs font-medium text-[var(--pl-text-muted)] mb-2'>
         New comment
       </p>
       {attachment ? (
-        <div className='relative mb-2 rounded-md overflow-hidden border bg-muted/30'>
+        <div className='relative mb-2 rounded-md overflow-hidden border border-[var(--pl-border)] bg-[var(--pl-bg-sunken)]'>
           <img
             src={attachment.url}
             alt='Attachment preview'
@@ -95,7 +95,7 @@ export function NewCommentBox({
           />
           <button
             type='button'
-            className='absolute top-1 right-1 rounded bg-background/90 px-1.5 text-xs border'
+            className='absolute top-1 right-1 rounded bg-[var(--pl-bg-elev)]/90 text-[var(--pl-text)] px-1.5 text-xs border border-[var(--pl-border)] hover:bg-[var(--pl-bg-hover)]'
             onClick={() => setAttachment(null)}
           >
             Remove image
@@ -118,14 +118,14 @@ export function NewCommentBox({
           type='button'
           variant='outline'
           size='sm'
-          className='gap-1 h-8 text-xs'
+          className='gap-1 h-8 text-xs border-[var(--pl-border)] bg-[var(--pl-bg-elev)] text-[var(--pl-text)] hover:bg-[var(--pl-bg-hover)]'
           disabled={uploading}
           onClick={() => fileInputRef.current?.click()}
         >
           <ImagePlus className='w-3.5 h-3.5' />
           {uploading ? 'Uploading…' : 'Image'}
         </Button>
-        <span className='text-[10px] text-muted-foreground self-center'>
+        <span className='text-[10px] text-[var(--pl-text-faint)] self-center'>
           or paste screenshot
         </span>
       </div>
@@ -141,10 +141,16 @@ export function NewCommentBox({
         }}
         placeholder='Comment… (optional if image). Ctrl+Enter to save'
         rows={3}
-        className='w-full text-sm border rounded-md p-2 resize-none bg-background focus:outline-none focus:ring-2 focus:ring-ring'
+        className='w-full text-sm border border-[var(--pl-border)] rounded-md p-2 resize-none bg-[var(--pl-bg)] text-[var(--pl-text)] placeholder:text-[var(--pl-text-faint)] focus:outline-none focus:ring-2 focus:ring-[var(--pl-accent)] focus:border-[var(--pl-accent-border)]'
       />
       <div className='flex gap-2 mt-2 justify-end'>
-        <Button type='button' variant='outline' size='sm' onClick={onCancel}>
+        <Button
+          type='button'
+          variant='outline'
+          size='sm'
+          className='border-[var(--pl-border)] bg-[var(--pl-bg-elev)] text-[var(--pl-text)] hover:bg-[var(--pl-bg-hover)]'
+          onClick={onCancel}
+        >
           Cancel
         </Button>
         <Button type='button' size='sm' disabled={!canSave} onClick={submit}>

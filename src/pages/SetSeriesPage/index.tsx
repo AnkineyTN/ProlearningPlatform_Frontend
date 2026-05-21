@@ -70,6 +70,8 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
           onNotesSearchChange={handlers.setNotesSearch}
           notesPrivacy={handlers.notesPrivacy}
           onNotesPrivacyChange={handlers.setNotesPrivacy}
+          notesSort={handlers.notesSort}
+          onNotesSortChange={handlers.setNotesSort}
           flashcardsSearch={handlers.flashcardsSearch}
           onFlashcardsSearchChange={handlers.setFlashcardsSearch}
           flashcardsPrivacy={handlers.flashcardsPrivacy}
@@ -99,6 +101,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
               setId={Number(setId)}
               search={handlers.notesSearch}
               privacy={handlers.notesPrivacy}
+              sort={handlers.notesSort}
               onUpdate={handlers.handleUpdate}
               onDelete={handlers.handleDeleteNote}
             />

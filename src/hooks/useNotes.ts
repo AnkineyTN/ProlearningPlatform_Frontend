@@ -109,6 +109,7 @@ export const useNotesBySet = (setId: number, query: GetAllNotesBySetQuery) => {
       query.size,
       query.q ?? "",
       query.privacy ?? "",
+      query.sort ?? "id,DESC",
     ],
     queryFn: async () => {
       const response = await noteAPI.getAllNotesBySet(setId, query);
