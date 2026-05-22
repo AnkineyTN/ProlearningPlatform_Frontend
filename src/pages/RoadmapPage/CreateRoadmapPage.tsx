@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -5,6 +6,7 @@ import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/useAuth';
 import { useCreateRoadmap, usePreviewRoadmap } from '@/hooks/useRoadmap';
 import type {
   CreateRoadmapPayload,
@@ -20,6 +22,13 @@ import { PreviewEditor } from './create/PreviewEditor';
 const CreateRoadmapPage = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { user, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && user?.accountType !== 'PRO') {
+      navigate('/roadmaps', { replace: true });
+    }
+  }, [isLoading, user, navigate]);
   const previewMutation = usePreviewRoadmap();
   const createMutation = useCreateRoadmap();
 

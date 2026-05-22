@@ -1,4 +1,11 @@
 {
+  "roadmap": {
+    "proGate": {
+      "title": "Tính năng PRO",
+      "description": "Nâng cấp lên PRO để tạo và quản lý lộ trình học tập cá nhân hóa với AI.",
+      "cta": "Nâng cấp lên PRO"
+    }
+  },
   "adminOnboarding": {
     "backToDashboard": "Về dashboard",
     "analyticsEducation": "Trình độ học vấn",
@@ -655,6 +662,11 @@
           "subtitle": "Trang sẽ tự cập nhật khi hoàn tất. Bạn có thể tiếp tục với các chủ đề khác.",
           "slowWarning": "Có chủ đề đang xử lý lâu hơn dự kiến. Nếu chờ quá lâu, hãy thử lại bằng nút \"Thử lại\"."
         }
+      },
+      "proGate": {
+        "title": "Tính năng PRO",
+        "description": "Nâng cấp lên PRO để tạo và quản lý lộ trình học tập cá nhân hóa với AI.",
+        "cta": "Nâng cấp lên PRO"
       }
     },
     "signin": {

@@ -14,16 +14,21 @@ import {
 import { toast } from 'react-toastify';
 
 import { useRoadmaps, useDeleteRoadmap } from '@/hooks/useRoadmap';
+import { useAuth } from '@/hooks/useAuth';
 import type { Roadmap } from '@/services/types/roadmap.types';
 import { getTimeAgo } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import ProGateOverlay from './ProGateOverlay';
 
 const RoadmapsListPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { data: roadmaps, isLoading } = useRoadmaps();
   const deleteRoadmap = useDeleteRoadmap();
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
+
+  const isPro = user?.accountType === 'PRO';
 
   const handleDelete = async (id: number) => {
     try {
@@ -38,61 +43,65 @@ const RoadmapsListPage = () => {
   const items = roadmaps ?? [];
 
   return (
-    <div className='min-h-screen bg-[var(--pl-bg)]'>
-      <div className='px-10 pt-8 pb-0'>
-        <div className='flex items-end justify-between mb-6'>
-          <div>
-            <p className='text-[11px] uppercase tracking-[0.16em] mb-2 text-[var(--pl-text-faint)]'>
-              {t('roadmap.subtitle')}
-            </p>
-            <h1 className='text-[42px] leading-none tracking-[-0.03em] font-[var(--font-display)] text-[var(--pl-text)]'>
-              {t('roadmap.title')}
-            </h1>
-            <p className='text-[13px] mt-3 max-w-[560px] text-[var(--pl-text-muted)]'>
-              {t('roadmap.tagline')}
-            </p>
+    <div className='relative min-h-screen bg-[var(--pl-bg)]'>
+      <div className={!isPro ? 'blur-sm pointer-events-none select-none opacity-40' : ''}>
+        <div className='px-10 pt-8 pb-0'>
+          <div className='flex items-end justify-between mb-6'>
+            <div>
+              <p className='text-[11px] uppercase tracking-[0.16em] mb-2 text-[var(--pl-text-faint)]'>
+                {t('roadmap.subtitle')}
+              </p>
+              <h1 className='text-[42px] leading-none tracking-[-0.03em] font-[var(--font-display)] text-[var(--pl-text)]'>
+                {t('roadmap.title')}
+              </h1>
+              <p className='text-[13px] mt-3 max-w-[560px] text-[var(--pl-text-muted)]'>
+                {t('roadmap.tagline')}
+              </p>
+            </div>
+            <Button
+              onClick={() => navigate('/roadmaps/new')}
+              className='gap-2 px-5 py-[10px] rounded-full text-[13px] font-medium bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] hover:bg-[var(--pl-accent-strong)] h-auto'
+            >
+              <Plus size={13} strokeWidth={2} />
+              {t('roadmap.createNew')}
+            </Button>
           </div>
-          <Button
-            onClick={() => navigate('/roadmaps/new')}
-            className='gap-2 px-5 py-[10px] rounded-full text-[13px] font-medium bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] hover:bg-[var(--pl-accent-strong)] h-auto'
-          >
-            <Plus size={13} strokeWidth={2} />
-            {t('roadmap.createNew')}
-          </Button>
+
+          <div className='mt-4 border-b border-[var(--pl-border)]' />
         </div>
 
-        <div className='mt-4 border-b border-[var(--pl-border)]' />
-      </div>
+        <div className='px-10 pt-7 pb-16'>
+          {isLoading ? (
+            <div className='flex items-center justify-center py-20 text-[var(--pl-text-faint)]'>
+              <Loader2 size={20} className='animate-spin mr-2' />
+              {t('roadmap.list.loading')}
+            </div>
+          ) : items.length === 0 ? (
+            <EmptyState onCreate={() => navigate('/roadmaps/new')} />
+          ) : (
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[14px]'>
+              {items.map((r) => (
+                <RoadmapCard
+                  key={r.id}
+                  roadmap={r}
+                  onOpen={() => navigate(`/roadmaps/${r.id}`)}
+                  onAskDelete={() => setConfirmDelete(r.id)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
 
-      <div className='px-10 pt-7 pb-16'>
-        {isLoading ? (
-          <div className='flex items-center justify-center py-20 text-[var(--pl-text-faint)]'>
-            <Loader2 size={20} className='animate-spin mr-2' />
-            {t('roadmap.list.loading')}
-          </div>
-        ) : items.length === 0 ? (
-          <EmptyState onCreate={() => navigate('/roadmaps/new')} />
-        ) : (
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[14px]'>
-            {items.map((r) => (
-              <RoadmapCard
-                key={r.id}
-                roadmap={r}
-                onOpen={() => navigate(`/roadmaps/${r.id}`)}
-                onAskDelete={() => setConfirmDelete(r.id)}
-              />
-            ))}
-          </div>
+        {confirmDelete !== null && (
+          <ConfirmDeleteModal
+            onCancel={() => setConfirmDelete(null)}
+            onConfirm={() => handleDelete(confirmDelete)}
+            pending={deleteRoadmap.isPending}
+          />
         )}
       </div>
 
-      {confirmDelete !== null && (
-        <ConfirmDeleteModal
-          onCancel={() => setConfirmDelete(null)}
-          onConfirm={() => handleDelete(confirmDelete)}
-          pending={deleteRoadmap.isPending}
-        />
-      )}
+      {!isPro && <ProGateOverlay />}
     </div>
   );
 };

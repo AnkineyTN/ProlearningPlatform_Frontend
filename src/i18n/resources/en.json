@@ -630,6 +630,11 @@
         "subtitle": "The page will refresh automatically when done. You can continue with other topics meanwhile.",
         "slowWarning": "Some topics are taking longer than expected. If you wait too long, try the \"Retry\" button."
       }
+    },
+    "proGate": {
+      "title": "PRO feature",
+      "description": "Upgrade to PRO to create and manage AI-powered personalized learning roadmaps.",
+      "cta": "Upgrade to PRO"
     }
   },
   "signin": {
