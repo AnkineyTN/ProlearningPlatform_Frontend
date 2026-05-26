@@ -14,12 +14,239 @@ import {
   useToggleCalendarSync,
   useDisconnectCalendar,
 } from '@/hooks/useCalendar';
+import type { GlobalNotificationPreferences } from '@/services/types/notification.types';
 import ProfileSection from './ProfileSection';
 
-type GlobalPrefKey =
-  | 'dueCardReminderEnabled'
-  | 'systemAnnouncementEnabled'
-  | 'accountActivityEnabled';
+function HourPicker({
+  value,
+  onChange,
+  disabled,
+}: {
+  value: number;
+  onChange: (h: number) => void;
+  disabled?: boolean;
+}) {
+  return (
+    <select
+      value={value}
+      disabled={disabled}
+      onChange={(e) => onChange(Number(e.target.value))}
+      className='rounded-lg border border-[var(--pl-border)] bg-[var(--pl-bg)] text-[13px] px-2.5 py-1.5 text-[var(--pl-text)] outline-none focus:border-[var(--pl-accent)] disabled:opacity-50'
+    >
+      {Array.from({ length: 24 }, (_, h) => (
+        <option key={h} value={h}>
+          {String(h).padStart(2, '0')}:00
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function ToggleRow({
+  label,
+  desc,
+  checked,
+  disabled,
+  onChange,
+  children,
+}: {
+  label: string;
+  desc: string;
+  checked: boolean;
+  disabled?: boolean;
+  onChange: (v: boolean) => void;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className='py-3.5 border-t border-[var(--pl-border)]'>
+      <div className='flex justify-between items-center'>
+        <div>
+          <div className='text-[14px] font-medium text-[var(--pl-text)]'>
+            {label}
+          </div>
+          <div className='text-[12.5px] mt-0.5 text-[var(--pl-text-muted)]'>
+            {desc}
+          </div>
+        </div>
+        <Switch checked={checked} disabled={disabled} onCheckedChange={onChange} />
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function TimePickerRow({
+  label,
+  value,
+  onChange,
+  disabled,
+}: {
+  label: string;
+  value: number;
+  onChange: (h: number) => void;
+  disabled?: boolean;
+}) {
+  return (
+    <div className='flex items-center justify-between mt-2.5 pl-1'>
+      <span className='text-[12.5px] text-[var(--pl-text-muted)]'>{label}</span>
+      <HourPicker value={value} onChange={onChange} disabled={disabled} />
+    </div>
+  );
+}
+
+function NotificationPreferencesSection() {
+  const { t } = useTranslation();
+  const { data: prefs } = useGlobalNotificationPreferences();
+  const update = useUpdateGlobalNotificationPreferences();
+
+  const p = (key: keyof GlobalNotificationPreferences) =>
+    prefs?.[key] as never;
+
+  const send = (partial: Partial<GlobalNotificationPreferences>) =>
+    update.mutate(partial);
+
+  const dueCardReminderEnabled = p('dueCardReminderEnabled') ?? true;
+  const dailyTodoReminderEnabled = p('dailyTodoReminderEnabled') ?? true;
+  const dailyTodoReminderHour = (prefs?.dailyTodoReminderHour ?? 20) as number;
+  const weeklyTodoReminderEnabled = p('weeklyTodoReminderEnabled') ?? true;
+  const weeklyTodoReminderHour = (prefs?.weeklyTodoReminderHour ?? 20) as number;
+  const goalDeadlineReminderEnabled = p('goalDeadlineReminderEnabled') ?? true;
+  const goalInactiveReminderEnabled = p('goalInactiveReminderEnabled') ?? true;
+  const goalReminderHour = (prefs?.goalReminderHour ?? 9) as number;
+  const systemAnnouncementEnabled = p('systemAnnouncementEnabled') ?? true;
+  const accountActivityEnabled = p('accountActivityEnabled') ?? true;
+
+  const busy = update.isPending;
+
+  return (
+    <ProfileSection
+      title={t('profile.preferences.notifications.title')}
+      sub={t('profile.preferences.notifications.sub')}
+    >
+      <div className='flex flex-col'>
+        {/* Flashcard */}
+        <div className='mb-1'>
+          <div className='text-[10.5px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)]'>
+            {t('notifPrefs.group.flashcard')}
+          </div>
+        </div>
+        <ToggleRow
+          label={t('notifPrefs.dueCard.label')}
+          desc={t('notifPrefs.dueCard.desc')}
+          checked={dueCardReminderEnabled}
+          disabled={busy}
+          onChange={(v) => send({ dueCardReminderEnabled: v })}
+        />
+
+        {/* Daily Tasks */}
+        <div className='mt-4 mb-1'>
+          <div className='text-[10.5px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)]'>
+            {t('notifPrefs.group.dailyTasks')}
+          </div>
+        </div>
+        <ToggleRow
+          label={t('notifPrefs.dailyTodo.label')}
+          desc={t('notifPrefs.dailyTodo.desc')}
+          checked={dailyTodoReminderEnabled}
+          disabled={busy}
+          onChange={(v) => send({ dailyTodoReminderEnabled: v })}
+        >
+          {dailyTodoReminderEnabled && (
+            <TimePickerRow
+              label={t('notifPrefs.remindAt')}
+              value={dailyTodoReminderHour}
+              onChange={(h) => send({ dailyTodoReminderHour: h })}
+              disabled={busy}
+            />
+          )}
+        </ToggleRow>
+
+        {/* Weekly Tasks */}
+        <div className='mt-4 mb-1'>
+          <div className='text-[10.5px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)]'>
+            {t('notifPrefs.group.weeklyTasks')}
+          </div>
+        </div>
+        <ToggleRow
+          label={t('notifPrefs.weeklyTodo.label')}
+          desc={t('notifPrefs.weeklyTodo.desc')}
+          checked={weeklyTodoReminderEnabled}
+          disabled={busy}
+          onChange={(v) => send({ weeklyTodoReminderEnabled: v })}
+        >
+          {weeklyTodoReminderEnabled && (
+            <TimePickerRow
+              label={t('notifPrefs.remindAtSunday')}
+              value={weeklyTodoReminderHour}
+              onChange={(h) => send({ weeklyTodoReminderHour: h })}
+              disabled={busy}
+            />
+          )}
+        </ToggleRow>
+
+        {/* Goals */}
+        <div className='mt-4 mb-1'>
+          <div className='text-[10.5px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)]'>
+            {t('notifPrefs.group.goals')}
+          </div>
+        </div>
+        <ToggleRow
+          label={t('notifPrefs.goalDeadline.label')}
+          desc={t('notifPrefs.goalDeadline.desc')}
+          checked={goalDeadlineReminderEnabled}
+          disabled={busy}
+          onChange={(v) => send({ goalDeadlineReminderEnabled: v })}
+        />
+        <ToggleRow
+          label={t('notifPrefs.goalInactive.label')}
+          desc={t('notifPrefs.goalInactive.desc')}
+          checked={goalInactiveReminderEnabled}
+          disabled={busy}
+          onChange={(v) => send({ goalInactiveReminderEnabled: v })}
+        />
+        {(goalDeadlineReminderEnabled || goalInactiveReminderEnabled) && (
+          <TimePickerRow
+            label={t('notifPrefs.remindAt')}
+            value={goalReminderHour}
+            onChange={(h) => send({ goalReminderHour: h })}
+            disabled={busy}
+          />
+        )}
+
+        {/* System */}
+        <div className='mt-4 mb-1'>
+          <div className='text-[10.5px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)]'>
+            {t('notifPrefs.group.system')}
+          </div>
+        </div>
+        <ToggleRow
+          label={t('notifPrefs.systemAnnouncement.label')}
+          desc={t('notifPrefs.systemAnnouncement.desc')}
+          checked={systemAnnouncementEnabled}
+          disabled={busy}
+          onChange={(v) => send({ systemAnnouncementEnabled: v })}
+        />
+        <ToggleRow
+          label={t('notifPrefs.accountActivity.label')}
+          desc={t('notifPrefs.accountActivity.desc')}
+          checked={accountActivityEnabled}
+          disabled={busy}
+          onChange={(v) => send({ accountActivityEnabled: v })}
+        />
+      </div>
+
+      <Alert className='mt-5 border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]'>
+        <Info className='w-4 h-4' />
+        <AlertDescription className='text-[12.5px] text-[var(--pl-accent-strong)]'>
+          {t('profile.preferences.notifications.perSetHint', {
+            defaultValue:
+              "Weekly review reminders can be configured per Set in each Set's notification settings.",
+          })}
+        </AlertDescription>
+      </Alert>
+    </ProfileSection>
+  );
+}
 
 function GoogleCalendarSection() {
   const { t } = useTranslation();
@@ -118,102 +345,10 @@ function GoogleCalendarSection() {
 }
 
 export default function ProfilePreferences() {
-  const { t } = useTranslation();
-  const { data: globalPrefs } = useGlobalNotificationPreferences();
-  const updateGlobalPrefs = useUpdateGlobalNotificationPreferences();
-
-  // UI-side defaults: all three flags default to `true` if missing (per spec).
-  const dueCardReminderEnabled = globalPrefs?.dueCardReminderEnabled ?? true;
-  const systemAnnouncementEnabled =
-    globalPrefs?.systemAnnouncementEnabled ?? true;
-  const accountActivityEnabled = globalPrefs?.accountActivityEnabled ?? true;
-
-  const notifOptions: {
-    k: GlobalPrefKey;
-    value: boolean;
-    label: string;
-    desc: string;
-  }[] = [
-    {
-      k: 'dueCardReminderEnabled',
-      value: dueCardReminderEnabled,
-      label: t('profile.preferences.notifications.dueCardReminder', {
-        defaultValue: 'Due-card reminders',
-      }),
-      desc: t('profile.preferences.notifications.dueCardReminderDesc', {
-        defaultValue:
-          'Get notified when flashcards become due for spaced-repetition review.',
-      }),
-    },
-    {
-      k: 'systemAnnouncementEnabled',
-      value: systemAnnouncementEnabled,
-      label: t('profile.preferences.notifications.systemAnnouncement', {
-        defaultValue: 'System announcements',
-      }),
-      desc: t('profile.preferences.notifications.systemAnnouncementDesc', {
-        defaultValue:
-          'Updates about new features, maintenance, and important app news.',
-      }),
-    },
-    {
-      k: 'accountActivityEnabled',
-      value: accountActivityEnabled,
-      label: t('profile.preferences.notifications.accountActivity', {
-        defaultValue: 'Account activity',
-      }),
-      desc: t('profile.preferences.notifications.accountActivityDesc', {
-        defaultValue:
-          'Alerts about new sign-ins, password changes, and security events.',
-      }),
-    },
-  ];
-
   return (
-  <>
-    <ProfileSection
-      title={t('profile.preferences.notifications.title')}
-      sub={t('profile.preferences.notifications.sub')}
-    >
-      <div className='flex flex-col'>
-        {notifOptions.map((o) => (
-          <div
-            key={o.k}
-            className='flex justify-between items-center py-3.5 border-t border-[var(--pl-border)]'
-          >
-            <div>
-              <div className='text-[14px] font-medium text-[var(--pl-text)]'>
-                {o.label}
-              </div>
-              <div className='text-[12.5px] mt-0.5 text-[var(--pl-text-muted)]'>
-                {o.desc}
-              </div>
-            </div>
-            <Switch
-              checked={o.value}
-              disabled={updateGlobalPrefs.isPending}
-              onCheckedChange={(checked) =>
-                updateGlobalPrefs.mutate({ [o.k]: checked })
-              }
-            />
-          </div>
-        ))}
-      </div>
-
-      <Alert
-        className='mt-5 border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]'
-      >
-        <Info className='w-4 h-4' />
-        <AlertDescription className='text-[12.5px] text-[var(--pl-accent-strong)]'>
-          {t('profile.preferences.notifications.perSetHint', {
-            defaultValue:
-              "Weekly review reminders can be configured per Set in each Set's notification settings.",
-          })}
-        </AlertDescription>
-      </Alert>
-    </ProfileSection>
-
-    <GoogleCalendarSection />
-  </>
+    <>
+      <NotificationPreferencesSection />
+      <GoogleCalendarSection />
+    </>
   );
 }

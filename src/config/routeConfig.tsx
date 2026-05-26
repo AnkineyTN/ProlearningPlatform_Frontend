@@ -211,6 +211,14 @@ export const routeConfig: RouteObject[] = [
         element: <TodoDashboard />,
       },
       {
+        path: 'todos',
+        element: <Navigate to='/todo' replace />,
+      },
+      {
+        path: 'goals/:id',
+        element: <Navigate to='/todo' replace />,
+      },
+      {
         path: 'sets',
         element: <SetListPage />,
       },

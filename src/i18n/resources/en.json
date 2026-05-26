@@ -35,6 +35,42 @@
     "backToDashboard": "Back to dashboard",
     "cancel": "Cancel",
     "colAccountType": "Account",
+    "sidebarOverview": "Overview",
+    "sidebarUsers": "Users",
+    "sidebarAppeals": "Appeals & Blocks",
+    "sidebarPomodoro": "Pomodoro Assets",
+    "sidebarAuditLog": "Audit log",
+    "sidebarSettings": "Settings",
+    "sidebarOps": "Operations",
+    "sidebarSystem": "System",
+    "adminConsole": "Admin Console",
+    "adminMode": "Admin mode",
+    "overviewKicker": "Platform health & growth",
+    "overviewTitle": "Console overview",
+    "overviewSubtitle": "Platform-wide health, growth, and content production.",
+    "sectionPeople": "People",
+    "sectionUserBase": "User base",
+    "sectionProduction": "Production",
+    "sectionContentSessions": "Content & sessions",
+    "newThisWeek": "new this week",
+    "usersKicker": "accounts",
+    "usersSubtitle": "Search, filter, sort. Edit profiles or apply moderation actions.",
+    "inviteAdmin": "Invite admin",
+    "resetSort": "Reset",
+    "exportCsv": "Export CSV",
+    "showingOf": "Showing",
+    "selected": "selected",
+    "noMatches": "No matches",
+    "noMatchesSub": "Try a broader search or change the filter.",
+    "appealsKicker": "pending",
+    "appealsSubtitle": "Review user appeals, approve or reject, and manage the block list.",
+    "appealQueue": "Appeal queue",
+    "blockList": "Block list",
+    "history": "History",
+    "pomodoroKicker": "backdrops",
+    "pomodoroSubtitle": "Manage backdrops and ambience tracks shipped to the Focus Timer.",
+    "placeholderTitle": "Coming soon",
+    "placeholderSub": "This screen will be available in a future update.",
     "colActions": "Actions",
     "colEducation": "Education",
     "colEmail": "Email",
@@ -1032,6 +1068,45 @@
       "disconnectFailed": "Failed to disconnect. Please try again."
     },
     "syncedBadge": "Synced to Google Calendar"
+  },
+  "notifPrefs": {
+    "group": {
+      "flashcard": "Flashcard",
+      "dailyTasks": "Daily Tasks",
+      "weeklyTasks": "Weekly Tasks",
+      "goals": "Goals",
+      "system": "System"
+    },
+    "remindAt": "Remind me at",
+    "remindAtSunday": "Remind me at (every Sunday)",
+    "dueCard": {
+      "label": "Due-card reminders",
+      "desc": "Get notified when flashcards become due for spaced-repetition review."
+    },
+    "dailyTodo": {
+      "label": "Daily task reminders",
+      "desc": "Remind you about incomplete daily tasks before the day ends."
+    },
+    "weeklyTodo": {
+      "label": "Weekly task reminders",
+      "desc": "Remind you about incomplete weekly tasks every Sunday."
+    },
+    "goalDeadline": {
+      "label": "Deadline reminders",
+      "desc": "Notify you when a goal deadline is approaching (1 day, 1 week, 1 month)."
+    },
+    "goalInactive": {
+      "label": "Inactivity reminders",
+      "desc": "Notify you when a goal has had no activity for over a week."
+    },
+    "systemAnnouncement": {
+      "label": "System announcements",
+      "desc": "Updates about new features, maintenance, and important app news."
+    },
+    "accountActivity": {
+      "label": "Account activity",
+      "desc": "Alerts about new sign-ins, password changes, and security events."
+    }
   },
   "todo": {
     "breadcrumb": "To-Do · Goals",

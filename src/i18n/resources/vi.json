@@ -42,6 +42,42 @@
     "backToDashboard": "Về dashboard",
     "cancel": "Hủy",
     "colAccountType": "Tài khoản",
+    "sidebarOverview": "Tổng quan",
+    "sidebarUsers": "Người dùng",
+    "sidebarAppeals": "Khiếu nại & Chặn",
+    "sidebarPomodoro": "Tài nguyên Pomodoro",
+    "sidebarAuditLog": "Nhật ký",
+    "sidebarSettings": "Cài đặt",
+    "sidebarOps": "Vận hành",
+    "sidebarSystem": "Hệ thống",
+    "adminConsole": "Admin Console",
+    "adminMode": "Chế độ Admin",
+    "overviewKicker": "Sức khỏe & tăng trưởng",
+    "overviewTitle": "Tổng quan hệ thống",
+    "overviewSubtitle": "Thống kê tổng hợp về người dùng, nội dung và hoạt động.",
+    "sectionPeople": "Người dùng",
+    "sectionUserBase": "Cơ sở người dùng",
+    "sectionProduction": "Sản xuất",
+    "sectionContentSessions": "Nội dung & phiên học",
+    "newThisWeek": "mới tuần này",
+    "usersKicker": "tài khoản",
+    "usersSubtitle": "Tìm kiếm, lọc, sắp xếp. Chỉnh sửa hồ sơ hoặc quản lý kiểm duyệt.",
+    "inviteAdmin": "Mời admin",
+    "resetSort": "Đặt lại",
+    "exportCsv": "Xuất CSV",
+    "showingOf": "Hiển thị",
+    "selected": "đã chọn",
+    "noMatches": "Không tìm thấy",
+    "noMatchesSub": "Thử tìm kiếm rộng hơn hoặc thay đổi bộ lọc.",
+    "appealsKicker": "đang chờ",
+    "appealsSubtitle": "Xem xét khiếu nại, phê duyệt hoặc từ chối, và quản lý danh sách chặn.",
+    "appealQueue": "Hàng đợi khiếu nại",
+    "blockList": "Danh sách chặn",
+    "history": "Lịch sử",
+    "pomodoroKicker": "hình nền",
+    "pomodoroSubtitle": "Quản lý hình nền và nhạc nền cho Pomodoro.",
+    "placeholderTitle": "Sắp ra mắt",
+    "placeholderSub": "Chức năng này sẽ có trong phiên bản tiếp theo.",
     "colActions": "Thao tác",
     "colEducation": "Học vấn",
     "colEmail": "Email",
@@ -1454,6 +1490,45 @@
       "disconnectFailed": "Ngắt kết nối thất bại. Vui lòng thử lại."
     },
     "syncedBadge": "Đã đồng bộ lên Google Calendar"
+  },
+  "notifPrefs": {
+    "group": {
+      "flashcard": "Flashcard",
+      "dailyTasks": "Task hàng ngày",
+      "weeklyTasks": "Task hàng tuần",
+      "goals": "Mục tiêu",
+      "system": "Hệ thống"
+    },
+    "remindAt": "Nhắc lúc",
+    "remindAtSunday": "Nhắc lúc (mỗi Chủ nhật)",
+    "dueCard": {
+      "label": "Nhắc ôn thẻ",
+      "desc": "Nhận thông báo khi flashcard đến hạn ôn tập."
+    },
+    "dailyTodo": {
+      "label": "Nhắc task hàng ngày",
+      "desc": "Nhắc bạn về các task hàng ngày chưa hoàn thành trước khi hết ngày."
+    },
+    "weeklyTodo": {
+      "label": "Nhắc task hàng tuần",
+      "desc": "Nhắc bạn về các task hàng tuần chưa hoàn thành mỗi Chủ nhật."
+    },
+    "goalDeadline": {
+      "label": "Nhắc deadline",
+      "desc": "Thông báo khi mục tiêu sắp đến hạn (1 ngày, 1 tuần, 1 tháng)."
+    },
+    "goalInactive": {
+      "label": "Nhắc không hoạt động",
+      "desc": "Thông báo khi mục tiêu không có hoạt động nào trong hơn 1 tuần."
+    },
+    "systemAnnouncement": {
+      "label": "Thông báo hệ thống",
+      "desc": "Cập nhật về tính năng mới, bảo trì và tin tức quan trọng."
+    },
+    "accountActivity": {
+      "label": "Hoạt động tài khoản",
+      "desc": "Cảnh báo về đăng nhập mới, thay đổi mật khẩu và sự kiện bảo mật."
+    }
   },
   "todo": {
     "breadcrumb": "To-Do · Goals",

@@ -101,6 +101,13 @@ export type GlobalNotificationPreferences = {
   dueCardReminderEnabled: boolean;
   systemAnnouncementEnabled: boolean;
   accountActivityEnabled: boolean;
+  dailyTodoReminderEnabled: boolean;
+  dailyTodoReminderHour: number;
+  weeklyTodoReminderEnabled: boolean;
+  weeklyTodoReminderHour: number;
+  goalDeadlineReminderEnabled: boolean;
+  goalInactiveReminderEnabled: boolean;
+  goalReminderHour: number;
 };
 
 export type GlobalNotificationPreferencesResponse = {
@@ -110,8 +117,4 @@ export type GlobalNotificationPreferencesResponse = {
   metadata: Record<string, unknown> | null;
 };
 
-export type UpdateGlobalNotificationPreferencesRequest = {
-  dueCardReminderEnabled: boolean;
-  systemAnnouncementEnabled: boolean;
-  accountActivityEnabled: boolean;
-};
+export type UpdateGlobalNotificationPreferencesRequest = Partial<GlobalNotificationPreferences>;
