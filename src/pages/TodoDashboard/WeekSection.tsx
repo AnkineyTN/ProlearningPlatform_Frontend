@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, ChevronRight, Plus, Trash2 } from 'lucide-react';
+import { CalendarCheck, ChevronLeft, ChevronRight, Plus, Trash2 } from 'lucide-react';
 import type { ResourceRef, Todo } from '@/services/types/todo.types';
 import {
   ResourceMentionInput,
@@ -185,6 +185,9 @@ const ExpandedTaskRow = ({
           <LinkedResourceChips todo={todo} />
         </div>
       </button>
+      {todo.calendarSynced && (
+        <CalendarCheck className='w-3.5 h-3.5 flex-shrink-0 text-[var(--pl-accent)]' />
+      )}
       <button
         onClick={() => onDelete(todo.id)}
         className='opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded hover:bg-[var(--pl-bg-elev)] text-[var(--pl-text-faint)]'

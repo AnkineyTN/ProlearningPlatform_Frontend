@@ -26,6 +26,4 @@ dist-ssr
 .claude/
 .cursor/
 .github/
-FLASHCARD_GUIDE.md
-REVIEW_SYSTEM.md
-ROADMAP_FE_INTEGRATION.md
+docs/features/

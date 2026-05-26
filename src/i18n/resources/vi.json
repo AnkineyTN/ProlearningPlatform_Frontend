@@ -1434,6 +1434,27 @@
       "error": "Tải ảnh đại diện thất bại"
     }
   },
+  "googleCalendar": {
+    "title": "Google Calendar",
+    "sub": "Tự động tạo event khi todo có ngày hết hạn.",
+    "loading": "Đang tải…",
+    "statusConnected": "Đã kết nối",
+    "statusDisconnected": "Chưa kết nối",
+    "syncLabel": "Đồng bộ todo",
+    "syncDesc": "Tạo, cập nhật và xoá event trên lịch khi bạn quản lý todo có ngày hết hạn.",
+    "connect": "Kết nối Google Calendar",
+    "disconnect": "Ngắt kết nối",
+    "redirecting": "Đang chuyển hướng…",
+    "toast": {
+      "connectSuccess": "Kết nối Google Calendar thành công!",
+      "connectFailed": "Kết nối Google Calendar thất bại. Vui lòng thử lại.",
+      "accessDenied": "Bạn đã từ chối cấp quyền. Kết nối lại khi sẵn sàng.",
+      "invalidState": "Phiên đã hết hạn. Vui lòng thử kết nối lại.",
+      "disconnected": "Đã ngắt kết nối Google Calendar.",
+      "disconnectFailed": "Ngắt kết nối thất bại. Vui lòng thử lại."
+    },
+    "syncedBadge": "Đã đồng bộ lên Google Calendar"
+  },
   "todo": {
     "breadcrumb": "To-Do · Goals",
     "title": "Hôm nay bạn muốn hoàn thành điều gì?",

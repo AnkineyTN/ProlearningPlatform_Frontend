@@ -31,6 +31,7 @@ export type Todo = {
   examRefs: ResourceRef[];
   createdAt: string;
   updatedAt: string;
+  calendarSynced: boolean;
 };
 
 export type Goal = {

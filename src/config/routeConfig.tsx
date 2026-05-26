@@ -36,6 +36,7 @@ import CreateRoadmapPage from '@/pages/RoadmapPage/CreateRoadmapPage';
 import RoadmapDetailPage from '@/pages/RoadmapPage/RoadmapDetailPage';
 import SharedResourcesPage from '@/pages/SharedResourcesPage';
 import SocialPage from '@/pages/SocialPage';
+import CalendarCallbackPage from '@/pages/CalendarCallbackPage';
 import type { RouteObject } from 'react-router-dom';
 
 function LandingPageWrapper() {
@@ -312,6 +313,10 @@ export const routeConfig: RouteObject[] = [
       {
         path: 'social',
         element: <SocialPage />,
+      },
+      {
+        path: 'settings/calendar',
+        element: <CalendarCallbackPage />,
       },
     ],
   },

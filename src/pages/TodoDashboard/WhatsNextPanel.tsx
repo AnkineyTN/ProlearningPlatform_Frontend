@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AlertCircle,
+  CalendarCheck,
   ChevronDown,
   ChevronUp,
   Flame,
@@ -209,6 +210,9 @@ export default function WhatsNextPanel({
                     )}
                   </div>
                 </button>
+                {todo.calendarSynced && (
+                  <CalendarCheck className='w-3.5 h-3.5 flex-shrink-0 text-[var(--pl-accent)]' />
+                )}
               </div>
             );
           })}

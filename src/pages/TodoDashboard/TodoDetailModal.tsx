@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   BookOpen,
+  CalendarCheck,
   ExternalLink,
   FileText,
   FlipHorizontal,
@@ -362,6 +363,13 @@ const TodoDetailModal = ({
               />
             </div>
           </div>
+
+          {todo.calendarSynced && (
+            <div className='flex items-center gap-1.5 text-[12px] text-[var(--pl-accent)]'>
+              <CalendarCheck className='w-3.5 h-3.5' />
+              {t('googleCalendar.syncedBadge')}
+            </div>
+          )}
 
           {/* Goal */}
           <div>

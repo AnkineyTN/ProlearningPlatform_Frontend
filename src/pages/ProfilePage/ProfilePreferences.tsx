@@ -1,17 +1,121 @@
 import { Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import {
   useGlobalNotificationPreferences,
   useUpdateGlobalNotificationPreferences,
 } from '@/hooks/useNotifications';
+import {
+  useCalendarStatus,
+  useConnectCalendar,
+  useToggleCalendarSync,
+  useDisconnectCalendar,
+} from '@/hooks/useCalendar';
 import ProfileSection from './ProfileSection';
 
 type GlobalPrefKey =
   | 'dueCardReminderEnabled'
   | 'systemAnnouncementEnabled'
   | 'accountActivityEnabled';
+
+function GoogleCalendarSection() {
+  const { t } = useTranslation();
+  const { data: calendarStatus, isLoading } = useCalendarStatus();
+  const connectCalendar = useConnectCalendar();
+  const toggleSync = useToggleCalendarSync();
+  const disconnectCalendar = useDisconnectCalendar();
+
+  const connected = calendarStatus?.connected ?? false;
+  const syncEnabled = calendarStatus?.syncEnabled ?? false;
+
+  const handleConnect = async () => {
+    try {
+      const authUrl = await connectCalendar.mutateAsync();
+      window.open(authUrl, 'google-calendar-auth', 'width=500,height=600');
+    } catch {
+      toast.error(t('googleCalendar.toast.connectFailed'));
+    }
+  };
+
+  const handleDisconnect = async () => {
+    try {
+      await disconnectCalendar.mutateAsync();
+      toast.success(t('googleCalendar.toast.disconnected'));
+    } catch {
+      toast.error(t('googleCalendar.toast.disconnectFailed'));
+    }
+  };
+
+  return (
+    <ProfileSection
+      title={t('googleCalendar.title')}
+      sub={t('googleCalendar.sub')}
+    >
+      {isLoading ? (
+        <div className='py-4 text-[12.5px] text-[var(--pl-text-faint)]'>
+          {t('googleCalendar.loading')}
+        </div>
+      ) : connected ? (
+        <div className='flex flex-col gap-3'>
+          <div className='flex items-center gap-2'>
+            <span className='w-2 h-2 rounded-full bg-green-500' />
+            <span className='text-[13px] text-[var(--pl-text)]'>
+              {t('googleCalendar.statusConnected')}
+            </span>
+          </div>
+
+          <div className='flex justify-between items-center py-3 border-t border-[var(--pl-border)]'>
+            <div>
+              <div className='text-[14px] font-medium text-[var(--pl-text)]'>
+                {t('googleCalendar.syncLabel')}
+              </div>
+              <div className='text-[12.5px] mt-0.5 text-[var(--pl-text-muted)]'>
+                {t('googleCalendar.syncDesc')}
+              </div>
+            </div>
+            <Switch
+              checked={syncEnabled}
+              disabled={toggleSync.isPending}
+              onCheckedChange={(checked) => toggleSync.mutate(checked)}
+            />
+          </div>
+
+          <div className='pt-2 border-t border-[var(--pl-border)]'>
+            <Button
+              variant='outline'
+              size='sm'
+              className='text-destructive border-destructive/30 hover:bg-destructive/10'
+              disabled={disconnectCalendar.isPending}
+              onClick={handleDisconnect}
+            >
+              {t('googleCalendar.disconnect')}
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className='flex flex-col gap-3'>
+          <div className='flex items-center gap-2'>
+            <span className='w-2 h-2 rounded-full bg-[var(--pl-text-faint)]' />
+            <span className='text-[13px] text-[var(--pl-text-muted)]'>
+              {t('googleCalendar.statusDisconnected')}
+            </span>
+          </div>
+
+          <Button
+            onClick={handleConnect}
+            disabled={connectCalendar.isPending}
+            className='w-fit'
+          >
+            {t('googleCalendar.connect')}
+          </Button>
+        </div>
+      )}
+    </ProfileSection>
+  );
+}
 
 export default function ProfilePreferences() {
   const { t } = useTranslation();
@@ -66,6 +170,7 @@ export default function ProfilePreferences() {
   ];
 
   return (
+  <>
     <ProfileSection
       title={t('profile.preferences.notifications.title')}
       sub={t('profile.preferences.notifications.sub')}
@@ -107,5 +212,8 @@ export default function ProfilePreferences() {
         </AlertDescription>
       </Alert>
     </ProfileSection>
+
+    <GoogleCalendarSection />
+  </>
   );
 }

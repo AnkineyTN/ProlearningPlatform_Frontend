@@ -1012,6 +1012,27 @@
       "error": "Failed to upload avatar"
     }
   },
+  "googleCalendar": {
+    "title": "Google Calendar",
+    "sub": "Automatically create events when todos have a due date.",
+    "loading": "Loading…",
+    "statusConnected": "Connected",
+    "statusDisconnected": "Not connected",
+    "syncLabel": "Sync todos",
+    "syncDesc": "Create, update, and delete calendar events when you manage todos with due dates.",
+    "connect": "Connect Google Calendar",
+    "disconnect": "Disconnect",
+    "redirecting": "Redirecting…",
+    "toast": {
+      "connectSuccess": "Google Calendar connected successfully!",
+      "connectFailed": "Failed to connect Google Calendar. Please try again.",
+      "accessDenied": "You denied access. Connect again when you're ready.",
+      "invalidState": "Session expired. Please try connecting again.",
+      "disconnected": "Google Calendar disconnected.",
+      "disconnectFailed": "Failed to disconnect. Please try again."
+    },
+    "syncedBadge": "Synced to Google Calendar"
+  },
   "todo": {
     "breadcrumb": "To-Do · Goals",
     "title": "What do you want to accomplish today?",
