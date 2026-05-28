@@ -215,6 +215,72 @@ export function useMarkAllNotificationsRead() {
   });
 }
 
+export function useDeleteNotification() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => notificationAPI.deleteNotification(id),
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ['notifications'] });
+      const prevAll = queryClient.getQueryData<any>(['notifications', 'list', 'all']);
+      const prevUnread = queryClient.getQueryData<any>(['notifications', 'list', 'unread']);
+      const prevCount = queryClient.getQueryData<number>(['notifications', 'unreadCount']);
+
+      const removeFromList = (data: any) => {
+        if (!data) return data;
+        return {
+          ...data,
+          pages: (data.pages ?? []).map((page: any) => {
+            const removed = page.data.notifications.find((n: any) => n.id === id);
+            const notifications = page.data.notifications.filter((n: any) => n.id !== id);
+            return {
+              ...page,
+              data: {
+                ...page.data,
+                notifications,
+                totalElements: Math.max(0, page.data.totalElements - 1),
+                unreadCount: removed && !removed.isRead
+                  ? Math.max(0, page.data.unreadCount - 1)
+                  : page.data.unreadCount,
+              },
+            };
+          }),
+        };
+      };
+
+      const wasUnread = (data: any) => {
+        if (!data) return false;
+        for (const page of data.pages ?? []) {
+          const found = page.data.notifications.find((n: any) => n.id === id);
+          if (found) return !found.isRead;
+        }
+        return false;
+      };
+
+      const isUnread = wasUnread(prevAll);
+
+      queryClient.setQueryData<any>(['notifications', 'list', 'all'], removeFromList);
+      queryClient.setQueryData<any>(['notifications', 'list', 'unread'], removeFromList);
+      if (isUnread) {
+        queryClient.setQueryData<number>(
+          ['notifications', 'unreadCount'],
+          (c) => (typeof c === 'number' ? Math.max(0, c - 1) : c),
+        );
+      }
+
+      return { prevAll, prevUnread, prevCount };
+    },
+    onError: (_err, _id, ctx) => {
+      if (!ctx) return;
+      queryClient.setQueryData(['notifications', 'list', 'all'], ctx.prevAll);
+      queryClient.setQueryData(['notifications', 'list', 'unread'], ctx.prevUnread);
+      queryClient.setQueryData(['notifications', 'unreadCount'], ctx.prevCount);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    },
+  });
+}
+
 // ─── Per-user (global) notification preferences ──────────────────────────────
 
 const GLOBAL_PREFS_KEY = ["notifications", "preferences"] as const;

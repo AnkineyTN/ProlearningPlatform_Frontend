@@ -1928,5 +1928,26 @@
       "hint": "Khi bạn trả lời sai các thẻ trong tuần, hệ thống sẽ tự động gom lại tại đây — quay lại sau nhé."
     },
     "error": "Không tải được danh sách bundle. Vui lòng thử lại."
+  },
+  "notification": {
+    "daily_todo": {
+      "title": "Nhắc nhở task hôm nay",
+      "message": "Bạn còn {{count}} task hôm nay chưa hoàn thành. Cố lên nào!"
+    },
+    "weekly_todo": {
+      "title": "Nhắc nhở task tuần này",
+      "message": "Tuần này sắp kết thúc! Bạn còn {{count}} task tuần chưa hoàn thành."
+    },
+    "goal_deadline": {
+      "title": "Deadline mục tiêu sắp đến",
+      "message": "Mục tiêu \"{{goalTitle}}\" sẽ đến hạn sau {{period}}. Tiếp tục cố gắng nhé!",
+      "period_1": "1 ngày",
+      "period_7": "1 tuần",
+      "period_30": "1 tháng"
+    },
+    "goal_inactive": {
+      "title": "Nhắc nhở cập nhật mục tiêu",
+      "message": "Đã hơn 1 tuần bạn không cập nhật \"{{goalTitle}}\". Tiến độ đến đâu rồi?"
+    }
   }
 }

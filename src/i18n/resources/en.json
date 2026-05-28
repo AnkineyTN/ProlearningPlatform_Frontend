@@ -1506,5 +1506,26 @@
       "hint": "When you miss flashcards during the week, they'll be bundled here automatically — come back later."
     },
     "error": "Could not load bundles. Please try again."
+  },
+  "notification": {
+    "daily_todo": {
+      "title": "Daily Tasks Reminder",
+      "message": "You have {{count}} incomplete daily task(s) today. Don't let them slip!"
+    },
+    "weekly_todo": {
+      "title": "Weekly Tasks Reminder",
+      "message": "This week is almost over! You still have {{count}} weekly task(s) to complete."
+    },
+    "goal_deadline": {
+      "title": "Goal Deadline Approaching",
+      "message": "Your goal \"{{goalTitle}}\" is due in {{period}}. Keep pushing!",
+      "period_1": "1 day",
+      "period_7": "1 week",
+      "period_30": "1 month"
+    },
+    "goal_inactive": {
+      "title": "Goal Check-in",
+      "message": "It's been over a week since you updated \"{{goalTitle}}\". How's progress going?"
+    }
   }
 }

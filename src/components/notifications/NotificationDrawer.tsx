@@ -14,11 +14,13 @@ import {
   Layers,
   ListChecks,
   Loader2,
+  Lock,
   Megaphone,
   ShieldAlert,
   Sparkles,
   StickyNote,
   Target,
+  Unlock,
   X,
 } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
@@ -41,6 +43,7 @@ import {
   useNotificationsInfinite,
 } from '@/hooks/useNotifications';
 import { cn } from '@/lib/utils';
+import { getNotificationContent } from '@/lib/notificationI18n';
 
 import type { UserNotificationItem } from '@/services/types/notification.types';
 import type { ResourceType } from '@/services/endpoints/collaboration';
@@ -168,6 +171,27 @@ const NOTIFICATION_TYPE_CONFIG: Record<string, TypeConfig> = {
     bgColor: 'bg-slate-500/10',
     borderColor: 'border-slate-500',
     dotColor: 'bg-slate-500',
+  },
+  ACCOUNT_BLOCKED: {
+    icon: Lock,
+    iconColor: 'text-red-600',
+    bgColor: 'bg-red-600/10',
+    borderColor: 'border-red-600',
+    dotColor: 'bg-red-600',
+  },
+  ACCOUNT_UNBLOCKED: {
+    icon: Unlock,
+    iconColor: 'text-green-600',
+    bgColor: 'bg-green-600/10',
+    borderColor: 'border-green-600',
+    dotColor: 'bg-green-600',
+  },
+  ACCOUNT_UPGRADED: {
+    icon: Award,
+    iconColor: 'text-yellow-500',
+    bgColor: 'bg-yellow-500/10',
+    borderColor: 'border-yellow-500',
+    dotColor: 'bg-yellow-500',
   },
   GENERAL: {
     icon: Bell,
@@ -438,6 +462,7 @@ function NotificationCard({
   const Icon = config.icon;
   const isWeeklySummary = item.type === 'WEEKLY_SUMMARY';
   const bundleDestUrl = isWeeklySummary ? buildBundleDestUrl(item) : null;
+  const { title, message } = getNotificationContent(item, t);
 
   return (
     <div
@@ -472,13 +497,13 @@ function NotificationCard({
       <div className='min-w-0 flex-1'>
         <div className='flex items-start justify-between gap-2'>
           <p className='text-sm font-semibold leading-snug text-foreground'>
-            {item.title}
+            {title}
           </p>
           <span className='shrink-0 text-[11px] font-medium text-muted-foreground'>
             {compactRelativeTime(item.createdAt)}
           </span>
         </div>
-        <p className='mt-1 text-sm text-muted-foreground'>{item.message}</p>
+        <p className='mt-1 text-sm text-muted-foreground'>{message}</p>
 
         {bundleDestUrl && (
           <button

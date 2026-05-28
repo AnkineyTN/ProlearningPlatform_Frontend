@@ -4,17 +4,23 @@ import {
   Bell,
   BookOpen,
   Calendar,
+  CalendarClock,
   Check,
   ChevronRight,
+  CircleAlert,
   ClipboardCheck,
   FileText,
   Layers,
+  ListChecks,
   Loader2,
+  Lock,
   Megaphone,
   MoreHorizontal,
   ShieldAlert,
   Sparkles,
   StickyNote,
+  Target,
+  Unlock,
   X,
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -38,6 +44,7 @@ import {
   useUnreadNotificationCount,
 } from '@/hooks/useNotifications';
 import { cn } from '@/lib/utils';
+import { getNotificationContent } from '@/lib/notificationI18n';
 import { notificationAPI } from '@/services/endpoints/notification';
 
 import type { UserNotificationItem } from '@/services/types/notification.types';
@@ -156,6 +163,55 @@ const NOTIFICATION_TYPE_CONFIG: Record<string, TypeConfig> = {
     bgColor: 'bg-indigo-500/10',
     borderColor: 'border-indigo-500',
     dotColor: 'bg-indigo-500',
+  },
+  DAILY_TODO_REMINDER: {
+    icon: ListChecks,
+    iconColor: 'text-teal-500',
+    bgColor: 'bg-teal-500/10',
+    borderColor: 'border-teal-500',
+    dotColor: 'bg-teal-500',
+  },
+  WEEKLY_TODO_REMINDER: {
+    icon: CalendarClock,
+    iconColor: 'text-sky-500',
+    bgColor: 'bg-sky-500/10',
+    borderColor: 'border-sky-500',
+    dotColor: 'bg-sky-500',
+  },
+  GOAL_DEADLINE_REMINDER: {
+    icon: Target,
+    iconColor: 'text-rose-500',
+    bgColor: 'bg-rose-500/10',
+    borderColor: 'border-rose-500',
+    dotColor: 'bg-rose-500',
+  },
+  GOAL_INACTIVE_REMINDER: {
+    icon: CircleAlert,
+    iconColor: 'text-slate-500',
+    bgColor: 'bg-slate-500/10',
+    borderColor: 'border-slate-500',
+    dotColor: 'bg-slate-500',
+  },
+  ACCOUNT_BLOCKED: {
+    icon: Lock,
+    iconColor: 'text-red-600',
+    bgColor: 'bg-red-600/10',
+    borderColor: 'border-red-600',
+    dotColor: 'bg-red-600',
+  },
+  ACCOUNT_UNBLOCKED: {
+    icon: Unlock,
+    iconColor: 'text-green-600',
+    bgColor: 'bg-green-600/10',
+    borderColor: 'border-green-600',
+    dotColor: 'bg-green-600',
+  },
+  ACCOUNT_UPGRADED: {
+    icon: Award,
+    iconColor: 'text-yellow-500',
+    bgColor: 'bg-yellow-500/10',
+    borderColor: 'border-yellow-500',
+    dotColor: 'bg-yellow-500',
   },
   GENERAL: {
     icon: Bell,
@@ -402,6 +458,7 @@ function NotificationRow({
   const Icon = config.icon;
   const isWeeklySummary = item.type === 'WEEKLY_SUMMARY';
   const bundleDestUrl = isWeeklySummary ? buildBundleDestUrl(item) : null;
+  const { title, message } = getNotificationContent(item, t);
 
   return (
     <div
@@ -417,7 +474,6 @@ function NotificationRow({
       className={cn(
         'flex w-full gap-3 rounded-lg px-2 py-2.5 text-left transition-colors cursor-pointer',
         'hover:bg-[var(--pl-accent-soft)]',
-        // Unread items get a 3px left border in the type's icon color and a bg tint.
         !item.isRead && cn('bg-primary/5 border-l-[3px]', config.borderColor),
         isActivating && 'pointer-events-none opacity-70',
       )}
@@ -435,10 +491,10 @@ function NotificationRow({
       </div>
       <div className='min-w-0 flex-1'>
         <p className='text-sm font-medium leading-snug text-foreground line-clamp-2'>
-          {item.title}
+          {title}
         </p>
         <p className='mt-0.5 text-sm text-muted-foreground line-clamp-2'>
-          {item.message}
+          {message}
         </p>
         <p className='mt-1 text-xs font-medium text-primary/90'>
           {compactRelativeTime(item.createdAt)}
