@@ -234,7 +234,9 @@
     "moreActions": "More options",
     "createTest": "Create test notification",
     "markAsRead": "Mark as read",
-    "markAllRead": "Mark all as read"
+    "markAllRead": "Mark all as read",
+    "tabInvites": "Invites",
+    "emptyInvites": "No pending invitations"
   },
   "landing": {
     "createAccount": "Create an account",
@@ -994,7 +996,8 @@
         "email": "Email summaries",
         "emailDesc": "Weekly recap, new recommended bundles.",
         "reminders": "Daily streak reminder",
-        "remindersDesc": "A gentle reminder at 8pm if you haven't studied today."
+        "remindersDesc": "A gentle reminder at 8pm if you haven't studied today.",
+        "perSetHint": "Weekly review reminders can be configured per Set in each Set's notification settings."
       },
       "display": {
         "title": "Display",

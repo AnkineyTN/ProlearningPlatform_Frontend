@@ -253,20 +253,6 @@
       "search": "Tìm kiếm...",
       "welcome": "Chào mừng trở lại!"
     },
-    "notificationsPanel": {
-      "title": "Thông báo",
-      "tabAll": "Tất cả",
-      "tabUnread": "Chưa đọc",
-      "sectionEarlier": "Trước đó",
-      "seeAll": "Xem thêm",
-      "empty": "Chưa có thông báo",
-      "emptyUnread": "Bạn đã xem hết thông báo",
-      "loadError": "Không tải được thông báo.",
-      "moreActions": "Tùy chọn khác",
-      "createTest": "Tạo thông báo test",
-      "markAsRead": "Đánh dấu đã đọc",
-      "markAllRead": "Đánh dấu tất cả đã đọc"
-    },
     "landing": {
       "createAccount": "Tạo tài khoản",
       "cta": {
@@ -779,7 +765,9 @@
     "moreActions": "Tùy chọn khác",
     "createTest": "Tạo thông báo test",
     "markAsRead": "Đánh dấu đã đọc",
-    "markAllRead": "Đánh dấu tất cả đã đọc"
+    "markAllRead": "Đánh dấu tất cả đã đọc",
+    "tabInvites": "Lời mời",
+    "emptyInvites": "Không có lời mời nào đang chờ"
   },
   "landing": {
     "createAccount": "Tạo tài khoản",
@@ -1416,7 +1404,8 @@
         "email": "Email summaries",
         "emailDesc": "Tổng kết tuần, bundle mới được đề xuất.",
         "reminders": "Daily streak reminder",
-        "remindersDesc": "Nhắc nhẹ vào 20:00 nếu hôm đó chưa học."
+        "remindersDesc": "Nhắc nhẹ vào 20:00 nếu hôm đó chưa học.",
+        "perSetHint": "Nhắc nhở ôn tập theo tuần có thể cài riêng cho từng Set trong cài đặt thông báo của Set đó."
       },
       "display": {
         "title": "Hiển thị",

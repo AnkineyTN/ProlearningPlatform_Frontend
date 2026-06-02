@@ -6,6 +6,8 @@ import NoteCard from '@/components/cards/NoteCard';
 import FlashcardCard from '@/components/cards/FlashCard';
 import ExamCard from '@/components/cards/ExamCard';
 import { getTimeAgo, formatDate } from '@/lib/utils';
+import { socialAPI } from '@/services/endpoints/social';
+import type { SocialItemType } from '@/services/types/social.types';
 import type { SectionType, SectionState, SortType } from '../types';
 
 // ─── SkeletonCard ──────────────────────────────────────────────────────────────
@@ -48,6 +50,10 @@ const SectionBlock = ({
   const { t } = useTranslation();
   const { items, loading, error, meta } = state;
   const noDesc = t('list.noDescription', 'No description available');
+
+  const trackView = (id: number) => {
+    socialAPI.postViewLog(type as SocialItemType, id).catch(() => {});
+  };
 
   const sorted = useMemo(() => {
     const arr = [...items];
@@ -114,7 +120,7 @@ const SectionBlock = ({
                     timeAgo,
                     created_at: createdAt,
                   }}
-                  onAccess={(id) => console.log('access note', id)}
+                  onAccess={(id) => trackView(Number(id))}
                 />
               );
 
@@ -130,7 +136,7 @@ const SectionBlock = ({
                     time: timeAgo,
                     created_at: createdAt,
                   }}
-                  onAccess={(id) => console.log('access flashcard', id)}
+                  onAccess={(id) => trackView(Number(id))}
                 />
               );
 
@@ -146,7 +152,7 @@ const SectionBlock = ({
                   numQuestions: item.numQuestions ?? undefined,
                   duration: item.duration ?? undefined,
                 }}
-                onAccess={(id) => console.log('access exam', id)}
+                onAccess={(id) => trackView(Number(id))}
               />
             );
           })}
