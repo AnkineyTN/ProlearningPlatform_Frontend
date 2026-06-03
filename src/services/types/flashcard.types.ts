@@ -45,6 +45,10 @@ export type FlashcardDetail = {
   id: string;
   title: string;
   description: string;
+  set?: { id: number; title: string; privacy: string };
+  createdAt?: string;
+  updatedAt?: string;
+  numCards?: number | null;
   status: 'NOT_COMPLETED' | 'COMPLETED';
   privacy: 'PUBLIC' | 'PRIVATE';
   lastStudy: string;

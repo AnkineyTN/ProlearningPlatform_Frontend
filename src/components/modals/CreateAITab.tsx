@@ -71,7 +71,6 @@ const CreateAITab = ({
   const isExam = type === 'Exam';
   const totalQuestions = counts.MCQ + counts.TF + counts.ESS;
   const difficultySum = difficulty.Easy + difficulty.Medium + difficulty.Hard;
-  const selectedNoteIds = selectedNotes.map((n) => n.note_id);
   const hasSource =
     (source === 'notes' && selectedNotes.length > 0) ||
     (source === 'files' && uploadedFiles.length > 0) ||
@@ -122,6 +121,20 @@ const CreateAITab = ({
         : [...prev, { note_id: id, document_urls: documentUrls }],
     );
 
+  const handleDocumentToggle = (noteId: number, docUrl: string) =>
+    setSelectedNotes((prev) =>
+      prev.map((n) =>
+        n.note_id !== noteId
+          ? n
+          : {
+              ...n,
+              document_urls: n.document_urls.includes(docUrl)
+                ? n.document_urls.filter((u) => u !== docUrl)
+                : [...n.document_urls, docUrl],
+            },
+      ),
+    );
+
   return (
     <div className='space-y-6'>
       <AISourcePicker
@@ -137,8 +150,9 @@ const CreateAITab = ({
         {source === 'notes' && (
           <AINotesGrid
             setId={setId}
-            selectedIds={selectedNoteIds}
+            selectedNotes={selectedNotes}
             onToggle={toggleNote}
+            onDocumentToggle={handleDocumentToggle}
             disabled={isLoading}
           />
         )}

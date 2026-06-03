@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { flashcardAPI } from "@/services/endpoints/flashcard";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { flashcardAPI } from '@/services/endpoints/flashcard';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import type {
   CreateFlashcardManualRequest,
@@ -75,9 +75,8 @@ export const useCreateFlashcardManual = () => {
       setId: number;
       data: CreateFlashcardManualRequest;
     }) => flashcardAPI.createManual(setId, data),
-    onSuccess: (data, variables) => {
+    onSuccess: (_, variables) => {
       // Invalidate flashcard list để refetch data mới
-      console.log("Created flashcard:", data);
       queryClient.invalidateQueries({
         queryKey: ["flashcards", variables.setId],
       });

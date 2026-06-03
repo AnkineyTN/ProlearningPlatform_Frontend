@@ -200,7 +200,10 @@ export const useUpdateExam = () => {
         queryKey: ["exams", variables.setId],
       });
       queryClient.invalidateQueries({
-        queryKey: ["exam-detail", variables.setId, variables.examId],
+        queryKey: ["exam-quiz", variables.setId, variables.examId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["exam-questions", variables.setId, variables.examId],
       });
     },
   });
@@ -240,7 +243,10 @@ export const useCreateQuestions = () => {
     }) => examAPI.createQuestions(setId, Number(examId), data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["exam-detail", variables.setId, variables.examId],
+        queryKey: ["exam-questions", variables.setId, variables.examId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["exam-quiz", variables.setId, variables.examId],
       });
       queryClient.invalidateQueries({
         queryKey: ["exams", variables.setId],
@@ -272,7 +278,7 @@ export const useUpdateQuestion = () => {
       ),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["exam-detail", variables.setId, variables.examId],
+        queryKey: ["exam-questions", variables.setId, variables.examId],
       });
     },
   });
@@ -428,7 +434,10 @@ export const useDeleteQuestion = () => {
       examAPI.deleteQuestion(setId, Number(examId), Number(questionId)),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["exam-detail", variables.setId, variables.examId],
+        queryKey: ["exam-questions", variables.setId, variables.examId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["exam-quiz", variables.setId, variables.examId],
       });
       queryClient.invalidateQueries({
         queryKey: ["exams", variables.setId],

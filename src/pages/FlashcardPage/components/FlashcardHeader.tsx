@@ -11,6 +11,7 @@ interface FlashcardHeaderProps {
   flashcardId: number;
   title: string;
   description: string;
+  setTitle?: string;
   userRole?: CollabRole;
 }
 
@@ -19,6 +20,7 @@ export default function FlashcardHeader({
   flashcardId,
   title,
   description,
+  setTitle,
   userRole = 'OWNER',
 }: FlashcardHeaderProps) {
   const navigate = useNavigate();
@@ -43,7 +45,7 @@ export default function FlashcardHeader({
               onClick={handleClick}
             >
               <BookOpen className='w-5 h-5 text-muted-foreground' />
-              <span className='text-muted-foreground text-sm'>setTitle</span>
+              {setTitle && <span className='text-muted-foreground text-sm'>{setTitle}</span>}
             </div>
           </div>
           <div className='flex items-center gap-3 shrink-0'>

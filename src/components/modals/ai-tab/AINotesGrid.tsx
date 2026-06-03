@@ -4,19 +4,29 @@ import { useTranslation } from 'react-i18next';
 import NoteCardSelect from '@/components/cards/NoteCardSelect';
 import { useNotesBySet } from '@/hooks/useNotes';
 
+import { type NoteAIInput } from './types';
 import { getTimeAgo } from './utils';
 
 type Props = {
   setId: number;
-  selectedIds: number[];
+  selectedNotes: NoteAIInput[];
   onToggle: (id: number, documentUrls: string[]) => void;
+  onDocumentToggle: (noteId: number, docUrl: string) => void;
   disabled?: boolean;
 };
 
-const AINotesGrid = ({ setId, selectedIds, onToggle, disabled }: Props) => {
+const AINotesGrid = ({
+  setId,
+  selectedNotes,
+  onToggle,
+  onDocumentToggle,
+  disabled,
+}: Props) => {
   const { t } = useTranslation();
   const { data: notesData } = useNotesBySet(setId, { page: 0, size: 12 });
   const notes = notesData?.items || [];
+
+  const selectedNoteIds = selectedNotes.map((n) => n.note_id);
 
   if (notes.length === 0) {
     return (
@@ -32,35 +42,46 @@ const AINotesGrid = ({ setId, selectedIds, onToggle, disabled }: Props) => {
   return (
     <>
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3'>
-        {notes.map((note) => (
-          <NoteCardSelect
-            key={note.id}
-            note={{
-              id: note.id,
-              title: note.title,
-              description:
-                note.description ||
-                t('modal.noDescription', {
-                  defaultValue: 'No description available...',
-                }),
-              privacy: note.privacy,
-              timeAgo: getTimeAgo(note.updated_at),
-              created_at: new Date(note.created_at).toLocaleDateString(
-                'en-GB',
-                { day: '2-digit', month: 'short', year: 'numeric' },
-              ),
-            }}
-            onSelected={() => {
-              if (!disabled)
-                onToggle(note.id, note.noteDocs?.map((d) => d.fileUrl) ?? []);
-            }}
-            isSelected={selectedIds.includes(note.id)}
-          />
-        ))}
+        {notes.map((note) => {
+          const selectedNote = selectedNotes.find((n) => n.note_id === note.id);
+          return (
+            <NoteCardSelect
+              key={note.id}
+              note={{
+                id: note.id,
+                title: note.title,
+                description:
+                  note.description ||
+                  t('modal.noDescription', {
+                    defaultValue: 'No description available...',
+                  }),
+                privacy: note.privacy,
+                timeAgo: getTimeAgo(note.updated_at),
+                created_at: new Date(note.created_at).toLocaleDateString(
+                  'en-GB',
+                  { day: '2-digit', month: 'short', year: 'numeric' },
+                ),
+              }}
+              onSelected={() => {
+                if (!disabled)
+                  onToggle(note.id, note.noteDocs?.map((d) => d.fileUrl) ?? []);
+              }}
+              isSelected={selectedNoteIds.includes(note.id)}
+              docs={note.noteDocs?.map((d) => ({
+                fileUrl: d.fileUrl,
+                fileName: d.fileName,
+              }))}
+              selectedDocUrls={selectedNote?.document_urls}
+              onDocToggle={(fileUrl) => {
+                if (!disabled) onDocumentToggle(note.id, fileUrl);
+              }}
+            />
+          );
+        })}
       </div>
-      {selectedIds.length > 0 && (
+      {selectedNoteIds.length > 0 && (
         <p className='text-xs text-muted-foreground mt-2.5'>
-          {selectedIds.length} {t('modal.ai.selected')}
+          {selectedNoteIds.length} {t('modal.ai.selected')}
         </p>
       )}
     </>

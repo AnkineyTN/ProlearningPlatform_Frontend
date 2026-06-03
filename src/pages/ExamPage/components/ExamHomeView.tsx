@@ -1,25 +1,27 @@
 import {
-  Clock,
-  FileText,
-  Play,
-  Edit,
-  ChevronLeft,
-  Share2,
-  CheckSquare,
-  ToggleLeft,
   AlignLeft,
+  CheckSquare,
+  ChevronLeft,
+  Clock,
+  Edit,
+  FileText,
   Info,
+  Play,
+  Share2,
+  Star,
+  ToggleLeft,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button';
-import type { Exam } from '../types';
-import ModeToggle from '@/components/theme/mode-toggle';
-import NotificationBell from '@/components/notifications/NotificationBell';
+
 import { ShareDialog } from '@/components/collaboration/ShareDialog';
-import type { CollabRole } from '@/services/types/collaboration.types';
+import NotificationBell from '@/components/notifications/NotificationBell';
+import ModeToggle from '@/components/theme/mode-toggle';
+import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 
+import type { Exam } from '../types';
+import type { CollabRole } from '@/services/types/collaboration.types';
 interface ExamHomeViewProps {
   exam: Exam;
   setId: number;
@@ -126,6 +128,7 @@ export default function ExamHomeView({
                 label: t('exam.home.timeLimit'),
               },
               {
+                icon: <Star className='w-4 h-4' />,
                 value: exam.totalScore,
                 unit: 'pts',
                 label: t('exam.home.totalPoints'),

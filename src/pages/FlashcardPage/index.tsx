@@ -20,14 +20,14 @@ import {
 import { useFlashcardStudySettings } from '@/hooks/useFlashcardStudySettings';
 import { useSessionTracker } from '@/hooks/useSessionTracker';
 
-import type { StudyMode } from '@/services/types/flashcard-session.types';
-
 import ContinueSessionDialog from './components/ContinueSessionDialog';
 import FlashcardHeader from './components/FlashcardHeader';
 import HomeView from './components/HomeView';
 import MatchingView from './components/MatchingView';
 import ResultsView from './components/ResultsView';
 import StudyView from './components/StudyView';
+
+import type { StudyMode } from '@/services/types/flashcard-session.types';
 
 import type { Card } from '@/services/types/flashcard.types';
 
@@ -133,6 +133,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
 
   const title = useMemo(() => data?.data.title || 'Flashcard Set', [data]);
   const description = useMemo(() => data?.data.description || '', [data]);
+  const setTitle = useMemo(() => data?.data.set?.title || '', [data]);
 
   const flashcards: Array<Card> = useMemo(() => {
     const cards = data?.data.cards || [];
@@ -504,6 +505,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         flashcardId={Number(flashcardId)}
         title={title}
         description={description}
+        setTitle={setTitle}
         userRole={userRole}
       />
       <ContinueSessionDialog
