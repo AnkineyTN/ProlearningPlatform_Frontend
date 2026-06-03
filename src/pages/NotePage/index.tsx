@@ -1,7 +1,7 @@
 import './notes.css';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { useParams } from 'react-router-dom';
 
 import {

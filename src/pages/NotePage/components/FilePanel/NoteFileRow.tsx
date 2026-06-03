@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';

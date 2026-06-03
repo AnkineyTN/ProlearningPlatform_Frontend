@@ -9,7 +9,7 @@ import {
   GraduationCap,
   X,
 } from 'lucide-react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -219,7 +219,7 @@ const TodoDetailModal = ({
   };
 
   const handleSave = () => {
-    if (!title.trim()) return toast.warn(t('todo.toast.todoNameRequired'));
+    if (!title.trim()) return toast.warning(t('todo.toast.todoNameRequired'));
     updateMutation.mutate({
       title,
       description: description || undefined,

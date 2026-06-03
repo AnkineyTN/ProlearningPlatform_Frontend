@@ -4,6 +4,16 @@
       "title": "Tính năng PRO",
       "description": "Nâng cấp lên PRO để tạo và quản lý lộ trình học tập cá nhân hóa với AI.",
       "cta": "Nâng cấp lên PRO"
+    },
+    "card": {
+      "goToSet": "Đến Set"
+    },
+    "create": {
+      "referenceLinks": "Liên kết tham khảo",
+      "referenceLinksHint": "Tùy chọn — thêm URL bài viết, tài liệu hoặc nguồn học để AI tạo nội dung phù hợp hơn.",
+      "addReferenceLink": "Thêm",
+      "referenceLinkPlaceholder": "https://...",
+      "removeReferenceLink": "Xóa"
     }
   },
   "adminOnboarding": {
@@ -1994,5 +2004,38 @@
       "description": "Chúng tôi không thể xác minh thanh toán. Vui lòng liên hệ hỗ trợ nếu bạn đã bị trừ tiền."
     },
     "goHome": "Về trang chủ"
+  },
+  "social": {
+    "explore": "Khám phá",
+    "exploreDesc": "Ghi chú, bộ thẻ học và đề thi được chia sẻ bởi người học trên toàn thế giới. Lưu, sao chép, chỉnh sửa.",
+    "communityBanner": "Cộng đồng · 12.840 người học chia sẻ",
+    "notes": "Ghi chú",
+    "flashcards": "Thẻ học",
+    "exams": "Đề thi",
+    "filterAll": "Tất cả",
+    "searchPlaceholder": "Tìm kiếm cộng đồng",
+    "sortTrending": "Xu hướng",
+    "sortRecent": "Mới nhất",
+    "sortLiked": "Yêu thích nhất",
+    "failedToLoad": "Không thể tải. Vui lòng thử lại.",
+    "noResults": "Không tìm thấy kết quả.",
+    "loadMore": "Tải thêm",
+    "rail": {
+      "trendingKicker": "Ngay bây giờ",
+      "trendingTitle": "Xu hướng",
+      "creatorsKicker": "Giai đoạn này",
+      "creatorsTitle": "Người tạo hàng đầu",
+      "topicsKicker": "Khám phá",
+      "topicsTitle": "Chủ đề xu hướng",
+      "noTrending": "Chưa có tài nguyên xu hướng.",
+      "noCreators": "Chưa có người tạo.",
+      "noTopics": "Chưa có chủ đề.",
+      "resources": "{{count}} tài nguyên",
+      "footer": "Tất cả nội dung ở đây được chia sẻ bởi người dùng. Sao chép một bộ sẽ giữ liên kết đến tác giả gốc.",
+      "periodAll": "Tất cả",
+      "typNote": "Ghi chú",
+      "typFlashcard": "Thẻ học",
+      "typExam": "Đề thi"
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { Loader2 } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import type { ResourceType } from '@/services/endpoints/collaboration';
 import type { CollabMember } from '@/services/types/collaboration.types';
 import {

@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useUploadImageFile } from '@/hooks/useImageUpload';
 import type { Card as CardData } from '@/services/types/flashcard.types';
 

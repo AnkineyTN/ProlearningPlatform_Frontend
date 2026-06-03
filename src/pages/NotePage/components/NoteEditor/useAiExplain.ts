@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { useExplainText } from '@/hooks/useNotes';
 import { mapI18nToAiApiLanguage } from '@/lib/utils';
 

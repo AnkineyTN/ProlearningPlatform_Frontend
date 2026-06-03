@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import i18n from '@/i18n/config';
 import { type OnboardingData } from '@/components/onboarding/type';
 import LanguageSelection from '@/components/onboarding/LanguageSelection';

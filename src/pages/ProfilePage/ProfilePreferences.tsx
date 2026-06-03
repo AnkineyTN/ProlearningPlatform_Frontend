@@ -1,6 +1,6 @@
 import { Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';

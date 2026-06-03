@@ -1,14 +1,20 @@
 import { useState } from 'react';
 import { BookOpen, Brain, ClipboardList, Eye, GraduationCap, Flame } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import {
   useTrendingResources,
   useTrendingCreators,
   useTrendingTopics,
 } from '@/hooks/useSocial';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 import type { TrendingPeriod } from '@/services/types/social.types';
-// ─── Avatar ────────────────────────────────────────────────────────────────────
 
-export const Avatar = ({
+// ─── UserAvatar ───────────────────────────────────────────────────────────────
+
+export const UserAvatar = ({
   name,
   src,
   hue,
@@ -25,29 +31,20 @@ export const Avatar = ({
     .slice(0, 2)
     .join('');
   const h = hue ?? ((name.charCodeAt(0) * 37 + name.charCodeAt(1 % name.length) * 17) % 360);
-  if (src) {
-    return (
-      <img
-        src={src}
-        alt={name}
-        className='rounded-full object-cover shrink-0'
-        style={{ width: size, height: size }}
-      />
-    );
-  }
+
   return (
-    <div
-      className='grid place-items-center text-white font-semibold shrink-0'
-      style={{
-        width: size,
-        height: size,
-        borderRadius: '50%',
-        background: `linear-gradient(135deg, oklch(0.68 0.14 ${h}), oklch(0.55 0.16 ${(h + 40) % 360}))`,
-        fontSize: size * 0.38,
-      }}
-    >
-      {initials}
-    </div>
+    <Avatar className='shrink-0' style={{ width: size, height: size }}>
+      {src && <AvatarImage src={src} alt={name} className='object-cover' />}
+      <AvatarFallback
+        className='text-white font-semibold'
+        style={{
+          background: `linear-gradient(135deg, oklch(0.68 0.14 ${h}), oklch(0.55 0.16 ${(h + 40) % 360}))`,
+          fontSize: size * 0.38,
+        }}
+      >
+        {initials}
+      </AvatarFallback>
+    </Avatar>
   );
 };
 
@@ -95,19 +92,12 @@ const RailPanel = ({
   </section>
 );
 
-// ─── PeriodTabs ───────────────────────────────────────────────────────────────
-
-const PERIOD_TABS: { id: TrendingPeriod; label: string }[] = [
-  { id: 'H24', label: '24h' },
-  { id: 'D7', label: '7d' },
-  { id: 'D30', label: '30d' },
-  { id: 'ALL_TIME', label: 'All' },
-];
+// ─── TYPE_META ────────────────────────────────────────────────────────────────
 
 const TYPE_META = {
-  NOTE: { label: 'Note', color: 'oklch(0.7 0.12 95)', icon: BookOpen },
-  FLASHCARD: { label: 'Flashcard', color: 'oklch(0.7 0.12 200)', icon: Brain },
-  EXAM: { label: 'Exam', color: 'oklch(0.72 0.13 28)', icon: ClipboardList },
+  NOTE: { labelKey: 'social.rail.typNote', color: 'oklch(0.7 0.12 95)', icon: BookOpen },
+  FLASHCARD: { labelKey: 'social.rail.typFlashcard', color: 'oklch(0.7 0.12 200)', icon: Brain },
+  EXAM: { labelKey: 'social.rail.typExam', color: 'oklch(0.72 0.13 28)', icon: ClipboardList },
 } as const;
 
 const RANK_MEDAL = ['🥇', '🥈', '🥉'];
@@ -115,18 +105,19 @@ const RANK_MEDAL = ['🥇', '🥈', '🥉'];
 // ─── TrendingPanel ────────────────────────────────────────────────────────────
 
 const TrendingPanel = ({ period }: { period: TrendingPeriod }) => {
+  const { t } = useTranslation();
   const { data, isLoading } = useTrendingResources({ period, top: 5 });
 
   return (
-    <RailPanel kicker='Right now' title='Trending'>
+    <RailPanel kicker={t('social.rail.trendingKicker')} title={t('social.rail.trendingTitle')}>
       <div className='px-2 pb-3'>
         {isLoading &&
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className='flex gap-3 px-2.5 py-2.5 animate-pulse'>
-              <div className='w-5 h-4 rounded bg-[var(--pl-bg-hover)] shrink-0' />
+            <div key={i} className='flex gap-3 px-2.5 py-2.5'>
+              <Skeleton className='w-5 h-4 shrink-0' />
               <div className='flex-1 flex flex-col gap-1.5'>
-                <div className='h-3 w-4/5 rounded bg-[var(--pl-bg-hover)]' />
-                <div className='h-2.5 w-2/3 rounded bg-[var(--pl-bg-hover)]' />
+                <Skeleton className='h-3 w-4/5' />
+                <Skeleton className='h-2.5 w-2/3' />
               </div>
             </div>
           ))}
@@ -135,9 +126,10 @@ const TrendingPanel = ({ period }: { period: TrendingPeriod }) => {
             const m = TYPE_META[item.type];
             const TypeIcon = m.icon;
             return (
-              <button
+              <Button
                 key={item.id}
-                className='w-full flex gap-3 px-2.5 py-2.5 rounded-[8px] hover:bg-[var(--pl-bg-hover)] transition-colors text-left items-start'
+                variant='ghost'
+                className='w-full flex gap-3 px-2.5 py-2.5 rounded-[8px] h-auto text-left items-start justify-start'
               >
                 <span
                   style={{
@@ -157,7 +149,7 @@ const TrendingPanel = ({ period }: { period: TrendingPeriod }) => {
                     className='flex items-center gap-1.5 mt-1 text-[10.5px] text-[var(--pl-text-faint)]'
                   >
                     <TypeIcon size={10} style={{ color: m.color }} />
-                    <span style={{ color: m.color }}>{m.label}</span>
+                    <span style={{ color: m.color }}>{t(m.labelKey)}</span>
                     <span>·</span>
                     <span>{item.ownerName}</span>
                   </div>
@@ -179,12 +171,12 @@ const TrendingPanel = ({ period }: { period: TrendingPeriod }) => {
                     </span>
                   </div>
                 </div>
-              </button>
+              </Button>
             );
           })}
         {!isLoading && (data ?? []).length === 0 && (
           <p className='px-2.5 py-4 text-[12px] text-[var(--pl-text-faint)] text-center'>
-            No trending resources yet.
+            {t('social.rail.noTrending')}
           </p>
         )}
       </div>
@@ -195,19 +187,20 @@ const TrendingPanel = ({ period }: { period: TrendingPeriod }) => {
 // ─── TopCreatorsPanel ─────────────────────────────────────────────────────────
 
 const TopCreatorsPanel = ({ period }: { period: TrendingPeriod }) => {
+  const { t } = useTranslation();
   const { data, isLoading } = useTrendingCreators({ period, top: 5 });
 
   return (
-    <RailPanel kicker='This period' title='Top creators'>
+    <RailPanel kicker={t('social.rail.creatorsKicker')} title={t('social.rail.creatorsTitle')}>
       <div className='px-2 pb-3'>
         {isLoading &&
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className='flex items-center gap-2.5 px-2.5 py-2 animate-pulse'>
-              <div className='w-4 h-3 rounded bg-[var(--pl-bg-hover)] shrink-0' />
-              <div className='w-7 h-7 rounded-full bg-[var(--pl-bg-hover)] shrink-0' />
+            <div key={i} className='flex items-center gap-2.5 px-2.5 py-2'>
+              <Skeleton className='w-4 h-3 shrink-0' />
+              <Skeleton className='w-7 h-7 rounded-full shrink-0' />
               <div className='flex-1 flex flex-col gap-1.5'>
-                <div className='h-3 w-3/4 rounded bg-[var(--pl-bg-hover)]' />
-                <div className='h-2.5 w-1/2 rounded bg-[var(--pl-bg-hover)]' />
+                <Skeleton className='h-3 w-3/4' />
+                <Skeleton className='h-2.5 w-1/2' />
               </div>
             </div>
           ))}
@@ -223,7 +216,7 @@ const TopCreatorsPanel = ({ period }: { period: TrendingPeriod }) => {
               >
                 {creator.rank <= 3 ? RANK_MEDAL[creator.rank - 1] : String(creator.rank).padStart(2, '0')}
               </span>
-              <Avatar name={creator.fullName} src={creator.avatarUrl} size={28} />
+              <UserAvatar name={creator.fullName} src={creator.avatarUrl} size={28} />
               <div className='flex-1 min-w-0 text-left'>
                 <div className='text-[12.5px] font-medium truncate text-[var(--pl-text)]'>
                   {creator.fullName}
@@ -232,15 +225,12 @@ const TopCreatorsPanel = ({ period }: { period: TrendingPeriod }) => {
                   style={{ fontFamily: 'var(--font-mono-pl)' }}
                   className='text-[10.5px] text-[var(--pl-text-faint)]'
                 >
-                  {creator.totalResources} resources
+                  {t('social.rail.resources', { count: creator.totalResources })}
                 </div>
               </div>
               {creator.newResourcesInPeriod > 0 && (
                 <span
-                  style={{
-                    fontFamily: 'var(--font-mono-pl)',
-                    color: 'var(--pl-success)',
-                  }}
+                  style={{ fontFamily: 'var(--font-mono-pl)', color: 'var(--pl-success)' }}
                   className='text-[10.5px] shrink-0'
                 >
                   +{creator.newResourcesInPeriod}
@@ -250,7 +240,7 @@ const TopCreatorsPanel = ({ period }: { period: TrendingPeriod }) => {
           ))}
         {!isLoading && (data ?? []).length === 0 && (
           <p className='px-2.5 py-4 text-[12px] text-[var(--pl-text-faint)] text-center'>
-            No creators yet.
+            {t('social.rail.noCreators')}
           </p>
         )}
       </div>
@@ -261,28 +251,31 @@ const TopCreatorsPanel = ({ period }: { period: TrendingPeriod }) => {
 // ─── TrendingTopicsPanel ──────────────────────────────────────────────────────
 
 const TrendingTopicsPanel = ({ period }: { period: TrendingPeriod }) => {
+  const { t } = useTranslation();
   const { data, isLoading } = useTrendingTopics({ period, top: 6 });
 
   return (
-    <RailPanel kicker='Explore' title='Trending topics'>
+    <RailPanel kicker={t('social.rail.topicsKicker')} title={t('social.rail.topicsTitle')}>
       <div className='px-[18px] pb-4'>
         {isLoading &&
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className='flex justify-between py-2.5 border-t border-[var(--pl-border)] first:border-t-0 animate-pulse'>
-              <div className='h-3 w-2/5 rounded bg-[var(--pl-bg-hover)]' />
-              <div className='h-3 w-1/5 rounded bg-[var(--pl-bg-hover)]' />
+            <div key={i} className={cn('flex justify-between py-2.5', i > 0 && 'border-t border-[var(--pl-border)]')}>
+              <Skeleton className='h-3 w-2/5' />
+              <Skeleton className='h-3 w-1/5' />
             </div>
           ))}
         {!isLoading &&
           (data ?? []).map((topic, i) => (
-            <button
+            <Button
               key={topic.topic}
-              className={`flex items-center justify-between py-2.5 w-full text-left hover:opacity-80 transition-opacity ${i > 0 ? 'border-t border-[var(--pl-border)]' : ''}`}
+              variant='ghost'
+              className={cn(
+                'flex items-center justify-between py-2.5 w-full h-auto rounded-none text-left hover:opacity-80 hover:bg-transparent',
+                i > 0 && 'border-t border-[var(--pl-border)]',
+              )}
             >
               <div className='flex items-baseline gap-2'>
-                <span className='text-[13.5px] text-[var(--pl-text)]'>
-                  {topic.topic}
-                </span>
+                <span className='text-[13.5px] text-[var(--pl-text)]'>{topic.topic}</span>
                 <span
                   style={{ fontFamily: 'var(--font-mono-pl)' }}
                   className='text-[10.5px] text-[var(--pl-text-faint)]'
@@ -292,20 +285,17 @@ const TrendingTopicsPanel = ({ period }: { period: TrendingPeriod }) => {
               </div>
               {topic.newResourcesInPeriod > 0 && (
                 <span
-                  style={{
-                    fontFamily: 'var(--font-mono-pl)',
-                    color: 'var(--pl-success)',
-                  }}
+                  style={{ fontFamily: 'var(--font-mono-pl)', color: 'var(--pl-success)' }}
                   className='text-[10.5px]'
                 >
                   +{topic.newResourcesInPeriod}
                 </span>
               )}
-            </button>
+            </Button>
           ))}
         {!isLoading && (data ?? []).length === 0 && (
           <p className='py-4 text-[12px] text-[var(--pl-text-faint)] text-center'>
-            No topics yet.
+            {t('social.rail.noTopics')}
           </p>
         )}
       </div>
@@ -316,34 +306,38 @@ const TrendingTopicsPanel = ({ period }: { period: TrendingPeriod }) => {
 // ─── RailSidebar ──────────────────────────────────────────────────────────────
 
 const RailSidebar = () => {
+  const { t } = useTranslation();
   const [period, setPeriod] = useState<TrendingPeriod>('D7');
+
+  const PERIOD_TABS: { id: TrendingPeriod; label: string }[] = [
+    { id: 'H24', label: '24h' },
+    { id: 'D7', label: '7d' },
+    { id: 'D30', label: '30d' },
+    { id: 'ALL_TIME', label: t('social.rail.periodAll') },
+  ];
 
   return (
     <aside className='hidden lg:flex flex-col gap-4 sticky top-6'>
       {/* Period switcher */}
       <div className='flex gap-1'>
         {PERIOD_TABS.map((tab) => (
-          <button
+          <Button
             key={tab.id}
+            variant='ghost'
             onClick={() => setPeriod(tab.id)}
-            className='flex-1 py-1 rounded-full text-[11.5px] transition-all'
-            style={
-              period === tab.id
-                ? {
-                    background:
-                      'oklch(var(--pl-accent-l) var(--pl-accent-c) var(--pl-accent-h) / 0.12)',
-                    color: 'var(--pl-accent)',
-                    fontWeight: 500,
-                    fontFamily: 'var(--font-mono-pl)',
-                  }
-                : {
-                    color: 'var(--pl-text-faint)',
-                    fontFamily: 'var(--font-mono-pl)',
-                  }
-            }
+            className={cn(
+              'flex-1 py-1 rounded-full text-[11.5px] h-auto',
+              period === tab.id ? 'text-[var(--pl-accent)] font-medium' : 'text-[var(--pl-text-faint)]',
+            )}
+            style={{
+              fontFamily: 'var(--font-mono-pl)',
+              ...(period === tab.id
+                ? { background: 'oklch(var(--pl-accent-l) var(--pl-accent-c) var(--pl-accent-h) / 0.12)' }
+                : {}),
+            }}
           >
             {tab.label}
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -351,8 +345,7 @@ const RailSidebar = () => {
       <TopCreatorsPanel period={period} />
       <TrendingTopicsPanel period={period} />
       <div className='px-4 py-3.5 rounded-[12px] border border-dashed border-[var(--pl-border)] text-[11.5px] text-[var(--pl-text-faint)] leading-relaxed'>
-        Everything here is shared by users. Forking a set keeps a link back to the
-        original author.
+        {t('social.rail.footer')}
       </div>
     </aside>
   );

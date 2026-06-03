@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import FilterBar from './components/FilterBar';
 import RailSidebar from './components/RailSidebar';
 import SectionBlock from './components/SectionBlock';
-import { SECTIONS, PAGE_SIZE } from './sectionConfig';
+import { PAGE_SIZE, SECTIONS } from './sectionConfig';
 import { DEFAULT_SECTION } from './types';
+
 import type { FilterType, SectionState, SectionType, SortType } from './types';
 
 const SocialExplorePage = () => {
@@ -104,19 +106,16 @@ const SocialExplorePage = () => {
             style={{ fontFamily: 'var(--font-mono-pl)' }}
             className='text-[10.5px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)] mb-1'
           >
-            Community · 12,840 learners sharing
+            {t('social.communityBanner')}
           </div>
           <h1
             style={{ fontFamily: 'var(--font-display)' }}
             className='text-[28px] font-medium tracking-[-0.02em] text-[var(--pl-text)] mb-1'
           >
-            {t('social.explore', 'The public library')}
+            {t('social.explore')}
           </h1>
           <p className='text-[13.5px] text-[var(--pl-text-muted)]'>
-            {t(
-              'social.exploreDesc',
-              'Notes, flashcard decks, and exams shared by learners around the world. Save, fork, remix.',
-            )}
+            {t('social.exploreDesc')}
           </p>
         </div>
       </div>

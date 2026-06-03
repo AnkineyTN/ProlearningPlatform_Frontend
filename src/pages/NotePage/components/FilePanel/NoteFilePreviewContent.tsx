@@ -1,7 +1,7 @@
 import type { ReactNode, RefObject } from 'react';
 import { AlertTriangle, ExternalLink, LoaderCircle } from 'lucide-react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 import {
   DocxViewer,

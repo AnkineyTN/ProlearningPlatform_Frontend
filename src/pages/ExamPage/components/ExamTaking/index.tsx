@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import type { Exam, ExamSubmission } from '../../types';
 import ExamTakingFooter from './ExamTakingFooter';
 import ExamTakingHeader from './ExamTakingHeader';

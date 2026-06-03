@@ -15,7 +15,7 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import { useState } from 'react';
-import { toast } from 'react-hot-toast';
+import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import LogoFG from '@/assets/logo_fg';
 import { cn } from '@/lib/utils';

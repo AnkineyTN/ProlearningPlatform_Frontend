@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { Image, Music2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {

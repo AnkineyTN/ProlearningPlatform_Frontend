@@ -11,7 +11,7 @@ import {
   ExternalLink,
   Eye,
 } from 'lucide-react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { useCompleteTopic, useStartTopic } from '@/hooks/useRoadmap';
@@ -52,7 +52,12 @@ export const TopicRow = ({
   };
 
   const handleGoToSet = () => {
-    if (topic.setId) navigate(`/sets/${topic.setId}/notes`);
+    if (!topic.setId) return;
+    if (topic.noteId) {
+      navigate(`/sets/${topic.setId}/notes/${topic.noteId}`);
+    } else {
+      navigate(`/sets/${topic.setId}/notes`);
+    }
   };
 
   const handlePeekGenerating = () => {

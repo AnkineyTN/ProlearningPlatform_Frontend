@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import NoteCard from '@/components/cards/NoteCard';
 import FlashcardCard from '@/components/cards/FlashCard';
 import ExamCard from '@/components/cards/ExamCard';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { getTimeAgo, formatDate } from '@/lib/utils';
 import { socialAPI } from '@/services/endpoints/social';
 import type { SocialItemType } from '@/services/types/social.types';
@@ -13,17 +15,17 @@ import type { SectionType, SectionState, SortType } from '../types';
 // ─── SkeletonCard ──────────────────────────────────────────────────────────────
 
 export const SkeletonCard = () => (
-  <div className='bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[14px] p-[18px] flex flex-col gap-3 animate-pulse'>
+  <div className='bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[14px] p-[18px] flex flex-col gap-3'>
     <div className='flex justify-between'>
-      <div className='w-9 h-9 rounded-[9px] bg-[var(--pl-bg-hover)]' />
-      <div className='w-7 h-7 rounded-[6px] bg-[var(--pl-bg-hover)]' />
+      <Skeleton className='w-9 h-9 rounded-[9px]' />
+      <Skeleton className='w-7 h-7 rounded-[6px]' />
     </div>
-    <div className='h-4 w-3/4 rounded-md bg-[var(--pl-bg-hover)]' />
-    <div className='h-3 w-full rounded-md bg-[var(--pl-bg-hover)]' />
-    <div className='h-3 w-5/6 rounded-md bg-[var(--pl-bg-hover)]' />
+    <Skeleton className='h-4 w-3/4' />
+    <Skeleton className='h-3 w-full' />
+    <Skeleton className='h-3 w-5/6' />
     <div className='mt-auto pt-3 border-t border-[var(--pl-border)] flex justify-between'>
-      <div className='h-3 w-16 rounded-md bg-[var(--pl-bg-hover)]' />
-      <div className='h-3 w-12 rounded-md bg-[var(--pl-bg-hover)]' />
+      <Skeleton className='h-3 w-16' />
+      <Skeleton className='h-3 w-12' />
     </div>
   </div>
 );
@@ -49,7 +51,7 @@ const SectionBlock = ({
 }: Props) => {
   const { t } = useTranslation();
   const { items, loading, error, meta } = state;
-  const noDesc = t('list.noDescription', 'No description available');
+  const noDesc = t('list.noDescription');
 
   const trackView = (id: number) => {
     socialAPI.postViewLog(type as SocialItemType, id).catch(() => {});
@@ -95,11 +97,11 @@ const SectionBlock = ({
       {/* Content */}
       {error ? (
         <div className='py-8 text-center text-[13px] text-[oklch(0.65_0.2_25)]'>
-          Failed to load. Please try again.
+          {t('social.failedToLoad')}
         </div>
       ) : !loading && sorted.length === 0 ? (
         <div className='py-8 text-center text-[13px] text-[var(--pl-text-faint)]'>
-          No results found.
+          {t('social.noResults')}
         </div>
       ) : (
         <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4'>
@@ -166,13 +168,15 @@ const SectionBlock = ({
       {/* Load more */}
       {meta && meta.currentPage < meta.totalPages && !error && (
         <div className='flex justify-center mt-5'>
-          <button
+          <Button
+            variant='outline'
+            size='sm'
             onClick={onLoadMore}
             disabled={loading}
-            className='flex items-center gap-2 px-5 py-2 border border-[var(--pl-border)] rounded-full text-[12.5px] text-[var(--pl-text-muted)] hover:border-[var(--pl-accent-border)] hover:text-[var(--pl-text)] transition-all disabled:opacity-50'
+            className='rounded-full gap-2 text-[12.5px] text-[var(--pl-text-muted)] hover:border-[var(--pl-accent-border)] hover:text-[var(--pl-text)]'
           >
-            Load more <ChevronDown size={12} />
-          </button>
+            {t('social.loadMore')} <ChevronDown size={12} />
+          </Button>
         </div>
       )}
     </section>

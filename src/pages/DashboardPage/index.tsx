@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
+import { toast } from 'sonner';
 import { useSetData, useUpdateSet } from '@/hooks/useSets';
 import { useGlobalSearch } from '@/hooks/useGlobalSearch';
 import { useStreak, useActivitySummary } from '@/hooks/useActivityLog';

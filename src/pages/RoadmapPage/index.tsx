@@ -10,8 +10,9 @@ import {
   Layers,
   Loader2,
   Clock,
+  ExternalLink,
 } from 'lucide-react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import { useRoadmaps, useDeleteRoadmap } from '@/hooks/useRoadmap';
 import { useAuth } from '@/hooks/useAuth';
@@ -116,6 +117,7 @@ const RoadmapCard = ({
   onAskDelete: () => void;
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const isDone = roadmap.status === 'COMPLETED';
   const totalChapters = roadmap.chapters?.length ?? 0;
   return (
@@ -194,12 +196,28 @@ const RoadmapCard = ({
           <span>
             {t('roadmap.card.created', { time: getTimeAgo(roadmap.createdAt) })}
           </span>
-          <span>
-            {t('roadmap.card.done', {
-              completed: roadmap.completedTopics,
-              total: roadmap.totalTopics,
-            })}
-          </span>
+          <div className='flex items-center gap-3'>
+            {roadmap.setId && (
+              <button
+                type='button'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/sets/${roadmap.setId}/notes`);
+                }}
+                className='flex items-center gap-1 hover:text-[var(--pl-accent-strong)] transition-colors'
+                title={t('roadmap.card.goToSet')}
+              >
+                <ExternalLink size={10} />
+                {t('roadmap.card.goToSet')}
+              </button>
+            )}
+            <span>
+              {t('roadmap.card.done', {
+                completed: roadmap.completedTopics,
+                total: roadmap.totalTopics,
+              })}
+            </span>
+          </div>
         </div>
       </div>
     </div>

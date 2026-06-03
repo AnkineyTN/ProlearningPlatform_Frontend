@@ -15,7 +15,7 @@ import {
   CircleDot,
 } from 'lucide-react';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import LogoFG from '@/assets/logo_fg';
 import { cn } from '@/lib/utils';
@@ -61,10 +61,7 @@ const SignUp = () => {
         password: data.password,
         role: 'ROLE_USER',
       });
-      toast.success('🎉 ' + t('signup.success'), {
-        position: 'top-right',
-        autoClose: 2000,
-      });
+      toast.success('🎉 ' + t('signup.success'));
       await login.mutateAsync({
         email: data.email,
         password: data.password,

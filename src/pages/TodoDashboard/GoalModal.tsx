@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { X } from 'lucide-react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -64,7 +64,7 @@ const GoalModal = ({
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
   const handleSubmit = () => {
-    if (!title.trim()) return toast.warn(t('todo.toast.goalNameRequired'));
+    if (!title.trim()) return toast.warning(t('todo.toast.goalNameRequired'));
     const payload = {
       title,
       description: description || undefined,

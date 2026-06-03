@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sparkles, Loader2 } from 'lucide-react';
+import { Sparkles, Loader2, Plus, X, Link } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import type {
@@ -19,10 +20,14 @@ export const GoalForm = (props: {
   setLevel: (v: RoadmapLevel) => void;
   language: RoadmapLanguage;
   setLanguage: (v: RoadmapLanguage) => void;
+  referenceLinks: string[];
+  setReferenceLinks: (v: string[]) => void;
   onSubmit: () => void;
   loading: boolean;
 }) => {
   const { t } = useTranslation();
+  const [linkInput, setLinkInput] = useState('');
+
   const levelOptions = LEVEL_VALUES.map((v) => ({
     value: v,
     label: t(`roadmap.level.${v}`),
@@ -31,6 +36,17 @@ export const GoalForm = (props: {
     value: v,
     label: t(`roadmap.language.${v}`),
   }));
+
+  const addLink = () => {
+    const trimmed = linkInput.trim();
+    if (!trimmed) return;
+    props.setReferenceLinks([...props.referenceLinks, trimmed]);
+    setLinkInput('');
+  };
+
+  const removeLink = (idx: number) => {
+    props.setReferenceLinks(props.referenceLinks.filter((_, i) => i !== idx));
+  };
 
   return (
     <div className='max-w-[760px] pb-16'>
@@ -68,6 +84,59 @@ export const GoalForm = (props: {
             value={props.language}
             onChange={props.setLanguage}
           />
+        </Field>
+      </div>
+
+      <div className='mt-4'>
+        <Field label={t('roadmap.create.referenceLinks')}>
+          <p className='text-[11.5px] mb-2 text-[var(--pl-text-faint)]'>
+            {t('roadmap.create.referenceLinksHint')}
+          </p>
+
+          {props.referenceLinks.length > 0 && (
+            <ul className='mb-2 flex flex-col gap-1.5'>
+              {props.referenceLinks.map((link, idx) => (
+                <li
+                  key={idx}
+                  className='flex items-center gap-2 px-3 py-2 rounded-[8px] bg-[var(--pl-bg-elev)] border border-[var(--pl-border)]'
+                >
+                  <Link size={11} className='shrink-0 text-[var(--pl-text-faint)]' />
+                  <span className='flex-1 text-[12px] truncate text-[var(--pl-text-muted)]'>
+                    {link}
+                  </span>
+                  <button
+                    type='button'
+                    onClick={() => removeLink(idx)}
+                    className='shrink-0 p-0.5 rounded hover:bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)] hover:text-[var(--pl-text)]'
+                    title={t('roadmap.create.removeReferenceLink')}
+                  >
+                    <X size={12} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <div className='flex gap-2'>
+            <input
+              type='url'
+              value={linkInput}
+              onChange={(e) => setLinkInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addLink())}
+              placeholder={t('roadmap.create.referenceLinkPlaceholder')}
+              className='flex-1 px-3 py-2 rounded-[8px] text-[12.5px] outline-none bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] text-[var(--pl-text)]'
+            />
+            <Button
+              type='button'
+              variant='outline'
+              onClick={addLink}
+              disabled={!linkInput.trim()}
+              className='gap-1.5 px-3 py-2 h-auto text-[12.5px] rounded-[8px] border-[var(--pl-border)] text-[var(--pl-text-muted)] hover:text-[var(--pl-text)]'
+            >
+              <Plus size={12} />
+              {t('roadmap.create.addReferenceLink')}
+            </Button>
+          </div>
         </Field>
       </div>
 

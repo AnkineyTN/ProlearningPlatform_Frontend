@@ -113,7 +113,7 @@ const Pomodoro = () => {
 
       {/* Dim overlay over background (only when a space is set) */}
       {selectedSpace && (
-        <div className='absolute inset-0 z-[1] bg-[var(--pl-bg)] pointer-events-none' />
+        <div className='absolute inset-0 z-[1] bg-black/40 pointer-events-none' />
       )}
 
       {/* Top toolbar */}

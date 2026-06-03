@@ -1,13 +1,14 @@
-import {
-  BookOpen,
-  Brain,
-  ClipboardList,
-  ChevronDown,
-  Search,
-  TrendingUp,
-  X,
-} from 'lucide-react';
+import { BookOpen, Brain, ClipboardList, Search, TrendingUp, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 import type { FilterType, SortType } from '../types';
 
 type Props = {
@@ -25,12 +26,6 @@ type Props = {
   };
 };
 
-const SORTS: { id: SortType; label: string }[] = [
-  { id: 'trending', label: 'Trending' },
-  { id: 'recent', label: 'Recent' },
-  { id: 'liked', label: 'Most liked' },
-];
-
 const FilterBar = ({
   filter,
   setFilter,
@@ -43,6 +38,12 @@ const FilterBar = ({
 }: Props) => {
   const { t } = useTranslation();
 
+  const SORTS: { id: SortType; label: string }[] = [
+    { id: 'trending', label: t('social.sortTrending') },
+    { id: 'recent', label: t('social.sortRecent') },
+    { id: 'liked', label: t('social.sortLiked') },
+  ];
+
   const allCount =
     counts.NOTE !== null && counts.FLASHCARD !== null && counts.EXAM !== null
       ? counts.NOTE + counts.FLASHCARD + counts.EXAM
@@ -54,25 +55,10 @@ const FilterBar = ({
     count: number | null;
     icon: React.ElementType;
   }[] = [
-    { id: 'all', label: 'All', count: allCount, icon: TrendingUp },
-    {
-      id: 'NOTE',
-      label: t('social.notes', 'Notes'),
-      count: counts.NOTE,
-      icon: BookOpen,
-    },
-    {
-      id: 'FLASHCARD',
-      label: t('social.flashcards', 'Flashcards'),
-      count: counts.FLASHCARD,
-      icon: Brain,
-    },
-    {
-      id: 'EXAM',
-      label: t('social.exams', 'Exams'),
-      count: counts.EXAM,
-      icon: ClipboardList,
-    },
+    { id: 'all', label: t('social.filterAll'), count: allCount, icon: TrendingUp },
+    { id: 'NOTE', label: t('social.notes'), count: counts.NOTE, icon: BookOpen },
+    { id: 'FLASHCARD', label: t('social.flashcards'), count: counts.FLASHCARD, icon: Brain },
+    { id: 'EXAM', label: t('social.exams'), count: counts.EXAM, icon: ClipboardList },
   ];
 
   const handleKey = (e: React.KeyboardEvent) => {
@@ -87,19 +73,18 @@ const FilterBar = ({
           {tabs.map((tab) => {
             const active = filter === tab.id;
             return (
-              <button
+              <Button
                 key={tab.id}
+                variant='ghost'
                 onClick={() => setFilter(tab.id)}
-                className='flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] transition-all'
+                className={cn(
+                  'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] h-auto',
+                  active ? 'text-[var(--pl-accent)] font-medium' : 'text-[var(--pl-text-muted)]',
+                )}
                 style={
                   active
-                    ? {
-                        background:
-                          'oklch(var(--pl-accent-l) var(--pl-accent-c) var(--pl-accent-h) / 0.12)',
-                        color: 'var(--pl-accent)',
-                        fontWeight: 500,
-                      }
-                    : { color: 'var(--pl-text-muted)' }
+                    ? { background: 'oklch(var(--pl-accent-l) var(--pl-accent-c) var(--pl-accent-h) / 0.12)' }
+                    : {}
                 }
               >
                 {tab.label}
@@ -111,7 +96,7 @@ const FilterBar = ({
                     {tab.count}
                   </span>
                 )}
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -119,47 +104,41 @@ const FilterBar = ({
         {/* Search + sort */}
         <div className='flex items-center gap-2'>
           <div className='flex items-center gap-2 px-3 py-1.5 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-full min-w-[200px] focus-within:border-[var(--pl-accent-border)] transition-colors'>
-            <Search
-              size={13}
-              className='text-[var(--pl-text-faint)] shrink-0'
-            />
+            <Search size={13} className='text-[var(--pl-text-faint)] shrink-0' />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKey}
-              placeholder='Search the community'
+              placeholder={t('social.searchPlaceholder')}
               className='flex-1 text-[12.5px] bg-transparent text-[var(--pl-text)] placeholder:text-[var(--pl-text-faint)] outline-none'
             />
             {query && (
-              <button
-                onClick={() => {
-                  setQuery('');
-                  onSearch();
-                }}
-                className='text-[var(--pl-text-faint)] hover:text-[var(--pl-text)] transition-colors'
+              <Button
+                variant='ghost'
+                size='icon'
+                onClick={() => { setQuery(''); onSearch(); }}
+                className='size-4 text-[var(--pl-text-faint)] hover:text-[var(--pl-text)] hover:bg-transparent'
               >
                 <X size={12} />
-              </button>
+              </Button>
             )}
           </div>
 
-          <div className='flex items-center gap-1.5 px-3 py-1.5 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-full text-[12.5px] text-[var(--pl-text)]'>
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as SortType)}
-              className='bg-transparent text-[12.5px] text-[var(--pl-text)] outline-none appearance-none cursor-pointer pr-4'
+          <Select value={sort} onValueChange={(v) => setSort(v as SortType)}>
+            <SelectTrigger
+              size='sm'
+              className='rounded-full border-[var(--pl-border)] bg-[var(--pl-bg-elev)] text-[12.5px] text-[var(--pl-text)] h-auto py-1.5'
             >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
               {SORTS.map((s) => (
-                <option key={s.id} value={s.id}>
+                <SelectItem key={s.id} value={s.id}>
                   {s.label}
-                </option>
+                </SelectItem>
               ))}
-            </select>
-            <ChevronDown
-              size={11}
-              className='text-[var(--pl-text-faint)] -ml-4 pointer-events-none shrink-0'
-            />
-          </div>
+            </SelectContent>
+          </Select>
         </div>
       </div>
     </div>

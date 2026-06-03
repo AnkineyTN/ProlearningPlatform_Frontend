@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import SetCard from '@/components/cards/SetCard';
 import { type Set } from '@/components/cards/SetCard';

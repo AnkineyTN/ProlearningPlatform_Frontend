@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { todoAPI } from '@/services/endpoints/todo';
 import type { Goal, ResourceRef, Todo } from '@/services/types/todo.types';

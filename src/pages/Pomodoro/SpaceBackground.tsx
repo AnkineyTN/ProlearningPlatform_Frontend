@@ -17,6 +17,7 @@ const SpaceBackground = ({ space }: Props) => {
         muted
         loop
         playsInline
+        crossOrigin='anonymous'
       />
     );
   }

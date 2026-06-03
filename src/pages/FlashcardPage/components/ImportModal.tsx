@@ -1,6 +1,6 @@
 import { X, ArrowLeft, Upload } from 'lucide-react';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import {

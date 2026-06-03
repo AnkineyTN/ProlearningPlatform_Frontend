@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -38,6 +38,7 @@ const CreateRoadmapPage = () => {
   const [language, setLanguage] = useState<RoadmapLanguage>(
     i18n.language?.startsWith('en') ? 'English' : 'Vietnamese',
   );
+  const [referenceLinks, setReferenceLinks] = useState<string[]>([]);
 
   const [draft, setDraft] = useState<PreviewRoadmap | null>(null);
 
@@ -51,6 +52,7 @@ const CreateRoadmapPage = () => {
         goal: goal.trim(),
         level,
         language,
+        referenceLinks: referenceLinks.filter(Boolean),
       });
       setDraft(result);
       setStep('preview');
@@ -93,6 +95,8 @@ const CreateRoadmapPage = () => {
             setLevel={setLevel}
             language={language}
             setLanguage={setLanguage}
+            referenceLinks={referenceLinks}
+            setReferenceLinks={setReferenceLinks}
             onSubmit={handlePreview}
             loading={previewMutation.isPending}
           />

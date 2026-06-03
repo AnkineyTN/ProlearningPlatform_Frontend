@@ -1,9 +1,8 @@
-import 'react-toastify/dist/ReactToastify.css';
 import './i18n/config';
 
 import { useEffect } from 'react';
 import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
+import { Toaster } from 'sonner';
 
 import PomodoroFloatingWidget from '@/components/PomodoroFloatingWidget';
 import { ColorThemeProvider } from '@/components/theme/color-theme-provider.tsx';
@@ -75,7 +74,7 @@ function App() {
 
   return (
     <>
-      <ToastContainer theme={theme} />
+      <Toaster theme={theme as 'light' | 'dark' | 'system'} richColors />
       <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
         <ColorThemeProvider>
           <PomodoroProvider>

@@ -575,7 +575,8 @@
       "progress": "Progress",
       "created": "Created {{time}}",
       "done": "{{completed}}/{{total}} done",
-      "deleteTitle": "Delete roadmap?"
+      "deleteTitle": "Delete roadmap?",
+      "goToSet": "Go to Set"
     },
     "list": {
       "loading": "Loading…",
@@ -602,6 +603,11 @@
       "goalPlaceholder": "e.g. Master React (hooks, context, performance, testing) to build production-ready SPAs in 1 month…",
       "currentLevel": "Current level",
       "contentLanguage": "Content language",
+      "referenceLinks": "Reference links",
+      "referenceLinksHint": "Optional — add URLs of articles, docs, or resources to guide AI-generated content.",
+      "addReferenceLink": "Add",
+      "referenceLinkPlaceholder": "https://...",
+      "removeReferenceLink": "Remove",
       "generate": "Generate preview with AI",
       "generating": "AI is drafting your path…",
       "missingGoal": "Please enter a learning goal",
@@ -1586,5 +1592,38 @@
       "description": "We couldn't verify your payment. Please contact support if you were charged."
     },
     "goHome": "Go to Dashboard"
+  },
+  "social": {
+    "explore": "Explore",
+    "exploreDesc": "Notes, flashcard decks, and exams shared by learners around the world. Save, fork, remix.",
+    "communityBanner": "Community · 12,840 learners sharing",
+    "notes": "Notes",
+    "flashcards": "Flashcards",
+    "exams": "Exams",
+    "filterAll": "All",
+    "searchPlaceholder": "Search the community",
+    "sortTrending": "Trending",
+    "sortRecent": "Recent",
+    "sortLiked": "Most liked",
+    "failedToLoad": "Failed to load. Please try again.",
+    "noResults": "No results found.",
+    "loadMore": "Load more",
+    "rail": {
+      "trendingKicker": "Right now",
+      "trendingTitle": "Trending",
+      "creatorsKicker": "This period",
+      "creatorsTitle": "Top creators",
+      "topicsKicker": "Explore",
+      "topicsTitle": "Trending topics",
+      "noTrending": "No trending resources yet.",
+      "noCreators": "No creators yet.",
+      "noTopics": "No topics yet.",
+      "resources": "{{count}} resources",
+      "footer": "Everything here is shared by users. Forking a set keeps a link back to the original author.",
+      "periodAll": "All",
+      "typNote": "Note",
+      "typFlashcard": "Flashcard",
+      "typExam": "Exam"
+    }
   }
 }

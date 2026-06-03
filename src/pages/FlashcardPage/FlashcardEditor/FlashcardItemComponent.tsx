@@ -1,6 +1,6 @@
 import { GripVertical, ImagePlus, Loader2, Trash2, X } from 'lucide-react';
 import { useRef } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';

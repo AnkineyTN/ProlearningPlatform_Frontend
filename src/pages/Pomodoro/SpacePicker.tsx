@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { Heart, RotateCcw, Trash2, Upload, X } from 'lucide-react';
 import {
   Dialog,
@@ -193,6 +193,7 @@ const SpacePicker = ({
                   )}
                   onClick={() => {
                     onSelect(s);
+                    onClose();
                   }}
                 >
                   <div className='aspect-video bg-black'>
@@ -203,6 +204,7 @@ const SpacePicker = ({
                         muted
                         playsInline
                         preload='metadata'
+                        crossOrigin='anonymous'
                       />
                     ) : (
                       <img

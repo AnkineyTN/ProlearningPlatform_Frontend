@@ -22,6 +22,7 @@ export type RoadmapTopic = {
   completed: boolean;
   contentStatus: TopicContentStatus;
   setId: number | null;
+  noteId: number | null;
 };
 
 export type RoadmapChapter = {
@@ -47,6 +48,7 @@ export type Roadmap = {
   completedTopics: number;
   progressPercent: number;
   createdAt: string;
+  setId: number | null;
   chapters: RoadmapChapter[];
 };
 
@@ -79,6 +81,7 @@ export type PreviewRoadmapPayload = {
   goal: string;
   level: RoadmapLevel;
   language: RoadmapLanguage;
+  referenceLinks?: string[];
 };
 
 export type PreviewRoadmapResponse = ApiEnvelope<PreviewRoadmap>;
