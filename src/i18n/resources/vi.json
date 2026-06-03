@@ -1938,5 +1938,61 @@
       "title": "Nhắc nhở cập nhật mục tiêu",
       "message": "Đã hơn 1 tuần bạn không cập nhật \"{{goalTitle}}\". Tiến độ đến đâu rồi?"
     }
+  },
+  "upgrade": {
+    "back": "Quay lại",
+    "badge": "Trọn Đời",
+    "title": "Nâng cấp Pro",
+    "subtitle": "Mở khóa toàn bộ tính năng, mãi mãi.",
+    "oneTime": "Thanh toán một lần",
+    "cta": "Nâng cấp ngay",
+    "loading": "Đang chuyển hướng…",
+    "secureNote": "Thanh toán bảo mật qua PayOS. Bạn sẽ được chuyển đến cổng thanh toán.",
+    "features": {
+      "aiUnlimited": "Tạo flashcard bằng AI không giới hạn",
+      "mockTest": "Mock test thông minh & chấm điểm tự động",
+      "analysis": "Phân tích đáp án chi tiết",
+      "roadmap": "Tạo & theo dõi AI Roadmap",
+      "noAds": "Trải nghiệm không quảng cáo"
+    },
+    "alreadyPro": {
+      "title": "Bạn đã là thành viên Pro",
+      "description": "Bạn có quyền truy cập trọn đời vào tất cả tính năng Pro.",
+      "cta": "Về trang chủ"
+    },
+    "error": {
+      "createFailed": "Không thể tạo thanh toán. Vui lòng thử lại."
+    }
+  },
+  "payment": {
+    "verifying": {
+      "title": "Đang xác thực thanh toán…",
+      "description": "Vui lòng chờ trong khi chúng tôi xác nhận thanh toán của bạn."
+    },
+    "paid": {
+      "title": "Chào mừng đến với Pro!",
+      "description": "Tài khoản của bạn đã được nâng cấp. Tận hưởng tất cả tính năng Pro.",
+      "cta": "Bắt đầu học ngay"
+    },
+    "pending": {
+      "title": "Đang xử lý thanh toán",
+      "description": "Chúng tôi chưa nhận được xác nhận. Vui lòng chờ và kiểm tra lại.",
+      "retry": "Kiểm tra lại"
+    },
+    "failed": {
+      "title": "Thanh toán không thành công",
+      "description": "Thanh toán của bạn đã bị hủy hoặc hết hạn. Bạn có thể thử lại.",
+      "retry": "Thử lại"
+    },
+    "cancel": {
+      "title": "Thanh toán đã bị hủy",
+      "description": "Bạn đã hủy thanh toán. Bạn có thể thử lại bất kỳ lúc nào.",
+      "retry": "Thử lại"
+    },
+    "error": {
+      "title": "Đã xảy ra lỗi",
+      "description": "Chúng tôi không thể xác minh thanh toán. Vui lòng liên hệ hỗ trợ nếu bạn đã bị trừ tiền."
+    },
+    "goHome": "Về trang chủ"
   }
 }

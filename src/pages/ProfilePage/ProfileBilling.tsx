@@ -1,5 +1,6 @@
 import { Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import type { User } from '@/hooks/useAuth';
 import ProfileSection from './ProfileSection';
@@ -10,6 +11,7 @@ interface ProfileBillingProps {
 
 export default function ProfileBilling({ user }: ProfileBillingProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const billingFeatures = [
     t('profile.billing.features.unlimited'),
@@ -47,7 +49,10 @@ export default function ProfileBilling({ user }: ProfileBillingProps) {
           </div>
         </div>
         {isFree && (
-          <Button className='rounded-full text-[12.5px] font-medium'>
+          <Button
+            onClick={() => navigate('/upgrade')}
+            className='rounded-full text-[12.5px] font-medium'
+          >
             {t('profile.billing.upgrade')}
           </Button>
         )}

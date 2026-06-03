@@ -23,7 +23,7 @@ const ProGateOverlay = () => {
           {t('roadmap.proGate.description')}
         </p>
         <Button
-          onClick={() => navigate('/profile')}
+          onClick={() => navigate('/upgrade')}
           className='gap-2 px-6 py-3 rounded-full text-[13px] font-medium bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] hover:bg-[var(--pl-accent-strong)] h-auto'
         >
           <Crown size={13} />

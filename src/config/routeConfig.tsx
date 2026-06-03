@@ -37,6 +37,9 @@ import RoadmapDetailPage from '@/pages/RoadmapPage/RoadmapDetailPage';
 import SharedResourcesPage from '@/pages/SharedResourcesPage';
 import SocialPage from '@/pages/SocialPage';
 import CalendarCallbackPage from '@/pages/CalendarCallbackPage';
+import UpgradePage from '@/pages/UpgradePage';
+import PaymentSuccessPage from '@/pages/PaymentSuccessPage';
+import PaymentCancelPage from '@/pages/PaymentCancelPage';
 import type { RouteObject } from 'react-router-dom';
 
 function LandingPageWrapper() {
@@ -325,6 +328,18 @@ export const routeConfig: RouteObject[] = [
       {
         path: 'settings/calendar',
         element: <CalendarCallbackPage />,
+      },
+      {
+        path: 'upgrade',
+        element: <UpgradePage />,
+      },
+      {
+        path: 'payment/success',
+        element: <PaymentSuccessPage />,
+      },
+      {
+        path: 'payment/cancel',
+        element: <PaymentCancelPage />,
       },
     ],
   },

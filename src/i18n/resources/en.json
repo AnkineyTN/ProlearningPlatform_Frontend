@@ -1530,5 +1530,61 @@
       "title": "Goal Check-in",
       "message": "It's been over a week since you updated \"{{goalTitle}}\". How's progress going?"
     }
+  },
+  "upgrade": {
+    "back": "Back",
+    "badge": "Lifetime",
+    "title": "Upgrade to Pro",
+    "subtitle": "Unlock all features, forever.",
+    "oneTime": "One-time payment",
+    "cta": "Upgrade Now",
+    "loading": "Redirecting…",
+    "secureNote": "Secure payment via PayOS. You will be redirected to the payment gateway.",
+    "features": {
+      "aiUnlimited": "Unlimited AI flashcard generation",
+      "mockTest": "Smart mock tests & auto scoring",
+      "analysis": "Detailed answer analysis",
+      "roadmap": "AI Roadmap generation & tracking",
+      "noAds": "Ad-free experience"
+    },
+    "alreadyPro": {
+      "title": "You're already on Pro",
+      "description": "You have lifetime access to all Pro features.",
+      "cta": "Go to Dashboard"
+    },
+    "error": {
+      "createFailed": "Failed to create payment. Please try again."
+    }
+  },
+  "payment": {
+    "verifying": {
+      "title": "Verifying payment…",
+      "description": "Please wait while we confirm your payment."
+    },
+    "paid": {
+      "title": "Welcome to Pro!",
+      "description": "Your account has been upgraded. Enjoy all Pro features.",
+      "cta": "Start Learning"
+    },
+    "pending": {
+      "title": "Payment processing",
+      "description": "We haven't received confirmation yet. Please wait a moment and check again.",
+      "retry": "Check again"
+    },
+    "failed": {
+      "title": "Payment not completed",
+      "description": "Your payment was cancelled or expired. You can try again.",
+      "retry": "Try again"
+    },
+    "cancel": {
+      "title": "Payment cancelled",
+      "description": "You cancelled the payment. You can retry anytime.",
+      "retry": "Try again"
+    },
+    "error": {
+      "title": "Something went wrong",
+      "description": "We couldn't verify your payment. Please contact support if you were charged."
+    },
+    "goHome": "Go to Dashboard"
   }
 }
