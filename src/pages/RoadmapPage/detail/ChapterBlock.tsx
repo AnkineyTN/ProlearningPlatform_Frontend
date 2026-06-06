@@ -15,10 +15,12 @@ import { TopicRow } from './TopicRow';
 export const ChapterBlock = ({
   chapter,
   roadmapId,
+  roadmapSetId,
   index,
 }: {
   chapter: RoadmapChapter;
   roadmapId: number;
+  roadmapSetId: number | null;
   index: number;
 }) => {
   const { t } = useTranslation();
@@ -101,6 +103,7 @@ export const ChapterBlock = ({
                 key={topic.id}
                 topic={topic}
                 roadmapId={roadmapId}
+                roadmapSetId={roadmapSetId}
                 disabled={locked}
               />
             ))}

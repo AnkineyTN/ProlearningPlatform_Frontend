@@ -25,10 +25,12 @@ import {
 export const TopicRow = ({
   topic,
   roadmapId,
+  roadmapSetId,
   disabled,
 }: {
   topic: RoadmapTopic;
   roadmapId: number;
+  roadmapSetId: number | null;
   disabled: boolean;
 }) => {
   const { t } = useTranslation();
@@ -51,19 +53,21 @@ export const TopicRow = ({
     }
   };
 
+  const effectiveSetId = topic.setId ?? roadmapSetId;
+
   const handleGoToSet = () => {
-    if (!topic.setId) return;
+    if (!effectiveSetId) return;
     if (topic.noteId) {
-      navigate(`/sets/${topic.setId}/notes/${topic.noteId}`);
+      navigate(`/sets/${effectiveSetId}/notes/${topic.noteId}`);
     } else {
-      navigate(`/sets/${topic.setId}/notes`);
+      navigate(`/sets/${effectiveSetId}/notes`);
     }
   };
 
   const handlePeekGenerating = () => {
-    if (!topic.setId) return;
+    if (!effectiveSetId) return;
     toast.info(t('roadmap.detail.toast.peekGenerating'));
-    navigate(`/sets/${topic.setId}/notes`);
+    navigate(`/sets/${effectiveSetId}/notes`);
   };
 
   const handleComplete = async () => {
@@ -131,6 +135,7 @@ export const TopicRow = ({
 
       <TopicAction
         topic={topic}
+        effectiveSetId={effectiveSetId}
         disabled={disabled}
         starting={startMutation.isPending}
         onStart={handleStart}
@@ -181,6 +186,7 @@ const ContentStatusChip = ({
 
 const TopicAction = ({
   topic,
+  effectiveSetId,
   disabled,
   starting,
   onStart,
@@ -188,6 +194,7 @@ const TopicAction = ({
   onPeekGenerating,
 }: {
   topic: RoadmapTopic;
+  effectiveSetId: number | null;
   disabled: boolean;
   starting: boolean;
   onStart: () => void;
@@ -218,7 +225,7 @@ const TopicAction = ({
           <Loader2 size={11} className='animate-spin' />
           {t('roadmap.detail.actions.generating')}
         </span>
-        {topic.setId && (
+        {effectiveSetId && (
           <Button
             variant='ghost'
             onClick={onPeekGenerating}
@@ -246,7 +253,7 @@ const TopicAction = ({
   return (
     <Button
       onClick={onGoToSet}
-      disabled={!topic.setId}
+      disabled={!effectiveSetId}
       className='shrink-0 gap-1.5 px-3 py-[6px] rounded-full text-[11.5px] font-medium h-auto bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)] hover:bg-[var(--pl-accent-soft)]/80'
     >
       <PlayCircle size={11} /> {t('roadmap.detail.actions.study')}

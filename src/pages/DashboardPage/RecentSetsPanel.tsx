@@ -1,8 +1,8 @@
-import { useNavigate } from 'react-router-dom';
 import { ArrowRight, BookOpen } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
 import { type Set } from '@/components/cards/SetCard';
 import { Panel, PanelHead } from './Panel';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 type Props = {
   sets: Set[];
@@ -45,16 +45,9 @@ export function RecentSetsPanel({ sets }: Props) {
                 {s.title}
               </div>
               {s.description && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className='text-[12px] text-[var(--pl-text-muted)] mt-0.5 overflow-hidden text-ellipsis whitespace-nowrap cursor-default'>
-                      {s.description}
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent className='max-w-[280px] whitespace-normal'>
-                    {s.description}
-                  </TooltipContent>
-                </Tooltip>
+                <div className='text-[12px] text-[var(--pl-text-muted)] mt-0.5 overflow-hidden text-ellipsis whitespace-nowrap cursor-default'>
+                  {s.description}
+                </div>
               )}
             </div>
             <div className='flex gap-[14px] text-[11.5px] text-[var(--pl-text-faint)] shrink-0 tabular-nums'>

@@ -109,6 +109,7 @@ const RoadmapDetailPage = () => {
               key={chapter.id}
               chapter={chapter}
               roadmapId={roadmap.id}
+              roadmapSetId={roadmap.setId}
               index={idx}
             />
           ))}

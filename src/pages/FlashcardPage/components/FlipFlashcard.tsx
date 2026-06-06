@@ -1,23 +1,12 @@
-import {
-  Shuffle,
-  Settings,
-  ChevronRight,
-  ChevronLeft,
-  Info,
-} from 'lucide-react';
-import { useState } from 'react';
+import { ChevronLeft, ChevronRight, Info, Settings, Shuffle } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useFlashcardStudySettings } from '@/hooks/useFlashcardStudySettings';
+
+import FlashcardCard from './FlashcardCard';
+import FlashcardRecallButtons from './FlashcardRecallButtons';
+import FlashcardSettingsDialog from './FlashcardSettingsDialog';
 
 type Props = {
   isFlipped: boolean;
@@ -35,11 +24,6 @@ type Props = {
   reviewBannerMessage?: string;
 };
 
-const RECALL_BUTTONS = [
-  { label: 'Again', hint: '< 1m', correct: false, color: 'var(--pl-danger)' },
-  { label: 'Good', hint: '1d', correct: true, color: 'var(--pl-accent)' },
-] as const;
-
 const FlipFlashcard = ({
   isFlipped,
   flashcards,
@@ -55,31 +39,133 @@ const FlipFlashcard = ({
   const {
     isFrontCardTerm,
     isProgressTrackingEnabled,
+    autoFlipDelay,
     setIsFrontCardTerm,
     setIsProgressTrackingEnabled,
+    setAutoFlipDelay,
   } = useFlashcardStudySettings();
-  const [hoveredBtn, setHoveredBtn] = useState<number | null>(null);
+
+  const [dragOffsetX, setDragOffsetX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [flashColor, setFlashColor] = useState<'correct' | 'incorrect' | null>(null);
+  const dragStartRef = useRef(0);
+  const didDragRef = useRef(false);
+
+  // Stable callback refs — avoids stale closures in effects
+  const onFlipRef = useRef(onFlip);
+  const onPreviousRef = useRef(onPrevious);
+  const onNextRef = useRef(onNext);
+  const onCardAnswerRef = useRef(onCardAnswer);
+  useEffect(() => {
+    onFlipRef.current = onFlip;
+    onPreviousRef.current = onPrevious;
+    onNextRef.current = onNext;
+    onCardAnswerRef.current = onCardAnswer;
+  });
+
+  const triggerAnswer = (isCorrect: boolean) => {
+    setFlashColor(isCorrect ? 'correct' : 'incorrect');
+    setTimeout(() => setFlashColor(null), 420);
+    onCardAnswerRef.current(isCorrect);
+  };
+  const triggerAnswerRef = useRef(triggerAnswer);
+  useEffect(() => { triggerAnswerRef.current = triggerAnswer; });
+
+  // F — Auto-flip timer
+  useEffect(() => {
+    if (!autoFlipDelay || isFlipped) return;
+    const timer = setTimeout(() => onFlipRef.current(), autoFlipDelay * 1000);
+    return () => clearTimeout(timer);
+  }, [currentCardIndex, autoFlipDelay, isFlipped]);
+
+  // A — Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isSettingsOpen) return;
+      const tag = (e.target as HTMLElement).tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      switch (e.key) {
+        case ' ':
+          e.preventDefault();
+          onFlipRef.current();
+          break;
+        case '1':
+          triggerAnswerRef.current(false);
+          break;
+        case '2':
+          triggerAnswerRef.current(true);
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          onPreviousRef.current();
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          onNextRef.current();
+          break;
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isSettingsOpen]);
+
+  // B — Document-level drag tracking (handles fast mouse movement outside element)
+  useEffect(() => {
+    if (!isDragging) return;
+    const handleMove = (e: MouseEvent) => {
+      const delta = e.clientX - dragStartRef.current;
+      if (Math.abs(delta) > 5) didDragRef.current = true;
+      setDragOffsetX(delta);
+    };
+    const handleUp = (e: MouseEvent) => {
+      const delta = e.clientX - dragStartRef.current;
+      setIsDragging(false);
+      if (didDragRef.current && Math.abs(delta) > 80) {
+        setDragOffsetX(0);
+        triggerAnswerRef.current(delta > 0);
+      } else {
+        setDragOffsetX(0);
+      }
+    };
+    document.addEventListener('mousemove', handleMove);
+    document.addEventListener('mouseup', handleUp);
+    return () => {
+      document.removeEventListener('mousemove', handleMove);
+      document.removeEventListener('mouseup', handleUp);
+    };
+  }, [isDragging]);
+
+  const handleMouseDown = (e: { clientX: number }) => {
+    dragStartRef.current = e.clientX;
+    didDragRef.current = false;
+    setIsDragging(true);
+  };
+
+  const handleCardClick = () => {
+    if (didDragRef.current) {
+      didDragRef.current = false;
+      return;
+    }
+    onFlip();
+  };
 
   const total = flashcards.length;
-  const progress = ((currentCardIndex + 1) / total) * 100;
   const current = flashcards[currentCardIndex];
-
-  // When isFrontCardTerm = false, swap which side is the "front".
+  const progress = ((currentCardIndex + 1) / total) * 100;
   const frontText = isFrontCardTerm ? current.frontCard : current.backCard;
   const backText = isFrontCardTerm ? current.backCard : current.frontCard;
+  const frontLabel = isFrontCardTerm ? 'Term' : 'Definition';
+  const backLabel = isFrontCardTerm ? 'Definition' : 'Term';
+
+  const dragProgress = Math.min(1, Math.abs(dragOffsetX) / 80);
+  const isDraggingRight = dragOffsetX > 10;
+  const isDraggingLeft = dragOffsetX < -10;
 
   return (
     <>
-      {/* REVIEW-mode banner (server-issued message) */}
+      {/* Review-mode banner */}
       {reviewBannerMessage && (
-        <div
-          className='mx-10 mt-4 flex items-start gap-2 rounded-lg border px-4 py-3 text-sm'
-          style={{
-            background: 'var(--pl-accent-soft)',
-            borderColor: 'var(--pl-accent-border)',
-            color: 'var(--pl-accent-strong)',
-          }}
-        >
+        <div className='mx-10 mt-4 flex items-start gap-2 rounded-lg border px-4 py-3 text-sm bg-[var(--pl-accent-soft)] border-[var(--pl-accent-border)] text-[var(--pl-accent-strong)]'>
           <Info size={16} className='mt-0.5 shrink-0' />
           <span>{reviewBannerMessage}</span>
         </div>
@@ -88,248 +174,77 @@ const FlipFlashcard = ({
       {/* Progress bar */}
       <div className='pt-5 px-10 lg:px-20'>
         <div
-          className='flex justify-between text-xs mb-2'
-          style={{
-            color: 'var(--pl-text-faint)',
-            fontFamily: 'var(--font-mono-pl)',
-          }}
+          className='flex justify-between text-xs mb-2 text-[var(--pl-text-faint)]'
+          style={{ fontFamily: 'var(--font-mono-pl)' }}
         >
-          <span>
-            {String(currentCardIndex + 1).padStart(2, '0')} / {total}
-          </span>
+          <span>{String(currentCardIndex + 1).padStart(2, '0')} / {total}</span>
           {isProgressTrackingEnabled && (
             <span>
-              Mastery ·{' '}
-              <span style={{ color: 'var(--pl-text)' }}>
-                {Math.round(progress)}%
-              </span>
+              Mastery · <span className='text-[var(--pl-text)]'>{Math.round(progress)}%</span>
             </span>
           )}
         </div>
-        <div
-          className='h-[2px] rounded-full overflow-hidden'
-          style={{ background: 'var(--pl-border)' }}
-        >
+        <div className='h-[2px] rounded-full overflow-hidden bg-[var(--pl-border)]'>
           <div
-            className='h-full rounded-full transition-all duration-300'
-            style={{ width: `${progress}%`, background: 'var(--pl-accent)' }}
+            className='h-full rounded-full transition-all duration-300 bg-[var(--pl-accent)]'
+            style={{ width: `${progress}%` }}
           />
         </div>
       </div>
 
       {/* Card area */}
       <div className='flex-1 flex items-center justify-center py-10 gap-7'>
-        {/* Prev */}
         <Button
           onClick={onPrevious}
           disabled={currentCardIndex === 0}
-          className='h-9 w-9 hover:bg-[var(--pl-bg-hover)] place-items-center rounded-lg border border-[var(--pl-border)] bg-transparent text-[var(--pl-text-muted)] cursor-pointer'
+          variant='outline'
+          size='icon'
+          className='shrink-0 text-[var(--pl-text-muted)]'
         >
           <ChevronLeft className='size-6' />
         </Button>
 
-        {/* Flip card */}
-        <div className='flex-1 max-w-[720px]' style={{ perspective: '1800px' }}>
-          <div
-            onClick={onFlip}
-            className='relative cursor-pointer'
-            style={{
-              height: 440,
-              transformStyle: 'preserve-3d',
-              transition: 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
-              transform: isFlipped ? 'rotateY(180deg)' : 'none',
-            }}
-          >
-            {/* Front */}
-            <div
-              className='absolute inset-0 rounded-[20px] p-[44px_48px] flex flex-col'
-              style={{
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden',
-                background: 'var(--pl-bg-elev)',
-                border: '1px solid var(--pl-border)',
-                boxShadow: '0 30px 80px oklch(0 0 0 / 0.1)',
-              }}
-            >
-              <div className='flex justify-between items-start'>
-                <span
-                  className='text-[11px] uppercase tracking-[0.16em]'
-                  style={{ color: 'var(--pl-text-faint)' }}
-                >
-                  {isFrontCardTerm ? 'Term' : 'Definition'} · Tap to reveal
-                </span>
-                <span
-                  className='text-[10.5px] px-[10px] py-[3px] rounded-full uppercase tracking-[0.08em] font-[500]'
-                  style={{
-                    background: 'var(--pl-accent-soft)',
-                    color: 'var(--pl-accent-strong)',
-                  }}
-                >
-                  Medium
-                </span>
-              </div>
-
-              <div className='flex-1 flex items-center justify-center text-center py-5'>
-                <div>
-                  <div
-                    className='text-[13px] mb-4'
-                    style={{
-                      color: 'var(--pl-text-faint)',
-                      fontFamily: 'var(--font-mono-pl)',
-                    }}
-                  >
-                    Q·{String(currentCardIndex + 1).padStart(2, '0')}
-                  </div>
-                  {/* Per spec: image rides with the side that has hasImage = true.
-                      When front is the definition, the image stays on the front. */}
-                  {current.imageUrl && (
-                    <img
-                      src={current.imageUrl}
-                      alt='Card'
-                      className='max-w-full max-h-36 object-contain rounded mb-4 mx-auto'
-                    />
-                  )}
-                  <div
-                    className='text-[32px] font-[400] leading-[1.25]'
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      letterSpacing: '-0.02em',
-                      color: 'var(--pl-text)',
-                    }}
-                  >
-                    {frontText}
-                  </div>
-                </div>
-              </div>
-
-              <div className='flex justify-between items-center'>
-                <div />
-                <div
-                  className='text-[11.5px] flex items-center gap-2'
-                  style={{ color: 'var(--pl-text-faint)' }}
-                >
-                  <span>Press</span>
-                  <kbd
-                    className='text-[10.5px] px-[7px] py-[2px] rounded'
-                    style={{
-                      background: 'var(--pl-bg-hover)',
-                      border: '1px solid var(--pl-border)',
-                      fontFamily: 'var(--font-mono-pl)',
-                    }}
-                  >
-                    Space
-                  </kbd>
-                  <span>to flip</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Back */}
-            <div
-              className='absolute inset-0 rounded-[20px] p-[44px_48px] flex flex-col'
-              style={{
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden',
-                transform: 'rotateY(180deg)',
-                background: 'var(--pl-bg-elev)',
-                border: '1px solid var(--pl-accent-border)',
-                boxShadow: '0 30px 80px oklch(0 0 0 / 0.1)',
-              }}
-            >
-              <div
-                className='text-[11px] uppercase tracking-[0.16em] mb-5'
-                style={{ color: 'var(--pl-accent-strong)' }}
-              >
-                {isFrontCardTerm ? 'Definition' : 'Term'}
-              </div>
-              <div className='flex-1 overflow-auto'>
-                <div
-                  className='text-[22px] font-[400] leading-[1.4]'
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    letterSpacing: '-0.01em',
-                    color: 'var(--pl-text)',
-                  }}
-                >
-                  {backText}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Recall buttons */}
-          <div className='mt-7'>
-            <div
-              className='text-[11px] uppercase tracking-[0.16em] text-center mb-3'
-              style={{ color: 'var(--pl-text-faint)' }}
-            >
-              How well did you recall this?
-            </div>
-            <div className='grid grid-cols-2 gap-[10px]'>
-              {RECALL_BUTTONS.map((btn, i) => (
-                <button
-                  key={btn.label}
-                  onClick={() => onCardAnswer(btn.correct)}
-                  onMouseEnter={() => setHoveredBtn(i)}
-                  onMouseLeave={() => setHoveredBtn(null)}
-                  className='py-[14px] px-4 rounded-[10px] flex flex-col items-start gap-[2px] transition-all'
-                  style={{
-                    background:
-                      hoveredBtn === i
-                        ? 'var(--pl-bg-hover)'
-                        : 'var(--pl-bg-elev)',
-                    border:
-                      hoveredBtn === i
-                        ? `1px solid ${btn.color}`
-                        : '1px solid var(--pl-border)',
-                  }}
-                >
-                  <div className='flex items-center gap-2 w-full'>
-                    <span
-                      className='w-[6px] h-[6px] rounded-full flex-shrink-0'
-                      style={{ background: btn.color }}
-                    />
-                    <span
-                      className='text-[13.5px] font-[500]'
-                      style={{ color: 'var(--pl-text)' }}
-                    >
-                      {btn.label}
-                    </span>
-                    <span
-                      className='ml-auto text-[10px] px-[6px] py-[1px] rounded'
-                      style={{
-                        background: 'var(--pl-bg-hover)',
-                        color: 'var(--pl-text-faint)',
-                        fontFamily: 'var(--font-mono-pl)',
-                      }}
-                    >
-                      {i + 1}
-                    </span>
-                  </div>
-                  <span
-                    className='text-[11px]'
-                    style={{
-                      color: 'var(--pl-text-faint)',
-                      fontFamily: 'var(--font-mono-pl)',
-                    }}
-                  >
-                    Review in {btn.hint}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
+        {/* B — Drag wrapper */}
+        <div
+          className='flex-1 max-w-[720px]'
+          onMouseDown={handleMouseDown}
+          style={{
+            transform:
+              dragOffsetX !== 0
+                ? `translateX(${dragOffsetX}px) rotate(${dragOffsetX * 0.025}deg)`
+                : undefined,
+            transition: isDragging
+              ? 'none'
+              : 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            cursor: isDragging ? 'grabbing' : undefined,
+            userSelect: 'none',
+          }}
+        >
+          <FlashcardCard
+            isFlipped={isFlipped}
+            frontText={frontText}
+            backText={backText}
+            frontLabel={frontLabel}
+            backLabel={backLabel}
+            cardNumber={String(currentCardIndex + 1).padStart(2, '0')}
+            imageUrl={current.imageUrl}
+            isDraggingRight={isDraggingRight}
+            isDraggingLeft={isDraggingLeft}
+            dragProgress={dragProgress}
+            flashColor={flashColor}
+            autoFlipDelay={autoFlipDelay}
+            cardKey={currentCardIndex}
+            onCardClick={handleCardClick}
+          />
+          <FlashcardRecallButtons onAnswer={triggerAnswer} />
         </div>
 
-        {/* Next */}
         <Button
           onClick={onNext}
           disabled={currentCardIndex >= total - 1}
-          className='h-9 w-9 hover:bg-[var(--pl-bg-hover)] place-items-center rounded-lg border border-[var(--pl-border)] bg-transparent text-[var(--pl-text-muted)] cursor-pointer'
-          style={{
-            border: '1px solid var(--pl-border)',
-            color: 'var(--pl-text-muted)',
-          }}
+          variant='outline'
+          size='icon'
+          className='shrink-0 text-[var(--pl-text-muted)]'
         >
           <ChevronRight className='size-6' />
         </Button>
@@ -337,83 +252,24 @@ const FlipFlashcard = ({
 
       {/* Bottom toolbar */}
       <div className='flex justify-end gap-2 px-10 pb-4'>
-        <button
-          onClick={onShuffle}
-          className='p-2 rounded-lg transition-colors'
-          style={{
-            border: '1px solid var(--pl-border)',
-            color: 'var(--pl-text-muted)',
-          }}
-        >
+        <Button variant='outline' size='icon' onClick={onShuffle}>
           <Shuffle size={14} />
-        </button>
-        <button
-          onClick={() => setIsSettingsOpen(true)}
-          className='p-2 rounded-lg transition-colors'
-          style={{
-            border: '1px solid var(--pl-border)',
-            color: 'var(--pl-text-muted)',
-          }}
-        >
+        </Button>
+        <Button variant='outline' size='icon' onClick={() => setIsSettingsOpen(true)}>
           <Settings size={14} />
-        </button>
+        </Button>
       </div>
 
-      {/* Settings Dialog */}
-      <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
-        <DialogContent className='sm:max-w-md'>
-          <DialogHeader>
-            <DialogTitle>Settings</DialogTitle>
-          </DialogHeader>
-          <div className='space-y-6 py-4'>
-            <div className='flex items-center justify-between'>
-              <div>
-                <div className='font-medium'>Track Progress</div>
-                <div className='text-sm text-muted-foreground'>
-                  Monitor your learning progress
-                </div>
-              </div>
-              <Switch
-                checked={isProgressTrackingEnabled}
-                onCheckedChange={setIsProgressTrackingEnabled}
-                className='cursor-pointer'
-              />
-            </div>
-            <div>
-              <div className='font-medium mb-3'>Front Side</div>
-              <div className='space-x-10 flex items-center'>
-                <Label className='flex items-center gap-3 cursor-pointer'>
-                  <Input
-                    type='radio'
-                    name='cardSide'
-                    checked={isFrontCardTerm}
-                    onChange={() => setIsFrontCardTerm(true)}
-                    className='w-4 h-4'
-                  />
-                  <span>Term</span>
-                </Label>
-                <Label className='flex items-center gap-3 cursor-pointer'>
-                  <Input
-                    type='radio'
-                    name='cardSide'
-                    checked={!isFrontCardTerm}
-                    onChange={() => setIsFrontCardTerm(false)}
-                    className='w-4 h-4'
-                  />
-                  <span>Definition</span>
-                </Label>
-              </div>
-            </div>
-            <Button
-              variant='outline'
-              className='w-full cursor-pointer mt-2'
-              onClick={() => window.location.reload()}
-            >
-              Reset Flashcards
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <FlashcardSettingsDialog
+        open={isSettingsOpen}
+        onOpenChange={setIsSettingsOpen}
+        isFrontCardTerm={isFrontCardTerm}
+        isProgressTrackingEnabled={isProgressTrackingEnabled}
+        autoFlipDelay={autoFlipDelay}
+        setIsFrontCardTerm={setIsFrontCardTerm}
+        setIsProgressTrackingEnabled={setIsProgressTrackingEnabled}
+        setAutoFlipDelay={setAutoFlipDelay}
+      />
     </>
   );
 };

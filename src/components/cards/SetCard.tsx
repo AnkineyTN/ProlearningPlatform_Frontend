@@ -2,15 +2,15 @@ import {
   BookOpen,
   Clock,
   FileText,
-  MoreVertical,
   Headphones,
+  MoreVertical,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 import SetNotificationSettingsDialog from '@/components/notifications/SetNotificationSettingsDialog';
+
 import { Button } from '../ui/button';
 import DropdownMenu from './DropdownMenu';
 
@@ -145,21 +145,12 @@ const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
       </div>
 
       {/* Description */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div
-            className='text-[12.5px] mb-[14px] line-clamp-2 cursor-default'
-            style={{ color: 'var(--pl-text-muted)' }}
-          >
-            {set.description || t('modal.noDescription')}
-          </div>
-        </TooltipTrigger>
-        {set.description && (
-          <TooltipContent className='max-w-[280px] whitespace-normal'>
-            {set.description}
-          </TooltipContent>
-        )}
-      </Tooltip>
+      <div
+        className='text-[12.5px] mb-[14px] line-clamp-2 cursor-default'
+        style={{ color: 'var(--pl-text-muted)' }}
+      >
+        {set.description || t('modal.noDescription')}
+      </div>
 
       {/* Progress bar */}
       {/* <div className='mb-[14px]'>

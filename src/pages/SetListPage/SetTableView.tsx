@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import DropdownMenu from '@/components/cards/DropdownMenu';
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 import SetNotificationSettingsDialog from '@/components/notifications/SetNotificationSettingsDialog';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 type RowProps = {
   set: Set;
@@ -86,21 +85,12 @@ function SetTableRow({ set, onAccess, onDelete, onUpdate }: RowProps) {
 
       {/* Description */}
       <td className='py-3 px-4 max-w-[220px]'>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div
-              className='text-[12px] truncate cursor-default'
-              style={{ color: 'var(--pl-text-muted)' }}
-            >
-              {set.description || t('modal.noDescription')}
-            </div>
-          </TooltipTrigger>
-          {set.description && (
-            <TooltipContent className='max-w-[280px] whitespace-normal'>
-              {set.description}
-            </TooltipContent>
-          )}
-        </Tooltip>
+        <div
+          className='text-[12px] truncate cursor-default'
+          style={{ color: 'var(--pl-text-muted)' }}
+        >
+          {set.description || t('modal.noDescription')}
+        </div>
       </td>
 
       {/* Resources */}

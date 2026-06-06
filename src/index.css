@@ -383,6 +383,16 @@
   50% { transform: scale(1.05) rotate(2deg); }
 }
 
+@keyframes flash-answer {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes auto-flip-countdown {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

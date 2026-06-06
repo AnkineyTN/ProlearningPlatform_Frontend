@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 export type FlashcardStudySettings = {
   isFrontCardTerm: boolean;
   isProgressTrackingEnabled: boolean;
+  autoFlipDelay: number | null; // seconds; null = disabled
 };
 
 const STORAGE_KEY = "flashcard-study-settings";
@@ -10,6 +11,7 @@ const STORAGE_KEY = "flashcard-study-settings";
 const DEFAULTS: FlashcardStudySettings = {
   isFrontCardTerm: true,
   isProgressTrackingEnabled: true,
+  autoFlipDelay: null,
 };
 
 function read(): FlashcardStudySettings {
@@ -42,9 +44,14 @@ export function useFlashcardStudySettings() {
     setSettings((s) => ({ ...s, isProgressTrackingEnabled: v }));
   }, []);
 
+  const setAutoFlipDelay = useCallback((v: number | null) => {
+    setSettings((s) => ({ ...s, autoFlipDelay: v }));
+  }, []);
+
   return {
     ...settings,
     setIsFrontCardTerm,
     setIsProgressTrackingEnabled,
+    setAutoFlipDelay,
   };
 }
