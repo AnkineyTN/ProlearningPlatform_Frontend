@@ -1,5 +1,5 @@
 import { BarChart3 } from 'lucide-react';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
@@ -33,37 +33,24 @@ export default function ExamResults({
   attemptId,
 }: ExamResultsProps) {
   const { t, i18n } = useTranslation();
-  const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const helpers = useMemo(() => createResultHelpers(exam, result), [exam, result]);
 
-  const [openQuestions, setOpenQuestions] = useState<
-    Record<string | number, boolean>
-  >(() => {
-    const initial: Record<string | number, boolean> = {};
-    exam.questions.forEach((q) => {
+  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(() => {
+    const firstWrong = exam.questions.findIndex((q) => {
       const graded = result.gradedByBackend?.find(
         (g) => String(g.questionId) === String(q.id),
       );
-      if (graded) {
-        initial[q.id] = q.type === 'ESSAY' ? true : !graded.isCorrect;
-        return;
-      }
-      const correctAnswerIds = q.answers
-        .filter((a) => a.isCorrect)
-        .map((a) => a.id);
-      const submission = result.submissions.find((s) => s.questionId === q.id);
-      const selectedAnswerIds = submission?.selectedAnswers ?? [];
-      if (q.type === 'ESSAY') {
-        initial[q.id] = true;
-      } else {
-        const isCorrect =
-          correctAnswerIds.length === selectedAnswerIds.length &&
-          correctAnswerIds.every((id) => selectedAnswerIds.includes(id));
-        initial[q.id] = !isCorrect;
-      }
+      if (graded) return !graded.isCorrect;
+      const correctIds = q.answers.filter((a) => a.isCorrect).map((a) => a.id);
+      const sub = result.submissions.find((s) => s.questionId === q.id);
+      const selected = sub?.selectedAnswers ?? [];
+      return !(
+        correctIds.length === selected.length &&
+        correctIds.every((id) => selected.includes(id))
+      );
     });
-    return initial;
+    return firstWrong >= 0 ? firstWrong : 0;
   });
 
   const [aiDialog, setAiDialog] = useState<{
@@ -77,15 +64,6 @@ export default function ExamResults({
   const [detailAttemptId, setDetailAttemptId] = useState<number | null>(null);
   const [analysisOpen, setAnalysisOpen] = useState(false);
   const [retryOpen, setRetryOpen] = useState(false);
-
-  const scrollToQuestion = (index: number) => {
-    questionRefs.current[index]?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-    });
-    const qId = exam.questions[index].id;
-    setOpenQuestions((prev) => ({ ...prev, [qId]: true }));
-  };
 
   const handleExplainWithAI = async (questionId: string | number) => {
     const question = exam.questions.find((q) => q.id === questionId);
@@ -122,12 +100,7 @@ export default function ExamResults({
 
       const text =
         res.data?.data?.explanation?.trim() || t('exam.results.noExplanation');
-      setAiDialog({
-        open: true,
-        questionId,
-        loading: false,
-        explanation: text,
-      });
+      setAiDialog({ open: true, questionId, loading: false, explanation: text });
     } catch {
       setAiDialog({
         open: true,
@@ -143,72 +116,77 @@ export default function ExamResults({
     (q) => helpers.isAnswerCorrect(q.id) === true,
   ).length;
 
+  const selectedQuestion =
+    exam.questions[selectedQuestionIndex] ?? exam.questions[0];
+
   return (
     <TooltipProvider>
-      <div className='bg-background flex h-[calc(100dvh-35px)] min-h-0 flex-col overflow-hidden'>
+      <div style={{ background: 'var(--pl-bg)', minHeight: '100dvh' }}>
         <ResultsHeader setId={setId} examId={examId} />
 
-        <div className='flex min-h-0 min-w-0 flex-1'>
-          <QuestionNavigator
-            exam={exam}
-            helpers={helpers}
-            onSelect={scrollToQuestion}
+        <div className='max-w-4xl mx-auto px-6 py-10 space-y-5'>
+          <ResultsSummaryCard
+            result={result}
+            correctCount={correctCount}
+            totalNonEssay={totalNonEssay}
           />
 
-          <main className='min-h-0 min-w-0 flex-1 overflow-y-auto'>
-            <div className='max-w-3xl mx-auto px-6 py-8 space-y-6'>
-              <ResultsSummaryCard
-                result={result}
-                correctCount={correctCount}
-                totalNonEssay={totalNonEssay}
-              />
-
-              <div className='bg-[var(--pl-bg)] border border-border rounded-lg p-5'>
-                <div className='flex items-center gap-2 mb-5'>
-                  <BarChart3 className='w-5 h-5' />
-                  <h3 className='text-lg font-semibold'>
-                    {t('exam.results.questionReview')}
-                  </h3>
-                  <Badge variant='outline' className='ml-auto text-xs'>
+          {/* Question review */}
+          <div className='rounded-2xl border border-border bg-[var(--pl-bg)] p-5'>
+            {/* Header */}
+            <div className='flex items-center justify-between mb-5'>
+              <div>
+                <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)] mb-0.5'>
+                  QUESTION REVIEW
+                </p>
+                <p className='font-medium flex items-center gap-2'>
+                  {exam.questions.length} questions
+                  <Badge variant='outline' className='text-xs font-normal'>
                     {t('exam.results.correctBadge', {
                       correct: correctCount,
                       total: exam.questions.length,
                     })}
                   </Badge>
-                </div>
+                </p>
+              </div>
+              <BarChart3 className='w-5 h-5 text-muted-foreground' />
+            </div>
 
-                <div className='space-y-3'>
-                  {exam.questions.map((question, index) => (
-                    <QuestionReviewItem
-                      key={question.id}
-                      ref={(el) => {
-                        questionRefs.current[index] = el;
-                      }}
-                      question={question}
-                      index={index}
-                      helpers={helpers}
-                      isOpen={openQuestions[question.id] ?? true}
-                      onOpenChange={(open) =>
-                        setOpenQuestions((prev) => ({
-                          ...prev,
-                          [question.id]: open,
-                        }))
-                      }
-                      onExplainAi={handleExplainWithAI}
-                    />
-                  ))}
-                </div>
+            {/* Split: sidebar + question detail */}
+            <div className='flex gap-4 items-start'>
+              {/* Sticky sidebar navigator */}
+              <div className='w-44 flex-shrink-0 sticky top-[57px]'>
+                <QuestionNavigator
+                  exam={exam}
+                  helpers={helpers}
+                  selectedIndex={selectedQuestionIndex}
+                  onSelect={setSelectedQuestionIndex}
+                />
               </div>
 
-              <ResultsActions
-                setId={setId}
-                attemptId={attemptId}
-                onOpenHistory={() => setHistoryOpen(true)}
-                onOpenAnalysis={() => setAnalysisOpen(true)}
-                onOpenRetry={() => setRetryOpen(true)}
-              />
+              {/* Selected question detail */}
+              <div className='flex-1 min-w-0'>
+                <QuestionReviewItem
+                  key={selectedQuestion.id}
+                  question={selectedQuestion}
+                  index={selectedQuestionIndex}
+                  helpers={helpers}
+                  isOpen={true}
+                  forceOpen={true}
+                  onOpenChange={() => {}}
+                  onExplainAi={handleExplainWithAI}
+                />
+              </div>
             </div>
-          </main>
+          </div>
+
+          <ResultsActions
+            setId={setId}
+            attemptId={attemptId}
+            onOpenHistory={() => setHistoryOpen(true)}
+            onOpenAnalysis={() => setAnalysisOpen(true)}
+            onOpenRetry={() => setRetryOpen(true)}
+          />
         </div>
       </div>
 
@@ -232,9 +210,7 @@ export default function ExamResults({
 
       <AiExplanationDialog
         open={aiDialog.open}
-        onOpenChange={(open) =>
-          setAiDialog((prev) => ({ ...prev, open }))
-        }
+        onOpenChange={(open) => setAiDialog((prev) => ({ ...prev, open }))}
         loading={aiDialog.loading}
         explanation={aiDialog.explanation}
       />

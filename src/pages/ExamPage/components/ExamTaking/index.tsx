@@ -186,6 +186,7 @@ export default function ExamTaking({
         totalQuestions={totalQuestions}
         currentQuestionIndex={currentQuestionIndex}
         answeredQuestions={answeredQuestions}
+        flagged={flagged}
         onSelect={setCurrentQuestionIndex}
       />
 

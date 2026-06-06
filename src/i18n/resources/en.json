@@ -927,7 +927,20 @@
       "viewDetails": "View",
       "viewExam": "View Exam",
       "viewHistory": "View History",
-      "yourAnswerLabel": "Your Answer:"
+      "yourAnswerLabel": "Your Answer:",
+      "heroTitlePerfect": "Perfect score.",
+      "heroTitleCongrats": "Congratulations.",
+      "heroTitleGoodEffort": "Good effort.",
+      "heroTitleKeepPracticing": "Keep practicing.",
+      "heroSubtitlePerfect": "You aced the exam with a perfect score. Outstanding!",
+      "heroSubtitlePassed": "You passed with {{pct}}%. Well done!",
+      "heroSubtitleFailed": "You scored {{pct}}%. Review the questions and try again.",
+      "scoreAboveThreshold": "passed · above threshold",
+      "scoreNotPassed": "not passed yet",
+      "allCorrect": "all correct",
+      "toReview": "{{count}} to review",
+      "totalDuration": "total exam duration",
+      "retryWrongAnswers": "Practice wrong answers"
     },
     "taking": {
       "answered": "Answered",

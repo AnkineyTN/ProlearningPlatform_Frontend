@@ -1339,7 +1339,20 @@
       "viewDetails": "Xem",
       "viewExam": "Xem đề thi",
       "viewHistory": "Xem lịch sử",
-      "yourAnswerLabel": "Bài làm của bạn:"
+      "yourAnswerLabel": "Bài làm của bạn:",
+      "heroTitlePerfect": "Điểm tuyệt đối.",
+      "heroTitleCongrats": "Chúc mừng.",
+      "heroTitleGoodEffort": "Cố gắng lắm.",
+      "heroTitleKeepPracticing": "Tiếp tục cố gắng.",
+      "heroSubtitlePerfect": "Bạn đã đạt điểm tuyệt đối. Xuất sắc!",
+      "heroSubtitlePassed": "Bạn đã đạt với {{pct}}%. Tốt lắm!",
+      "heroSubtitleFailed": "Bạn đạt {{pct}}%. Xem lại các câu hỏi và thử lại.",
+      "scoreAboveThreshold": "đã đạt · vượt ngưỡng",
+      "scoreNotPassed": "chưa đạt",
+      "allCorrect": "tất cả đúng",
+      "toReview": "{{count}} câu cần xem lại",
+      "totalDuration": "tổng thời gian làm bài",
+      "retryWrongAnswers": "Luyện lại câu sai"
     },
     "taking": {
       "answered": "Đã trả lời",

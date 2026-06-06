@@ -691,7 +691,7 @@ export default function NotificationBell() {
         >
           <Bell className='size-4' />
           {badge && (
-            <span className='absolute left-5 -top-1 min-w-[1.125rem] rounded-full bg-destructive px-1 text-[10px] font-bold leading-4 text-foreground shadow-sm'>
+            <span className='absolute left-5 -top-1 min-w-[1.125rem] rounded-full bg-destructive px-1 text-[10px] font-bold leading-4 text-primary-foreground shadow-sm'>
               {badge}
             </span>
           )}

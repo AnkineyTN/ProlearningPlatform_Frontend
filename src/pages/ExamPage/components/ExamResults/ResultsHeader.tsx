@@ -15,32 +15,29 @@ export default function ResultsHeader({ setId, examId }: ResultsHeaderProps) {
   const { t } = useTranslation();
 
   return (
-    <header className='flex shrink-0 flex-col border-b border-border bg-background z-10'>
-      <div className='mx-auto w-full py-3 px-4'>
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-4'>
-            <Button
-              variant='ghost'
-              size='sm'
-              onClick={() => navigate(`/sets/${setId}/exams`)}
-            >
-              <ArrowLeft className='w-4 h-4 mr-2' />
-              Back to Set
-            </Button>
-            <h1 className='text-xl font-bold'>Exam Results</h1>
-          </div>
-          <div className='flex items-center gap-3'>
-            <Button
-              variant='outline'
-              size='sm'
-              onClick={() => navigate(`/sets/${setId}/exams/${examId}`)}
-            >
-              {t('exam.results.viewExam')}
-            </Button>
-            <NotificationBell />
-            <ModeToggle />
-          </div>
-        </div>
+    <header
+      className='flex shrink-0 items-center justify-between px-6 py-3 border-b border-border bg-[var(--pl-bg)] sticky top-0 z-10'
+    >
+      <Button
+        variant='ghost'
+        size='sm'
+        className='gap-2 text-muted-foreground hover:text-foreground'
+        onClick={() => navigate(`/sets/${setId}/exams`)}
+      >
+        <ArrowLeft className='w-4 h-4' />
+        Back to Set
+      </Button>
+
+      <div className='flex items-center gap-3'>
+        <Button
+          variant='outline'
+          size='sm'
+          onClick={() => navigate(`/sets/${setId}/exams/${examId}`)}
+        >
+          {t('exam.results.viewExam')}
+        </Button>
+        <NotificationBell />
+        <ModeToggle />
       </div>
     </header>
   );

@@ -6,7 +6,11 @@ import {
   useUploadDocumentFile,
   useUploadImageFile,
 } from '@/hooks/useImageUpload';
-import { useSaveDocumentInNote, useSaveImageInNote } from '@/hooks/useNotes';
+import {
+  useConvertToVectorDB,
+  useSaveDocumentInNote,
+  useSaveImageInNote,
+} from '@/hooks/useNotes';
 import { isBrowserImageFile } from '@/lib/utils';
 
 export interface UploadedNoteFile {
@@ -64,6 +68,7 @@ export function useNoteFileUpload({
   const uploadImageMutation = useUploadImageFile();
   const saveDocumentMutation = useSaveDocumentInNote();
   const saveImageMutation = useSaveImageInNote();
+  const convertToVectorDBMutation = useConvertToVectorDB();
 
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -153,6 +158,17 @@ export function useNoteFileUpload({
           extension: ext,
           publicId: result.publicId,
           kind: 'doc',
+        });
+
+        convertToVectorDBMutation.mutate({
+          setId,
+          payload: {
+            noteDocsId: result.assetId,
+            noteId,
+            fileName: result.fileName,
+            fileUrl: result.url,
+            extension: ext,
+          },
         });
       }
 

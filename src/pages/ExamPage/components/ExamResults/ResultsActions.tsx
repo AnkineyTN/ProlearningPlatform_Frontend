@@ -1,4 +1,4 @@
-import { Brain, History, RotateCcw } from 'lucide-react';
+import { Brain, History, Home, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -22,33 +22,31 @@ export default function ResultsActions({
   const { t } = useTranslation();
 
   return (
-    <div className='flex justify-center gap-4 pb-8 flex-wrap'>
-      <Button variant='outline' onClick={() => navigate(`/sets/${setId}`)}>
+    <div className='flex gap-3 justify-center flex-wrap pt-2 pb-8'>
+      <Button
+        variant='outline'
+        onClick={() => navigate(`/sets/${setId}/exams`)}
+        className='gap-2 text-muted-foreground'
+      >
+        <Home className='w-4 h-4' />
         {t('exam.results.backToSet')}
       </Button>
-      <Button variant='default' className='gap-2' onClick={onOpenHistory}>
+
+      <Button className='gap-2' onClick={onOpenHistory}>
         <History className='w-4 h-4' />
         {t('exam.results.viewHistory')}
       </Button>
+
       {attemptId != null && (
-        <Button
-          variant='outline'
-          className='gap-2 border-[var(--pl-accent)]/40 text-[var(--pl-accent)] hover:bg-[var(--pl-accent)]/5'
-          onClick={onOpenAnalysis}
-        >
+        <Button className='gap-2' onClick={onOpenAnalysis}>
           <Brain className='w-4 h-4' />
-          {t('analysis.actions.analyze', {
-            defaultValue: 'Analyze my knowledge',
-          })}
+          {t('analysis.actions.analyze', { defaultValue: 'Analyze Knowledge' })}
         </Button>
       )}
-      <Button
-        variant='outline'
-        className='gap-2 border-orange-400/50 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950/30 cursor-pointer'
-        onClick={onOpenRetry}
-      >
+
+      <Button variant='outline' className='gap-2' onClick={onOpenRetry}>
         <RotateCcw className='w-4 h-4' />
-        Luyện lại câu sai
+        {t('exam.results.retryWrongAnswers')}
       </Button>
     </div>
   );
