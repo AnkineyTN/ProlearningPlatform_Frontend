@@ -1,11 +1,10 @@
 import { FolderX } from 'lucide-react';
 
 type Props = {
-  activeTab: 'all' | 'completed' | 'in_progress';
   onCreateClick: () => void;
 };
 
-export default function SetEmptyState({ activeTab, onCreateClick }: Props) {
+export default function SetEmptyState({ onCreateClick }: Props) {
   return (
     <div className='flex flex-col items-center justify-center py-20'>
       <FolderX
@@ -20,22 +19,18 @@ export default function SetEmptyState({ activeTab, onCreateClick }: Props) {
         No sets yet
       </h3>
       <p className='text-[13px] mb-6' style={{ color: 'var(--pl-text-muted)' }}>
-        {activeTab === 'all'
-          ? 'Create your first study set to get started'
-          : `No ${activeTab === 'completed' ? 'completed' : 'in progress'} sets yet`}
+        Create your first study set to get started
       </p>
-      {activeTab === 'all' && (
-        <button
-          onClick={onCreateClick}
-          className='px-5 py-[10px] rounded-full text-[13px] font-[500]'
-          style={{
-            background: 'var(--pl-accent)',
-            color: 'var(--pl-accent-fg)',
-          }}
-        >
-          Create your first set
-        </button>
-      )}
+      <button
+        onClick={onCreateClick}
+        className='px-5 py-[10px] rounded-full text-[13px] font-[500]'
+        style={{
+          background: 'var(--pl-accent)',
+          color: 'var(--pl-accent-fg)',
+        }}
+      >
+        Create your first set
+      </button>
     </div>
   );
 }

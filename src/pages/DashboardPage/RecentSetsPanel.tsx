@@ -52,7 +52,7 @@ export function RecentSetsPanel({ sets }: Props) {
             </div>
             <div className='flex gap-[14px] text-[11.5px] text-[var(--pl-text-faint)] shrink-0 tabular-nums'>
               <span>{s.numNotes} notes</span>
-              <span>{s.flashcards ?? 0} cards</span>
+              <span>{s.numFlashcards ?? 0} cards</span>
               <span>{s.updated_at}</span>
             </div>
             <ArrowRight

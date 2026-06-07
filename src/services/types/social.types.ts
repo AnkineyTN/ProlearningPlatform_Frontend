@@ -2,6 +2,7 @@ export type SocialItemType = 'NOTE' | 'EXAM' | 'FLASHCARD';
 
 export type SocialNote = {
   id: number;
+  setId: number;
   type: SocialItemType;
   title: string;
   description: string;

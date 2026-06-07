@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -28,15 +29,14 @@ export default function SetListHeader({ isPending, onCreateClick }: Props) {
           {t('sidebar.setList')}
         </h1>
       </div>
-      <button
+      <Button
         onClick={onCreateClick}
         disabled={isPending}
-        className='flex items-center gap-2 px-5 py-[10px] rounded-full text-[13px] font-[500] transition-opacity disabled:opacity-50'
-        style={{ background: 'var(--pl-accent)', color: 'var(--pl-accent-fg)' }}
+        className='rounded-full disabled:opacity-50'
       >
         <Plus size={13} strokeWidth={2} />
         {isPending ? t('setlist.creating') : t('setlist.new_set')}
-      </button>
+      </Button>
     </div>
   );
 }

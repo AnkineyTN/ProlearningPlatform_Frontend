@@ -53,14 +53,10 @@ const Dashboard = () => {
         code: i.code as string,
         progress: i.progress as number,
         duration: i.duration as string,
-        flashcards: i.flashcards as number,
-        tests: i.tests as number,
-        audio: i.audio as number,
-        video: i.video as string,
-        lastUpdated: i.lastUpdated as string,
-        date: i.date as string,
         description: (i.description as string) ?? '',
         numNotes: (i.numNotes as number) ?? 0,
+        numFlashcards: (i.numFlashcards as number) ?? 0,
+        numExams: (i.numExams as number) ?? 0,
         updated_at: getTimeAgo(i.updatedAt as string),
         created_at: new Date(i.createdAt as string).toLocaleDateString(
           'en-GB',
@@ -103,8 +99,8 @@ const Dashboard = () => {
 
         <StatsRow streak={streak} summary={summary} setsCount={sets.length} />
 
-        <div className='grid grid-cols-2 gap-6'>
-          <div className='flex flex-col gap-6'>
+        <div className='grid grid-cols-3 gap-6'>
+          <div className='flex flex-col gap-6 col-span-2'>
             <ChecklistPanel />
             <RecentSetsPanel sets={sets} />
           </div>

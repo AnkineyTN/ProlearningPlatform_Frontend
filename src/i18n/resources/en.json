@@ -531,10 +531,7 @@
     }
   },
   "setlist": {
-    "all": "All",
-    "completed": "Completed",
     "creating": "Creating...",
-    "in_progress": "In Progress",
     "new_set": "New Set",
     "title": "Set Library",
     "your_set": "Your Set",
@@ -1609,7 +1606,7 @@
   "social": {
     "explore": "Explore",
     "exploreDesc": "Notes, flashcard decks, and exams shared by learners around the world. Save, fork, remix.",
-    "communityBanner": "Community · 12,840 learners sharing",
+    "communityBanner": "Community",
     "notes": "Notes",
     "flashcards": "Flashcards",
     "exams": "Exams",
@@ -1621,6 +1618,8 @@
     "failedToLoad": "Failed to load. Please try again.",
     "noResults": "No results found.",
     "loadMore": "Load more",
+    "seeAll": "See all",
+    "endOfList": "You've reached the end — that's everything for now.",
     "rail": {
       "trendingKicker": "Right now",
       "trendingTitle": "Trending",

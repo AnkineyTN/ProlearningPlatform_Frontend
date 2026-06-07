@@ -556,10 +556,7 @@
       }
     },
     "setlist": {
-      "all": "Tất cả",
-      "completed": "Đã hoàn thành",
       "creating": "Đang tạo...",
-      "in_progress": "Đang tiến hành",
       "new_set": "Bộ học tập mới",
       "set": "Bộ học tập",
       "title": "Danh sách tài liệu",
@@ -1072,10 +1069,7 @@
     }
   },
   "setlist": {
-    "all": "Tất cả",
-    "completed": "Đã hoàn thành",
     "creating": "Đang tạo...",
-    "in_progress": "Đang tiến hành",
     "new_set": "Bộ học tập mới",
     "set": "Bộ học tập",
     "title": "Danh sách tài liệu",
@@ -2033,6 +2027,8 @@
     "failedToLoad": "Không thể tải. Vui lòng thử lại.",
     "noResults": "Không tìm thấy kết quả.",
     "loadMore": "Tải thêm",
+    "seeAll": "Xem tất cả",
+    "endOfList": "Bạn đã xem hết rồi đó — quay lại sau để khám phá thêm nhé.",
     "rail": {
       "trendingKicker": "Ngay bây giờ",
       "trendingTitle": "Xu hướng",

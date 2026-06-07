@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BookOpen, Brain, ClipboardList, Eye, GraduationCap, Flame } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -10,7 +11,14 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import type { TrendingPeriod } from '@/services/types/social.types';
+import { socialAPI } from '@/services/endpoints/social';
+import type { TrendingPeriod, TrendingResource } from '@/services/types/social.types';
+
+const RESOURCE_PATH: Record<TrendingResource['type'], string> = {
+  NOTE: 'notes',
+  FLASHCARD: 'flashcards',
+  EXAM: 'exams',
+};
 
 // ─── UserAvatar ───────────────────────────────────────────────────────────────
 
@@ -106,7 +114,14 @@ const RANK_MEDAL = ['🥇', '🥈', '🥉'];
 
 const TrendingPanel = ({ period }: { period: TrendingPeriod }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { data, isLoading } = useTrendingResources({ period, top: 5 });
+
+  const openResource = (item: TrendingResource) => {
+    if (item.setId == null) return;
+    socialAPI.postViewLog(item.type, item.id).catch(() => {});
+    navigate(`/sets/${item.setId}/${RESOURCE_PATH[item.type]}/${item.id}`);
+  };
 
   return (
     <RailPanel kicker={t('social.rail.trendingKicker')} title={t('social.rail.trendingTitle')}>
@@ -129,6 +144,7 @@ const TrendingPanel = ({ period }: { period: TrendingPeriod }) => {
               <Button
                 key={item.id}
                 variant='ghost'
+                onClick={() => openResource(item)}
                 className='w-full flex gap-3 px-2.5 py-2.5 rounded-[8px] h-auto text-left items-start justify-start'
               >
                 <span

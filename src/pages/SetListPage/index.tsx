@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import SetCard from '@/components/cards/SetCard';
@@ -40,10 +39,6 @@ const mapSetData = (items: any[]): Set[] =>
     code: item.code,
     progress: item.progress,
     duration: item.duration,
-    flashcards: item.flashcards,
-    tests: item.tests,
-    audio: item.audio,
-    video: item.video,
     updated_at: getTimeAgo(item.updatedAt),
     created_at: new Date(item.createdAt).toLocaleDateString('en-GB', {
       day: '2-digit',
@@ -52,15 +47,13 @@ const mapSetData = (items: any[]): Set[] =>
     }),
     description: item.description,
     numNotes: item.numNotes ?? 0,
+    numFlashcards: item.numFlashcards ?? 0,
+    numExams: item.numExams ?? 0,
   }));
 
 export default function SetListPage() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState<
-    'all' | 'completed' | 'in_progress'
-  >('all');
   const [currentPage, setCurrentPage] = useState(0);
   const [listSearch, setListSearch] = useState('');
   const [debouncedQ, setDebouncedQ] = useState('');
@@ -99,8 +92,6 @@ export default function SetListPage() {
 
   const sets = mapSetData(setData?.data.data || []);
   const totalPages = setData?.data.metadata?.totalPages || 1;
-  const totalItems = setData?.data.metadata?.totalItems || 0;
-  const filteredSets = activeTab === 'all' ? sets : [];
 
   const handleCreateSet = async (data: any) => {
     try {
@@ -144,12 +135,6 @@ export default function SetListPage() {
     setIsUpdateModalOpen(true);
   };
 
-  const TABS = [
-    { id: 'all' as const, label: t('setlist.all'), count: totalItems },
-    { id: 'completed' as const, label: t('setlist.completed'), count: 0 },
-    { id: 'in_progress' as const, label: t('setlist.in_progress'), count: 0 },
-  ];
-
   return (
     <div className='min-h-screen' style={{ background: 'var(--pl-bg)' }}>
       <div className='px-10 pt-8 pb-0'>
@@ -158,9 +143,6 @@ export default function SetListPage() {
           onCreateClick={() => setIsCreateModalOpen(true)}
         />
         <SetFilterBar
-          tabs={TABS}
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
           search={listSearch}
           onSearchChange={setListSearch}
           privacy={privacyFilter}
@@ -179,11 +161,11 @@ export default function SetListPage() {
       <div className='px-10 pt-7 pb-16'>
         {isPending ? (
           <SetListSkeleton count={PAGE_SIZE} viewMode={viewMode} />
-        ) : filteredSets.length > 0 ? (
+        ) : sets.length > 0 ? (
           <>
             {viewMode === 'grid' ? (
               <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[14px] mb-8'>
-                {filteredSets.map((set) => (
+                {sets.map((set) => (
                   <SetCard
                     key={set.id}
                     set={set}
@@ -195,7 +177,7 @@ export default function SetListPage() {
               </div>
             ) : (
               <SetTableView
-                sets={filteredSets}
+                sets={sets}
                 onAccess={(id) => navigate(`/sets/${id}`)}
                 onDelete={handleDeleteSet}
                 onUpdate={openUpdateModal}
@@ -235,10 +217,7 @@ export default function SetListPage() {
             </div>
           </>
         ) : (
-          <SetEmptyState
-            activeTab={activeTab}
-            onCreateClick={() => setIsCreateModalOpen(true)}
-          />
+          <SetEmptyState onCreateClick={() => setIsCreateModalOpen(true)} />
         )}
       </div>
 

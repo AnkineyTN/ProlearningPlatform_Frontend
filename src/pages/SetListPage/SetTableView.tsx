@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { BookOpen, MoreVertical, Headphones, FileText } from 'lucide-react';
+import { BookOpen, MoreVertical, Brain, FileText, GraduationCap } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { type Set } from '@/components/cards/SetCard';
@@ -103,24 +103,19 @@ function SetTableRow({ set, onAccess, onDelete, onUpdate }: RowProps) {
             fontSize: '11px',
           }}
         >
-          {set.flashcards > 0 && (
-            <span className='flex items-center gap-1'>
-              <FileText size={10} /> {set.flashcards}
-            </span>
-          )}
           {set.numNotes > 0 && (
             <span className='flex items-center gap-1'>
               <FileText size={10} /> {set.numNotes}
             </span>
           )}
-          {set.tests > 0 && (
+          {set.numFlashcards > 0 && (
             <span className='flex items-center gap-1'>
-              <FileText size={10} /> {set.tests}
+              <Brain size={10} /> {set.numFlashcards}
             </span>
           )}
-          {set.audio > 0 && (
+          {set.numExams > 0 && (
             <span className='flex items-center gap-1'>
-              <Headphones size={10} /> {set.audio}
+              <GraduationCap size={10} /> {set.numExams}
             </span>
           )}
         </div>

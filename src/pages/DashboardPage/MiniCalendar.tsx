@@ -2,8 +2,16 @@ import { useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useHeatmap } from '@/hooks/useActivityLog';
 import { Panel, PanelHead } from './Panel';
+
+function formatStudyTime(minutes: number) {
+  if (minutes < 60) return `${minutes} min`;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+}
 
 export function MiniCalendar() {
   const now = new Date();
@@ -26,14 +34,14 @@ export function MiniCalendar() {
 
   const { data: heatmap } = useHeatmap(monthsBack);
 
-  const studyDays = useMemo(() => {
-    const set = new Set<number>();
+  const studyMinutes = useMemo(() => {
+    const map = new Map<number, number>();
     (heatmap ?? []).forEach((d) => {
       if (!d.date || d.totalMinutes <= 0) return;
       const [y, m, day] = d.date.split('-').map(Number);
-      if (y === year && m === month + 1) set.add(day);
+      if (y === year && m === month + 1) map.set(day, d.totalMinutes);
     });
-    return set;
+    return map;
   }, [heatmap, year, month]);
 
   const prev = () => setCurrent(new Date(year, month - 1, 1));
@@ -73,8 +81,9 @@ export function MiniCalendar() {
           {Array.from({ length: daysInMonth }).map((_, i) => {
             const d = i + 1;
             const isToday = sameMonth && d === today;
-            const hasActivity = studyDays.has(d);
-            return (
+            const minutes = studyMinutes.get(d);
+            const hasActivity = minutes !== undefined;
+            const cell = (
               <Button
                 variant={isToday ? 'default' : 'ghost'}
                 key={d}
@@ -90,6 +99,15 @@ export function MiniCalendar() {
                   <span className='absolute bottom-[3px] w-[3px] h-[3px] rounded-full bg-[var(--pl-accent)]' />
                 )}
               </Button>
+            );
+
+            if (!hasActivity) return cell;
+
+            return (
+              <Tooltip key={d}>
+                <TooltipTrigger asChild>{cell}</TooltipTrigger>
+                <TooltipContent>{formatStudyTime(minutes)} studied</TooltipContent>
+              </Tooltip>
             );
           })}
         </div>

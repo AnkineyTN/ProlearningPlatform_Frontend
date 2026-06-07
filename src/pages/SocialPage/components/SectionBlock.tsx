@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChevronDown } from 'lucide-react';
-import { useMemo } from 'react';
+import { ChevronRight } from 'lucide-react';
+import { useEffect, useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import NoteCard from '@/components/cards/NoteCard';
-import FlashcardCard from '@/components/cards/FlashCard';
-import ExamCard from '@/components/cards/ExamCard';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getTimeAgo, formatDate } from '@/lib/utils';
 import { socialAPI } from '@/services/endpoints/social';
-import type { SocialItemType } from '@/services/types/social.types';
+import type { SocialItemType, SocialNote } from '@/services/types/social.types';
+import { PAGE_SIZE } from '../sectionConfig';
 import type { SectionType, SectionState, SortType } from '../types';
+import SocialResourceCard from './SocialResourceCard';
 
 // ─── SkeletonCard ──────────────────────────────────────────────────────────────
 
@@ -39,6 +38,8 @@ type Props = {
   state: SectionState;
   sort: SortType;
   onLoadMore: () => void;
+  onSeeAll?: () => void;
+  infiniteScroll?: boolean;
 };
 
 const SectionBlock = ({
@@ -48,13 +49,41 @@ const SectionBlock = ({
   state,
   sort,
   onLoadMore,
+  onSeeAll,
+  infiniteScroll = false,
 }: Props) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { items, loading, error, meta } = state;
-  const noDesc = t('list.noDescription');
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  const canLoadMore = !!meta && meta.currentPage < meta.totalPages && !error;
+
+  useEffect(() => {
+    if (!infiniteScroll || !canLoadMore) return;
+    const node = sentinelRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !loading) onLoadMore();
+      },
+      { rootMargin: '300px' },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [infiniteScroll, canLoadMore, loading, onLoadMore]);
 
   const trackView = (id: number) => {
     socialAPI.postViewLog(type as SocialItemType, id).catch(() => {});
+  };
+
+  const openItem = (item: SocialNote) => {
+    trackView(item.id);
+    if (type === 'NOTE') navigate(`/sets/${item.setId}/notes/${item.id}`);
+    else if (type === 'FLASHCARD')
+      navigate(`/sets/${item.setId}/flashcards/${item.id}`);
+    else navigate(`/sets/${item.setId}/exams/${item.id}`);
   };
 
   const sorted = useMemo(() => {
@@ -66,8 +95,8 @@ const SectionBlock = ({
       );
     if (sort === 'liked')
       arr.sort((a, b) => ((b as any).likes ?? 0) - ((a as any).likes ?? 0));
-    return arr;
-  }, [items, sort]);
+    return infiniteScroll ? arr : arr.slice(0, PAGE_SIZE);
+  }, [items, sort, infiniteScroll]);
 
   return (
     <section>
@@ -92,6 +121,16 @@ const SectionBlock = ({
             {meta.totalItems}
           </span>
         )}
+        {onSeeAll && (
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={onSeeAll}
+            className='ml-auto gap-1 px-2.5 py-1 h-auto rounded-full text-[12.5px] text-[var(--pl-text-muted)] hover:text-[var(--pl-accent)] hover:bg-[var(--pl-bg-hover)]'
+          >
+            {t('social.seeAll')} <ChevronRight size={13} />
+          </Button>
+        )}
       </div>
 
       {/* Content */}
@@ -105,59 +144,22 @@ const SectionBlock = ({
         </div>
       ) : (
         <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4'>
-          {sorted.map((item) => {
-            const desc = item.description || noDesc;
-            const timeAgo = getTimeAgo(item.createdAt);
-            const createdAt = formatDate(item.createdAt);
-
-            if (type === 'NOTE')
-              return (
-                <NoteCard
-                  key={item.id}
-                  note={{
-                    id: item.id,
-                    title: item.title,
-                    description: desc,
-                    privacy: 'PUBLIC',
-                    timeAgo,
-                    created_at: createdAt,
-                  }}
-                  onAccess={(id) => trackView(Number(id))}
-                />
-              );
-
-            if (type === 'FLASHCARD')
-              return (
-                <FlashcardCard
-                  key={item.id}
-                  flashcard={{
-                    id: item.id,
-                    title: item.title,
-                    description: desc,
-                    privacy: 'PUBLIC',
-                    time: timeAgo,
-                    created_at: createdAt,
-                  }}
-                  onAccess={(id) => trackView(Number(id))}
-                />
-              );
-
-            return (
-              <ExamCard
-                key={item.id}
-                exam={{
-                  id: item.id,
-                  title: item.title,
-                  description: desc,
-                  privacy: 'PUBLIC',
-                  createdAt: item.createdAt,
-                  numQuestions: item.numQuestions ?? undefined,
-                  duration: item.duration ?? undefined,
-                }}
-                onAccess={(id) => trackView(Number(id))}
-              />
-            );
-          })}
+          {sorted.map((item) => (
+            <SocialResourceCard
+              key={item.id}
+              item={{
+                id: item.id,
+                type: item.type,
+                title: item.title,
+                description: item.description,
+                createdAt: item.createdAt,
+                ownerName: item.ownerName,
+                numQuestions: item.numQuestions,
+                duration: item.duration,
+              }}
+              onAccess={() => openItem(item)}
+            />
+          ))}
           {loading &&
             Array.from({ length: 3 }).map((_, i) => (
               <SkeletonCard key={`sk-${i}`} />
@@ -165,19 +167,16 @@ const SectionBlock = ({
         </div>
       )}
 
-      {/* Load more */}
-      {meta && meta.currentPage < meta.totalPages && !error && (
-        <div className='flex justify-center mt-5'>
-          <Button
-            variant='outline'
-            size='sm'
-            onClick={onLoadMore}
-            disabled={loading}
-            className='rounded-full gap-2 text-[12.5px] text-[var(--pl-text-muted)] hover:border-[var(--pl-accent-border)] hover:text-[var(--pl-text)]'
-          >
-            {t('social.loadMore')} <ChevronDown size={12} />
-          </Button>
-        </div>
+      {/* Infinite scroll sentinel */}
+      {infiniteScroll && canLoadMore && (
+        <div ref={sentinelRef} className='h-1' />
+      )}
+
+      {/* End of list */}
+      {infiniteScroll && !canLoadMore && !loading && !error && sorted.length > 0 && (
+        <p className='mt-6 text-center text-[12.5px] text-[var(--pl-text-faint)]'>
+          {t('social.endOfList')}
+        </p>
       )}
     </section>
   );

@@ -100,7 +100,7 @@ const SocialExplorePage = () => {
   return (
     <div className='min-h-screen bg-[var(--pl-bg)]'>
       {/* Header */}
-      <div className='px-6 md:px-10 pt-8 pb-6 border-b border-[var(--pl-border)]'>
+      <div className='px-6 md:px-10 pt-8'>
         <div className='max-w-[1400px] mx-auto'>
           <div
             style={{ fontFamily: 'var(--font-mono-pl)' }}
@@ -147,6 +147,12 @@ const SocialExplorePage = () => {
                   onLoadMore={() =>
                     fetchSection(type, sections[type].page + 1, query, true)
                   }
+                  onSeeAll={
+                    activeFilter === 'all'
+                      ? () => handleFilterChange(type)
+                      : undefined
+                  }
+                  infiniteScroll={activeFilter !== 'all'}
                 />
               ))}
             </div>

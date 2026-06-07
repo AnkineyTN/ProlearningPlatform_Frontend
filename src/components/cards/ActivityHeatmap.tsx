@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useLayoutEffect, useRef } from 'react';
 import { useHeatmap } from '@/hooks/useActivityLog';
 import type {
   HeatmapDay,
@@ -100,6 +100,19 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
   const { data: heatmapData, isLoading } = useHeatmap(months);
   const [mode, setMode] = useState<HeatmapMode>('time');
   const [tooltip, setTooltip] = useState<Tooltip>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  useLayoutEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    setContainerWidth(el.getBoundingClientRect().width);
+    const ro = new ResizeObserver(([entry]) =>
+      setContainerWidth(entry.contentRect.width),
+    );
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const todayKey = toKey(new Date());
 
@@ -109,7 +122,17 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
     return m;
   }, [heatmapData]);
 
-  const weeks = useMemo(() => buildWeekGrid(months), [months]);
+  const allWeeks = useMemo(() => buildWeekGrid(months), [months]);
+
+  // Show as many of the most recent weeks as fit the available width — no horizontal scroll.
+  const visibleCols = Math.max(
+    1,
+    Math.min(allWeeks.length, Math.floor((containerWidth + GAP) / (CELL + GAP))),
+  );
+  const weeks = useMemo(
+    () => allWeeks.slice(allWeeks.length - visibleCols),
+    [allWeeks, visibleCols],
+  );
 
   const monthLabels = useMemo(() => {
     const labels: { weekIdx: number; label: string }[] = [];
@@ -142,7 +165,7 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
       <div className='px-6 pt-[18px] pb-[14px] flex items-end justify-between gap-3'>
         <div>
           <div className='text-[10px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)] mb-1'>
-            {months * 4} weeks
+            {weeks.length} weeks
           </div>
           <div className='text-[18px] font-semibold tracking-[-0.015em] text-[var(--pl-text)]'>
             Study activity
@@ -206,8 +229,8 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
             ))}
           </div>
 
-          {/* Columns */}
-          <div style={{ flex: 1, overflow: 'hidden' }}>
+          {/* Columns — column count adapts to the available width */}
+          <div ref={containerRef} style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
             {/* Month label row */}
             <div
               style={{

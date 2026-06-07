@@ -2,8 +2,9 @@ import {
   BookOpen,
   Clock,
   FileText,
-  Headphones,
+  FilePen,
   MoreVertical,
+  SwatchBook,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,12 +20,10 @@ export type Set = {
   title: string;
   description: string;
   numNotes: number;
+  numFlashcards: number;
+  numExams: number;
   code: string;
   duration: string;
-  flashcards: number;
-  tests: number;
-  audio: number;
-  video: string | number;
   progress: number;
   updated_at: string;
   created_at: string;
@@ -104,8 +103,8 @@ const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
               setShowMenu((v) => !v);
             }}
             variant='ghost'
-            className='p-1 rounded cursor-pointer'
-            style={{ color: 'var(--pl-text-faint)' }}
+            size='xs'
+            className='text-[var(--pl-text-muted)] hover:text-[var(--pl-accent)] w-7 rounded-md'
           >
             <MoreVertical size={14} />
           </Button>
@@ -193,24 +192,19 @@ const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
         }}
       >
         <div className='flex items-center gap-4'>
-          {set.flashcards > 0 && (
-            <span className='flex items-center gap-1'>
-              <FileText size={10} /> {set.flashcards}
-            </span>
-          )}
           {set.numNotes > 0 && (
             <span className='flex items-center gap-1'>
               <FileText size={10} /> {set.numNotes}
             </span>
           )}
-          {set.tests > 0 && (
+          {set.numFlashcards > 0 && (
             <span className='flex items-center gap-1'>
-              <FileText size={10} /> {set.tests}
+              <SwatchBook size={10} /> {set.numFlashcards}
             </span>
           )}
-          {set.audio > 0 && (
+          {set.numExams > 0 && (
             <span className='flex items-center gap-1'>
-              <Headphones size={10} /> {set.audio}
+              <FilePen size={10} /> {set.numExams}
             </span>
           )}
         </div>
