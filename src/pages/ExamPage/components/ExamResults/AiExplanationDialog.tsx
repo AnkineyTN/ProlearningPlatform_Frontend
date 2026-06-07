@@ -27,7 +27,7 @@ export default function AiExplanationDialog({
       <DialogContent className='max-w-lg'>
         <DialogHeader>
           <DialogTitle className='flex items-center gap-2'>
-            <Sparkles className='w-5 h-5 text-purple-500' />
+            <Sparkles className='w-5 h-5 text-[var(--pl-accent)]' />
             {t('exam.results.aiExplanation')}
           </DialogTitle>
         </DialogHeader>

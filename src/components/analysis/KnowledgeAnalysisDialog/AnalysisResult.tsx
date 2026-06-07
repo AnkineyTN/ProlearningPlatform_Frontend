@@ -19,19 +19,19 @@ export default function AnalysisResult({ analysis }: AnalysisResultProps) {
       <TopicAccuracySection topics={sorted} />
 
       <NarrativeBlock
-        icon={<CheckCircle2 className='w-4 h-4 text-emerald-500' />}
+        icon={<CheckCircle2 className='w-4 h-4 text-[var(--pl-success)]' />}
         label={t('analysis.sections.strengths', { defaultValue: 'Strengths' })}
         text={strengths}
       />
       <NarrativeBlock
-        icon={<TriangleAlert className='w-4 h-4 text-rose-500' />}
+        icon={<TriangleAlert className='w-4 h-4 text-[var(--pl-danger)]' />}
         label={t('analysis.sections.weaknesses', {
           defaultValue: 'Weaknesses',
         })}
         text={weaknesses}
       />
       <NarrativeBlock
-        icon={<Lightbulb className='w-4 h-4 text-amber-500' />}
+        icon={<Lightbulb className='w-4 h-4 text-[var(--pl-warning)]' />}
         label={t('analysis.sections.improvements', {
           defaultValue: 'Suggestions',
         })}

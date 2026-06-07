@@ -69,7 +69,7 @@ export default function RetryWrongAnswersDialog({
       <DialogContent className='max-w-2xl max-h-[85vh] flex flex-col'>
         <DialogHeader>
           <DialogTitle className='flex items-center gap-2'>
-            <RotateCcw className='w-5 h-5 text-orange-500' />
+            <RotateCcw className='w-5 h-5 text-[var(--pl-warning)]' />
             Luyện lại câu sai
           </DialogTitle>
         </DialogHeader>
@@ -130,7 +130,7 @@ export default function RetryWrongAnswersDialog({
                       key={stat.questionId}
                       className={`flex items-start gap-3 p-3 rounded-lg border transition-colors cursor-pointer ${
                         checked
-                          ? 'border-orange-400/60 bg-orange-50/40 dark:bg-orange-950/20'
+                          ? 'border-[var(--pl-warning)]/60 bg-[var(--pl-warning-soft)]'
                           : 'border-border hover:border-muted-foreground/30'
                       }`}
                       onClick={() => {
@@ -159,16 +159,16 @@ export default function RetryWrongAnswersDialog({
                           <div className='flex items-center gap-1.5 flex-1'>
                             <div className='h-1.5 flex-1 rounded-full bg-muted overflow-hidden'>
                               <div
-                                className='h-full rounded-full bg-red-500 transition-all'
+                                className='h-full rounded-full bg-[var(--pl-danger)] transition-all'
                                 style={{ width: `${pct}%` }}
                               />
                             </div>
                             <span
                               className={`text-xs font-semibold ${
                                 pct >= 60
-                                  ? 'text-red-500'
+                                  ? 'text-[var(--pl-danger)]'
                                   : pct >= 30
-                                    ? 'text-orange-500'
+                                    ? 'text-[var(--pl-warning)]'
                                     : 'text-muted-foreground'
                               }`}
                             >
@@ -205,7 +205,7 @@ export default function RetryWrongAnswersDialog({
               disabled={
                 selectedIds.size === 0 || generateReviewExam.isPending || done
               }
-              className='gap-1.5 bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:opacity-90 cursor-pointer disabled:opacity-60'
+              className='gap-1.5 bg-gradient-to-r from-[var(--pl-accent)] to-[var(--pl-accent-strong)] text-[var(--pl-accent-fg)] hover:opacity-90 cursor-pointer disabled:opacity-60'
               onClick={handleSubmit}
             >
               {generateReviewExam.isPending ? (

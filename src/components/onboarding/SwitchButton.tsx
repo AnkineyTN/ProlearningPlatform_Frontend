@@ -13,7 +13,7 @@ const SwitchButton = ({ onPre, onNext, disableNext }: Props) => {
     <div className='flex items-center justify-between'>
       <button
         onClick={onPre}
-        className='px-4 py-2 rounded-xl border border-ring bg-[var(--pl-bg)] text-foreground hover:bg-card-secondary transition-colors flex items-center gap-2 cursor-pointer'
+        className='px-4 py-2 rounded-xl border border-ring bg-[var(--pl-bg)] text-foreground hover:bg-[var(--pl-bg-hover)] transition-colors flex items-center gap-2 cursor-pointer'
       >
         <ChevronLeft className='w-4 h-4' />
         <span>{t('onboarding.back')}</span>
@@ -21,7 +21,7 @@ const SwitchButton = ({ onPre, onNext, disableNext }: Props) => {
       <button
         onClick={onNext}
         disabled={disableNext}
-        className='px-4 py-2 rounded-xl bg-foreground text-background hover:bg-card-hovered transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer'
+        className='px-4 py-2 rounded-xl bg-foreground text-background hover:opacity-90 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer'
       >
         <span>{t('onboarding.continue')}</span>
         <ChevronRight className='w-4 h-4' />

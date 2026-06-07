@@ -288,7 +288,7 @@ function GoogleCalendarSection() {
       ) : connected ? (
         <div className='flex flex-col gap-3'>
           <div className='flex items-center gap-2'>
-            <span className='w-2 h-2 rounded-full bg-green-500' />
+            <span className='w-2 h-2 rounded-full bg-[var(--pl-success)]' />
             <span className='text-[13px] text-[var(--pl-text)]'>
               {t('googleCalendar.statusConnected')}
             </span>

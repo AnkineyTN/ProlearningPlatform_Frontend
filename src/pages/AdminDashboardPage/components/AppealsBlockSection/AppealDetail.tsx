@@ -59,15 +59,15 @@ const AppealDetail = ({ appeal, isReviewing, onAccept, onReject }: Props) => {
         <Panel
           className={
             appeal.status === 'ACCEPTED'
-              ? '!bg-green-500/5 !border-green-500/30'
-              : '!bg-red-500/5 !border-red-500/30'
+              ? '!bg-[var(--pl-accent-soft-2)] !border-[var(--pl-accent-border)]'
+              : '!bg-[var(--pl-danger-soft)] !border-[var(--pl-danger-border)]'
           }
         >
           <div className='p-3.5 px-[22px] flex items-center gap-2.5'>
             {appeal.status === 'ACCEPTED' ? (
-              <CheckCircle className='w-3.5 h-3.5 text-green-500' />
+              <CheckCircle className='w-3.5 h-3.5 text-[var(--pl-accent)]' />
             ) : (
-              <XCircle className='w-3.5 h-3.5 text-red-500' />
+              <XCircle className='w-3.5 h-3.5 text-[var(--pl-danger)]' />
             )}
             <div className='flex-1'>
               <div className='text-[13px] font-medium'>
@@ -96,7 +96,7 @@ const AppealDetail = ({ appeal, isReviewing, onAccept, onReject }: Props) => {
           <Button
             variant='outline'
             size='sm'
-            className='gap-1.5 text-red-500 border-red-500/40 hover:bg-red-500/10'
+            className='gap-1.5 text-[var(--pl-danger)] border-[var(--pl-danger-border)] hover:bg-[var(--pl-danger-soft)]'
             disabled={isReviewing}
             onClick={onReject}
           >

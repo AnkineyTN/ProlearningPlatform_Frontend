@@ -7,9 +7,9 @@ import type {
 } from '@/services/types/todo.types';
 
 export const PRIORITY_COLORS: Record<TodoPriority, string> = {
-  HIGH: 'bg-bg-error text-text-error',
-  MEDIUM: 'bg-bg-warning text-text-warning',
-  LOW: 'bg-bg-indigo text-text-indigo',
+  HIGH: 'bg-[var(--pl-danger-soft)] text-[var(--pl-danger-text)]',
+  MEDIUM: 'bg-[var(--pl-warning-soft)] text-[var(--pl-warning-text)]',
+  LOW: 'bg-[var(--pl-accent-soft)] text-[var(--pl-accent)]',
 };
 
 export const PRIORITY_LABEL: Record<TodoPriority, string> = {

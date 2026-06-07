@@ -229,7 +229,7 @@ const UsersSection = ({
                           <div className='text-[13px] font-medium truncate flex items-center gap-2'>
                             {name || 'Unknown'}
                             {u.isBlocked && (
-                              <span className='text-[9px] px-[7px] py-[1px] rounded-full bg-red-500/10 text-red-500 border border-red-500/30 font-medium'>
+                              <span className='text-[9px] px-[7px] py-[1px] rounded-full bg-[var(--pl-danger-soft)] text-[var(--pl-danger)] border border-[var(--pl-danger-border)] font-medium'>
                                 {t('adminDashboard.blocked')}
                               </span>
                             )}
@@ -405,9 +405,9 @@ const ActionMenuItem = ({
 }) => {
   const colorMap = {
     default: 'text-foreground',
-    danger: 'text-red-500',
-    warning: 'text-amber-500',
-    success: 'text-green-500',
+    danger: 'text-[var(--pl-danger)]',
+    warning: 'text-[var(--pl-warning)]',
+    success: 'text-[var(--pl-success)]',
   };
   return (
     <button

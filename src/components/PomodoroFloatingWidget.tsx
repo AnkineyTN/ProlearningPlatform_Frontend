@@ -27,9 +27,9 @@ import { Button } from './ui/button';
 type Corner = 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
 
 const SESSION_TYPE_COLORS: Record<string, string> = {
-  POMODORO: 'text-red-400',
-  SHORT_BREAK: 'text-emerald-400',
-  LONG_BREAK: 'text-sky-400',
+  POMODORO: 'text-[var(--pl-danger)]',
+  SHORT_BREAK: 'text-[var(--pl-success)]',
+  LONG_BREAK: 'text-[var(--pl-accent)]',
 };
 
 const STORAGE_CORNER = 'pomodoro-widget-corner';

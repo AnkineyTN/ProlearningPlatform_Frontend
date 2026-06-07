@@ -101,7 +101,7 @@ export default function KnowledgeAnalysisDialog({
 
           {phase.state === 'no-topics' && (
             <div className='flex flex-col items-center justify-center py-10 gap-3 text-center'>
-              <AlertCircle className='w-8 h-8 text-amber-500' />
+              <AlertCircle className='w-8 h-8 text-[var(--pl-warning)]' />
               <p className='text-sm text-muted-foreground max-w-md'>
                 {t('analysis.noTopics', {
                   defaultValue:
@@ -123,7 +123,7 @@ export default function KnowledgeAnalysisDialog({
 
           {phase.state === 'set-empty' && (
             <div className='flex flex-col items-center justify-center py-10 gap-3 text-center'>
-              <AlertCircle className='w-8 h-8 text-amber-500' />
+              <AlertCircle className='w-8 h-8 text-[var(--pl-warning)]' />
               <p className='text-sm text-muted-foreground max-w-md'>
                 {t('analysis.setEmpty', {
                   defaultValue:
@@ -135,8 +135,8 @@ export default function KnowledgeAnalysisDialog({
 
           {phase.state === 'error' && (
             <div className='flex flex-col items-center justify-center py-10 gap-3 text-center'>
-              <AlertCircle className='w-8 h-8 text-rose-500' />
-              <p className='text-sm text-rose-600 max-w-md'>{phase.message}</p>
+              <AlertCircle className='w-8 h-8 text-[var(--pl-danger)]' />
+              <p className='text-sm text-[var(--pl-danger-text)] max-w-md'>{phase.message}</p>
               <Button size='sm' variant='outline' onClick={retry}>
                 {t('analysis.actions.retry', { defaultValue: 'Retry' })}
               </Button>

@@ -85,7 +85,7 @@ const CreateStudySet = ({
                 className={'block text-sm font-semibold text-foreground mb-2'}
               >
                 {t('onboarding.createStudySet.nameLabel')}{' '}
-                <span className='text-red-500'>*</span>
+                <span className='text-[var(--pl-danger)]'>*</span>
               </Label>
               <Input
                 type='text'
@@ -95,7 +95,7 @@ const CreateStudySet = ({
                 className='w-full px-4 py-3 bg-card'
                 maxLength={100}
               />
-              <div className='text-right text-xs text-gray-500 mt-1'>
+              <div className='text-right text-xs text-[var(--pl-text-faint)] mt-1'>
                 {t('onboarding.createStudySet.charCount', {
                   current: studySet.name.length,
                   max: 100,
@@ -106,7 +106,7 @@ const CreateStudySet = ({
             <div>
               <Label className='block text-sm font-semibold text-foreground mb-2'>
                 {t('onboarding.createStudySet.descriptionLabel')}{' '}
-                <span className='text-gray-500 font-normal'>
+                <span className='text-[var(--pl-text-faint)] font-normal'>
                   {t('onboarding.createStudySet.optionalTag')}
                 </span>
               </Label>
@@ -122,7 +122,7 @@ const CreateStudySet = ({
                 rows={4}
                 maxLength={300}
               />
-              <div className='text-right text-xs text-gray-500 mt-1'>
+              <div className='text-right text-xs text-[var(--pl-text-faint)] mt-1'>
                 {t('onboarding.createStudySet.charCount', {
                   current: studySet.description.length,
                   max: 300,
@@ -163,7 +163,7 @@ const CreateStudySet = ({
               type='button'
               onClick={() => void handleCreateSet()}
               disabled={!studySet.name.trim() || busy}
-              className='w-full py-4 bg-card-inverse text-background rounded-xl font-semibold hover:bg-card-hovered transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
+              className='w-full py-4 bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] rounded-xl font-semibold hover:opacity-90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
             >
               <span>
                 {busy
@@ -173,15 +173,15 @@ const CreateStudySet = ({
             </button>
           </div>
 
-          <div className='bg-card-secondary rounded-2xl border-2 border-ring p-6'>
+          <div className='bg-[var(--pl-bg-elev)] rounded-2xl border-2 border-ring p-6'>
             <h3 className='text-xl font-bold text-foreground mb-6'>
               {t('onboarding.createStudySet.whatIsStudySet')}
             </h3>
 
             <div className='space-y-4 mb-6'>
               <div className='flex items-start gap-3'>
-                <div className='w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0'>
-                  <Layers className='w-5 h-5 text-blue-600' />
+                <div className='w-10 h-10 bg-[var(--pl-accent-soft)] rounded-xl flex items-center justify-center flex-shrink-0'>
+                  <Layers className='w-5 h-5 text-[var(--pl-accent)]' />
                 </div>
                 <div>
                   <p className='text-foreground'>
@@ -191,8 +191,8 @@ const CreateStudySet = ({
               </div>
 
               <div className='flex items-start gap-3'>
-                <div className='w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0'>
-                  <Book className='w-5 h-5 text-purple-600' />
+                <div className='w-10 h-10 bg-[var(--pl-accent-soft)] rounded-xl flex items-center justify-center flex-shrink-0'>
+                  <Book className='w-5 h-5 text-[var(--pl-accent)]' />
                 </div>
                 <div>
                   <p className='text-foreground'>
@@ -202,8 +202,8 @@ const CreateStudySet = ({
               </div>
 
               <div className='flex items-start gap-3'>
-                <div className='w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center flex-shrink-0'>
-                  <Infinity className='w-5 h-5 text-orange-600' />
+                <div className='w-10 h-10 bg-[var(--pl-warning-soft)] rounded-xl flex items-center justify-center flex-shrink-0'>
+                  <Infinity className='w-5 h-5 text-[var(--pl-warning)]' />
                 </div>
                 <div>
                   <p className='text-foreground'>
@@ -213,7 +213,7 @@ const CreateStudySet = ({
               </div>
             </div>
 
-            <div className='bg-card-yellow rounded-xl p-4 border border-card-yellow-foreground'>
+            <div className='bg-[var(--pl-warning-soft)] rounded-xl p-4 border border-[var(--pl-warning-border)]'>
               <div className='flex items-start gap-2 mb-3'>
                 <span className='text-lg'>💡</span>
                 <h4 className='font-semibold text-foreground'>
@@ -234,7 +234,7 @@ const CreateStudySet = ({
             type='button'
             onClick={onBack}
             disabled={busy}
-            className='px-4 py-2 rounded-xl border border-ring bg-[var(--pl-bg)] text-foreground hover:bg-card-secondary transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+            className='px-4 py-2 rounded-xl border border-ring bg-[var(--pl-bg)] text-foreground hover:bg-[var(--pl-bg-hover)] transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
           >
             <ChevronLeft className='w-4 h-4' />
             <span>{t('onboarding.back')}</span>
@@ -243,7 +243,7 @@ const CreateStudySet = ({
             type='button'
             onClick={onSkip}
             disabled={busy}
-            className='px-4 py-2 rounded-xl bg-foreground text-background hover:bg-card-hovered transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+            className='px-4 py-2 rounded-xl bg-foreground text-background hover:opacity-90 transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
           >
             <span>{t('onboarding.skipForNow')}</span>
             <ChevronRight className='w-4 h-4' />

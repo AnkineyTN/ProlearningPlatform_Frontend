@@ -52,8 +52,8 @@ export function NoteFilePreviewContent({
   return (
     <>
       {previewError && (
-        <div className='rounded-md border border-[var(--border-error)] bg-[var(--bg-error)] p-3 flex flex-col gap-2'>
-          <div className='flex items-start gap-2 text-[var(--text-error)]'>
+        <div className='rounded-md border border-[var(--pl-danger-border)] bg-[var(--pl-danger-soft)] p-3 flex flex-col gap-2'>
+          <div className='flex items-start gap-2 text-[var(--pl-danger-text)]'>
             <AlertTriangle className='w-4 h-4 shrink-0 mt-0.5' />
             <div className='text-xs leading-relaxed'>
               <p className='font-medium'>Could not load preview</p>

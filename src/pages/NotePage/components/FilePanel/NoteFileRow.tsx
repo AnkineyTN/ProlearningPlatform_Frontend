@@ -278,7 +278,7 @@ export function NoteFileRow({
         <Button
           size='sm'
           variant='ghost'
-          className='shrink-0 h-8 w-8 p-0 text-[var(--pl-text-faint)] hover:text-[var(--text-error)] hover:bg-[var(--bg-error)]'
+          className='shrink-0 h-8 w-8 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-danger-text)] hover:bg-[var(--pl-danger-soft)]'
           onClick={handleDelete}
           disabled={isDeleting}
           aria-label='Delete file'

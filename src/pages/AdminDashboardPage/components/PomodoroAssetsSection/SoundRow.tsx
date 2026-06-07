@@ -73,7 +73,7 @@ const SoundRow = ({
             <Button
               variant='ghost'
               size='icon'
-              className='h-7 w-7 text-green-600'
+              className='h-7 w-7 text-[var(--pl-success)]'
               disabled={updateMutation.isPending}
               onClick={() =>
                 updateMutation.mutate({

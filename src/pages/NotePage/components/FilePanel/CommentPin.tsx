@@ -24,8 +24,8 @@ export function CommentPin({ comment, isActive, onClick }: CommentPinProps) {
         }}
         className={`absolute rounded cursor-pointer transition-all z-10 border-2 pointer-events-auto ${
           isActive
-            ? 'border-amber-500 bg-amber-300/30'
-            : 'border-amber-400/60 bg-amber-200/25 hover:bg-amber-200/40'
+            ? 'border-[var(--pl-warning)] bg-[var(--pl-warning)]/30'
+            : 'border-[var(--pl-warning)]/60 bg-[var(--pl-warning)]/25 hover:bg-[var(--pl-warning)]/40'
         }`}
         style={{
           left: `${comment.rect.x}%`,
@@ -41,7 +41,7 @@ export function CommentPin({ comment, isActive, onClick }: CommentPinProps) {
           onClick();
         }}
         className={`absolute z-20 w-6 h-6 rounded-full text-xs shadow-md transition-transform hover:scale-110 flex items-center justify-center text-white pointer-events-auto ${
-          isActive ? 'bg-amber-500 scale-110' : 'bg-amber-500/85'
+          isActive ? 'bg-[var(--pl-warning)] scale-110' : 'bg-[var(--pl-warning)]/85'
         }`}
         style={{
           left: `calc(${comment.rect.x + comment.rect.width}% + 4px)`,

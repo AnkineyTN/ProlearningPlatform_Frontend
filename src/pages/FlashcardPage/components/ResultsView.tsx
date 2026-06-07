@@ -174,10 +174,10 @@ const ResultsView = ({
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${
                     isPerfect
-                      ? 'bg-green-500'
+                      ? 'bg-[var(--pl-accent)]'
                       : pct >= 80
-                        ? 'bg-blue-500'
-                        : 'bg-red-500'
+                        ? 'bg-[var(--pl-success)]'
+                        : 'bg-[var(--pl-danger)]'
                   }`}
                 />
                 <span className='text-xs text-muted-foreground'>
@@ -228,10 +228,10 @@ const ResultsView = ({
           {/* Known */}
           <div className='rounded-2xl border border-border bg-[var(--pl-bg)] p-5'>
             <div className='flex items-center justify-between mb-4'>
-              <div className='w-9 h-9 rounded-lg bg-green-500/10 flex items-center justify-center'>
-                <CheckCircle2 className='w-4 h-4 text-green-500' />
+              <div className='w-9 h-9 rounded-lg bg-[var(--pl-accent-soft)] flex items-center justify-center'>
+                <CheckCircle2 className='w-4 h-4 text-[var(--pl-accent)]' />
               </div>
-              <span className='inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full border border-green-500/30 bg-green-500/10 text-green-500'>
+              <span className='inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full border border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft)] text-[var(--pl-accent)]'>
                 {Math.round(
                   totalCards > 0 ? (knownCards / totalCards) * 100 : 0,
                 )}
@@ -253,11 +253,11 @@ const ResultsView = ({
           {/* Learning */}
           <div className='rounded-2xl border border-border bg-[var(--pl-bg)] p-5'>
             <div className='flex items-center justify-between mb-4'>
-              <div className='w-9 h-9 rounded-lg bg-red-500/10 flex items-center justify-center'>
-                <AlertCircle className='w-4 h-4 text-red-500' />
+              <div className='w-9 h-9 rounded-lg bg-[var(--pl-danger-soft)] flex items-center justify-center'>
+                <AlertCircle className='w-4 h-4 text-[var(--pl-danger)]' />
               </div>
               {learningCards > 0 && (
-                <span className='inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full border border-red-500/30 bg-red-500/10 text-red-500'>
+                <span className='inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full border border-[var(--pl-danger-border)] bg-[var(--pl-danger-soft)] text-[var(--pl-danger)]'>
                   needs review
                 </span>
               )}
@@ -331,12 +331,12 @@ const ResultsView = ({
                       {new Date(log.reviewedAt).toLocaleTimeString()}
                     </span>
                     {log.known ? (
-                      <span className='inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border border-green-500/30 bg-green-500/10 text-green-500'>
+                      <span className='inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft)] text-[var(--pl-accent)]'>
                         <CheckCircle2 className='w-3 h-3' />
                         Known
                       </span>
                     ) : (
-                      <span className='inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border border-red-500/30 bg-red-500/10 text-red-500'>
+                      <span className='inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border border-[var(--pl-danger-border)] bg-[var(--pl-danger-soft)] text-[var(--pl-danger)]'>
                         <AlertCircle className='w-3 h-3' />
                         Unknown
                       </span>

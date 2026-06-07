@@ -24,9 +24,9 @@ const StreakWidget = () => {
 
       <div className='flex items-center gap-3'>
         {streak.studiedToday ? (
-          <Flame className='w-8 h-8 text-orange-500' />
+          <Flame className='w-8 h-8 text-[var(--pl-accent)]' />
         ) : (
-          <AlertTriangle className='w-8 h-8 text-yellow-500' />
+          <AlertTriangle className='w-8 h-8 text-[var(--pl-warning)]' />
         )}
         <div>
           <p className='text-3xl font-bold leading-none'>
@@ -54,7 +54,7 @@ const StreakWidget = () => {
           <p className='font-semibold flex items-center gap-1'>
             {streak.studiedToday ? (
               <>
-                <CheckCircle className='w-3.5 h-3.5 text-green-500' />
+                <CheckCircle className='w-3.5 h-3.5 text-[var(--pl-success)]' />
                 {t('streak.done', { defaultValue: 'Done' })}
               </>
             ) : (

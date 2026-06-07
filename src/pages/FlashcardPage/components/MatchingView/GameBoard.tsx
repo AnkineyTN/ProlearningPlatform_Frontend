@@ -40,14 +40,14 @@ const MatchingGameBoard = ({
           {/* Timer */}
           <div className='flex items-center gap-2 bg-[var(--pl-bg)] border border-border rounded-xl px-4 py-2.5'>
             <Clock className='w-4 h-4 text-muted-foreground' />
-            <span className='font-[family-name:var(--font-mono-pl)] text-lg font-medium text-text-selected'>
+            <span className='font-[family-name:var(--font-mono-pl)] text-lg font-medium text-[var(--pl-accent)]'>
               {formatTime(timer)}
             </span>
           </div>
 
           {/* Score */}
           <div className='flex items-center gap-2 bg-[var(--pl-bg)] border border-border rounded-xl px-4 py-2.5'>
-            <span className='font-[family-name:var(--font-mono-pl)] text-lg font-medium text-text-info'>
+            <span className='font-[family-name:var(--font-mono-pl)] text-lg font-medium text-[var(--pl-success)]'>
               {matchedPairs.size}
               <span className='text-muted-foreground text-sm'>
                 /{totalPairs}

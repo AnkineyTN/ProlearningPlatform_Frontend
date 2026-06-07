@@ -496,7 +496,7 @@ const TodoDetailModal = ({
           <Button
             disabled={updateMutation.isPending}
             onClick={handleSave}
-            className='flex-1 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+            className='flex-1 rounded-xl bg-gradient-to-r from-[var(--pl-accent)] to-[var(--pl-accent-strong)] text-[var(--pl-accent-fg)]'
           >
             {t('todo.detailModal.save')}
           </Button>

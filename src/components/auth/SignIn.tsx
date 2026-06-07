@@ -218,18 +218,18 @@ const SignIn = () => {
 
           {/* Blocked account banner */}
           {isBlocked && !showAppealForm && !appealSuccess && (
-            <div className='rounded-[10px] border border-amber-500/30 bg-amber-500/10 p-3.5 space-y-2'>
-              <div className='flex items-center gap-2 text-amber-600 text-[12.5px] font-medium'>
+            <div className='rounded-[10px] border border-[var(--pl-warning-border)] bg-[var(--pl-warning-soft)] p-3.5 space-y-2'>
+              <div className='flex items-center gap-2 text-[var(--pl-warning-text)] text-[12.5px] font-medium'>
                 <ShieldAlert size={14} />
                 <span>{t('signin.accountBlocked')}</span>
               </div>
-              <p className='text-[11.5px] text-amber-700/80 m-0'>
+              <p className='text-[11.5px] text-[var(--pl-warning-text)]/80 m-0'>
                 {t('signin.accountBlockedDesc')}
               </p>
               <button
                 type='button'
                 onClick={() => setShowAppealForm(true)}
-                className='text-[12px] font-semibold text-amber-700 underline underline-offset-2 hover:opacity-80'
+                className='text-[12px] font-semibold text-[var(--pl-warning-text)] underline underline-offset-2 hover:opacity-80'
               >
                 {t('signin.submitAppeal')}
               </button>
@@ -238,12 +238,12 @@ const SignIn = () => {
 
           {/* Appeal form */}
           {isBlocked && showAppealForm && !appealSuccess && (
-            <div className='rounded-[10px] border border-amber-500/30 bg-amber-500/10 p-3.5 space-y-3'>
-              <p className='text-[12.5px] font-medium text-amber-700 m-0'>
+            <div className='rounded-[10px] border border-[var(--pl-warning-border)] bg-[var(--pl-warning-soft)] p-3.5 space-y-3'>
+              <p className='text-[12.5px] font-medium text-[var(--pl-warning-text)] m-0'>
                 {t('signin.appealFormTitle')}
               </p>
               <textarea
-                className='w-full rounded-[8px] text-[12.5px] px-3 py-2 bg-white/70 border border-amber-400/40 outline-none resize-none text-gray-800 placeholder:text-gray-400'
+                className='w-full rounded-[8px] text-[12.5px] px-3 py-2 bg-white/70 border border-[var(--pl-warning-border)] outline-none resize-none text-[var(--pl-text)] placeholder:text-[var(--pl-text-faint)]'
                 rows={3}
                 placeholder={t('signin.appealReasonPlaceholder')}
                 value={appealReason}
@@ -254,14 +254,14 @@ const SignIn = () => {
                   type='button'
                   disabled={appealSubmitting || !appealReason.trim()}
                   onClick={handleSubmitAppeal}
-                  className='flex-1 py-2 rounded-full text-[12.5px] font-semibold bg-amber-500 text-white hover:opacity-90 disabled:opacity-50'
+                  className='flex-1 py-2 rounded-full text-[12.5px] font-semibold bg-[var(--pl-warning)] text-white hover:opacity-90 disabled:opacity-50'
                 >
                   {appealSubmitting ? '...' : t('signin.appealSubmit')}
                 </button>
                 <button
                   type='button'
                   onClick={() => setShowAppealForm(false)}
-                  className='px-3 py-2 rounded-full text-[12.5px] border border-amber-400/40 text-amber-700 hover:bg-amber-500/10'
+                  className='px-3 py-2 rounded-full text-[12.5px] border border-[var(--pl-warning-border)] text-[var(--pl-warning-text)] hover:bg-[var(--pl-warning-soft)]'
                 >
                   {t('signin.cancel')}
                 </button>
@@ -271,7 +271,7 @@ const SignIn = () => {
 
           {/* Appeal success */}
           {appealSuccess && (
-            <div className='rounded-[10px] border border-green-500/30 bg-green-500/10 p-3.5 text-[12.5px] text-green-700'>
+            <div className='rounded-[10px] border border-[var(--pl-success)]/30 bg-[var(--pl-success-soft)] p-3.5 text-[12.5px] text-[var(--pl-success)]'>
               {t('signin.appealSubmitted')}
             </div>
           )}

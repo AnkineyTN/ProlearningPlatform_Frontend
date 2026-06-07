@@ -260,7 +260,7 @@ const SoundMixer = ({ open, activeSounds, onClose, onChange }: Props) => {
                           deleteSound.mutate(s.id);
                         }
                       }}
-                      className='text-[var(--pl-text-faint)] hover:text-red-500'
+                      className='text-[var(--pl-text-faint)] hover:text-[var(--pl-danger)]'
                     >
                       <Trash2 size={13} />
                     </button>

@@ -170,7 +170,7 @@ const AppealsBlocksSection = () => {
               <span
                 className={`font-[family-name:var(--font-mono-pl)] text-[10.5px] px-[7px] py-[2px] rounded-full ${
                   tb.urgent && tb.count > 0
-                    ? 'bg-red-500/15 text-red-500'
+                    ? 'bg-[var(--pl-danger-soft)] text-[var(--pl-danger)]'
                     : 'bg-[var(--pl-bg-hover)] text-muted-foreground'
                 }`}
               >
@@ -186,7 +186,7 @@ const AppealsBlocksSection = () => {
         <div className='border-r border-border overflow-auto bg-[var(--pl-bg-sunken)]'>
           {list.length === 0 ? (
             <div className='p-10 text-center text-muted-foreground'>
-              <Check className='w-5 h-5 mx-auto mb-2.5 text-green-500' />
+              <Check className='w-5 h-5 mx-auto mb-2.5 text-[var(--pl-success)]' />
               <div className='text-[13px]'>
                 {tab === 'blocks'
                   ? t('adminDashboard.blockedEmpty')

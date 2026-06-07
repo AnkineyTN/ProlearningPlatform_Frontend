@@ -42,8 +42,8 @@ const MatchingTrendChart = ({
         <span
           className={`inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border ${
             improving
-              ? 'border-green-500/30 bg-green-500/10 text-green-500'
-              : 'border-red-500/30 bg-red-500/10 text-red-500'
+              ? 'border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft)] text-[var(--pl-accent)]'
+              : 'border-[var(--pl-danger-border)] bg-[var(--pl-danger-soft)] text-[var(--pl-danger)]'
           }`}
         >
           {improving ? (
@@ -96,7 +96,7 @@ const MatchingTrendChart = ({
             />
           ))}
         </svg>
-        <span className='absolute right-1 bottom-1 text-xs font-[family-name:var(--font-mono-pl)] text-text-selected'>
+        <span className='absolute right-1 bottom-1 text-xs font-[family-name:var(--font-mono-pl)] text-[var(--pl-accent)]'>
           {formatSeconds(trendValues[trendValues.length - 1])}
         </span>
       </div>

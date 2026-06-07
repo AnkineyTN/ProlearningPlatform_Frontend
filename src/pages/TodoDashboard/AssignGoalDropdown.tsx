@@ -34,7 +34,7 @@ const AssignGoalDropdown = ({ todo, goals }: AssignGoalDropdownProps) => {
     <div className='relative'>
       <button
         onClick={() => setOpen(!open)}
-        className='flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded-lg hover:bg-card-secondary'
+        className='flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded-lg hover:bg-[var(--pl-bg-hover)]'
       >
         {todo.goalColor && (
           <span
@@ -50,7 +50,7 @@ const AssignGoalDropdown = ({ todo, goals }: AssignGoalDropdownProps) => {
         <div className='absolute left-0 top-full mt-1 bg-[var(--pl-bg)] border border-ring rounded-xl shadow-lg z-20 min-w-48 py-1'>
           <button
             onClick={() => assignMutation.mutate({ clearGoal: true })}
-            className='w-full text-left px-3 py-2 text-sm hover:bg-card-secondary text-muted-foreground'
+            className='w-full text-left px-3 py-2 text-sm hover:bg-[var(--pl-bg-hover)] text-muted-foreground'
           >
             {t('todo.assignGoal.unassign')}
           </button>
@@ -58,7 +58,7 @@ const AssignGoalDropdown = ({ todo, goals }: AssignGoalDropdownProps) => {
             <button
               key={g.id}
               onClick={() => assignMutation.mutate({ goalId: g.id })}
-              className='w-full text-left px-3 py-2 text-sm hover:bg-card-secondary flex items-center gap-2'
+              className='w-full text-left px-3 py-2 text-sm hover:bg-[var(--pl-bg-hover)] flex items-center gap-2'
             >
               <span
                 className='w-2.5 h-2.5 rounded-full flex-shrink-0'

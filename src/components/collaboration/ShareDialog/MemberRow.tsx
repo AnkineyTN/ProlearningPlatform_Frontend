@@ -103,7 +103,7 @@ export default function MemberRow({
         )}
 
         {member.status === 'ACTIVE' && member.role !== 'OWNER' && !canEdit && (
-          <Check className='size-3.5 text-green-500' />
+          <Check className='size-3.5 text-[var(--pl-success)]' />
         )}
       </div>
     </div>

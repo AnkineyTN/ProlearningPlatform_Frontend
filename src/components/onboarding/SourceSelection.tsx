@@ -27,14 +27,14 @@ const SourceSelection = ({
 }: Props) => {
   const { t } = useTranslation();
   const sources = [
-    { id: 'YouTube', icon: Youtube, color: 'bg-red-500' },
+    { id: 'YouTube', icon: Youtube, color: 'bg-[var(--pl-danger)]' },
     { id: 'TikTok', icon: Music, color: 'bg-black' },
-    { id: 'ChatGPT', icon: Sparkles, color: 'bg-teal-500' },
-    { id: 'Facebook', icon: Facebook, color: 'bg-blue-500' },
-    { id: 'Google', icon: Globe, color: 'bg-gray-400' },
-    { id: 'Instagram', icon: Instagram, color: 'bg-pink-500' },
-    { id: 'Classmate', icon: Users, color: 'bg-gray-500' },
-    { id: 'Reddit', icon: CircleDot, color: 'bg-orange-500' },
+    { id: 'ChatGPT', icon: Sparkles, color: 'bg-[var(--pl-accent)]' },
+    { id: 'Facebook', icon: Facebook, color: 'bg-[var(--pl-accent)]' },
+    { id: 'Google', icon: Globe, color: 'bg-[var(--pl-text-muted)]' },
+    { id: 'Instagram', icon: Instagram, color: 'bg-[var(--pl-accent)]' },
+    { id: 'Classmate', icon: Users, color: 'bg-[var(--pl-text-muted)]' },
+    { id: 'Reddit', icon: CircleDot, color: 'bg-[var(--pl-warning)]' },
     { id: 'Other', icon: MoreHorizontal, color: '' },
   ] as const;
 
@@ -61,8 +61,8 @@ const SourceSelection = ({
                 onClick={() => onSourceSelect(source.id)}
                 className={`p-6 rounded-2xl border-2 transition-all ${
                   isSelected
-                    ? 'border-blue-500 bg-card-selected'
-                    : 'border-ring bg-card-secondary hover:border-gray-300'
+                    ? 'border-[var(--pl-accent)] bg-[var(--pl-accent-soft)]'
+                    : 'border-[var(--pl-border)] bg-[var(--pl-bg-hover)] hover:border-[var(--pl-border-strong)]'
                 }`}
               >
                 <div className='flex flex-col items-center gap-3'>

@@ -28,7 +28,7 @@ const OnboardingProgress = ({ currentStep, totalSteps = TOTAL }: Props) => {
           </span>
         </div>
         <div
-          className='h-1.5 rounded-full bg-card-secondary border border-ring overflow-hidden'
+          className='h-1.5 rounded-full bg-[var(--pl-bg-hover)] border border-ring overflow-hidden'
           role='progressbar'
           aria-valuenow={currentStep}
           aria-valuemin={1}

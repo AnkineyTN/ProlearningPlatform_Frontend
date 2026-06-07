@@ -211,7 +211,7 @@ const QuestionReviewItem = forwardRef<HTMLDivElement, QuestionReviewItemProps>(
                     className='gap-1.5 text-xs h-8'
                     onClick={() => onExplainAi(question.id)}
                   >
-                    <Sparkles className='w-3.5 h-3.5 text-purple-500' />
+                    <Sparkles className='w-3.5 h-3.5 text-[var(--pl-accent)]' />
                     {t('exam.results.explainAI')}
                   </Button>
                 </div>

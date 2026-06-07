@@ -120,7 +120,7 @@ export default function UpgradePage() {
             </ul>
 
             {error && (
-              <p className='text-[12px] text-red-500 mb-4 text-center'>{error}</p>
+              <p className='text-[12px] text-[var(--pl-danger)] mb-4 text-center'>{error}</p>
             )}
 
             <Button

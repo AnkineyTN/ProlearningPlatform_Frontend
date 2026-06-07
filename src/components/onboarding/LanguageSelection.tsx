@@ -33,8 +33,8 @@ const LanguageSelection = ({
             onClick={() => onLanguageSelect('en')}
             className={`w-full flex items-center justify-between p-5 rounded-xl border-2 transition-all ${
               selectedLanguage === 'en'
-                ? 'border-blue-500 bg-card-selected'
-                : 'border-ring bg-card-secondary hover:border-gray-300'
+                ? 'border-[var(--pl-accent)] bg-[var(--pl-accent-soft)]'
+                : 'border-[var(--pl-border)] bg-[var(--pl-bg-hover)] hover:border-[var(--pl-border-strong)]'
             }`}
           >
             <div className='flex items-center gap-4'>
@@ -55,8 +55,8 @@ const LanguageSelection = ({
             onClick={() => onLanguageSelect('vi')}
             className={`w-full flex items-center justify-between p-5 rounded-xl border-2 transition-all ${
               selectedLanguage === 'vi'
-                ? 'border-blue-500 bg-card-selected'
-                : 'border-ring bg-card-secondary hover:border-gray-300'
+                ? 'border-[var(--pl-accent)] bg-[var(--pl-accent-soft)]'
+                : 'border-[var(--pl-border)] bg-[var(--pl-bg-hover)] hover:border-[var(--pl-border-strong)]'
             }`}
           >
             <div className='flex items-center gap-4'>

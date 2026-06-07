@@ -412,7 +412,7 @@ export default function ExamEditor() {
                 if (e.target.value.trim()) setTitleError(false);
               }}
               placeholder={t('exam.editor.titlePlaceholder')}
-              className={`text-base bg-background ${titleError ? 'border-destructive focus-visible:ring-destructive' : 'border-border'}`}
+              className={`text-base bg-[var(--pl-bg)] ${titleError ? 'border-destructive focus-visible:ring-destructive' : 'border-border'}`}
             />
             {titleError && (
               <p className='text-destructive text-xs mt-1'>
@@ -433,7 +433,7 @@ export default function ExamEditor() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder={t('exam.editor.descriptionPlaceholder')}
-              className='min-h-[80px] resize-none bg-background border-border'
+              className='min-h-[80px] resize-none bg-[var(--pl-bg)] border-border'
             />
           </div>
 
@@ -453,7 +453,7 @@ export default function ExamEditor() {
                   min='1'
                   value={timeLimit}
                   onChange={(e) => setTimeLimit(Number(e.target.value))}
-                  className='bg-background border-border'
+                  className='bg-[var(--pl-bg)] border-border'
                 />
                 <span className='text-sm text-muted-foreground flex-shrink-0'>
                   min

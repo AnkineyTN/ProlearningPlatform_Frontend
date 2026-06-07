@@ -69,7 +69,7 @@ const MatchingRecentPlays = ({
                 }
                 className={`w-full flex items-center gap-4 py-3 px-3 text-left rounded-xl transition-colors ${
                   idx === 0
-                    ? 'border border-green-500/30 bg-green-500/[0.04]'
+                    ? 'border border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft-2)]'
                     : 'border border-transparent'
                 } ${
                   canExpand
@@ -87,7 +87,7 @@ const MatchingRecentPlays = ({
                   <div className='h-1 w-full bg-border/40 rounded-full overflow-hidden'>
                     <div
                       className={`h-full rounded-full ${
-                        isPerfectRun ? 'bg-green-500' : 'bg-red-500'
+                        isPerfectRun ? 'bg-[var(--pl-accent)]' : 'bg-[var(--pl-danger)]'
                       }`}
                       style={{ width: `${barWidth}%` }}
                     />
@@ -98,7 +98,7 @@ const MatchingRecentPlays = ({
                 </span>
                 <span
                   className={`font-[family-name:var(--font-mono-pl)] text-xs w-20 text-right whitespace-nowrap ${
-                    isPerfectRun ? 'text-green-500' : 'text-red-500'
+                    isPerfectRun ? 'text-[var(--pl-accent)]' : 'text-[var(--pl-danger)]'
                   }`}
                 >
                   {isPerfectRun ? 'perfect' : `${totalWrong} wrong`}
@@ -127,7 +127,7 @@ const MatchingRecentPlays = ({
                     return (
                       <div
                         key={cardId}
-                        className='flex items-center gap-3 p-2 rounded-md bg-red-500/10 border border-red-500/20'
+                        className='flex items-center gap-3 p-2 rounded-md bg-[var(--pl-danger-soft)] border border-[var(--pl-danger-border)]'
                       >
                         <div className='flex-1 min-w-0'>
                           {card ? (
@@ -145,7 +145,7 @@ const MatchingRecentPlays = ({
                             </p>
                           )}
                         </div>
-                        <span className='text-xs font-[family-name:var(--font-mono-pl)] text-red-500 bg-red-500/15 px-2 py-1 rounded'>
+                        <span className='text-xs font-[family-name:var(--font-mono-pl)] text-[var(--pl-danger)] bg-[var(--pl-danger)]/15 px-2 py-1 rounded'>
                           ×{count}
                         </span>
                       </div>

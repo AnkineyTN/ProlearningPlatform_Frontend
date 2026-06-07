@@ -40,7 +40,7 @@ const DropdownMenu = ({
       <Button
         variant='ghost'
         onClick={onDelete}
-        className='w-full text-destructive hover:text-red-500 transition-colors cursor-pointer flex justify-start pl-3 items-center gap-2'
+        className='w-full text-destructive hover:text-[var(--pl-danger)] transition-colors cursor-pointer flex justify-start pl-3 items-center gap-2'
       >
         <Trash2 className='w-4 h-4' />
         {t('modal.delete')}

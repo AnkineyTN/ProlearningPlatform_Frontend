@@ -16,7 +16,7 @@ export function StatusBadge({ status }: { status: CollabMember['status'] }) {
   return (
     <Badge
       variant='outline'
-      className='rounded-full px-1.5 py-0.5 text-[10px] font-medium border-transparent bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+      className='rounded-full px-1.5 py-0.5 text-[10px] font-medium border-transparent bg-[var(--pl-warning-soft)] text-[var(--pl-warning-text)]'
     >
       Pending
     </Badge>

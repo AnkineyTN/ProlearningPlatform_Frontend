@@ -79,7 +79,7 @@ const MatchingSecondaryTabs = ({
                     {item.playCount} {item.playCount === 1 ? 'play' : 'plays'}
                   </span>
                 </div>
-                <div className='flex items-center gap-1.5 text-text-selected font-[family-name:var(--font-mono-pl)] text-sm font-medium'>
+                <div className='flex items-center gap-1.5 text-[var(--pl-accent)] font-[family-name:var(--font-mono-pl)] text-sm font-medium'>
                   <Clock className='w-3.5 h-3.5' />
                   {formatSeconds(item.bestDuration)}
                 </div>
@@ -127,7 +127,7 @@ const MatchingSecondaryTabs = ({
                         </p>
                       )}
                     </div>
-                    <span className='inline-flex items-center gap-1 text-xs font-[family-name:var(--font-mono-pl)] font-medium text-text-error bg-bg-error/30 px-2.5 py-1 rounded-md whitespace-nowrap'>
+                    <span className='inline-flex items-center gap-1 text-xs font-[family-name:var(--font-mono-pl)] font-medium text-[var(--pl-danger)] bg-[var(--pl-danger-soft)] px-2.5 py-1 rounded-md whitespace-nowrap'>
                       <AlertCircle className='w-3 h-3' />×{count}
                     </span>
                   </div>

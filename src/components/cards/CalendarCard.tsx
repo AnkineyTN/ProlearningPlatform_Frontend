@@ -122,9 +122,9 @@ const DynamicCalendar = () => {
               key={dayIdx}
               className={`py-2 mb-1 text-sm rounded-full cursor-pointer ${
                 isToday(day)
-                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold'
+                  ? 'bg-gradient-to-r from-[var(--pl-accent)] to-[var(--pl-accent-strong)] text-white font-semibold'
                   : day
-                    ? 'hover:bg-card-secondary transition-colors'
+                    ? 'hover:bg-[var(--pl-bg-hover)] transition-colors'
                     : ''
               }`}
             >

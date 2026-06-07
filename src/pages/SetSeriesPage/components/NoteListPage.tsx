@@ -68,7 +68,7 @@ const NoteListPage = ({
 
   if (!setId)
     return (
-      <div className='py-10 text-center text-red-500 text-[13px]'>
+      <div className='py-10 text-center text-[var(--pl-danger)] text-[13px]'>
         {t('list.invalidSetId')}
       </div>
     );
@@ -77,7 +77,7 @@ const NoteListPage = ({
 
   if (error)
     return (
-      <div className='py-10 text-center text-red-500 text-[13px]'>
+      <div className='py-10 text-center text-[var(--pl-danger)] text-[13px]'>
         {t('list.notes.error')}
       </div>
     );

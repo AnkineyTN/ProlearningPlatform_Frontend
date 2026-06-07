@@ -103,7 +103,7 @@ const UserDetailSheet = ({ user, onClose }: UserDetailSheetProps) => {
                   <span
                     className={`text-[10px] px-2 py-0.5 rounded-full border ${
                       user.accountType === 'PRO'
-                        ? 'border-purple-500/30 bg-purple-500/10 text-purple-500'
+                        ? 'border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft)] text-[var(--pl-accent)]'
                         : 'border-border bg-[var(--pl-bg-elev)] text-muted-foreground'
                     }`}
                   >
@@ -111,7 +111,7 @@ const UserDetailSheet = ({ user, onClose }: UserDetailSheetProps) => {
                   </span>
                 )}
                 {user.isBlocked && (
-                  <span className='text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30'>
+                  <span className='text-[10px] px-2 py-0.5 rounded-full bg-[var(--pl-danger-soft)] text-[var(--pl-danger)] border border-[var(--pl-danger-border)]'>
                     {t('adminDashboard.blocked')}
                   </span>
                 )}
@@ -141,25 +141,25 @@ const UserDetailSheet = ({ user, onClose }: UserDetailSheetProps) => {
                   icon={FileText}
                   label={t('adminDashboard.statNotes')}
                   value={stats?.noteCount ?? 0}
-                  color='bg-blue-500/10 text-blue-500'
+                  color='bg-[var(--pl-accent-soft)] text-[var(--pl-accent)]'
                 />
                 <StatCard
                   icon={Layers}
                   label={t('adminDashboard.statFlashcards')}
                   value={stats?.flashcardCount ?? 0}
-                  color='bg-green-500/10 text-green-500'
+                  color='bg-[var(--pl-success-soft)] text-[var(--pl-success)]'
                 />
                 <StatCard
                   icon={ClipboardList}
                   label={t('adminDashboard.statExams')}
                   value={stats?.examCount ?? 0}
-                  color='bg-amber-500/10 text-amber-500'
+                  color='bg-[var(--pl-warning-soft)] text-[var(--pl-warning)]'
                 />
                 <StatCard
                   icon={Timer}
                   label={t('adminDashboard.statPomodoro')}
                   value={stats?.pomodoroSessionCount ?? 0}
-                  color='bg-red-500/10 text-red-500'
+                  color='bg-[var(--pl-danger-soft)] text-[var(--pl-danger)]'
                 />
               </div>
             )}
@@ -198,11 +198,11 @@ const UserDetailSheet = ({ user, onClose }: UserDetailSheetProps) => {
           </div>
 
           {user.blockReason && (
-            <div className='rounded-xl border border-red-500/30 bg-red-500/5 p-3 text-xs'>
+            <div className='rounded-xl border border-[var(--pl-danger-border)] bg-[var(--pl-danger-soft)] p-3 text-xs'>
               <p className='text-muted-foreground mb-1'>
                 {t('adminDashboard.blockReason')}
               </p>
-              <p className='text-red-500'>{user.blockReason}</p>
+              <p className='text-[var(--pl-danger)]'>{user.blockReason}</p>
             </div>
           )}
         </div>

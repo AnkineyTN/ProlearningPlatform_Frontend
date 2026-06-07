@@ -68,7 +68,7 @@ const SpaceCard = ({
               <Button
                 variant='ghost'
                 size='icon'
-                className='h-7 w-7 text-green-600'
+                className='h-7 w-7 text-[var(--pl-success)]'
                 disabled={updateMutation.isPending}
                 onClick={() =>
                   updateMutation.mutate({
@@ -122,7 +122,7 @@ const SpaceCard = ({
                   <button
                     onClick={() => deleteMutation.mutate(item.id)}
                     disabled={deleteMutation.isPending}
-                    className='w-[26px] h-[26px] rounded-md grid place-items-center text-red-500 border border-red-500/30 hover:bg-red-500/10 transition-colors'
+                    className='w-[26px] h-[26px] rounded-md grid place-items-center text-[var(--pl-danger)] border border-[var(--pl-danger)]/30 hover:bg-[var(--pl-danger)]/10 transition-colors'
                   >
                     <Check className='w-3 h-3' />
                   </button>
@@ -136,7 +136,7 @@ const SpaceCard = ({
               ) : (
                 <button
                   onClick={() => setDeleteTarget(item.id)}
-                  className='w-[26px] h-[26px] rounded-md grid place-items-center text-red-500 border border-border hover:bg-red-500/10 transition-colors'
+                  className='w-[26px] h-[26px] rounded-md grid place-items-center text-[var(--pl-danger)] border border-border hover:bg-[var(--pl-danger)]/10 transition-colors'
                 >
                   <Trash2 className='w-3 h-3' />
                 </button>

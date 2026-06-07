@@ -78,7 +78,7 @@ export default function ExamInviteAcceptPage() {
     return (
       <div className='flex h-screen items-center justify-center'>
         <div className='flex flex-col items-center gap-4 text-center max-w-sm'>
-          <CheckCircle className='size-14 text-green-500' />
+          <CheckCircle className='size-14 text-[var(--pl-success)]' />
           <h1 className='text-xl font-bold'>Invitation accepted!</h1>
           <p className='text-muted-foreground'>
             You now have access to this exam.

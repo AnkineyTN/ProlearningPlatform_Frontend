@@ -32,7 +32,7 @@ const BlockDetail = ({ row, isUnblocking, onUnblock }: Props) => {
             {u.email}
           </div>
         </div>
-        <span className='inline-flex items-center px-[9px] py-[3px] rounded-full text-[11px] font-[family-name:var(--font-mono-pl)] tracking-[0.04em] bg-red-500/14 text-red-500 border border-red-500/40'>
+        <span className='inline-flex items-center px-[9px] py-[3px] rounded-full text-[11px] font-[family-name:var(--font-mono-pl)] tracking-[0.04em] bg-[var(--pl-danger-soft)] text-[var(--pl-danger)] border border-[var(--pl-danger-border)]'>
           {t('adminDashboard.blocked').toLowerCase()}
         </span>
       </div>

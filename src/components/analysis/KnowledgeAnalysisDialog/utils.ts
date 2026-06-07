@@ -15,18 +15,18 @@ export function bandColors(band: AccuracyBand) {
   switch (band) {
     case 'strong':
       return {
-        bar: 'bg-emerald-500',
-        text: 'text-emerald-600 dark:text-emerald-400',
+        bar: 'bg-[var(--pl-success)]',
+        text: 'text-[var(--pl-success)]',
       };
     case 'medium':
       return {
-        bar: 'bg-amber-500',
-        text: 'text-amber-600 dark:text-amber-400',
+        bar: 'bg-[var(--pl-warning)]',
+        text: 'text-[var(--pl-warning-text)]',
       };
     case 'weak':
       return {
-        bar: 'bg-rose-500',
-        text: 'text-rose-600 dark:text-rose-400',
+        bar: 'bg-[var(--pl-danger)]',
+        text: 'text-[var(--pl-danger-text)]',
       };
   }
 }

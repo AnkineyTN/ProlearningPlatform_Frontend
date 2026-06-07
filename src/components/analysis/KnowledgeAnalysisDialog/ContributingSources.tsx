@@ -43,7 +43,7 @@ export default function ContributingSources({
                 </span>
               </span>
               {stale && (
-                <span className='text-amber-600 dark:text-amber-400 flex items-center gap-1'>
+                <span className='text-[var(--pl-warning-text)] flex items-center gap-1'>
                   <TriangleAlert className='w-3 h-3' />
                   {t('analysis.stale', { defaultValue: 'Outdated' })}
                 </span>

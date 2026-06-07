@@ -217,7 +217,7 @@ export const useMatchingGame = ({
       'p-4 rounded-xl border cursor-pointer transition-all duration-200 text-center flex items-center justify-center min-h-[100px] select-none';
 
     if (card.isMatched) {
-      return `${base} bg-bg-info/40 border-text-info/40 opacity-60 cursor-default scale-95`;
+      return `${base} bg-[var(--pl-accent-soft)] border-[var(--pl-accent-border)] opacity-60 cursor-default scale-95`;
     }
 
     if (selectedCards.includes(card.id)) {
@@ -230,18 +230,22 @@ export const useMatchingGame = ({
           card.type !== other.type;
         return `${base} ${
           isMatch
-            ? 'bg-bg-info border-text-info scale-105 shadow-md'
-            : 'bg-bg-error border-text-error'
+            ? 'bg-[var(--pl-accent-soft)] border-[var(--pl-accent)] scale-105 shadow-md'
+            : 'bg-[var(--pl-danger-soft)] border-[var(--pl-danger)]'
         }`;
       }
-      return `${base} bg-card-selected border-text-selected scale-105 shadow-md`;
+      return `${base} bg-[var(--pl-warning-soft)] border-[var(--pl-warning)] scale-105 shadow-md`;
     }
 
     return `${base} bg-[var(--pl-bg)] border-border hover:border-primary/50 hover:shadow-md hover:-translate-y-0.5`;
   };
 
   const getRankMedal = (rank: number) => {
-    const colors = ['text-yellow-500', 'text-slate-400', 'text-amber-600'];
+    const colors = [
+      'text-[var(--pl-warning)]',
+      'text-[var(--pl-text-muted)]',
+      'text-[var(--pl-warning)]/70',
+    ];
     if (rank <= 3) return <Medal className={`w-4 h-4 ${colors[rank - 1]}`} />;
     return (
       <span className='w-4 text-center text-xs font-[family-name:var(--font-mono-pl)] text-muted-foreground'>

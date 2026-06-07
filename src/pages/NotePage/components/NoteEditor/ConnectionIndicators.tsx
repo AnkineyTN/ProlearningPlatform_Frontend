@@ -21,7 +21,7 @@ export default function ConnectionIndicators({
 
   if (collabActive && status === 'disconnected') {
     return (
-      <div className='flex items-center gap-1.5 px-6 py-1.5 text-xs font-medium border-b border-[var(--bg-warning)] bg-[var(--bg-warning)] text-[var(--text-warning)]'>
+      <div className='flex items-center gap-1.5 px-6 py-1.5 text-xs font-medium border-b border-[var(--pl-warning-border)] bg-[var(--pl-warning-soft)] text-[var(--pl-warning-text)]'>
         <WifiOff className='size-3.5' />
         Lost connection — reconnecting…
       </div>

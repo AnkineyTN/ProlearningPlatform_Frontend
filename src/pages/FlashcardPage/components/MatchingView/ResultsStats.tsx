@@ -38,15 +38,15 @@ const MatchingResultsStats = ({
       {/* TIME */}
       <div className='rounded-2xl border border-border bg-[var(--pl-bg)] p-5'>
         <div className='flex items-center justify-between mb-4'>
-          <div className='w-9 h-9 rounded-lg bg-bg-info/30 flex items-center justify-center'>
-            <Clock className='w-4 h-4 text-text-info' />
+          <div className='w-9 h-9 rounded-lg bg-[var(--pl-accent-soft)] flex items-center justify-center'>
+            <Clock className='w-4 h-4 text-[var(--pl-accent)]' />
           </div>
           {timeBadge && (
             <span
               className={`inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full border ${
                 timeBadge.kind === 'down'
-                  ? 'border-green-500/30 bg-green-500/10 text-green-500'
-                  : 'border-red-500/30 bg-red-500/10 text-red-500'
+                  ? 'border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft)] text-[var(--pl-accent)]'
+                  : 'border-[var(--pl-danger-border)] bg-[var(--pl-danger-soft)] text-[var(--pl-danger)]'
               }`}
             >
               {timeBadge.kind === 'down' ? (
@@ -102,8 +102,8 @@ const MatchingResultsStats = ({
           <span
             className={`inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full border ${
               isPerfect
-                ? 'border-green-500/30 bg-green-500/10 text-green-500'
-                : 'border-red-500/30 bg-red-500/10 text-red-500'
+                ? 'border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft)] text-[var(--pl-accent)]'
+                : 'border-[var(--pl-danger-border)] bg-[var(--pl-danger-soft)] text-[var(--pl-danger)]'
             }`}
           >
             {isPerfect ? (

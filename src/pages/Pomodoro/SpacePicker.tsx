@@ -247,7 +247,7 @@ const SpacePicker = ({
                           deleteSpace.mutate(s.id);
                         }
                       }}
-                      className='absolute top-1.5 left-1.5 w-7 h-7 rounded-full bg-black/40 backdrop-blur grid place-items-center text-white hover:bg-red-500/80'
+                      className='absolute top-1.5 left-1.5 w-7 h-7 rounded-full bg-black/40 backdrop-blur grid place-items-center text-white hover:bg-[var(--pl-danger)]/80'
                     >
                       <Trash2 size={13} />
                     </button>

@@ -141,7 +141,7 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
                   value={format}
                   onValueChange={(v) => setFormat(v as keyof typeof FORMATS)}
                 >
-                  <SelectTrigger className='w-full bg-background border-border'>
+                  <SelectTrigger className='w-full bg-[var(--pl-bg)] border-border'>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -173,7 +173,7 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder='Paste your flashcard content here…'
-                  className='w-full h-52 px-4 py-3 bg-background border border-border rounded-xl resize-none text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-colors font-[family-name:var(--font-mono-pl)]'
+                  className='w-full h-52 px-4 py-3 bg-[var(--pl-bg)] border border-border rounded-xl resize-none text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-colors font-[family-name:var(--font-mono-pl)]'
                 />
               </div>
             </div>
@@ -182,7 +182,7 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
               {preview.map((card, i) => (
                 <div
                   key={i}
-                  className='bg-background border border-border rounded-xl px-4 py-3 flex items-start gap-3'
+                  className='bg-[var(--pl-bg)] border border-border rounded-xl px-4 py-3 flex items-start gap-3'
                 >
                   <span className='font-[family-name:var(--font-mono-pl)] text-xs text-muted-foreground/60 mt-0.5 w-5 text-right flex-shrink-0'>
                     {i + 1}

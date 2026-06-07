@@ -79,8 +79,8 @@ const EducationSelection = ({
                 onClick={() => onEducationSelect(level.id)}
                 className={`w-full p-5 rounded-xl border-2 transition-all text-left ${
                   isSelected
-                    ? 'border-blue-500 bg-card-selected'
-                    : 'border-ring bg-card-secondary hover:border-gray-300'
+                    ? 'border-[var(--pl-accent)] bg-[var(--pl-accent-soft)]'
+                    : 'border-[var(--pl-border)] bg-[var(--pl-bg-hover)] hover:border-[var(--pl-border-strong)]'
                 }`}
               >
                 <div className='flex items-center gap-4'>

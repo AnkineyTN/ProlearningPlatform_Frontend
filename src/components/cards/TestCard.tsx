@@ -26,7 +26,7 @@ const TestCard = ({
       <div className='flex justify-between items-start mb-3'>
         <FilePen className='w-5 h-5' />
         <button
-          className='hover:bg-card-secondary p-1 rounded cursor-pointer'
+          className='hover:bg-[var(--pl-bg-hover)] p-1 rounded cursor-pointer'
           title='More options'
         >
           <MoreVertical className='w-4 h-4' />

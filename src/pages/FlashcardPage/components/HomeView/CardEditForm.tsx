@@ -30,7 +30,7 @@ export default function CardEditForm({
             value={editData.frontCard}
             onChange={(e) => edit.updateField('frontCard', e.target.value)}
             placeholder='Enter term'
-            className='min-h-[80px] resize-none bg-background border-border focus:border-primary text-sm'
+            className='min-h-[80px] resize-none bg-[var(--pl-bg)] border-border focus:border-primary text-sm'
             autoFocus
           />
         </div>
@@ -43,7 +43,7 @@ export default function CardEditForm({
             value={editData.backCard}
             onChange={(e) => edit.updateField('backCard', e.target.value)}
             placeholder='Enter definition'
-            className='min-h-[80px] resize-none bg-background border-border focus:border-primary text-sm'
+            className='min-h-[80px] resize-none bg-[var(--pl-bg)] border-border focus:border-primary text-sm'
           />
         </div>
         <div className='flex flex-col justify-center'>

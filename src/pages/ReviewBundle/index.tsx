@@ -173,7 +173,7 @@ export default function ReviewBundlePage() {
             <h1 className='text-xl font-bold'>Bundle #{bundle.id}</h1>
             <p className='text-sm text-muted-foreground mt-1'>
               Kỳ: {formatPeriod(bundle.periodFrom, bundle.periodTo)} &middot;{' '}
-              <span className='font-medium text-pink-500'>
+              <span className='font-medium text-[var(--pl-accent)]'>
                 {bundle.cardCount} thẻ sai
               </span>
             </p>
@@ -244,7 +244,7 @@ export default function ReviewBundlePage() {
                     </p>
                   </div>
                   <div
-                    className='absolute inset-0 flex flex-col items-center justify-center bg-purple-500/10 border border-purple-500/30 rounded-2xl p-8 text-center'
+                    className='absolute inset-0 flex flex-col items-center justify-center bg-[var(--pl-accent-soft)] border border-[var(--pl-accent-border)] rounded-2xl p-8 text-center'
                     style={{
                       backfaceVisibility: 'hidden',
                       transform: 'rotateY(180deg)',
@@ -323,7 +323,7 @@ export default function ReviewBundlePage() {
           <Button
             onClick={handleGenerateFlashcard}
             disabled={generateFlashcard.isPending || flashcardDone}
-            className='flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 cursor-pointer disabled:opacity-60'
+            className='flex items-center gap-2 bg-gradient-to-r from-[var(--pl-accent)] to-[var(--pl-accent-strong)] text-[var(--pl-accent-fg)] hover:opacity-90 cursor-pointer disabled:opacity-60'
           >
             {generateFlashcard.isPending ? (
               <Loader2 className='w-4 h-4 animate-spin' />
@@ -344,7 +344,7 @@ export default function ReviewBundlePage() {
             {generateExam.isPending ? (
               <Loader2 className='w-4 h-4 animate-spin' />
             ) : examDone ? (
-              <CheckCircle2 className='w-4 h-4 text-green-500' />
+              <CheckCircle2 className='w-4 h-4 text-[var(--pl-success)]' />
             ) : (
               <FileText className='w-4 h-4' />
             )}
@@ -391,7 +391,7 @@ export default function ReviewBundlePage() {
         {/* Status footer line */}
         {statusLine && (
           <div className='mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground'>
-            <ListRestart className='w-4 h-4 text-green-500' />
+            <ListRestart className='w-4 h-4 text-[var(--pl-success)]' />
             <span>{statusLine}</span>
           </div>
         )}

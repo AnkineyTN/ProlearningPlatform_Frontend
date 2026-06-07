@@ -10,7 +10,7 @@ export default function PaymentCancelPage() {
   return (
     <div className='min-h-screen flex items-center justify-center bg-[var(--pl-bg)] p-4'>
       <div className='w-full max-w-sm text-center p-8 rounded-[20px] bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] shadow-xl'>
-        <div className='w-16 h-16 rounded-full grid place-items-center mx-auto mb-4 bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'>
+        <div className='w-16 h-16 rounded-full grid place-items-center mx-auto mb-4 bg-[var(--pl-danger-soft)] text-[var(--pl-danger)]'>
           <XCircle size={28} />
         </div>
         <h2

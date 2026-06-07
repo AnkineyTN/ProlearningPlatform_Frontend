@@ -79,7 +79,7 @@ const MatchingResultsHero = ({
             <div className='flex items-center gap-1.5 mt-2'>
               <span
                 className={`w-1.5 h-1.5 rounded-full ${
-                  isPerfect ? 'bg-green-500' : 'bg-red-500'
+                  isPerfect ? 'bg-[var(--pl-accent)]' : 'bg-[var(--pl-danger)]'
                 }`}
               />
               <span className='text-xs text-muted-foreground'>
@@ -92,7 +92,7 @@ const MatchingResultsHero = ({
         <div className='flex gap-3 justify-center'>
           <Button
             onClick={onPlayAgain}
-            className='gap-2 bg-green-500 hover:bg-green-500/90 text-black'
+            className='gap-2 bg-[var(--pl-accent)] hover:opacity-90 text-[var(--pl-accent-fg)]'
           >
             <RotateCcw className='w-4 h-4' />
             Play again

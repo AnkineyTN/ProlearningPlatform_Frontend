@@ -123,9 +123,9 @@ export default function AttemptDetailDialog({
                             {ans.questionContent ?? `ID ${ans.questionId}`}
                           </p>
                           {ans.isCorrect ? (
-                            <CheckCircle className='w-4 h-4 text-green-600 shrink-0' />
+                            <CheckCircle className='w-4 h-4 text-[var(--pl-accent)] shrink-0' />
                           ) : (
-                            <XCircle className='w-4 h-4 text-red-600 shrink-0' />
+                            <XCircle className='w-4 h-4 text-[var(--pl-danger)] shrink-0' />
                           )}
                         </div>
                         <p className='text-xs text-muted-foreground'>
