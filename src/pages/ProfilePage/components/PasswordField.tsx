@@ -4,7 +4,7 @@ import type { UseFormRegisterReturn } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FieldLabel } from './ProfileSection';
-import { inputCls } from './constants';
+import { inputCls } from '../constants';
 
 interface PasswordFieldProps {
   label: string;

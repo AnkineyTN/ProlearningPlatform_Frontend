@@ -24,11 +24,11 @@ import {
   type ListSortOption,
 } from '@/components/lists/ResourceFiltersBar';
 
-import SetListHeader from './SetListHeader';
-import SetFilterBar, { type ViewMode } from './SetFilterBar';
-import SetTableView from './SetTableView';
-import SetEmptyState from './SetEmptyState';
-import SetListSkeleton from './SetListSkeleton';
+import SetListHeader from './components/SetListHeader';
+import SetFilterBar, { type ViewMode } from './components/SetFilterBar';
+import SetTableView from './components/SetTableView';
+import SetEmptyState from './components/SetEmptyState';
+import SetListSkeleton from './components/SetListSkeleton';
 
 const PAGE_SIZE = 9;
 

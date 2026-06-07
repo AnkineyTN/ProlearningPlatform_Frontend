@@ -1,9 +1,9 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { setAPI } from '@/services/endpoints/sets';
 import { searchAPI } from '@/services/endpoints/search';
-import { PAGE_SIZE, SEARCH_TYPE_MAP } from './mentionTypes';
-import type { MentionResourceType } from './mentionTypes';
-import { extractSearchMeta } from './mentionHelpers';
+import { PAGE_SIZE, SEARCH_TYPE_MAP } from './utils/mentionTypes';
+import type { MentionResourceType } from './utils/mentionTypes';
+import { extractSearchMeta } from './utils/mentionHelpers';
 
 // ─── Sub-query: Sets (setAPI, infinite scroll) ────────────────────────────────
 export const useSetMentionQuery = (searchQuery: string, enabled: boolean) =>

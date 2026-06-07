@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { todoAPI } from '@/services/endpoints/todo';
 import type { Goal, GoalType } from '@/services/types/todo.types';
-import { GOAL_PRESET_COLORS } from './constants';
+import { GOAL_PRESET_COLORS } from '../constants';
 
 type GoalModalProps = {
   open: boolean;

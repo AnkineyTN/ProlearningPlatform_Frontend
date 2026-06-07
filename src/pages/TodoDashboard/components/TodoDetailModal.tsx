@@ -26,7 +26,7 @@ import type {
   TodoStatus,
   TodoType,
 } from '@/services/types/todo.types';
-import type { ResourceType } from './constants';
+import type { ResourceType } from '../constants';
 
 type TodoDetailModalProps = {
   open: boolean;

@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import type { PomodoroSetting } from '@/services/types/pomodoro.types';
-import { DURATION_LIMITS } from './constants';
+import { DURATION_LIMITS } from '../constants';
 
 interface Props {
   open: boolean;

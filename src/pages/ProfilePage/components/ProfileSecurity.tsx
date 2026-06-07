@@ -3,7 +3,7 @@ import type { UseFormRegister } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import PasswordField from './PasswordField';
 import ProfileSection from './ProfileSection';
-import type { ProfileFormData } from './constants';
+import type { ProfileFormData } from '../constants';
 
 interface ProfileSecurityProps {
   register: UseFormRegister<ProfileFormData>;

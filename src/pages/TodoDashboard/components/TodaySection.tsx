@@ -8,7 +8,7 @@ import {
   LinkedResourceChips,
   type MentionResourceType,
 } from './SetMentionInput';
-import { todayIso } from './dateHelpers';
+import { todayIso } from '../utils/dateHelpers';
 import { Button } from '@/components/ui/button';
 
 type TodaySectionProps = {

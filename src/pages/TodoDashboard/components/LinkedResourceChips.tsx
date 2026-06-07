@@ -5,7 +5,7 @@ import {
   GraduationCap,
 } from 'lucide-react';
 import type { ResourceRef } from '@/services/types/todo.types';
-import type { MentionResourceType } from './mentionTypes';
+import type { MentionResourceType } from '../utils/mentionTypes';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type ChipDef = {

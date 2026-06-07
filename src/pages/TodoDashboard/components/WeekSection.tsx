@@ -1,6 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalendarCheck, ChevronLeft, ChevronRight, Plus, Trash2 } from 'lucide-react';
+import {
+  CalendarCheck,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  Trash2,
+} from 'lucide-react';
 import type { ResourceRef, Todo } from '@/services/types/todo.types';
 import {
   ResourceMentionInput,
@@ -15,7 +21,7 @@ import {
   isSameDay,
   toIsoDate,
   todayIso,
-} from './dateHelpers';
+} from '../utils/dateHelpers';
 
 type WeekSectionProps = {
   todos: Todo[];

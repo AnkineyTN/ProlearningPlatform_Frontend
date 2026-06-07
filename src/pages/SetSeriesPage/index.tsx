@@ -15,14 +15,13 @@ interface SetSeriesPageProps {
   setId: string;
 }
 
-const TABS = ['Notes', 'Flashcards', 'Exams', 'Tasks'];
+const TABS = ['Notes', 'Flashcards', 'Exams'];
 
 const TAB_SLUGS: Record<string, string> = {
   Notes: 'notes',
   Flashcards: 'flashcards',
   Exams: 'exams',
   Records: 'records',
-  Tasks: 'tasks',
 };
 
 function getInitialTab(pathname: string, setId: string): string {
@@ -30,7 +29,6 @@ function getInitialTab(pathname: string, setId: string): string {
   if (path.includes(`/sets/${setId}/flashcards`)) return 'Flashcards';
   if (path.includes(`/sets/${setId}/exams`)) return 'Exams';
   if (path.includes(`/sets/${setId}/records`)) return 'Records';
-  if (path.includes(`/sets/${setId}/tasks`)) return 'Tasks';
   return 'Notes';
 }
 

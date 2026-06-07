@@ -8,12 +8,12 @@ import CreateNewModal from '@/components/modals/CreateNewModal';
 import ActivityHeatmap from '@/components/cards/ActivityHeatmap';
 import { getTimeAgo } from '@/lib/utils';
 import { type UpdateSetPayload } from '@/services/types/set.types';
-import { DashboardHeader } from './DashboardHeader';
-import { SearchResultsOverlay } from './SearchResultsOverlay';
-import { StatsRow } from './StatsRow';
-import { ChecklistPanel } from './ChecklistPanel';
-import { RecentSetsPanel } from './RecentSetsPanel';
-import { MiniCalendar } from './MiniCalendar';
+import { DashboardHeader } from './components/DashboardHeader';
+import { SearchResultsOverlay } from './components/SearchResultsOverlay';
+import { StatsRow } from './components/StatsRow';
+import { ChecklistPanel } from './components/ChecklistPanel';
+import { RecentSetsPanel } from './components/RecentSetsPanel';
+import { MiniCalendar } from './components/MiniCalendar';
 
 const Dashboard = () => {
   const updateSetMutation = useUpdateSet();

@@ -20,7 +20,7 @@ import {
   useUploadPomodoroAsset,
 } from '@/hooks/usePomodoro';
 import type { PomodoroTab, SoundDto } from '@/services/types/pomodoro.types';
-import { PRESET_SOUND_VOLUME } from './constants';
+import { PRESET_SOUND_VOLUME } from '../constants';
 import type { ActiveSound } from '@/contexts/PomodoroContext';
 
 interface Props {

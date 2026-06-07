@@ -9,7 +9,7 @@ import {
   TrendingDown,
 } from 'lucide-react';
 import type { Goal, Todo } from '@/services/types/todo.types';
-import { todayIso } from './dateHelpers';
+import { todayIso } from '../utils/dateHelpers';
 
 type Reason = 'overdue' | 'urgent' | 'stuck';
 

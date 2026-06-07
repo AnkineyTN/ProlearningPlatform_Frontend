@@ -14,12 +14,12 @@ import {
   type ProfileFormData,
   type ProfileTab,
 } from './constants';
-import ProfileBasicInfo from './ProfileBasicInfo';
-import ProfileBilling from './ProfileBilling';
-import ProfileLearningInfo from './ProfileLearningInfo';
-import ProfilePreferences from './ProfilePreferences';
-import ProfileSaveBar from './ProfileSaveBar';
-import ProfileSecurity from './ProfileSecurity';
+import ProfileBasicInfo from './components/ProfileBasicInfo';
+import ProfileBilling from './components/ProfileBilling';
+import ProfileLearningInfo from './components/ProfileLearningInfo';
+import ProfilePreferences from './components/ProfilePreferences';
+import ProfileSaveBar from './components/ProfileSaveBar';
+import ProfileSecurity from './components/ProfileSecurity';
 
 function buildDefaults(
   user: ReturnType<typeof useAuth>['user'],
@@ -66,9 +66,7 @@ export default function ProfilePage() {
     reset(buildDefaults(user));
   }, [reset, user]);
 
-  const handleAvatarChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setAvatarUploading(true);

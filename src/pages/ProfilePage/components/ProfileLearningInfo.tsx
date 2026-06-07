@@ -1,5 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import type { FieldErrors, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import type {
+  FieldErrors,
+  UseFormSetValue,
+  UseFormWatch,
+} from 'react-hook-form';
 import {
   Select,
   SelectContent,
@@ -14,7 +18,7 @@ import {
   inputCls,
   languages,
   type ProfileFormData,
-} from './constants';
+} from '../constants';
 
 interface ProfileLearningInfoProps {
   watch: UseFormWatch<ProfileFormData>;
@@ -63,7 +67,9 @@ export default function ProfileLearningInfo({
             </SelectContent>
           </Select>
           {errors.language && (
-            <p className='text-xs text-destructive'>{errors.language.message}</p>
+            <p className='text-xs text-destructive'>
+              {errors.language.message}
+            </p>
           )}
         </label>
 
@@ -90,7 +96,9 @@ export default function ProfileLearningInfo({
             </SelectContent>
           </Select>
           {errors.education && (
-            <p className='text-xs text-destructive'>{errors.education.message}</p>
+            <p className='text-xs text-destructive'>
+              {errors.education.message}
+            </p>
           )}
         </label>
 

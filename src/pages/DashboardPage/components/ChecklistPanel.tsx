@@ -5,7 +5,7 @@ import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { todoAPI } from '@/services/endpoints/todo';
 import type { Todo } from '@/services/types/todo.types';
-import { todayIso } from '@/pages/TodoDashboard/dateHelpers';
+import { todayIso } from '@/pages/TodoDashboard/utils/dateHelpers';
 import { Panel, PanelHead } from './Panel';
 
 export function ChecklistPanel() {

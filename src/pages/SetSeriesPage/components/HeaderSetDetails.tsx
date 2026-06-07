@@ -17,7 +17,11 @@ import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 import KnowledgeAnalysisDialog from '@/components/analysis/KnowledgeAnalysisDialog';
 import { useDeleteSet, useSet, useUpdateSet } from '@/hooks/useSets';
 import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 type Props = { setId: string };
 
@@ -143,7 +147,7 @@ const HeaderSetDetails = ({ setId }: Props) => {
                 {descriptionDisplay && (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <p className='text-[14px] text-[var(--pl-text-muted)] m-0 mb-4 max-w-[560px] line-clamp-2 cursor-default'>
+                      <p className='text-[14px] text-[var(--pl-text-muted)] m-0 mb-4 max-w-200 line-clamp-2 cursor-default'>
                         {descriptionDisplay}
                       </p>
                     </TooltipTrigger>

@@ -4,15 +4,15 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { todoAPI } from '@/services/endpoints/todo';
 import type { Goal, ResourceRef, Todo } from '@/services/types/todo.types';
-import type { MentionResourceType } from './SetMentionInput';
-import GoalModal from './GoalModal';
-import TodoStats from './TodoStats';
-import WhatsNextPanel from './WhatsNextPanel';
-import TodaySection from './TodaySection';
-import WeekSection from './WeekSection';
-import YearSection from './YearSection';
-import TodoDetailModal from './TodoDetailModal';
-import { todayIso } from './dateHelpers';
+import type { MentionResourceType } from './components/SetMentionInput';
+import GoalModal from './components/GoalModal';
+import TodoStats from './components/TodoStats';
+import WhatsNextPanel from './components/WhatsNextPanel';
+import TodaySection from './components/TodaySection';
+import WeekSection from './components/WeekSection';
+import YearSection from './components/YearSection';
+import TodoDetailModal from './components/TodoDetailModal';
+import { todayIso } from './utils/dateHelpers';
 
 const TodoDashboard = () => {
   const { t } = useTranslation();

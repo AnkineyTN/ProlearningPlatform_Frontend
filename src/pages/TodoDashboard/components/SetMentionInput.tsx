@@ -7,12 +7,15 @@ import {
   RESOURCE_COMMANDS,
   type MentionResourceType,
   type SearchItem,
-} from './mentionTypes';
-import { extractSearchItems } from './mentionHelpers';
-import { useSetMentionQuery, useSearchMentionQuery } from './useMentionQueries';
+} from '../utils/mentionTypes';
+import { extractSearchItems } from '../utils/mentionHelpers';
+import {
+  useSetMentionQuery,
+  useSearchMentionQuery,
+} from '../useMentionQueries';
 
 // ─── Re-exports for existing importers ───────────────────────────────────────
-export type { MentionResourceType } from './mentionTypes';
+export type { MentionResourceType } from '../utils/mentionTypes';
 export {
   renderTitleWithRefs,
   renderTitleWithSetRefs,

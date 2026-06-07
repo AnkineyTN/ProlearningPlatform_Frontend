@@ -1524,7 +1524,54 @@
       "title": "Nothing to review right now",
       "hint": "When you miss flashcards during the week, they'll be bundled here automatically — come back later."
     },
-    "error": "Could not load bundles. Please try again."
+    "error": "Could not load bundles. Please try again.",
+    "detail": {
+      "back": "Bundles",
+      "period": "Period: {{period}}",
+      "viewMode": {
+        "flip": "Flip",
+        "list": "List"
+      },
+      "card": {
+        "front": "Front side",
+        "back": "Back side",
+        "tapToReveal": "Tap to reveal the answer",
+        "tapToFlip": "Tap the card to flip it"
+      },
+      "list": {
+        "frontLabel": "Front side · #{{index}}",
+        "backLabel": "Back side"
+      },
+      "empty": "This bundle has no cards.",
+      "actions": {
+        "saveFlashcard": "Save Flashcard",
+        "flashcardSaved": "Flashcard saved",
+        "createExam": "Create Exam",
+        "examCreated": "Exam created",
+        "dismiss": "Got it",
+        "confirmTitle": "Confirm completion",
+        "confirmDescription": "Are you sure you've mastered this bundle's content? The bundle will be removed, but any flashcards and exams generated from it stay untouched.",
+        "confirmDelete": "Delete bundle"
+      },
+      "status": {
+        "both": "Flashcards and exam created",
+        "flashcardOnly": "Flashcards created",
+        "examOnly": "Exam created"
+      },
+      "processing": "Processing…",
+      "error": {
+        "load": "Could not load the bundle. It may have been deleted.",
+        "back": "Go back"
+      },
+      "toast": {
+        "flashcardSuccess": "Review flashcard created successfully!",
+        "flashcardError": "Failed to create flashcard. Please try again.",
+        "examSuccess": "Review exam created successfully!",
+        "examError": "Failed to create exam. Please try again.",
+        "dismissSuccess": "Bundle marked as completed.",
+        "dismissError": "Could not delete the bundle. Please try again."
+      }
+    }
   },
   "notification": {
     "daily_todo": {

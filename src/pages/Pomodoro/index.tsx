@@ -21,11 +21,11 @@ import {
 import type { SessionType, SpaceDto } from '@/services/types/pomodoro.types';
 import { DEFAULT_SETTING, STORAGE_KEYS, formatTime } from './constants';
 import { usePomodoroContext } from '@/contexts/PomodoroContext';
-import SpaceBackground from './SpaceBackground';
-import SpacePicker from './SpacePicker';
-import SoundMixer from './SoundMixer';
-import SettingsModal from './SettingsModal';
-import StatsModal from './StatsModal';
+import SpaceBackground from './components/SpaceBackground';
+import SpacePicker from './components/SpacePicker';
+import SoundMixer from './components/SoundMixer';
+import SettingsModal from './components/SettingsModal';
+import StatsModal from './components/StatsModal';
 
 const Pomodoro = () => {
   const { t } = useTranslation();

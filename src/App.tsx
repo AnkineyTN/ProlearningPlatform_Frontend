@@ -11,7 +11,7 @@ import {
   PomodoroProvider,
   usePomodoroContext,
 } from '@/contexts/PomodoroContext';
-import SoundLayer from '@/pages/Pomodoro/SoundLayer';
+import SoundLayer from '@/pages/Pomodoro/components/SoundLayer.tsx';
 import { authAPI } from '@/services/endpoints/auth.ts';
 
 import { routeConfig } from './config/routeConfig.tsx';

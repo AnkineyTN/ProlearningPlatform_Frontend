@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import type { User } from '@/hooks/useAuth';
 import ProfileSection, { FieldHint, FieldLabel } from './ProfileSection';
-import { inputCls, type ProfileFormData } from './constants';
+import { inputCls, type ProfileFormData } from '../constants';
 
 interface ProfileBasicInfoProps {
   user: User | null | undefined;

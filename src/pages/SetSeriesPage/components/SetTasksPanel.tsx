@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useSet } from '@/hooks/useSets';
 import { todoAPI } from '@/services/endpoints/todo';
 import type { Todo } from '@/services/types/todo.types';
-import { todayIso } from '@/pages/TodoDashboard/dateHelpers';
+import { todayIso } from '@/pages/TodoDashboard/utils/dateHelpers';
 
 const Ring = ({ percent, size = 52 }: { percent: number; size?: number }) => {
   const stroke = 4;
