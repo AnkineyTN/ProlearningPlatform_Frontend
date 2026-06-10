@@ -128,7 +128,7 @@ const TodoDashboard = () => {
   };
 
   return (
-    <div className='min-h-screen py-8 px-10'>
+    <div className='min-h-screen py-8 px-10 bg-[var(--pl-bg)]'>
       <GoalModal
         key={editingGoal?.id ?? (goalModalOpen ? 'new' : '')}
         open={goalModalOpen || editingGoal !== null}
@@ -160,7 +160,7 @@ const TodoDashboard = () => {
           >
             {t('todo.title')}
           </h1>
-          <p className='text-[17px] italic m-0 font-[var(--font-serif)] text-[var(--pl-text-muted)]'>
+          <p className='text-[17px] italic m-0 font-serif text-[var(--pl-text-muted)]'>
             {t('todo.subtitle')}
           </p>
         </div>

@@ -19,7 +19,7 @@ const TodoStats = ({
       label: t('todo.stats.completed'),
       value: completedCount,
       Icon: CheckCircle2,
-      color: 'oklch(0.72 0.15 155)',
+      color: 'var(--pl-success)',
     },
     {
       label: t('todo.stats.pending'),
@@ -54,7 +54,7 @@ const TodoStats = ({
               {s.label}
             </span>
           </div>
-          <div className='text-[36px] tracking-tight leading-none font-[var(--font-display)] text-[var(--pl-text)]'>
+          <div className='text-[36px] tracking-tight leading-none font-display text-[var(--pl-text)]'>
             {s.value}
           </div>
         </div>

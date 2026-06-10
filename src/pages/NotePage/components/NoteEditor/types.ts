@@ -3,6 +3,8 @@ import type { HocuspocusProvider } from '@hocuspocus/provider';
 
 export interface NoteEditorHandle {
   getHTML: () => Promise<string>;
+  getMarkdown: () => Promise<string>;
+  getText: () => Promise<string>;
 }
 
 export interface CollabReady {

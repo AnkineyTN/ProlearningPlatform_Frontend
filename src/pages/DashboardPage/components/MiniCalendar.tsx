@@ -70,7 +70,7 @@ export function MiniCalendar() {
       />
       <div className='px-5 pt-1 pb-[18px]'>
         <div className='grid grid-cols-7 gap-2 text-sm text-foreground text-center mb-2'>
-          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
+          {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d, i) => (
             <div key={i}>{d}</div>
           ))}
         </div>

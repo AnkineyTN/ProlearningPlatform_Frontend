@@ -40,7 +40,7 @@ const Ring = ({ percent, size = 52 }: { percent: number; size?: number }) => {
         />
       </svg>
       <div className='absolute text-center'>
-        <div className='text-[13px] font-[var(--font-display)] leading-none text-[var(--pl-text)]'>
+        <div className='text-[13px] font-display leading-none text-[var(--pl-text)]'>
           {percent}
         </div>
         <div className='text-[7.5px] tracking-[0.14em] uppercase text-[var(--pl-text-faint)]'>
@@ -202,7 +202,7 @@ export default function SetTasksPanel({ setId }: SetTasksPanelProps) {
             <div className='text-[10.5px] tracking-[0.18em] uppercase mb-1.5 text-[var(--pl-accent-strong)]'>
               {t('set.tasks.header')}
             </div>
-            <h2 className='text-[24px] tracking-tight leading-[1.05] font-[var(--font-display)] text-[var(--pl-text)] m-0'>
+            <h2 className='text-[24px] tracking-tight leading-[1.05] font-display text-[var(--pl-text)] m-0'>
               {setTodos.length === 0
                 ? t('set.tasks.emptyHeadline')
                 : t('set.tasks.headline', { count: setTodos.length })}
@@ -246,7 +246,7 @@ export default function SetTasksPanel({ setId }: SetTasksPanelProps) {
 
         {/* Task list */}
         {setTodos.length === 0 ? (
-          <div className='text-center py-10 text-[var(--pl-text-faint)] text-[13px] italic font-[var(--font-serif)]'>
+          <div className='text-center py-10 text-[var(--pl-text-faint)] text-[13px] italic font-serif'>
             {t('set.tasks.empty')}
           </div>
         ) : (
@@ -257,7 +257,7 @@ export default function SetTasksPanel({ setId }: SetTasksPanelProps) {
                   <span className='text-[10px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)]'>
                     {t('set.tasks.pendingSection')}
                   </span>
-                  <span className='text-[10px] font-[var(--font-mono-pl)] text-[var(--pl-text-faint)]'>
+                  <span className='text-[10px] font-mono-pl text-[var(--pl-text-faint)]'>
                     {pendingTodos.length}
                   </span>
                   <div className='flex-1 h-px bg-[var(--pl-border)]' />
@@ -284,7 +284,7 @@ export default function SetTasksPanel({ setId }: SetTasksPanelProps) {
                   <span className='text-[10px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)]'>
                     {t('set.tasks.doneSection')}
                   </span>
-                  <span className='text-[10px] font-[var(--font-mono-pl)] text-[var(--pl-text-faint)]'>
+                  <span className='text-[10px] font-mono-pl text-[var(--pl-text-faint)]'>
                     {doneTodos.length}
                   </span>
                   <div className='flex-1 h-px bg-[var(--pl-border)]' />

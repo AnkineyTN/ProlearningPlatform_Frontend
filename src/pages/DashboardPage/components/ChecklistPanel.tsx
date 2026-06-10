@@ -64,7 +64,7 @@ export function ChecklistPanel() {
           />
         </div>
       </div>
-      <div className='px-3 pt-2 pb-4'>
+      <div className='px-3 pt-2 pb-4 max-h-[280px] overflow-y-auto'>
         {isLoading ? (
           <p className='px-[14px] py-3 text-[13px] text-[var(--pl-text-faint)]'>
             Loading…

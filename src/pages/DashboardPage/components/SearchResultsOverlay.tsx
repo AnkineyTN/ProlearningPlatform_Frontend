@@ -18,7 +18,7 @@ export function SearchResultsOverlay({ searchPayload, loading, error }: Props) {
   const items = parseGlobalSearchItems(searchPayload?.data);
 
   return (
-    <div className='mb-6 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[12px] p-4'>
+    <div className='mb-6 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[12px] p-4 animate-in fade-in-0 slide-in-from-top-2 duration-200'>
       <div className='text-[13px] font-semibold text-[var(--pl-text)] mb-[10px]'>
         Search results
       </div>

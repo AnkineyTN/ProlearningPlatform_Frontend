@@ -37,7 +37,7 @@ export const useSearchMentionQuery = (
     queryKey: ['mention-search', type, searchQuery],
     initialPageParam: 0,
     queryFn: async ({ pageParam }) => {
-      const res = await searchAPI.search({
+      const res = await searchAPI.searchMe({
         keyword: searchQuery,
         searchType: SEARCH_TYPE_MAP[type],
         page: pageParam as number,
@@ -51,6 +51,6 @@ export const useSearchMentionQuery = (
         ? (lastPageParam as number) + 1
         : undefined;
     },
-    enabled: enabled && searchQuery.length > 0,
+    enabled,
     staleTime: 30_000,
   });

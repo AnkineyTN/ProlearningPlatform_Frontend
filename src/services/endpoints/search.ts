@@ -28,4 +28,8 @@ export const searchAPI = {
     params: GlobalSearchParams,
   ): Promise<AxiosResponse<GlobalSearchApiResponse>> =>
     api.get(`/search?${buildSearchQueryString(params)}`),
+  searchMe: (
+    params: GlobalSearchParams,
+  ): Promise<AxiosResponse<GlobalSearchApiResponse>> =>
+    api.get(`/search/me?${buildSearchQueryString(params)}`),
 };

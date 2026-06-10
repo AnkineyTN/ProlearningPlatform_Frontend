@@ -65,9 +65,22 @@ export default function NoteEditorFallback({
     () => ({
       getHTML: async () => {
         if (editorInstance) {
-          return await editorInstance.blocksToHTMLLossy(
-            editorInstance.document,
-          );
+          return await editorInstance.blocksToHTMLLossy(editorInstance.document);
+        }
+        return '';
+      },
+      getMarkdown: async () => {
+        if (editorInstance) {
+          return await editorInstance.blocksToMarkdownLossy(editorInstance.document);
+        }
+        return '';
+      },
+      getText: async () => {
+        if (editorInstance) {
+          const html = await editorInstance.blocksToHTMLLossy(editorInstance.document);
+          const div = document.createElement('div');
+          div.innerHTML = html;
+          return div.textContent || '';
         }
         return '';
       },

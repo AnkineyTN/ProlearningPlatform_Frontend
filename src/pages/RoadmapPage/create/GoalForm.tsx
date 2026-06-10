@@ -53,7 +53,7 @@ export const GoalForm = (props: {
       <p className='text-[11px] uppercase tracking-[0.16em] mb-2 text-[var(--pl-text-faint)]'>
         {t('roadmap.create.stepLabel')} 1
       </p>
-      <h1 className='text-[34px] leading-tight mb-2 tracking-[-0.03em] font-[var(--font-display)] text-[var(--pl-text)]'>
+      <h1 className='text-[34px] leading-tight mb-2 tracking-[-0.03em] font-display text-[var(--pl-text)]'>
         {t('roadmap.create.title')}
       </h1>
       <p className='text-[13px] mb-7 text-[var(--pl-text-muted)]'>

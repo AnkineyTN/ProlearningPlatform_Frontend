@@ -97,7 +97,7 @@ const Dashboard = () => {
           />
         )}
 
-        <StatsRow streak={streak} summary={summary} setsCount={sets.length} />
+        <StatsRow streak={streak} summary={summary} setsCount={setData?.data?.metadata?.totalItems ?? sets.length} />
 
         <div className='grid grid-cols-3 gap-6'>
           <div className='flex flex-col gap-6 col-span-2'>

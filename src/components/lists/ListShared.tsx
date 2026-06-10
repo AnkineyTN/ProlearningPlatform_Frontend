@@ -1,6 +1,20 @@
 import { ChevronLeft, ChevronRight, FileX } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+function buildPageWindows(current: number, total: number): (number | '...')[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i);
+  const pages = new Set([0, total - 1, current]);
+  if (current > 0) pages.add(current - 1);
+  if (current < total - 1) pages.add(current + 1);
+  const sorted = Array.from(pages).sort((a, b) => a - b);
+  const result: (number | '...')[] = [];
+  for (let i = 0; i < sorted.length; i++) {
+    if (i > 0 && sorted[i] - sorted[i - 1] > 1) result.push('...');
+    result.push(sorted[i]);
+  }
+  return result;
+}
+
 export function EmptyState({ label }: { label: string }) {
   return (
     <div className='flex flex-col items-center justify-center min-h-[320px] gap-3 text-[var(--pl-text-faint)]'>
@@ -34,20 +48,20 @@ export function CardGrid({ children }: { children: React.ReactNode }) {
 export function Pagination({
   current,
   total,
-  onPrev,
-  onNext,
+  onChange,
 }: {
   current: number;
   total: number;
-  onPrev: () => void;
-  onNext: () => void;
+  onChange: (page: number) => void;
 }) {
   if (total <= 1) return null;
 
+  const pages = buildPageWindows(current, total);
+
   return (
-    <div className='flex justify-center items-center gap-3 pb-8'>
+    <div className='flex justify-center items-center gap-1 pb-8'>
       <button
-        onClick={onPrev}
+        onClick={() => onChange(current - 1)}
         disabled={current === 0}
         className={cn(
           'w-8 h-8 rounded-lg grid place-items-center border border-[var(--pl-border)] transition-[background] duration-150',
@@ -59,13 +73,32 @@ export function Pagination({
         <ChevronLeft size={14} />
       </button>
 
-      <span className='text-[13px] tabular-nums text-[var(--pl-text-muted)]'>
-        {current + 1}{' '}
-        <span className='text-[var(--pl-text-faint)]'>/ {total}</span>
-      </span>
+      {pages.map((p, i) =>
+        p === '...' ? (
+          <span
+            key={`ellipsis-${i}`}
+            className='w-8 h-8 grid place-items-center text-[12px] text-[var(--pl-text-faint)]'
+          >
+            …
+          </span>
+        ) : (
+          <button
+            key={p}
+            onClick={() => onChange(p)}
+            className={cn(
+              'w-8 h-8 rounded-lg grid place-items-center text-[12.5px] tabular-nums border transition-[background,color] duration-150 cursor-pointer',
+              p === current
+                ? 'bg-[var(--pl-accent-soft)] border-[var(--pl-accent-border)] text-[var(--pl-accent-strong)] font-medium'
+                : 'bg-[var(--pl-bg-elev)] border-[var(--pl-border)] text-[var(--pl-text-muted)] hover:bg-[var(--pl-bg-hover)]',
+            )}
+          >
+            {p + 1}
+          </button>
+        ),
+      )}
 
       <button
-        onClick={onNext}
+        onClick={() => onChange(current + 1)}
         disabled={current >= total - 1}
         className={cn(
           'w-8 h-8 rounded-lg grid place-items-center border border-[var(--pl-border)] transition-[background] duration-150',

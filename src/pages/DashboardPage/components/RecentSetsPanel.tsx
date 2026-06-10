@@ -27,9 +27,15 @@ export function RecentSetsPanel({ sets }: Props) {
       />
       <div className='px-3 pt-1 pb-4'>
         {sets.length === 0 && (
-          <p className='px-[14px] py-3 text-[13px] text-[var(--pl-text-faint)]'>
-            No sets yet. Create your first set!
-          </p>
+          <div className='px-[14px] py-4 flex items-center justify-between'>
+            <p className='text-[13px] text-[var(--pl-text-faint)]'>No sets yet.</p>
+            <button
+              onClick={() => navigate('/sets')}
+              className='text-[12.5px] text-[var(--pl-accent-strong)] bg-transparent border-0 cursor-pointer hover:underline'
+            >
+              Create your first set →
+            </button>
+          </div>
         )}
         {sets.map((s, i) => (
           <button

@@ -39,7 +39,7 @@ const SummaryQuery = ({ query }: { query: string }) => {
       : query.slice(0, QUERY_PREVIEW_LIMIT).trimEnd();
 
   return (
-    <p className='text-sm italic text-[var(--pl-text-muted)] leading-relaxed font-[var(--font-serif)] border-l-2 border-[var(--pl-accent-border)] pl-3'>
+    <p className='text-sm italic text-[var(--pl-text-muted)] leading-relaxed font-serif border-l-2 border-[var(--pl-accent-border)] pl-3'>
       "{displayed}
       {isTruncatable && !expanded ? '...' : ''}"
       {isTruncatable ? (
@@ -119,7 +119,7 @@ const SummaryCard = ({
           )}
           {collapsed ? (
             <span
-              className='text-xs italic text-[var(--pl-text-muted)] truncate font-[var(--font-serif)] min-w-0'
+              className='text-xs italic text-[var(--pl-text-muted)] truncate font-serif min-w-0'
               title={summary.query}
             >
               {summary.query}

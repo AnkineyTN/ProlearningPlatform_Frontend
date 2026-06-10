@@ -113,3 +113,19 @@
 .docx-preview-wrapper {
   padding: 0 !important;
 }
+
+/* Override BlockNote's hardcoded #161616 background on code blocks */
+.block-note-editor .bn-block-content[data-content-type="codeBlock"] {
+  background-color: var(--pl-bg-sunken) !important;
+  color: var(--pl-text) !important;
+  border: 1px solid var(--pl-border) !important;
+}
+
+.block-note-editor .bn-block-content[data-content-type="codeBlock"] > div > select {
+  color: var(--pl-text-muted) !important;
+}
+
+.block-note-editor .bn-block-content[data-content-type="codeBlock"] > div > select > option {
+  color: var(--pl-text) !important;
+  background-color: var(--pl-bg-elev) !important;
+}

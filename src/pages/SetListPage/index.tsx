@@ -2,12 +2,26 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+function buildPageWindows(current: number, total: number): (number | '...')[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i);
+  const pages = new Set([0, total - 1, current]);
+  if (current > 0) pages.add(current - 1);
+  if (current < total - 1) pages.add(current + 1);
+  const sorted = Array.from(pages).sort((a, b) => a - b);
+  const result: (number | '...')[] = [];
+  for (let i = 0; i < sorted.length; i++) {
+    if (i > 0 && sorted[i] - sorted[i - 1] > 1) result.push('...');
+    result.push(sorted[i]);
+  }
+  return result;
+}
 import { toast } from 'sonner';
 
 import SetCard from '@/components/cards/SetCard';
 import { type Set } from '@/components/cards/SetCard';
 import CreateNewModal from '@/components/modals/CreateNewModal';
-import { Button } from '@/components/ui/button';
 import {
   useDeleteSet,
   useUpdateSet,
@@ -151,6 +165,11 @@ export default function SetListPage() {
           onSortChange={setSortOption}
           viewMode={viewMode}
           onViewModeChange={setViewMode}
+          onClearFilters={() => {
+            setListSearch('');
+            setPrivacyFilter('');
+            setSortOption('id,DESC');
+          }}
         />
         <div
           className='mt-4'
@@ -184,37 +203,59 @@ export default function SetListPage() {
               />
             )}
 
-            <div className='flex justify-center items-center gap-4'>
-              <Button
-                variant='ghost'
-                onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
-                disabled={currentPage === 0}
-                className='p-2 rounded-lg disabled:opacity-30'
-                style={{ color: 'var(--pl-text-muted)' }}
-              >
-                <ChevronLeft size={16} />
-              </Button>
-              <span
-                className='text-[12.5px]'
-                style={{
-                  fontFamily: 'var(--font-mono-pl)',
-                  color: 'var(--pl-text-muted)',
-                }}
-              >
-                {currentPage + 1} / {totalPages}
-              </span>
-              <Button
-                variant='ghost'
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
-                }
-                disabled={currentPage >= totalPages - 1}
-                className='p-2 rounded-lg disabled:opacity-30'
-                style={{ color: 'var(--pl-text-muted)' }}
-              >
-                <ChevronRight size={16} />
-              </Button>
-            </div>
+            {totalPages > 1 && (
+              <div className='flex justify-center items-center gap-1 mb-8'>
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
+                  disabled={currentPage === 0}
+                  className={cn(
+                    'w-8 h-8 rounded-lg grid place-items-center border border-[var(--pl-border)] transition-[background] duration-150',
+                    currentPage === 0
+                      ? 'bg-transparent text-[var(--pl-text-faint)] cursor-not-allowed opacity-40'
+                      : 'bg-[var(--pl-bg-elev)] text-[var(--pl-text)] cursor-pointer hover:bg-[var(--pl-bg-hover)]',
+                  )}
+                >
+                  <ChevronLeft size={14} />
+                </button>
+
+                {buildPageWindows(currentPage, totalPages).map((p, i) =>
+                  p === '...' ? (
+                    <span
+                      key={`ellipsis-${i}`}
+                      className='w-8 h-8 grid place-items-center text-[12px] text-[var(--pl-text-faint)]'
+                    >
+                      …
+                    </span>
+                  ) : (
+                    <button
+                      key={p}
+                      onClick={() => setCurrentPage(p)}
+                      className={cn(
+                        'w-8 h-8 rounded-lg grid place-items-center text-[12.5px] tabular-nums border transition-[background,color] duration-150 cursor-pointer',
+                        p === currentPage
+                          ? 'bg-[var(--pl-accent-soft)] border-[var(--pl-accent-border)] text-[var(--pl-accent-strong)] font-medium'
+                          : 'bg-[var(--pl-bg-elev)] border-[var(--pl-border)] text-[var(--pl-text-muted)] hover:bg-[var(--pl-bg-hover)]',
+                      )}
+                    >
+                      {p + 1}
+                    </button>
+                  ),
+                )}
+
+                <button
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
+                  disabled={currentPage >= totalPages - 1}
+                  className={cn(
+                    'w-8 h-8 rounded-lg grid place-items-center border border-[var(--pl-border)] transition-[background] duration-150',
+                    currentPage >= totalPages - 1
+                      ? 'bg-transparent text-[var(--pl-text-faint)] cursor-not-allowed opacity-40'
+                      : 'bg-[var(--pl-bg-elev)] text-[var(--pl-text)] cursor-pointer hover:bg-[var(--pl-bg-hover)]',
+                  )}
+                >
+                  <ChevronRight size={14} />
+                </button>
+              </div>
+            )}
           </>
         ) : (
           <SetEmptyState onCreateClick={() => setIsCreateModalOpen(true)} />

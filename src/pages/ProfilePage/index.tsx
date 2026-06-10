@@ -159,7 +159,7 @@ export default function ProfilePage() {
         >
           {t('profile.title')}
         </h1>
-        <p className='text-[17px] italic m-0 font-[var(--font-serif)] text-[var(--pl-text-muted)]'>
+        <p className='text-[17px] italic m-0 font-serif text-[var(--pl-text-muted)]'>
           {t('profile.subtitle')}
         </p>
       </div>

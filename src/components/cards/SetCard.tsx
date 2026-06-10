@@ -63,22 +63,7 @@ const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
 
   return (
     <div
-      className='group relative rounded-[14px] p-[18px] cursor-pointer transition-all duration-200'
-      style={{
-        background: 'var(--pl-bg-elev)',
-        border: '1px solid var(--pl-border)',
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLDivElement).style.borderColor =
-          'var(--pl-accent-border)';
-        (e.currentTarget as HTMLDivElement).style.transform =
-          'translateY(-2px)';
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLDivElement).style.borderColor =
-          'var(--pl-border)';
-        (e.currentTarget as HTMLDivElement).style.transform = 'none';
-      }}
+      className='group relative rounded-[14px] p-[18px] cursor-pointer transition-all duration-200 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] hover:border-[var(--pl-accent-border)] hover:-translate-y-0.5'
       onClick={() => {
         if (!showMenu && !showDeleteDialog && !showNotifDialog)
           onAccess(set.id);
@@ -192,21 +177,15 @@ const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
         }}
       >
         <div className='flex items-center gap-4'>
-          {set.numNotes > 0 && (
-            <span className='flex items-center gap-1'>
-              <FileText size={10} /> {set.numNotes}
-            </span>
-          )}
-          {set.numFlashcards > 0 && (
-            <span className='flex items-center gap-1'>
-              <SwatchBook size={10} /> {set.numFlashcards}
-            </span>
-          )}
-          {set.numExams > 0 && (
-            <span className='flex items-center gap-1'>
-              <FilePen size={10} /> {set.numExams}
-            </span>
-          )}
+          <span className='flex items-center gap-1'>
+            <FileText size={10} /> {set.numNotes}
+          </span>
+          <span className='flex items-center gap-1'>
+            <SwatchBook size={10} /> {set.numFlashcards}
+          </span>
+          <span className='flex items-center gap-1'>
+            <FilePen size={10} /> {set.numExams}
+          </span>
         </div>
         <span className='flex items-center gap-1'>
           <Clock size={10} /> {set.updated_at}

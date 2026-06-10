@@ -74,7 +74,7 @@ const RoadmapDetailPage = () => {
                 </>
               )}
             </div>
-            <h1 className='text-[38px] leading-tight mb-3 tracking-[-0.03em] font-[var(--font-display)] text-[var(--pl-text)]'>
+            <h1 className='text-[38px] leading-tight mb-3 tracking-[-0.03em] font-display text-[var(--pl-text)]'>
               {roadmap.title}
             </h1>
             <p className='text-[13.5px] max-w-[640px] text-[var(--pl-text-muted)]'>

@@ -23,6 +23,7 @@ interface SetSeriesActionBarProps {
   onNotesPrivacyChange: (v: ListPrivacyFilter) => void;
   notesSort: ListSortOption;
   onNotesSortChange: (v: ListSortOption) => void;
+  onNotesClear: () => void;
 
   // Flashcards filters
   flashcardsSearch: string;
@@ -33,6 +34,7 @@ interface SetSeriesActionBarProps {
   onFlashcardsMethodChange: (v: ListCreateMethodFilter) => void;
   flashcardsSort: ListSortOption;
   onFlashcardsSortChange: (v: ListSortOption) => void;
+  onFlashcardsClear: () => void;
 
   // Exams filters
   examsSearch: string;
@@ -43,6 +45,7 @@ interface SetSeriesActionBarProps {
   onExamsMethodChange: (v: ListCreateMethodFilter) => void;
   examsSort: ListSortOption;
   onExamsSortChange: (v: ListSortOption) => void;
+  onExamsClear: () => void;
 }
 
 export default function SetSeriesActionBar({
@@ -57,6 +60,7 @@ export default function SetSeriesActionBar({
   onNotesPrivacyChange,
   notesSort,
   onNotesSortChange,
+  onNotesClear,
   flashcardsSearch,
   onFlashcardsSearchChange,
   flashcardsPrivacy,
@@ -65,6 +69,7 @@ export default function SetSeriesActionBar({
   onFlashcardsMethodChange,
   flashcardsSort,
   onFlashcardsSortChange,
+  onFlashcardsClear,
   examsSearch,
   onExamsSearchChange,
   examsPrivacy,
@@ -73,6 +78,7 @@ export default function SetSeriesActionBar({
   onExamsMethodChange,
   examsSort,
   onExamsSortChange,
+  onExamsClear,
 }: SetSeriesActionBarProps) {
   const { t } = useTranslation();
 
@@ -111,6 +117,7 @@ export default function SetSeriesActionBar({
           onPrivacyChange={onNotesPrivacyChange}
           sort={notesSort}
           onSortChange={onNotesSortChange}
+          onClear={onNotesClear}
         />
       )}
       {activeTab === 'Flashcards' && (
@@ -124,6 +131,7 @@ export default function SetSeriesActionBar({
           onCreateMethodChange={onFlashcardsMethodChange}
           sort={flashcardsSort}
           onSortChange={onFlashcardsSortChange}
+          onClear={onFlashcardsClear}
         />
       )}
       {activeTab === 'Exams' && (
@@ -137,6 +145,7 @@ export default function SetSeriesActionBar({
           onCreateMethodChange={onExamsMethodChange}
           sort={examsSort}
           onSortChange={onExamsSortChange}
+          onClear={onExamsClear}
         />
       )}
     </div>

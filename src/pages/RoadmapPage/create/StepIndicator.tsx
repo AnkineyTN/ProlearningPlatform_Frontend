@@ -28,7 +28,7 @@ export const StepIndicator = ({ step }: { step: Step }) => {
                     : 'bg-[var(--pl-bg-elev)] text-[var(--pl-text-faint)]'
               }`}
             >
-              <span className='font-[var(--font-mono-pl)]'>{i + 1}</span>
+              <span className='font-mono-pl'>{i + 1}</span>
               {s.label}
             </div>
             {i < steps.length - 1 && (

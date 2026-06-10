@@ -418,6 +418,26 @@ export function useSetSeriesHandlers({
     }
   };
 
+  const clearNotesFilters = () => {
+    setNotesSearch('');
+    setNotesPrivacy('');
+    setNotesSort('id,DESC');
+  };
+
+  const clearFlashcardsFilters = () => {
+    setFlashcardsSearch('');
+    setFlashcardsPrivacy('');
+    setFlashcardsMethod('');
+    setFlashcardsSort('id,DESC');
+  };
+
+  const clearExamsFilters = () => {
+    setExamsSearch('');
+    setExamsPrivacy('');
+    setExamsMethod('');
+    setExamsSort('id,DESC');
+  };
+
   const handleCloseUpdateModal = () => {
     setIsUpdateModalOpen(false);
     setSelectedNote(null);
@@ -480,5 +500,8 @@ export function useSetSeriesHandlers({
     handleUpdateExam,
     handleDeleteExam,
     handleCloseUpdateModal,
+    clearNotesFilters,
+    clearFlashcardsFilters,
+    clearExamsFilters,
   };
 }

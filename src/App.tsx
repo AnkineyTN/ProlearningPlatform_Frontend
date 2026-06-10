@@ -2,7 +2,7 @@ import './i18n/config';
 
 import { useEffect } from 'react';
 import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
-import { Toaster } from 'sonner';
+import { Toaster } from '@/components/ui/sonner';
 
 import PomodoroFloatingWidget from '@/components/PomodoroFloatingWidget';
 import { ColorThemeProvider } from '@/components/theme/color-theme-provider.tsx';
@@ -70,21 +70,18 @@ function App() {
       });
     }
   }, []);
-  const theme = localStorage.getItem('vite-ui-theme') || 'dark';
 
   return (
-    <>
-      <Toaster theme={theme as 'light' | 'dark' | 'system'} richColors />
-      <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
-        <ColorThemeProvider>
-          <PomodoroProvider>
-            <Router>
-              <AppContent />
-            </Router>
-          </PomodoroProvider>
-        </ColorThemeProvider>
-      </ThemeProvider>
-    </>
+    <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
+      <Toaster />
+      <ColorThemeProvider>
+        <PomodoroProvider>
+          <Router>
+            <AppContent />
+          </Router>
+        </PomodoroProvider>
+      </ColorThemeProvider>
+    </ThemeProvider>
   );
 }
 

@@ -1,4 +1,4 @@
-import { Search, ArrowUpDown } from 'lucide-react';
+import { Search, ArrowUpDown, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -27,6 +27,7 @@ type ResourceFiltersBarProps = {
   onCreateMethodChange?: (value: ListCreateMethodFilter) => void;
   sort?: ListSortOption;
   onSortChange?: (value: ListSortOption) => void;
+  onClear?: () => void;
   className?: string;
 };
 
@@ -80,8 +81,14 @@ export function ResourceFiltersBar({
   onCreateMethodChange,
   sort,
   onSortChange,
+  onClear,
   className = '',
 }: ResourceFiltersBarProps) {
+  const hasActiveFilters =
+    (searchValue?.length ?? 0) > 0 ||
+    privacy !== '' ||
+    (createMethod !== undefined && createMethod !== '') ||
+    (sort !== undefined && sort !== 'id,DESC');
   const { t } = useTranslation();
 
   const privacyOptions: { value: ListPrivacyFilter; label: string }[] = [
@@ -188,6 +195,17 @@ export function ResourceFiltersBar({
           options={sortOptions}
           icon={<ArrowUpDown size={11} />}
         />
+      )}
+
+      {/* Clear filters */}
+      {hasActiveFilters && onClear && (
+        <button
+          onClick={onClear}
+          className='flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[12px] text-[var(--pl-text-muted)] hover:text-[var(--pl-danger-text)] hover:bg-[var(--pl-danger-soft)] transition-colors duration-150 border border-[var(--pl-border)] bg-transparent cursor-pointer'
+        >
+          <X size={11} />
+          Clear
+        </button>
       )}
     </div>
   );

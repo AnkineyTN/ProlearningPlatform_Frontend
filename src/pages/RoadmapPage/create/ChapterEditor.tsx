@@ -60,7 +60,7 @@ export const ChapterEditor = ({
         >
           <ChevronRight size={14} />
         </Button>
-        <span className='shrink-0 text-[10.5px] tracking-[0.14em] uppercase px-2 py-[2px] rounded-full bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)] font-[var(--font-mono-pl)]'>
+        <span className='shrink-0 text-[10.5px] tracking-[0.14em] uppercase px-2 py-[2px] rounded-full bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)] font-mono-pl'>
           {t('roadmap.create.chapter', { n: index + 1 })}
         </span>
         <input
@@ -99,7 +99,7 @@ export const ChapterEditor = ({
                 className='flex flex-col gap-1.5 px-3 py-2.5 rounded-[8px] bg-[var(--pl-bg)] border border-[var(--pl-border)]'
               >
                 <div className='flex items-center gap-2'>
-                  <span className='text-[11px] w-5 text-center shrink-0 font-[var(--font-mono-pl)] text-[var(--pl-text-faint)]'>
+                  <span className='text-[11px] w-5 text-center shrink-0 font-mono-pl text-[var(--pl-text-faint)]'>
                     {ti + 1}
                   </span>
                   <input

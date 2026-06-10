@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import type { Goal, Todo } from '@/services/types/todo.types';
 import { todayIso } from '../utils/dateHelpers';
+import { renderTitleWithRefs } from './mentionTitleRenderer';
 
 type Reason = 'overdue' | 'urgent' | 'stuck';
 
@@ -21,9 +22,9 @@ type SuggestedItem = {
 
 const REASON_STYLE: Record<Reason, { Icon: React.ElementType; color: string }> =
   {
-    overdue: { Icon: AlertCircle, color: 'oklch(0.65 0.2 25)' },
-    urgent: { Icon: Flame, color: 'oklch(0.72 0.18 50)' },
-    stuck: { Icon: TrendingDown, color: 'oklch(0.65 0.15 200)' },
+    overdue: { Icon: AlertCircle, color: 'var(--pl-danger)' },
+    urgent: { Icon: Flame, color: 'var(--pl-warning)' },
+    stuck: { Icon: TrendingDown, color: 'var(--pl-accent)' },
   };
 
 const MAX_PER_REASON = 3;
@@ -104,7 +105,7 @@ export default function WhatsNextPanel({
           <span className='text-[10.5px] tracking-[0.18em] uppercase text-[var(--pl-accent-strong)]'>
             {t('todo.whatsNext.title')}
           </span>
-          <span className='text-[10.5px] font-[var(--font-mono-pl)] px-1.5 py-0.5 rounded-full bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]'>
+          <span className='text-[10.5px] font-mono-pl px-1.5 py-0.5 rounded-full bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]'>
             {suggestions.length}
           </span>
         </div>
@@ -172,7 +173,7 @@ export default function WhatsNextPanel({
                   <div
                     className={`text-[13.5px] truncate ${isDone ? 'line-through text-[var(--pl-text-faint)]' : 'text-[var(--pl-text)]'}`}
                   >
-                    {todo.title}
+                    {renderTitleWithRefs(todo.title, todo, isDone)}
                   </div>
                   <div className='flex items-center gap-1.5 mt-0.5 flex-wrap'>
                     <span

@@ -20,7 +20,7 @@ export const ProgressBar = ({
             {t('roadmap.detail.progressLabel')}
           </span>
           <span
-            className={`text-[12.5px] font-medium font-[var(--font-mono-pl)] ${
+            className={`text-[12.5px] font-medium font-mono-pl ${
               completedFlag
                 ? 'text-[oklch(0.7_0.18_150)]'
                 : 'text-[var(--pl-accent-strong)]'

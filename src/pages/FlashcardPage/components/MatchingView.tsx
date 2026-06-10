@@ -38,6 +38,9 @@ const MatchingView = ({
     snapshotPrevRun,
     showAllPlays,
     activeTab,
+    streak,
+    countdown,
+    showConfetti,
     setIsGameStarted,
     setExpandedHistoryId,
     setShowAllPlays,
@@ -219,6 +222,9 @@ const MatchingView = ({
       matchedPairs={matchedPairs}
       totalPairs={totalPairs}
       timer={timer}
+      streak={streak}
+      countdown={countdown}
+      showConfetti={showConfetti}
       formatTime={formatTime}
       getCardStyle={getCardStyle}
       onCardClick={handleCardClick}

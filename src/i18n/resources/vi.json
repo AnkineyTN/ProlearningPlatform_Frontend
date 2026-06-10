@@ -1612,6 +1612,7 @@
       "namePlaceholder": "Tên goal...",
       "descPlaceholder": "Mô tả (tùy chọn)...",
       "targetDate": "Ngày mục tiêu",
+      "selectDate": "Chọn ngày",
       "color": "Màu sắc",
       "noParent": "-- Không gắn --",
       "cancel": "Hủy",

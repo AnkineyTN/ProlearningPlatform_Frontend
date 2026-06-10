@@ -110,8 +110,7 @@ const NoteListPage = ({
       <Pagination
         current={currentPage}
         total={totalPages}
-        onPrev={() => setCurrentPage((p) => Math.max(0, p - 1))}
-        onNext={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
+        onChange={(p) => setCurrentPage(p)}
       />
     </div>
   );

@@ -52,7 +52,7 @@ const RoadmapsListPage = () => {
               <p className='text-[11px] uppercase tracking-[0.16em] mb-2 text-[var(--pl-text-faint)]'>
                 {t('roadmap.subtitle')}
               </p>
-              <h1 className='text-[42px] leading-none tracking-[-0.03em] font-[var(--font-display)] text-[var(--pl-text)]'>
+              <h1 className='text-[42px] leading-none tracking-[-0.03em] font-display text-[var(--pl-text)]'>
                 {t('roadmap.title')}
               </h1>
               <p className='text-[13px] mt-3 max-w-[560px] text-[var(--pl-text-muted)]'>
@@ -132,7 +132,7 @@ const RoadmapCard = ({
               {isDone ? <CheckCircle2 size={16} /> : <MapIcon size={16} />}
             </div>
             {roadmap.estimatedTotalHours > 0 && (
-              <span className='flex items-center gap-1 text-[10.5px] uppercase tracking-[0.12em] px-2 py-[3px] rounded-full bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)] font-[var(--font-mono-pl)]'>
+              <span className='flex items-center gap-1 text-[10.5px] uppercase tracking-[0.12em] px-2 py-[3px] rounded-full bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)] font-mono-pl'>
                 <Clock size={10} />
                 {t('roadmap.hours', { count: roadmap.estimatedTotalHours })}
               </span>
@@ -174,7 +174,7 @@ const RoadmapCard = ({
             {t('roadmap.card.progress')}
           </span>
           <span
-            className={`text-[11.5px] font-[var(--font-mono-pl)] ${
+            className={`text-[11.5px] font-mono-pl ${
               isDone
                 ? 'text-[oklch(0.7_0.18_150)]'
                 : 'text-[var(--pl-accent-strong)]'

@@ -10,7 +10,7 @@ export function FieldLabel({ children }: { children: React.ReactNode }) {
 
 export function FieldHint({ children }: { children: React.ReactNode }) {
   return (
-    <span className='text-[11.5px] italic font-[var(--font-serif)] text-[var(--pl-text-faint)]'>
+    <span className='text-[11.5px] italic font-serif text-[var(--pl-text-faint)]'>
       {children}
     </span>
   );
@@ -37,7 +37,7 @@ export default function ProfileSection({
           {title}
         </h3>
         {sub && (
-          <p className='text-[13px] m-0 italic font-[var(--font-serif)] text-[var(--pl-text-muted)]'>
+          <p className='text-[13px] m-0 italic font-serif text-[var(--pl-text-muted)]'>
             {sub}
           </p>
         )}

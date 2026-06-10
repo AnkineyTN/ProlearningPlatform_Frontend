@@ -48,6 +48,10 @@ export const useMatchingGame = ({
   const [snapshotPrevRun, setSnapshotPrevRun] =
     useState<GameHistoryItem | null>(null);
   const [showAllPlays, setShowAllPlays] = useState(false);
+  const [streak, setStreak] = useState(0);
+  const [shakingCards, setShakingCards] = useState<Set<string>>(new Set());
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const saveGameResult = useSaveGameResult();
   const isPublic = privacy === 'PUBLIC';
@@ -119,6 +123,21 @@ export const useMatchingGame = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [endTime]);
 
+  // Countdown: 3 → 2 → 1 → 0 ("Go!") → start timer
+  useEffect(() => {
+    if (countdown === null) return;
+    if (countdown > 0) {
+      const t = setTimeout(() => setCountdown((c) => (c ?? 1) - 1), 1000);
+      return () => clearTimeout(t);
+    }
+    // countdown === 0: show "Go!" for 600ms then start
+    const t = setTimeout(() => {
+      setCountdown(null);
+      setStartTime(Date.now());
+    }, 600);
+    return () => clearTimeout(t);
+  }, [countdown]);
+
   const initializeGame = () => {
     const selectedFlashcards = flashcards.slice(0, 6);
     const termCards: MatchingCard[] = selectedFlashcards.map((card) => ({
@@ -145,11 +164,15 @@ export const useMatchingGame = ({
     setTimer(0);
     setResultSaved(false);
     setWrongCardCounts({});
+    setStreak(0);
+    setShakingCards(new Set());
+    setShowConfetti(false);
     setIsGameStarted(true);
+    setCountdown(3);
   };
 
   const handleCardClick = (cardId: string) => {
-    if (!startTime) setStartTime(Date.now());
+    if (!startTime) return;
     const card = cards.find((c) => c.id === cardId);
     if (!card || card.isMatched) return;
     if (selectedCards.length >= 2) return;
@@ -180,10 +203,14 @@ export const useMatchingGame = ({
           newMatchedPairs.add(firstCard.originalId);
           setMatchedPairs(newMatchedPairs);
           setSelectedCards([]);
+          setStreak((s) => s + 1);
           if (newMatchedPairs.size === Math.min(flashcards.length, 6)) {
-            setEndTime(Date.now());
+            setShowConfetti(true);
+            setTimeout(() => setEndTime(Date.now()), 700);
           }
         } else {
+          setShakingCards(new Set([firstId, secondId]));
+          setTimeout(() => setShakingCards(new Set()), 500);
           setWrongCardCounts((prev) => {
             const next = { ...prev };
             const firstKey = String(firstCard.originalId);
@@ -192,6 +219,7 @@ export const useMatchingGame = ({
             next[secondKey] = (next[secondKey] ?? 0) + 1;
             return next;
           });
+          setStreak(0);
           setTimeout(() => setSelectedCards([]), 500);
         }
       }
@@ -214,10 +242,14 @@ export const useMatchingGame = ({
 
   const getCardStyle = (card: MatchingCard): string => {
     const base =
-      'p-4 rounded-xl border cursor-pointer transition-all duration-200 text-center flex items-center justify-center min-h-[100px] select-none';
+      'p-4 rounded-xl border cursor-pointer transition-colors duration-150 text-center flex items-center justify-center min-h-[100px] select-none';
 
     if (card.isMatched) {
-      return `${base} bg-[var(--pl-accent-soft)] border-[var(--pl-accent-border)] opacity-60 cursor-default scale-95`;
+      return `${base} bg-[var(--pl-accent-soft)] border-[var(--pl-accent-border)] opacity-60 cursor-default animate-[pop-match_0.4s_ease-out_forwards]`;
+    }
+
+    if (shakingCards.has(card.id)) {
+      return `${base} bg-[var(--pl-danger-soft)] border-[var(--pl-danger)] animate-[shake_0.5s_ease-in-out]`;
     }
 
     if (selectedCards.includes(card.id)) {
@@ -268,6 +300,9 @@ export const useMatchingGame = ({
     snapshotPrevRun,
     showAllPlays,
     activeTab,
+    streak,
+    countdown,
+    showConfetti,
     // Setters
     setIsGameStarted,
     setExpandedHistoryId,

@@ -2,12 +2,13 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import type { Goal } from '@/services/types/todo.types';
+import { Button } from '@/components/ui/button';
 
-type YearSectionProps = {
+interface YearSectionProps {
   goals: Goal[];
   onEditGoal: (g: Goal) => void;
   onNewGoal: () => void;
-};
+}
 
 const MonthCell = ({
   monthIndex,
@@ -29,10 +30,7 @@ const MonthCell = ({
 
   return (
     <div
-      className='rounded-[12px] p-3 border bg-[var(--pl-bg-elev)] min-h-[140px] flex flex-col'
-      style={{
-        borderColor: isCurrent ? 'var(--pl-accent-border)' : 'var(--pl-border)',
-      }}
+      className={`rounded-[12px] p-3 border bg-[var(--pl-bg-elev)] min-h-[140px] flex flex-col ${isCurrent ? 'border-[var(--pl-accent-border)]' : 'border-[var(--pl-border)]'}`}
     >
       <div className='flex items-baseline justify-between mb-2'>
         <div
@@ -45,7 +43,7 @@ const MonthCell = ({
         >
           {monthLabel}
         </div>
-        <span className='text-[10px] font-[var(--font-mono-pl)] text-[var(--pl-text-faint)]'>
+        <span className='text-[10px] font-mono-pl text-[var(--pl-text-faint)]'>
           {goals.length > 0 ? goals.length : ''}
         </span>
       </div>
@@ -59,10 +57,11 @@ const MonthCell = ({
           {goals.map((g) => {
             const accent = g.color ?? '#6366f1';
             return (
-              <button
+              <Button
                 key={g.id}
+                variant='ghost'
                 onClick={() => onEditGoal(g)}
-                className='text-left flex items-center gap-2 rounded-[6px] px-1.5 py-1 hover:bg-[var(--pl-bg-hover)]'
+                className='h-auto w-full justify-start rounded-[6px] px-1.5 py-1 text-left'
                 title={t('todo.year.progressHint', { progress: g.progress })}
               >
                 <span
@@ -73,12 +72,12 @@ const MonthCell = ({
                   {g.title}
                 </span>
                 <span
-                  className='ml-auto text-[10px] font-[var(--font-mono-pl)] flex-shrink-0'
+                  className='ml-auto text-[10px] font-mono-pl flex-shrink-0'
                   style={{ color: accent }}
                 >
                   {g.progress}%
                 </span>
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -113,7 +112,7 @@ const YearSection = ({ goals, onEditGoal, onNewGoal }: YearSectionProps) => {
     <section className='mb-7'>
       <div className='flex items-center justify-between mb-3'>
         <div className='flex items-baseline gap-3'>
-          <h2 className='text-[22px] font-[var(--font-display)] tracking-tight m-0 text-[var(--pl-text)]'>
+          <h2 className='text-[22px] font-display tracking-tight m-0 text-[var(--pl-text)]'>
             {t('todo.year.title')}
           </h2>
           <span className='text-[12px] text-[var(--pl-text-muted)]'>
@@ -121,32 +120,31 @@ const YearSection = ({ goals, onEditGoal, onNewGoal }: YearSectionProps) => {
           </span>
         </div>
         <div className='flex items-center gap-1.5'>
-          <button
-            onClick={onNewGoal}
-            className='inline-flex items-center gap-1 text-[11.5px] px-3 py-1.5 rounded-[7px] border border-[var(--pl-border)] text-[var(--pl-text-muted)] hover:text-[var(--pl-text)]'
-          >
+          <Button variant='outline' size='sm' onClick={onNewGoal}>
             <Plus className='w-3 h-3' />
             {t('todo.overall.newGoal')}
-          </button>
-          <button
+          </Button>
+          <Button
+            variant='outline'
+            size='icon'
             onClick={() => setYear((y) => y - 1)}
-            className='w-[30px] h-[30px] rounded-[7px] border border-[var(--pl-border)] grid place-items-center text-[var(--pl-text-muted)] hover:text-[var(--pl-text)]'
           >
             <ChevronLeft className='w-4 h-4' />
-          </button>
-          <div className='text-[13px] font-[var(--font-mono-pl)] px-3 py-1 min-w-[70px] text-center text-[var(--pl-text)]'>
+          </Button>
+          <div className='text-[13px] font-mono-pl px-3 py-1 min-w-[70px] text-center text-[var(--pl-text)]'>
             {year}
           </div>
-          <button
+          <Button
+            variant='outline'
+            size='icon'
             onClick={() => setYear((y) => y + 1)}
-            className='w-[30px] h-[30px] rounded-[7px] border border-[var(--pl-border)] grid place-items-center text-[var(--pl-text-muted)] hover:text-[var(--pl-text)]'
           >
             <ChevronRight className='w-4 h-4' />
-          </button>
+          </Button>
         </div>
       </div>
 
-      <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2'>
+      <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3'>
         {goalsByMonth.map((bucket, idx) => (
           <MonthCell
             key={idx}

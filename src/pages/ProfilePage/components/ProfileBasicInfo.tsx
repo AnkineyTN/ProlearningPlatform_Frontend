@@ -154,7 +154,7 @@ export default function ProfileBasicInfo({
             placeholder={t('profile.basicInfo.bioPlaceholder')}
             className={
               inputCls +
-              ' resize-y font-[var(--font-serif)] text-[15px] leading-[1.55]'
+              ' resize-y font-serif text-[15px] leading-[1.55]'
             }
           />
         </div>

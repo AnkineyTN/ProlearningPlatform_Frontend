@@ -1,4 +1,4 @@
-import { Search, ArrowUpDown, Grid2x2, List } from 'lucide-react';
+import { Search, ArrowUpDown, Grid2x2, List, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -26,6 +26,7 @@ type Props = {
   onSortChange: (v: ListSortOption) => void;
   viewMode: ViewMode;
   onViewModeChange: (v: ViewMode) => void;
+  onClearFilters?: () => void;
 };
 
 export default function SetFilterBar({
@@ -37,7 +38,9 @@ export default function SetFilterBar({
   onSortChange,
   viewMode,
   onViewModeChange,
+  onClearFilters,
 }: Props) {
+  const hasActiveFilters = search.length > 0 || privacy !== '' || sort !== 'id,DESC';
   const { t } = useTranslation();
 
   const privacyOptions: { value: ListPrivacyFilter; label: string }[] = [
@@ -145,6 +148,15 @@ export default function SetFilterBar({
             ))}
           </SelectContent>
         </Select>
+        {hasActiveFilters && onClearFilters && (
+          <button
+            onClick={onClearFilters}
+            className='flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[12px] text-[var(--pl-text-muted)] hover:text-[var(--pl-danger-text)] hover:bg-[var(--pl-danger-soft)] transition-colors duration-150 border border-[var(--pl-border)] bg-transparent cursor-pointer'
+          >
+            <X size={11} />
+            Clear
+          </button>
+        )}
       </div>
 
       {/* View toggle */}

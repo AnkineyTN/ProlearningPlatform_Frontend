@@ -1,22 +1,31 @@
 import {
   ArrowLeft,
-  Download,
+  FileCode,
   FileText,
   LoaderCircle,
   Share2,
   Sparkles,
   Upload,
+  FileDown,
+  ChevronDown,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { ShareDialog } from '@/components/collaboration/ShareDialog';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import { OnlineUsersAvatars } from '@/pages/NotePage/components/OnlineUsersAvatars';
 import { useNoteFileUpload } from '@/pages/NotePage/hooks/useNoteFileUpload';
+import type { ExportFormat } from '@/pages/NotePage/downloadNoteHtml';
 import type { CollabRole } from '@/services/types/collaboration.types';
 
 interface NoteHeaderProps {
@@ -33,7 +42,7 @@ interface NoteHeaderProps {
     publicId: string;
     kind: 'doc' | 'image';
   }) => void;
-  onDownloadHTML: () => void;
+  onExport: (format: ExportFormat) => void;
   attachedFileCount?: number;
   showFilesPanel?: boolean;
   onToggleFilesPanel?: () => void;
@@ -57,7 +66,7 @@ export const NoteHeader = ({
   setId,
   userRole = 'OWNER',
   onFileUploaded,
-  onDownloadHTML,
+  onExport,
   attachedFileCount = 0,
   showFilesPanel = true,
   onToggleFilesPanel,
@@ -116,15 +125,33 @@ export const NoteHeader = ({
 
             {userRole !== 'VIEWER' && (
               <>
-                <Button
-                  onClick={onDownloadHTML}
-                  variant='ghost'
-                  size='sm'
-                  className='gap-2 text-[var(--pl-text-muted)] hover:text-[var(--pl-text)]'
-                >
-                  <Download className='w-4 h-4' />
-                  Download
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant='ghost'
+                      size='sm'
+                      className='gap-2 text-[var(--pl-text-muted)] hover:text-[var(--pl-text)]'
+                    >
+                      <FileDown className='w-4 h-4' />
+                      Export
+                      <ChevronDown className='w-3 h-3 opacity-60' />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align='end' className='w-44'>
+                    <DropdownMenuItem onClick={() => onExport('md')}>
+                      <FileText className='w-4 h-4 mr-2 text-[var(--pl-accent)]' />
+                      Markdown (.md)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onExport('txt')}>
+                      <FileText className='w-4 h-4 mr-2 text-[var(--pl-text-muted)]' />
+                      Plain text (.txt)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onExport('html')}>
+                      <FileCode className='w-4 h-4 mr-2 text-[var(--pl-warning-text)]' />
+                      HTML (.html)
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
                 <div className='relative'>
                   <input

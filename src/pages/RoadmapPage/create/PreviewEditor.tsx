@@ -84,7 +84,7 @@ export const PreviewEditor = ({
             onChange={(e) =>
               onChange({ ...draft, roadmap_title: e.target.value })
             }
-            className='text-[32px] leading-tight bg-transparent outline-none w-full tracking-[-0.03em] font-[var(--font-display)] text-[var(--pl-text)]'
+            className='text-[32px] leading-tight bg-transparent outline-none w-full tracking-[-0.03em] font-display text-[var(--pl-text)]'
           />
           <p className='text-[13px] mt-2 text-[var(--pl-text-muted)]'>
             {t('roadmap.create.summary', {

@@ -61,7 +61,7 @@ export const ChapterBlock = ({
         </div>
         <div className='flex-1 min-w-0'>
           <div className='flex items-center gap-2 mb-1'>
-            <span className='text-[10.5px] uppercase tracking-[0.14em] px-2 py-[2px] rounded-full bg-[var(--pl-bg)] text-[var(--pl-text-faint)] font-[var(--font-mono-pl)]'>
+            <span className='text-[10.5px] uppercase tracking-[0.14em] px-2 py-[2px] rounded-full bg-[var(--pl-bg)] text-[var(--pl-text-faint)] font-mono-pl'>
               {t('roadmap.detail.chapter', { n: index + 1 })}
             </span>
             <span className='text-[10.5px] text-[var(--pl-text-faint)]'>
@@ -71,7 +71,7 @@ export const ChapterBlock = ({
               })}
             </span>
             {chapter.progressPercent > 0 && !done && (
-              <span className='text-[10.5px] font-[var(--font-mono-pl)] text-[var(--pl-accent-strong)]'>
+              <span className='text-[10.5px] font-mono-pl text-[var(--pl-accent-strong)]'>
                 {chapter.progressPercent}%
               </span>
             )}

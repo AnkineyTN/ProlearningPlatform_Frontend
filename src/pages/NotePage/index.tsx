@@ -16,7 +16,12 @@ import {
   useNoteFileRegionComments,
 } from '@/hooks/useNotes';
 import { AISummarizePanel } from '@/pages/NotePage/components/AISummarizePanel';
-import { downloadNoteAsHtml } from '@/pages/NotePage/downloadNoteHtml';
+import {
+  exportNoteAsHtml,
+  exportNoteAsMarkdown,
+  exportNoteAsText,
+  type ExportFormat,
+} from '@/pages/NotePage/downloadNoteHtml';
 import {
   NoteEditor,
   type NoteEditorHandle,
@@ -169,10 +174,18 @@ export const NotePage = () => {
     setNoteFiles((prev) => prev.filter((f) => f.id !== fileId));
   }, []);
 
-  const handleDownloadHTML = useCallback(async () => {
-    const editorHtml = (await editorRef.current?.getHTML()) || '';
-    downloadNoteAsHtml(title, editorHtml);
-    toast.success('Note downloaded successfully');
+  const handleExport = useCallback(async (format: ExportFormat) => {
+    if (format === 'html') {
+      const html = (await editorRef.current?.getHTML()) || '';
+      exportNoteAsHtml(title, html);
+    } else if (format === 'md') {
+      const md = (await editorRef.current?.getMarkdown()) || '';
+      exportNoteAsMarkdown(title, md);
+    } else {
+      const text = (await editorRef.current?.getText()) || '';
+      exportNoteAsText(title, text);
+    }
+    toast.success('Note exported successfully');
   }, [title]);
 
   const { data: fileRegionComments = [] } = useNoteFileRegionComments(
@@ -215,7 +228,7 @@ export const NotePage = () => {
         setId={setId}
         userRole={noteDetail?.userRole ?? 'OWNER'}
         onFileUploaded={handleFileUploaded}
-        onDownloadHTML={handleDownloadHTML}
+        onExport={handleExport}
         attachedFileCount={noteFiles.length}
         showFilesPanel={showFilesPanel}
         onToggleFilesPanel={() => setShowFilesPanel((v) => !v)}

@@ -70,6 +70,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
           onNotesPrivacyChange={handlers.setNotesPrivacy}
           notesSort={handlers.notesSort}
           onNotesSortChange={handlers.setNotesSort}
+          onNotesClear={handlers.clearNotesFilters}
           flashcardsSearch={handlers.flashcardsSearch}
           onFlashcardsSearchChange={handlers.setFlashcardsSearch}
           flashcardsPrivacy={handlers.flashcardsPrivacy}
@@ -78,6 +79,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
           onFlashcardsMethodChange={handlers.setFlashcardsMethod}
           flashcardsSort={handlers.flashcardsSort}
           onFlashcardsSortChange={handlers.setFlashcardsSort}
+          onFlashcardsClear={handlers.clearFlashcardsFilters}
           examsSearch={handlers.examsSearch}
           onExamsSearchChange={handlers.setExamsSearch}
           examsPrivacy={handlers.examsPrivacy}
@@ -86,6 +88,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
           onExamsMethodChange={handlers.setExamsMethod}
           examsSort={handlers.examsSort}
           onExamsSortChange={handlers.setExamsSort}
+          onExamsClear={handlers.clearExamsFilters}
         />
       )}
 

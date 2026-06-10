@@ -170,7 +170,7 @@ export function NoteFilePreviewContent({
       )}
 
       {!isPdf && !isImage && !isTxt && !isDocx && !isPptx && (
-        <p className='text-xs text-[var(--pl-text-muted)] italic font-[var(--font-serif)]'>
+        <p className='text-xs text-[var(--pl-text-muted)] italic font-serif'>
           Preview is available for PDF, images, TXT, DOCX and PPTX. You can
           still summarize this file with AI.
         </p>

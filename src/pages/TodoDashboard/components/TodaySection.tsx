@@ -1,7 +1,13 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalendarCheck, Filter, Pencil, Plus, Trash2, X } from 'lucide-react';
-import type { Goal, ResourceRef, Todo } from '@/services/types/todo.types';
+import type { Goal, ResourceRef, Todo, TodoPriority } from '@/services/types/todo.types';
+
+const PRIORITY_CLASS: Record<TodoPriority, string> = {
+  HIGH: 'text-[var(--pl-danger-text)] bg-[var(--pl-danger-soft)]',
+  MEDIUM: 'text-[var(--pl-warning-text)] bg-[var(--pl-warning-soft)]',
+  LOW: 'text-[var(--pl-text-faint)] bg-transparent',
+} as const;
 import {
   ResourceMentionInput,
   renderTitleWithRefs,
@@ -63,7 +69,7 @@ const Ring = ({ percent, size = 64 }: { percent: number; size?: number }) => {
         />
       </svg>
       <div className='absolute text-center'>
-        <div className='text-[15px] font-[var(--font-display)] leading-none text-[var(--pl-text)]'>
+        <div className='text-[15px] font-display leading-none text-[var(--pl-text)]'>
           {percent}
         </div>
         <div className='text-[8.5px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)]'>
@@ -124,9 +130,11 @@ const TodayTaskRow = ({
           {renderTitleWithRefs(todo.title, todo, isDone)}
         </div>
         <div className='flex items-center gap-1.5 mt-0.5 flex-wrap'>
-          <span className='text-[10px] text-[var(--pl-text-faint)]'>
-            {todo.priority}
-          </span>
+          {todo.priority !== 'LOW' && (
+            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${PRIORITY_CLASS[todo.priority]}`}>
+              {todo.priority}
+            </span>
+          )}
           {todo.goalTitle && (
             <>
               <span className='text-[10px] text-[var(--pl-text-faint)]'>·</span>
@@ -188,7 +196,7 @@ const GoalProgressRow = ({
             {goal.title}
           </div>
           <div className='flex items-center gap-2 flex-shrink-0'>
-            <span className='text-[10.5px] font-[var(--font-mono-pl)] text-[var(--pl-text-faint)]'>
+            <span className='text-[10.5px] font-mono-pl text-[var(--pl-text-faint)]'>
               {goal.completedTodos}/{goal.totalTodos}
             </span>
             <span
@@ -253,11 +261,17 @@ const TodaySection = ({
 
   const todayTodos = useMemo(
     () =>
-      todos.filter(
-        (td) =>
-          td.dueDate === today &&
-          (!selectedGoalId || td.goalId === selectedGoalId),
-      ),
+      todos
+        .filter(
+          (td) =>
+            td.dueDate === today &&
+            (!selectedGoalId || td.goalId === selectedGoalId),
+        )
+        .sort((a, b) => {
+          const aDone = a.completed || a.status === 'DONE' ? 1 : 0;
+          const bDone = b.completed || b.status === 'DONE' ? 1 : 0;
+          return aDone - bDone;
+        }),
     [todos, today, selectedGoalId],
   );
 
@@ -297,7 +311,7 @@ const TodaySection = ({
             <div className='text-[10.5px] tracking-[0.18em] uppercase mb-2 text-[var(--pl-accent-strong)]'>
               {t('todo.today.label')} · {todayLabel}
             </div>
-            <h2 className='text-[28px] tracking-tight leading-[1.05] font-[var(--font-display)] text-[var(--pl-text)] m-0'>
+            <h2 className='text-[28px] tracking-tight leading-[1.05] font-display text-[var(--pl-text)] m-0'>
               {todayTodos.length === 0
                 ? t('todo.today.emptyHeadline')
                 : t('todo.today.headline', { count: todayTodos.length })}
@@ -323,6 +337,7 @@ const TodaySection = ({
             value={newTask}
             onChange={onNewTaskChange}
             onRefAdded={onNewTaskRefAdded}
+            linkedRefs={newTaskRefs}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !isCreating) {
                 e.preventDefault();
@@ -338,22 +353,6 @@ const TodaySection = ({
             {t('todo.todoList.add')}
           </Button>
         </div>
-
-        {/* Linked resource pills preview */}
-        {Object.values(newTaskRefs).some((arr) => arr.length > 0) && (
-          <div className='flex flex-wrap gap-1.5 mb-2 px-1'>
-            {Object.entries(newTaskRefs).flatMap(([, refs]) =>
-              refs.map((ref) => (
-                <span
-                  key={`${ref.id}`}
-                  className='inline-flex items-center gap-1 text-[10.5px] px-2 py-0.5 rounded-full bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]'
-                >
-                  {ref.title}
-                </span>
-              )),
-            )}
-          </div>
-        )}
 
         {/* Filter indicator */}
         {selectedGoal && (
@@ -417,7 +416,7 @@ const TodaySection = ({
           </Button>
         </div>
 
-        <div className='text-[44px] tracking-tight leading-none mb-3 font-[var(--font-display)] text-[var(--pl-text)]'>
+        <div className='text-[44px] tracking-tight leading-none mb-3 font-display text-[var(--pl-text)]'>
           {overallPercent}%
         </div>
         <div className='h-1 rounded-full overflow-hidden mb-2 bg-[var(--pl-bg-hover)]'>
@@ -426,7 +425,7 @@ const TodaySection = ({
             style={{ width: `${overallPercent}%` }}
           />
         </div>
-        <div className='text-[11.5px] italic font-[var(--font-serif)] text-[var(--pl-text-muted)] mb-5'>
+        <div className='text-[11.5px] italic font-serif text-[var(--pl-text-muted)] mb-5'>
           {t('todo.overall.detail', {
             done: totalDone,
             pending: totalAll - totalDone,
@@ -440,7 +439,7 @@ const TodaySection = ({
             <div className='text-[10px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)]'>
               {t('todo.overall.longHeader')}
             </div>
-            <span className='text-[10px] font-[var(--font-mono-pl)] text-[var(--pl-text-faint)]'>
+            <span className='text-[10px] font-mono-pl text-[var(--pl-text-faint)]'>
               {longGoals.length}
             </span>
             <div className='flex-1 h-px bg-[var(--pl-border)]' />
@@ -473,7 +472,7 @@ const TodaySection = ({
             <div className='text-[10px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)]'>
               {t('todo.overall.shortHeader')}
             </div>
-            <span className='text-[10px] font-[var(--font-mono-pl)] text-[var(--pl-text-faint)]'>
+            <span className='text-[10px] font-mono-pl text-[var(--pl-text-faint)]'>
               {shortGoals.length}
             </span>
             <div className='flex-1 h-px bg-[var(--pl-border)]' />
