@@ -65,4 +65,7 @@ export const authAPI = {
 
   setAvatar: (assetId: number): Promise<AxiosResponse<UpdateMeResponse>> =>
     api.post('/users/me/avatar', { assetId }),
+
+  deleteMe: (): Promise<AxiosResponse<ApiResponse<null>>> =>
+    api.delete('/users/me'),
 };

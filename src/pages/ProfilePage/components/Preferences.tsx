@@ -15,7 +15,7 @@ import {
   useDisconnectCalendar,
 } from '@/hooks/useCalendar';
 import type { GlobalNotificationPreferences } from '@/services/types/notification.types';
-import ProfileSection from './ProfileSection';
+import ProfileSection from './Section';
 
 function HourPicker({
   value,
@@ -68,7 +68,11 @@ function ToggleRow({
             {desc}
           </div>
         </div>
-        <Switch checked={checked} disabled={disabled} onCheckedChange={onChange} />
+        <Switch
+          checked={checked}
+          disabled={disabled}
+          onCheckedChange={onChange}
+        />
       </div>
       {children}
     </div>
@@ -99,8 +103,7 @@ function NotificationPreferencesSection() {
   const { data: prefs } = useGlobalNotificationPreferences();
   const update = useUpdateGlobalNotificationPreferences();
 
-  const p = (key: keyof GlobalNotificationPreferences) =>
-    prefs?.[key] as never;
+  const p = (key: keyof GlobalNotificationPreferences) => prefs?.[key] as never;
 
   const send = (partial: Partial<GlobalNotificationPreferences>) =>
     update.mutate(partial);
@@ -109,7 +112,8 @@ function NotificationPreferencesSection() {
   const dailyTodoReminderEnabled = p('dailyTodoReminderEnabled') ?? true;
   const dailyTodoReminderHour = (prefs?.dailyTodoReminderHour ?? 20) as number;
   const weeklyTodoReminderEnabled = p('weeklyTodoReminderEnabled') ?? true;
-  const weeklyTodoReminderHour = (prefs?.weeklyTodoReminderHour ?? 20) as number;
+  const weeklyTodoReminderHour = (prefs?.weeklyTodoReminderHour ??
+    20) as number;
   const goalDeadlineReminderEnabled = p('goalDeadlineReminderEnabled') ?? true;
   const goalInactiveReminderEnabled = p('goalInactiveReminderEnabled') ?? true;
   const goalReminderHour = (prefs?.goalReminderHour ?? 9) as number;

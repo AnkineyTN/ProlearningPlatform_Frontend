@@ -983,10 +983,7 @@
       "lastName": "Last name",
       "email": "Email",
       "emailHint": "Used for login and notifications.",
-      "accountType": "Account type",
-      "accountTypeHint": "Display only (read-only).",
-      "bio": "Bio",
-      "bioPlaceholder": "A short introduction about yourself…"
+      "accountType": "Account type"
     },
     "learningProfile": {
       "title": "Learning Profile",
@@ -1036,7 +1033,14 @@
         "sub": "Actions that cannot be undone.",
         "deleteAccount": "Delete account",
         "deleteDesc": "All sets, bundles, notes and progress will be permanently deleted.",
-        "deleteBtn": "Delete account"
+        "deleteBtn": "Delete account",
+        "deleting": "Deleting…",
+        "confirmTitle": "Delete this account?",
+        "confirmDesc": "This action cannot be undone. All your sets, bundles, notes and learning progress will be permanently deleted.",
+        "confirmCancel": "Cancel",
+        "confirmAction": "Yes, delete my account",
+        "deleteSuccess": "Your account has been deleted.",
+        "deleteFailed": "Could not delete account. Please try again."
       }
     },
     "billing": {

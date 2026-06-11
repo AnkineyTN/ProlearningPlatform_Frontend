@@ -122,6 +122,15 @@ export function useUpdateMe() {
   });
 }
 
+export function useDeleteMe() {
+  return useMutation({
+    mutationFn: async () => {
+      const res = await authAPI.deleteMe();
+      return res.data;
+    },
+  });
+}
+
 export function useSetAvatar() {
   const qc = useQueryClient();
   return useMutation({

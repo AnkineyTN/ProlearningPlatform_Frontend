@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import type { User } from '@/hooks/useAuth';
-import ProfileSection from './ProfileSection';
+import ProfileSection from './Section';
 
 interface ProfileBillingProps {
   user: User | null | undefined;
@@ -65,8 +65,7 @@ export default function ProfileBilling({ user }: ProfileBillingProps) {
             className='flex items-center gap-2.5 text-[14px] text-[var(--pl-text)]'
           >
             <Check
-              className='w-3.5 h-3.5 shrink-0'
-              style={{ color: 'oklch(0.72 0.15 155)' }}
+              className='w-3.5 h-3.5 shrink-0 text-[var(--pl-success)]'
               strokeWidth={2.4}
             />
             {f}

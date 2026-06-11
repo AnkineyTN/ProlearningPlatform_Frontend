@@ -1,34 +1,27 @@
 import { Camera } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import type { UseFormRegister, FieldErrors, UseFormWatch } from 'react-hook-form';
+import type { UseFormRegister, FieldErrors } from 'react-hook-form';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import type { User } from '@/hooks/useAuth';
-import ProfileSection, { FieldHint, FieldLabel } from './ProfileSection';
+import ProfileSection, { FieldHint, FieldLabel } from './Section';
 import { inputCls, type ProfileFormData } from '../constants';
 
 interface ProfileBasicInfoProps {
   user: User | null | undefined;
   register: UseFormRegister<ProfileFormData>;
-  watch: UseFormWatch<ProfileFormData>;
   errors: FieldErrors<ProfileFormData>;
   loading: boolean;
   avatarUploading: boolean;
-  bio: string;
-  onBioChange: (v: string) => void;
   onAvatarChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function ProfileBasicInfo({
   user,
   register,
-  watch,
   errors,
   loading,
   avatarUploading,
-  bio,
-  onBioChange,
   onAvatarChange,
 }: ProfileBasicInfoProps) {
   const { t } = useTranslation();
@@ -103,7 +96,9 @@ export default function ProfileBasicInfo({
             className={inputCls}
           />
           {errors.firstName && (
-            <p className='text-xs text-destructive'>{errors.firstName.message}</p>
+            <p className='text-xs text-destructive'>
+              {errors.firstName.message}
+            </p>
           )}
         </label>
 
@@ -115,7 +110,9 @@ export default function ProfileBasicInfo({
             className={inputCls}
           />
           {errors.lastName && (
-            <p className='text-xs text-destructive'>{errors.lastName.message}</p>
+            <p className='text-xs text-destructive'>
+              {errors.lastName.message}
+            </p>
           )}
         </label>
 
@@ -133,30 +130,13 @@ export default function ProfileBasicInfo({
           <FieldHint>{t('profile.basicInfo.emailHint')}</FieldHint>
         </label>
 
-        <label className='flex flex-col gap-1.5'>
+        <div className='flex flex-col gap-1.5'>
           <FieldLabel>{t('profile.basicInfo.accountType')}</FieldLabel>
-          <Input
-            disabled
-            value={watch('accountType') ?? ''}
-            className={
-              inputCls + ' text-[var(--pl-text-faint)] bg-[var(--pl-bg-hover)]'
-            }
-          />
-          <FieldHint>{t('profile.basicInfo.accountTypeHint')}</FieldHint>
-        </label>
-
-        <div className='sm:col-span-2 flex flex-col gap-1.5'>
-          <FieldLabel>{t('profile.basicInfo.bio')}</FieldLabel>
-          <Textarea
-            value={bio}
-            onChange={(e) => onBioChange(e.target.value)}
-            rows={3}
-            placeholder={t('profile.basicInfo.bioPlaceholder')}
-            className={
-              inputCls +
-              ' resize-y font-serif text-[15px] leading-[1.55]'
-            }
-          />
+          <div className='flex items-center min-h-[44px]'>
+            <span className='inline-flex items-center px-[9px] py-0.5 rounded-full text-[10.5px] tracking-[0.1em] uppercase font-medium border border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]'>
+              {user?.accountType ?? 'FREE'}
+            </span>
+          </div>
         </div>
       </div>
     </ProfileSection>

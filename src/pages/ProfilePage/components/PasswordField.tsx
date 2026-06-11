@@ -3,7 +3,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { FieldLabel } from './ProfileSection';
+import { FieldLabel } from './Section';
 import { inputCls } from '../constants';
 
 interface PasswordFieldProps {

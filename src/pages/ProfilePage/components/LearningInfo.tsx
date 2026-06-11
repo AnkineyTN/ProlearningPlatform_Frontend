@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import ProfileSection, { FieldLabel } from './ProfileSection';
+import ProfileSection, { FieldLabel } from './Section';
 import {
   educations,
   hearAppFromOptions,

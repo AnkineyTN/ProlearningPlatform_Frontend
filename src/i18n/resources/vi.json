@@ -1392,10 +1392,7 @@
       "lastName": "Last name",
       "email": "Email",
       "emailHint": "Dùng để đăng nhập và nhận thông báo.",
-      "accountType": "Account type",
-      "accountTypeHint": "Field này dạng để hiển thị (không sửa).",
-      "bio": "Bio",
-      "bioPlaceholder": "Giới thiệu ngắn về bản thân…"
+      "accountType": "Account type"
     },
     "learningProfile": {
       "title": "Hồ sơ học tập",
@@ -1445,7 +1442,14 @@
         "sub": "Hành động không thể hoàn tác.",
         "deleteAccount": "Xoá tài khoản",
         "deleteDesc": "Mọi sets, bundles, ghi chú và tiến độ sẽ bị xoá vĩnh viễn.",
-        "deleteBtn": "Xoá tài khoản"
+        "deleteBtn": "Xoá tài khoản",
+        "deleting": "Đang xoá…",
+        "confirmTitle": "Xoá tài khoản này?",
+        "confirmDesc": "Hành động này không thể hoàn tác. Mọi sets, bundles, ghi chú và tiến độ học tập của bạn sẽ bị xoá vĩnh viễn.",
+        "confirmCancel": "Huỷ",
+        "confirmAction": "Xoá tài khoản của tôi",
+        "deleteSuccess": "Tài khoản của bạn đã được xoá.",
+        "deleteFailed": "Không thể xoá tài khoản. Vui lòng thử lại."
       }
     },
     "billing": {

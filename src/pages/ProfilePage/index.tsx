@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useSearchParams } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { toast } from 'sonner';
@@ -10,16 +11,17 @@ import { useUploadImageFile } from '@/hooks/useImageUpload';
 import type { ApiErrorResponse } from '@/services/types/auth.types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
+  isProfileTab,
   profileSchema,
   type ProfileFormData,
   type ProfileTab,
 } from './constants';
-import ProfileBasicInfo from './components/ProfileBasicInfo';
-import ProfileBilling from './components/ProfileBilling';
-import ProfileLearningInfo from './components/ProfileLearningInfo';
-import ProfilePreferences from './components/ProfilePreferences';
-import ProfileSaveBar from './components/ProfileSaveBar';
-import ProfileSecurity from './components/ProfileSecurity';
+import ProfileBasicInfo from './components/BasicInfo';
+import ProfileBilling from './components/Billing';
+import ProfileLearningInfo from './components/LearningInfo';
+import ProfilePreferences from './components/Preferences';
+import ProfileSaveBar from './components/SaveBar';
+import ProfileSecurity from './components/Security';
 
 function buildDefaults(
   user: ReturnType<typeof useAuth>['user'],
@@ -31,7 +33,6 @@ function buildDefaults(
     language: user?.language ?? 'VI',
     education: user?.education ?? 'HIGH_SCHOOL',
     hearAppFrom: user?.hearAppFrom ?? 'OTHER',
-    accountType: user?.accountType ?? 'FREE',
     currentPassword: '',
     newPassword: '',
   };
@@ -45,10 +46,16 @@ export default function ProfilePage() {
   const uploadImage = useUploadImageFile();
   const [loading, setLoading] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
-  const [activeTab, setActiveTab] = useState<ProfileTab>('profile');
-  const [bio, setBio] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const initial = useMemo(() => user, [user]);
+  const tabParam = searchParams.get('tab');
+  const activeTab: ProfileTab = isProfileTab(tabParam) ? tabParam : 'profile';
+  const setActiveTab = (tab: ProfileTab) =>
+    setSearchParams(tab === 'profile' ? {} : { tab }, { replace: true });
+
+  const initialRef = useRef(user);
+  if (!initialRef.current && user) initialRef.current = user;
+  const initial = initialRef.current;
 
   const {
     register,
@@ -148,7 +155,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className='pt-8 pb-20 mx-auto'>
+    <div className='w-2xl pt-8 pb-20 mx-auto'>
       <div className='mb-8'>
         <div className='text-[11px] tracking-[0.18em] uppercase mb-2 text-[var(--pl-text-faint)]'>
           {t('profile.breadcrumb')}
@@ -184,12 +191,9 @@ export default function ProfilePage() {
           <ProfileBasicInfo
             user={user}
             register={register}
-            watch={watch}
             errors={errors}
             loading={loading}
             avatarUploading={avatarUploading}
-            bio={bio}
-            onBioChange={setBio}
             onAvatarChange={handleAvatarChange}
           />
           <ProfileLearningInfo

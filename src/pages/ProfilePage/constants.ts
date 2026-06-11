@@ -22,13 +22,23 @@ export const profileSchema = z.object({
   language: z.string().min(1, 'Vui lòng chọn ngôn ngữ'),
   education: z.string().min(1, 'Vui lòng chọn học vấn'),
   hearAppFrom: z.string().min(1, 'Vui lòng chọn nguồn biết đến'),
-  accountType: z.string().optional(),
   currentPassword: z.string().optional(),
   newPassword: z.string().optional(),
 });
 
 export type ProfileFormData = z.infer<typeof profileSchema>;
-export type ProfileTab = 'profile' | 'preferences' | 'security' | 'billing';
+
+export const profileTabs = [
+  'profile',
+  'preferences',
+  'security',
+  'billing',
+] as const;
+export type ProfileTab = (typeof profileTabs)[number];
+
+export function isProfileTab(v: string | null): v is ProfileTab {
+  return profileTabs.includes(v as ProfileTab);
+}
 
 export const inputCls =
   'w-full rounded-[8px] text-sm outline-none transition-colors bg-[var(--pl-bg)] border border-[var(--pl-border)] text-[var(--pl-text)] focus:border-[var(--pl-accent)] px-3.5 py-[11px]';

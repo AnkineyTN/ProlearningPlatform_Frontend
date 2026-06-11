@@ -10,7 +10,7 @@ export function FieldLabel({ children }: { children: React.ReactNode }) {
 
 export function FieldHint({ children }: { children: React.ReactNode }) {
   return (
-    <span className='text-[11.5px] italic font-serif text-[var(--pl-text-faint)]'>
+    <span className='text-[11.5px] italic  text-[var(--pl-text-faint)]'>
       {children}
     </span>
   );
