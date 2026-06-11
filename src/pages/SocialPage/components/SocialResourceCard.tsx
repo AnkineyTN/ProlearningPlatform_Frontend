@@ -28,7 +28,6 @@ type Props = {
 };
 
 const SocialResourceCard = ({ item, onAccess }: Props) => {
-  console.log('🚀 ~ SocialResourceCard ~ item:', item);
   const { t } = useTranslation();
   const Icon = TYPE_ICON[item.type];
   const description = item.description || t('list.noDescription');

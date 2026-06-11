@@ -1674,9 +1674,11 @@
     "exams": "Exams",
     "filterAll": "All",
     "searchPlaceholder": "Search the community",
-    "sortTrending": "Trending",
-    "sortRecent": "Recent",
-    "sortLiked": "Most liked",
+    "searchButton": "Search",
+    "sortNewest": "Newest",
+    "sortOldest": "Oldest",
+    "sortAZ": "Title A–Z",
+    "sortZA": "Title Z–A",
     "failedToLoad": "Failed to load. Please try again.",
     "noResults": "No results found.",
     "loadMore": "Load more",
@@ -1697,7 +1699,8 @@
       "periodAll": "All",
       "typNote": "Note",
       "typFlashcard": "Flashcard",
-      "typExam": "Exam"
+      "typExam": "Exam",
+      "mobileToggle": "Trending & community"
     }
   }
 }

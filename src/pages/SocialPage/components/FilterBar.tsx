@@ -39,9 +39,10 @@ const FilterBar = ({
   const { t } = useTranslation();
 
   const SORTS: { id: SortType; label: string }[] = [
-    { id: 'trending', label: t('social.sortTrending') },
-    { id: 'recent', label: t('social.sortRecent') },
-    { id: 'liked', label: t('social.sortLiked') },
+    { id: 'newest', label: t('social.sortNewest') },
+    { id: 'oldest', label: t('social.sortOldest') },
+    { id: 'az', label: t('social.sortAZ') },
+    { id: 'za', label: t('social.sortZA') },
   ];
 
   const allCount =
@@ -79,13 +80,10 @@ const FilterBar = ({
                 onClick={() => setFilter(tab.id)}
                 className={cn(
                   'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] h-auto',
-                  active ? 'text-[var(--pl-accent)] font-medium' : 'text-[var(--pl-text-muted)]',
-                )}
-                style={
                   active
-                    ? { background: 'oklch(var(--pl-accent-l) var(--pl-accent-c) var(--pl-accent-h) / 0.12)' }
-                    : {}
-                }
+                    ? 'text-[var(--pl-accent)] font-medium bg-[var(--pl-accent-soft)]'
+                    : 'text-[var(--pl-text-muted)]',
+                )}
               >
                 {tab.label}
                 {tab.count !== null && (
@@ -123,6 +121,14 @@ const FilterBar = ({
               </Button>
             )}
           </div>
+
+          <Button
+            onClick={onSearch}
+            className='rounded-full h-auto px-3.5 py-1.5 text-[12.5px] gap-1.5'
+          >
+            <Search size={13} />
+            {t('social.searchButton')}
+          </Button>
 
           <Select value={sort} onValueChange={(v) => setSort(v as SortType)}>
             <SelectTrigger

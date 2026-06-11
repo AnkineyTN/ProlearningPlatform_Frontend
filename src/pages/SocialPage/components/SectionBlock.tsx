@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChevronRight } from 'lucide-react';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { socialAPI } from '@/services/endpoints/social';
 import type { SocialItemType, SocialNote } from '@/services/types/social.types';
 import { PAGE_SIZE } from '../sectionConfig';
-import type { SectionType, SectionState, SortType } from '../types';
+import type { SectionType, SectionState } from '../types';
 import SocialResourceCard from './SocialResourceCard';
 
 // ─── SkeletonCard ──────────────────────────────────────────────────────────────
@@ -36,7 +35,6 @@ type Props = {
   label: string;
   icon: React.ElementType;
   state: SectionState;
-  sort: SortType;
   onLoadMore: () => void;
   onSeeAll?: () => void;
   infiniteScroll?: boolean;
@@ -47,7 +45,6 @@ const SectionBlock = ({
   label,
   icon: Icon,
   state,
-  sort,
   onLoadMore,
   onSeeAll,
   infiniteScroll = false,
@@ -86,31 +83,13 @@ const SectionBlock = ({
     else navigate(`/sets/${item.setId}/exams/${item.id}`);
   };
 
-  const sorted = useMemo(() => {
-    const arr = [...items];
-    if (sort === 'recent')
-      arr.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      );
-    if (sort === 'liked')
-      arr.sort((a, b) => ((b as any).likes ?? 0) - ((a as any).likes ?? 0));
-    return infiniteScroll ? arr : arr.slice(0, PAGE_SIZE);
-  }, [items, sort, infiniteScroll]);
+  const visible = infiniteScroll ? items : items.slice(0, PAGE_SIZE);
 
   return (
     <section>
       {/* Header */}
       <div className='flex items-center gap-2 mb-5'>
-        <div
-          style={{
-            background:
-              'oklch(var(--pl-accent-l) var(--pl-accent-c) var(--pl-accent-h) / 0.12)',
-            color:
-              'oklch(var(--pl-accent-l) var(--pl-accent-c) var(--pl-accent-h))',
-          }}
-          className='w-8 h-8 rounded-[8px] grid place-items-center shrink-0'
-        >
+        <div className='w-8 h-8 rounded-[8px] grid place-items-center shrink-0 bg-[var(--pl-accent-soft)] text-[var(--pl-accent)]'>
           <Icon size={15} />
         </div>
         <h2 className='text-[16px] font-semibold text-[var(--pl-text)] tracking-[-0.01em]'>
@@ -135,16 +114,16 @@ const SectionBlock = ({
 
       {/* Content */}
       {error ? (
-        <div className='py-8 text-center text-[13px] text-[oklch(0.65_0.2_25)]'>
+        <div className='py-8 text-center text-[13px] text-[var(--pl-danger-text)]'>
           {t('social.failedToLoad')}
         </div>
-      ) : !loading && sorted.length === 0 ? (
+      ) : !loading && visible.length === 0 ? (
         <div className='py-8 text-center text-[13px] text-[var(--pl-text-faint)]'>
           {t('social.noResults')}
         </div>
       ) : (
         <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4'>
-          {sorted.map((item) => (
+          {visible.map((item) => (
             <SocialResourceCard
               key={item.id}
               item={{
@@ -154,6 +133,7 @@ const SectionBlock = ({
                 description: item.description,
                 createdAt: item.createdAt,
                 ownerName: item.ownerName,
+                ownerAvatar: item.ownerAvatar,
                 numQuestions: item.numQuestions,
                 duration: item.duration,
               }}
@@ -173,7 +153,7 @@ const SectionBlock = ({
       )}
 
       {/* End of list */}
-      {infiniteScroll && !canLoadMore && !loading && !error && sorted.length > 0 && (
+      {infiniteScroll && !canLoadMore && !loading && !error && visible.length > 0 && (
         <p className='mt-6 text-center text-[12.5px] text-[var(--pl-text-faint)]'>
           {t('social.endOfList')}
         </p>

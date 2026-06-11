@@ -3,10 +3,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import FilterBar from './components/FilterBar';
-import RailSidebar from './components/RailSidebar';
+import RailSidebar, { MobileRail } from './components/RailSidebar';
 import SectionBlock from './components/SectionBlock';
 import { PAGE_SIZE, SECTIONS } from './sectionConfig';
-import { DEFAULT_SECTION } from './types';
+import { DEFAULT_SECTION, SORT_PARAM } from './types';
 
 import type { FilterType, SectionState, SectionType, SortType } from './types';
 
@@ -19,13 +19,19 @@ const SocialExplorePage = () => {
     EXAM: { ...DEFAULT_SECTION },
   });
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
-  const [sort, setSort] = useState<SortType>('trending');
+  const [sort, setSort] = useState<SortType>('newest');
   const [query, setQuery] = useState('');
 
   const abortRefs = useRef<Partial<Record<SectionType, AbortController>>>({});
 
   const fetchSection = useCallback(
-    async (type: SectionType, page: number, q: string, append = false) => {
+    async (
+      type: SectionType,
+      page: number,
+      q: string,
+      sortKey: SortType,
+      append = false,
+    ) => {
       abortRefs.current[type]?.abort();
       const controller = new AbortController();
       abortRefs.current[type] = controller;
@@ -37,7 +43,12 @@ const SocialExplorePage = () => {
 
       try {
         const section = SECTIONS.find((s) => s.type === type)!;
-        const res = await section.fetchFn({ q, page, size: PAGE_SIZE });
+        const res = await section.fetchFn({
+          q,
+          page,
+          size: PAGE_SIZE,
+          sort: SORT_PARAM[sortKey],
+        });
         const { data, metadata } = res.data;
         setSections((prev) => ({
           ...prev,
@@ -62,7 +73,7 @@ const SocialExplorePage = () => {
 
   useEffect(() => {
     (['NOTE', 'FLASHCARD', 'EXAM'] as SectionType[]).forEach((type) =>
-      fetchSection(type, 0, ''),
+      fetchSection(type, 0, '', 'newest'),
     );
     const controllers = abortRefs.current;
     return () => {
@@ -75,15 +86,22 @@ const SocialExplorePage = () => {
       activeFilter === 'all'
         ? ['NOTE', 'FLASHCARD', 'EXAM']
         : [activeFilter as SectionType];
-    types.forEach((type) => fetchSection(type, 0, query, false));
-  }, [activeFilter, query, fetchSection]);
+    types.forEach((type) => fetchSection(type, 0, query, sort, false));
+  }, [activeFilter, query, sort, fetchSection]);
+
+  const handleSortChange = (s: SortType) => {
+    setSort(s);
+    (['NOTE', 'FLASHCARD', 'EXAM'] as SectionType[]).forEach((type) =>
+      fetchSection(type, 0, query, s, false),
+    );
+  };
 
   const handleFilterChange = (f: FilterType) => {
     setActiveFilter(f);
     if (f !== 'all') {
       const type = f as SectionType;
       if (sections[type].items.length === 0 && !sections[type].loading)
-        fetchSection(type, 0, query);
+        fetchSection(type, 0, query, sort);
     }
   };
 
@@ -129,7 +147,7 @@ const SocialExplorePage = () => {
               filter={activeFilter}
               setFilter={handleFilterChange}
               sort={sort}
-              setSort={setSort}
+              setSort={handleSortChange}
               query={query}
               setQuery={setQuery}
               onSearch={handleSearch}
@@ -143,9 +161,14 @@ const SocialExplorePage = () => {
                   label={t(labelKey, type)}
                   icon={icon}
                   state={sections[type]}
-                  sort={sort}
                   onLoadMore={() =>
-                    fetchSection(type, sections[type].page + 1, query, true)
+                    fetchSection(
+                      type,
+                      sections[type].page + 1,
+                      query,
+                      sort,
+                      true,
+                    )
                   }
                   onSeeAll={
                     activeFilter === 'all'
@@ -156,6 +179,7 @@ const SocialExplorePage = () => {
                 />
               ))}
             </div>
+            <MobileRail />
           </div>
 
           {/* Right rail */}

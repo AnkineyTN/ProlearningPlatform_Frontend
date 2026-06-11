@@ -2,7 +2,14 @@ import type { SocialNote } from '@/services/types/social.types';
 
 export type SectionType = 'NOTE' | 'FLASHCARD' | 'EXAM';
 export type FilterType = 'all' | SectionType;
-export type SortType = 'trending' | 'recent' | 'liked';
+export type SortType = 'newest' | 'oldest' | 'az' | 'za';
+
+export const SORT_PARAM: Record<SortType, string> = {
+  newest: 'id,DESC',
+  oldest: 'id,ASC',
+  az: 'title,ASC',
+  za: 'title,DESC',
+};
 
 export type PaginationMeta = {
   currentPage: number;

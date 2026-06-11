@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, Brain, ClipboardList, Eye, GraduationCap, Flame } from 'lucide-react';
+import {
+  BookOpen,
+  Brain,
+  ChevronDown,
+  ClipboardList,
+  Eye,
+  GraduationCap,
+  Flame,
+  TrendingUp,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import {
   useTrendingResources,
@@ -9,6 +18,11 @@ import {
 } from '@/hooks/useSocial';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { socialAPI } from '@/services/endpoints/social';
@@ -103,9 +117,21 @@ const RailPanel = ({
 // ─── TYPE_META ────────────────────────────────────────────────────────────────
 
 const TYPE_META = {
-  NOTE: { labelKey: 'social.rail.typNote', color: 'oklch(0.7 0.12 95)', icon: BookOpen },
-  FLASHCARD: { labelKey: 'social.rail.typFlashcard', color: 'oklch(0.7 0.12 200)', icon: Brain },
-  EXAM: { labelKey: 'social.rail.typExam', color: 'oklch(0.72 0.13 28)', icon: ClipboardList },
+  NOTE: {
+    labelKey: 'social.rail.typNote',
+    cls: 'text-[var(--pl-warning-text)]',
+    icon: BookOpen,
+  },
+  FLASHCARD: {
+    labelKey: 'social.rail.typFlashcard',
+    cls: 'text-[var(--pl-accent)]',
+    icon: Brain,
+  },
+  EXAM: {
+    labelKey: 'social.rail.typExam',
+    cls: 'text-[var(--pl-danger-text)]',
+    icon: ClipboardList,
+  },
 } as const;
 
 const RANK_MEDAL = ['🥇', '🥈', '🥉'];
@@ -164,8 +190,8 @@ const TrendingPanel = ({ period }: { period: TrendingPeriod }) => {
                     style={{ fontFamily: 'var(--font-mono-pl)' }}
                     className='flex items-center gap-1.5 mt-1 text-[10.5px] text-[var(--pl-text-faint)]'
                   >
-                    <TypeIcon size={10} style={{ color: m.color }} />
-                    <span style={{ color: m.color }}>{t(m.labelKey)}</span>
+                    <TypeIcon size={10} className={m.cls} />
+                    <span className={m.cls}>{t(m.labelKey)}</span>
                     <span>·</span>
                     <span>{item.ownerName}</span>
                   </div>
@@ -181,7 +207,7 @@ const TrendingPanel = ({ period }: { period: TrendingPeriod }) => {
                       <GraduationCap size={9} />
                       {item.sessionCount}
                     </span>
-                    <span className='flex items-center gap-0.5' style={{ color: 'oklch(0.72 0.18 40)' }}>
+                    <span className='flex items-center gap-0.5 text-[var(--pl-warning-text)]'>
                       <Flame size={9} />
                       {item.trendingScore}
                     </span>
@@ -319,9 +345,9 @@ const TrendingTopicsPanel = ({ period }: { period: TrendingPeriod }) => {
   );
 };
 
-// ─── RailSidebar ──────────────────────────────────────────────────────────────
+// ─── RailContent ──────────────────────────────────────────────────────────────
 
-const RailSidebar = () => {
+const RailContent = () => {
   const { t } = useTranslation();
   const [period, setPeriod] = useState<TrendingPeriod>('D7');
 
@@ -333,7 +359,7 @@ const RailSidebar = () => {
   ];
 
   return (
-    <aside className='hidden lg:flex flex-col gap-4 sticky top-6'>
+    <>
       {/* Period switcher */}
       <div className='flex gap-1'>
         {PERIOD_TABS.map((tab) => (
@@ -342,15 +368,11 @@ const RailSidebar = () => {
             variant='ghost'
             onClick={() => setPeriod(tab.id)}
             className={cn(
-              'flex-1 py-1 rounded-full text-[11.5px] h-auto',
-              period === tab.id ? 'text-[var(--pl-accent)] font-medium' : 'text-[var(--pl-text-faint)]',
+              'flex-1 py-1 rounded-full text-[11.5px] h-auto font-[family-name:var(--font-mono-pl)]',
+              period === tab.id
+                ? 'text-[var(--pl-accent)] font-medium bg-[var(--pl-accent-soft)]'
+                : 'text-[var(--pl-text-faint)]',
             )}
-            style={{
-              fontFamily: 'var(--font-mono-pl)',
-              ...(period === tab.id
-                ? { background: 'oklch(var(--pl-accent-l) var(--pl-accent-c) var(--pl-accent-h) / 0.12)' }
-                : {}),
-            }}
           >
             {tab.label}
           </Button>
@@ -363,7 +385,50 @@ const RailSidebar = () => {
       <div className='px-4 py-3.5 rounded-[12px] border border-dashed border-[var(--pl-border)] text-[11.5px] text-[var(--pl-text-faint)] leading-relaxed'>
         {t('social.rail.footer')}
       </div>
-    </aside>
+    </>
+  );
+};
+
+// ─── RailSidebar ──────────────────────────────────────────────────────────────
+
+const RailSidebar = () => (
+  <aside className='hidden lg:flex flex-col gap-4 sticky top-6'>
+    <RailContent />
+  </aside>
+);
+
+// ─── MobileRail ───────────────────────────────────────────────────────────────
+
+export const MobileRail = () => {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen} className='lg:hidden mt-10'>
+      <CollapsibleTrigger asChild>
+        <Button
+          variant='ghost'
+          className='w-full justify-between px-4 py-3 h-auto rounded-[12px] border border-[var(--pl-border)] bg-[var(--pl-bg-elev)] text-[13px] font-medium text-[var(--pl-text)]'
+        >
+          <span className='flex items-center gap-2'>
+            <TrendingUp size={14} className='text-[var(--pl-accent)]' />
+            {t('social.rail.mobileToggle')}
+          </span>
+          <ChevronDown
+            size={15}
+            className={cn(
+              'text-[var(--pl-text-faint)] transition-transform',
+              open && 'rotate-180',
+            )}
+          />
+        </Button>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className='flex flex-col gap-4 pt-4'>
+          <RailContent />
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
   );
 };
 

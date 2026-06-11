@@ -10,6 +10,7 @@ export type SocialNote = {
   updatedAt: string;
   ownerId: number;
   ownerName: string;
+  ownerAvatar: string | null;
   numCards: number | null;
   numQuestions: number | null;
   duration: number | null;

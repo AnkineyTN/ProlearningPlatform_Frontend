@@ -13,6 +13,7 @@ export const SECTIONS: {
     q: string;
     page?: number;
     size?: number;
+    sort?: string;
   }) => Promise<any>;
 }[] = [
   {

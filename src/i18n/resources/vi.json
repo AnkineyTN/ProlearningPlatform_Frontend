@@ -2081,9 +2081,11 @@
     "exams": "Đề thi",
     "filterAll": "Tất cả",
     "searchPlaceholder": "Tìm kiếm cộng đồng",
-    "sortTrending": "Xu hướng",
-    "sortRecent": "Mới nhất",
-    "sortLiked": "Yêu thích nhất",
+    "searchButton": "Tìm kiếm",
+    "sortNewest": "Mới nhất",
+    "sortOldest": "Cũ nhất",
+    "sortAZ": "Tên A–Z",
+    "sortZA": "Tên Z–A",
     "failedToLoad": "Không thể tải. Vui lòng thử lại.",
     "noResults": "Không tìm thấy kết quả.",
     "loadMore": "Tải thêm",
@@ -2104,7 +2106,8 @@
       "periodAll": "Tất cả",
       "typNote": "Ghi chú",
       "typFlashcard": "Thẻ học",
-      "typExam": "Đề thi"
+      "typExam": "Đề thi",
+      "mobileToggle": "Xu hướng & cộng đồng"
     }
   }
 }
