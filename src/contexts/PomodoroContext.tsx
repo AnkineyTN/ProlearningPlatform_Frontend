@@ -15,7 +15,10 @@ import {
 import { DEFAULT_SETTING, STORAGE_KEYS } from '@/pages/Pomodoro/constants';
 import { usePomodoroEngine } from '@/pages/Pomodoro/usePomodoroEngine';
 
-import type { SoundDto } from '@/services/types/pomodoro.types';
+import type {
+  PomodoroSetting,
+  SoundDto,
+} from '@/services/types/pomodoro.types';
 export interface ActiveSound {
   sound: SoundDto;
   volume: number;
@@ -26,10 +29,9 @@ type StoredSound = { id: number; volume: number };
 
 interface PomodoroContextValue {
   engine: ReturnType<typeof usePomodoroEngine>;
+  setting: PomodoroSetting;
   activeSounds: ActiveSound[];
   setActiveSounds: (sounds: ActiveSound[]) => void;
-  /** Increments each time a session ends naturally — widgets can watch this to trigger animations. */
-  sessionEndCount: number;
 }
 
 const PomodoroContext = createContext<PomodoroContextValue | null>(null);
@@ -46,13 +48,10 @@ export const PomodoroProvider = ({ children }: { children: ReactNode }) => {
   const recordSession = useRecordSession();
   const setting = serverSetting ?? DEFAULT_SETTING;
 
-  const [sessionEndCount, setSessionEndCount] = useState(0);
-
   const engine = usePomodoroEngine({
     setting,
     onSessionEnd: (s) => {
       recordSession.mutate(s);
-      if (s.completed) setSessionEndCount((n) => n + 1);
     },
   });
 
@@ -78,7 +77,7 @@ export const PomodoroProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <PomodoroContext.Provider
-      value={{ engine, activeSounds, setActiveSounds, sessionEndCount }}
+      value={{ engine, setting, activeSounds, setActiveSounds }}
     >
       {children}
       {/* Hydrate sounds once catalog is available */}

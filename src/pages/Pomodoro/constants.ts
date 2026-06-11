@@ -8,8 +8,8 @@ export const DEFAULT_SETTING: PomodoroSetting = {
   shortBreak: 300,
   longBreak: 900,
   longBreakInterval: 4,
-  autoStartBreak: false,
-  autoStartPomodoro: false,
+  autoStartBreak: true,
+  autoStartPomodoro: true,
 };
 
 export const DURATION_LIMITS = {

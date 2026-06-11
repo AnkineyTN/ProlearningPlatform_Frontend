@@ -1740,6 +1740,7 @@
     "favorite": "Thêm vào yêu thích",
     "unfavorite": "Bỏ yêu thích",
     "completedToday": "Số pomodoro đã hoàn thành: {{count}}",
+    "cycleTooltip": "Pomodoro thứ {{current}}/{{total}} trước khi nghỉ dài",
     "types": {
       "POMODORO": "Tập trung",
       "SHORT_BREAK": "Nghỉ ngắn",
@@ -1787,17 +1788,28 @@
       "intervalHint": "Số pomodoro trước khi nghỉ dài",
       "autoStartBreak": "Tự động bắt đầu nghỉ",
       "autoStartPomodoro": "Tự động bắt đầu pomodoro",
-      "invalid": "Một hoặc nhiều giá trị không hợp lệ."
+      "invalid": "Một hoặc nhiều giá trị không hợp lệ.",
+      "display": "Hiển thị",
+      "progressStyle": "Tiến độ đếm ngược",
+      "progressRing": "Vòng tròn",
+      "progressBar": "Thanh ngang",
+      "progressNone": "Ẩn",
+      "statsFormat": "Định dạng thời gian thống kê"
     },
     "stats": {
       "button": "Thống kê",
-      "title": "Tuần này",
-      "focusMinutes": "Phút tập trung",
+      "title": "Thống kê",
+      "thisWeek": "Tuần này",
+      "prevWeek": "Tuần trước",
+      "nextWeek": "Tuần sau",
+      "noData": "Tuần này chưa có dữ liệu",
+      "noDataHint": "Hoàn thành một phiên tập trung và thống kê sẽ hiện ở đây.",
+      "focusMinutes": "Thời gian tập trung",
       "sessions": "Phiên",
       "completion": "Hoàn thành",
       "streak": "Streak (ngày)",
       "daily": "Theo ngày",
-      "bestDay": "Ngày tốt nhất: {{date}} ({{minutes}} phút)"
+      "bestDay": "Ngày tốt nhất: {{date}} ({{time}})"
     },
     "toast": {
       "nameRequired": "Hãy nhập tên trước.",

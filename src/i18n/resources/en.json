@@ -1333,6 +1333,7 @@
     "favorite": "Add to favorites",
     "unfavorite": "Remove from favorites",
     "completedToday": "Completed pomodoros: {{count}}",
+    "cycleTooltip": "Pomodoro {{current}} of {{total}} before a long break",
     "types": {
       "POMODORO": "Focus",
       "SHORT_BREAK": "Short break",
@@ -1380,17 +1381,28 @@
       "intervalHint": "Pomodoros before a long break",
       "autoStartBreak": "Auto-start breaks",
       "autoStartPomodoro": "Auto-start pomodoros",
-      "invalid": "One or more values are out of range."
+      "invalid": "One or more values are out of range.",
+      "display": "Display",
+      "progressStyle": "Timer progress",
+      "progressRing": "Ring",
+      "progressBar": "Bar",
+      "progressNone": "Hidden",
+      "statsFormat": "Stats time format"
     },
     "stats": {
       "button": "Stats",
-      "title": "This week",
-      "focusMinutes": "Focus min",
+      "title": "Statistics",
+      "thisWeek": "This week",
+      "prevWeek": "Previous week",
+      "nextWeek": "Next week",
+      "noData": "No data for this week",
+      "noDataHint": "Complete a focus session and your stats will show up here.",
+      "focusMinutes": "Focus time",
       "sessions": "Sessions",
       "completion": "Completion",
       "streak": "Streak (days)",
       "daily": "Daily breakdown",
-      "bestDay": "Best day: {{date}} ({{minutes}} min)"
+      "bestDay": "Best day: {{date}} ({{time}})"
     },
     "toast": {
       "nameRequired": "Please enter a name first.",

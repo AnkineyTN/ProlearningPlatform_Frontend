@@ -17,7 +17,7 @@ export type SocialCardItem = {
   description: string;
   createdAt: string;
   ownerName: string;
-  ownerAvatarUrl?: string | null;
+  ownerAvatar?: string | null;
   numQuestions?: number | null;
   duration?: number | null;
 };
@@ -28,6 +28,7 @@ type Props = {
 };
 
 const SocialResourceCard = ({ item, onAccess }: Props) => {
+  console.log('🚀 ~ SocialResourceCard ~ item:', item);
   const { t } = useTranslation();
   const Icon = TYPE_ICON[item.type];
   const description = item.description || t('list.noDescription');
@@ -74,7 +75,7 @@ const SocialResourceCard = ({ item, onAccess }: Props) => {
       {/* Footer: owner + date */}
       <div className='flex items-center justify-between gap-2 pt-3 border-t border-t-[var(--pl-border)] mt-auto'>
         <div className='flex items-center gap-2 min-w-0'>
-          <UserAvatar name={item.ownerName} src={item.ownerAvatarUrl} size={22} />
+          <UserAvatar name={item.ownerName} src={item.ownerAvatar} size={22} />
           <span className='text-[11.5px] text-[var(--pl-text-muted)] truncate'>
             {item.ownerName}
           </span>

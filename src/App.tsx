@@ -2,15 +2,15 @@ import './i18n/config';
 
 import { useEffect } from 'react';
 import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
-import { Toaster } from '@/components/ui/sonner';
 
-import PomodoroFloatingWidget from '@/components/PomodoroFloatingWidget';
 import { ColorThemeProvider } from '@/components/theme/color-theme-provider.tsx';
 import { ThemeProvider } from '@/components/theme/theme-provider.tsx';
+import { Toaster } from '@/components/ui/sonner';
 import {
   PomodoroProvider,
   usePomodoroContext,
 } from '@/contexts/PomodoroContext';
+import PomodoroFloatingWidget from '@/pages/Pomodoro/components/PomodoroFloatingWidget.tsx';
 import SoundLayer from '@/pages/Pomodoro/components/SoundLayer.tsx';
 import { authAPI } from '@/services/endpoints/auth.ts';
 

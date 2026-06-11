@@ -20,12 +20,17 @@ import {
 } from '@/hooks/usePomodoro';
 import type { SessionType, SpaceDto } from '@/services/types/pomodoro.types';
 import { DEFAULT_SETTING, STORAGE_KEYS, formatTime } from './constants';
+import { usePomodoroUiPrefs } from './useUiPrefs';
 import { usePomodoroContext } from '@/contexts/PomodoroContext';
 import SpaceBackground from './components/SpaceBackground';
 import SpacePicker from './components/SpacePicker';
 import SoundMixer from './components/SoundMixer';
 import SettingsModal from './components/SettingsModal';
 import StatsModal from './components/StatsModal';
+import CycleDots from './components/CycleDots';
+
+const RING_RADIUS = 110;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
 const Pomodoro = () => {
   const { t } = useTranslation();
@@ -35,6 +40,7 @@ const Pomodoro = () => {
   const setting = serverSetting ?? DEFAULT_SETTING;
 
   const { engine, activeSounds, setActiveSounds } = usePomodoroContext();
+  const [uiPrefs, updateUiPrefs] = usePomodoroUiPrefs();
 
   // ── Persisted space pick ─────────────────────────────────────
   const [selectedSpaceId, setSelectedSpaceId] = useState<number | null>(() => {
@@ -97,6 +103,11 @@ const Pomodoro = () => {
       document.title = 'ProLearning';
     };
   }, [engine.remaining, engine.running, engine.type, t]);
+
+  const remainingFrac =
+    engine.planned > 0
+      ? Math.max(0, Math.min(1, engine.remaining / engine.planned))
+      : 1;
 
   const tabs: { type: SessionType; label: string }[] = useMemo(
     () => [
@@ -162,17 +173,77 @@ const Pomodoro = () => {
             ))}
           </div>
 
-          {/* Big digits */}
-          <div
-            className='text-center font-bold tracking-tight tabular-nums my-4'
-            style={{
-              fontSize: 'clamp(72px, 18vw, 128px)',
-              lineHeight: 1,
-              fontFamily: 'var(--font-display)',
-            }}
-          >
-            {formatTime(engine.remaining)}
-          </div>
+          {/* Big digits + progress */}
+          {uiPrefs.progressStyle === 'ring' ? (
+            <div className='relative w-[240px] h-[240px] mx-auto my-4'>
+              <svg
+                className='absolute inset-0 w-full h-full -rotate-90'
+                viewBox='0 0 240 240'
+              >
+                <circle
+                  cx='120'
+                  cy='120'
+                  r={RING_RADIUS}
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth='7'
+                  className='text-white/15'
+                />
+                <circle
+                  cx='120'
+                  cy='120'
+                  r={RING_RADIUS}
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth='7'
+                  strokeLinecap='round'
+                  strokeDasharray={RING_CIRCUMFERENCE}
+                  strokeDashoffset={RING_CIRCUMFERENCE * (1 - remainingFrac)}
+                  className='text-white transition-[stroke-dashoffset] duration-1000 ease-linear'
+                />
+              </svg>
+              <div
+                className='absolute inset-0 flex items-center justify-center font-bold tracking-tight tabular-nums'
+                style={{
+                  fontSize: 'clamp(44px, 12vw, 60px)',
+                  lineHeight: 1,
+                  fontFamily: 'var(--font-display)',
+                }}
+              >
+                {formatTime(engine.remaining)}
+              </div>
+            </div>
+          ) : (
+            <>
+              <div
+                className='text-center font-bold tracking-tight tabular-nums my-4'
+                style={{
+                  fontSize: 'clamp(72px, 18vw, 128px)',
+                  lineHeight: 1,
+                  fontFamily: 'var(--font-display)',
+                }}
+              >
+                {formatTime(engine.remaining)}
+              </div>
+              {uiPrefs.progressStyle === 'bar' && (
+                <div className='h-1.5 rounded-full bg-white/15 overflow-hidden mb-4 mx-1'>
+                  <div
+                    className='h-full rounded-full bg-white transition-[width] duration-1000 ease-linear'
+                    style={{ width: `${remainingFrac * 100}%` }}
+                  />
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Cycle position */}
+          <CycleDots
+            pomodoroCount={engine.pomodoroCount}
+            interval={setting.longBreakInterval}
+            type={engine.type}
+            running={engine.running}
+            className='mb-2'
+          />
 
           {/* Pomodoro count */}
           <div className='text-center text-xs text-white/70 mb-5'>
@@ -284,14 +355,20 @@ const Pomodoro = () => {
       <SettingsModal
         open={settingsOpen}
         setting={setting}
+        uiPrefs={uiPrefs}
         onClose={() => setSettingsOpen(false)}
         saving={updateSetting.isPending}
         onSave={async (next) => {
           await updateSetting.mutateAsync(next);
         }}
+        onSaveUiPrefs={updateUiPrefs}
       />
 
-      <StatsModal open={statsOpen} onClose={() => setStatsOpen(false)} />
+      <StatsModal
+        open={statsOpen}
+        onClose={() => setStatsOpen(false)}
+        timeFormat={uiPrefs.statsTimeFormat}
+      />
     </div>
   );
 };

@@ -21,8 +21,9 @@ import { Link, useLocation } from 'react-router-dom';
 
 import { usePomodoroContext } from '@/contexts/PomodoroContext';
 import { formatTime } from '@/pages/Pomodoro/constants';
+import CycleDots from '@/pages/Pomodoro/components/CycleDots';
 
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 
 type Corner = 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
 
@@ -46,13 +47,13 @@ function cornerToXY(c: Corner, w: number, h: number) {
 }
 
 const PomodoroFloatingWidget = () => {
-  const { engine, sessionEndCount, activeSounds, setActiveSounds } =
+  const { engine, setting, activeSounds, setActiveSounds } =
     usePomodoroContext();
   const { pathname } = useLocation();
   const { t } = useTranslation();
 
   const [isShaking, setIsShaking] = useState(false);
-  const prevSessionEndCount = useRef(sessionEndCount);
+  const prevType = useRef(engine.type);
 
   const [corner, setCornerState] = useState<Corner>(
     () => (localStorage.getItem(STORAGE_CORNER) as Corner) ?? 'bottom-right',
@@ -69,11 +70,11 @@ const PomodoroFloatingWidget = () => {
   const wasDragging = useRef(false);
 
   useEffect(() => {
-    if (sessionEndCount !== prevSessionEndCount.current) {
-      prevSessionEndCount.current = sessionEndCount;
+    if (engine.type !== prevType.current) {
+      prevType.current = engine.type;
       setIsShaking(true);
     }
-  }, [sessionEndCount]);
+  }, [engine.type]);
 
   useEffect(() => {
     if (!isShaking) return;
@@ -107,10 +108,14 @@ const PomodoroFloatingWidget = () => {
     [snapTo],
   );
 
-  // Place at correct corner before first paint (no flash)
+  const hasActiveSession = engine.running || engine.remaining < engine.planned;
+  const visible = hasActiveSession && pathname !== '/pomodoro';
+
+  // Place at correct corner before first paint each time the widget appears
+  // (it stays mounted but renders null while hidden, so mount-only won't do).
   useLayoutEffect(() => {
-    snapTo(cornerRef.current, false);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    if (visible) snapTo(cornerRef.current, false);
+  }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Re-snap after collapsed height change
   useEffect(() => {
@@ -145,8 +150,7 @@ const PomodoroFloatingWidget = () => {
     setCorner(`${v}-${h}` as Corner);
   };
 
-  const hasActiveSession = engine.running || engine.remaining < engine.planned;
-  if (!hasActiveSession || pathname === '/pomodoro') return null;
+  if (!visible) return null;
 
   const typeColor = SESSION_TYPE_COLORS[engine.type] ?? 'text-white';
   const hasAudio = activeSounds.length > 0;
@@ -161,16 +165,18 @@ const PomodoroFloatingWidget = () => {
   return (
     <motion.div
       ref={widgetRef}
-      className={`fixed top-0 left-0 z-50 select-none w-52 ${isShaking ? 'pl-animate-shake' : ''}`}
+      className='fixed top-0 left-0 z-50 select-none w-52'
       style={{ x: mx, y: my }}
       drag
       dragMomentum={false}
       dragElastic={0.08}
       onDragEnd={onDragEnd}
       whileDrag={{ scale: 1.05, zIndex: 60 }}
-      onAnimationEnd={() => setIsShaking(false)}
     >
-      <div className='rounded-2xl bg-[var(--pl-bg)]/20 backdrop-blur-md border border-[var(--pl-border)] shadow-2xl overflow-hidden cursor-grab active:cursor-grabbing'>
+      <div
+        className={`rounded-2xl bg-[var(--pl-bg)]/20 backdrop-blur-md border border-[var(--pl-border)] shadow-2xl overflow-hidden cursor-grab active:cursor-grabbing ${isShaking ? 'pl-animate-shake' : ''}`}
+        onAnimationEnd={() => setIsShaking(false)}
+      >
         {/* Header */}
         <div className='flex items-center justify-between gap-2 hover:bg-[var(--pl-accent)]/10 transition-colors ps-4 pe-2 py-1.5'>
           <Link
@@ -218,6 +224,14 @@ const PomodoroFloatingWidget = () => {
               >
                 {formatTime(engine.remaining)}
               </span>
+              <CycleDots
+                pomodoroCount={engine.pomodoroCount}
+                interval={setting.longBreakInterval}
+                type={engine.type}
+                running={engine.running}
+                variant='panel'
+                className='mt-1.5'
+              />
             </div>
 
             <div className='flex items-center justify-center gap-2 px-3 pb-3'>
