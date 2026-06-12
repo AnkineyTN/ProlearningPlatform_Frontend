@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import CreateNewModal from '@/components/modals/CreateNewModal';
+import UploadNoteModal from '@/components/modals/UploadNoteModal';
 
 import FlashcardListPage from './components/FlashcardListPage';
 import HeaderSetDetails from './components/HeaderSetDetails';
@@ -64,6 +65,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
           isGenerating={handlers.isGenerating}
           isCreatingNote={handlers.isCreatingNote}
           onNewClick={handlers.handleCreateButtonClick}
+          onUploadNoteClick={() => handlers.setIsUploadNoteModalOpen(true)}
           notesSearch={handlers.notesSearch}
           onNotesSearchChange={handlers.setNotesSearch}
           notesPrivacy={handlers.notesPrivacy}
@@ -142,6 +144,13 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
         showAITab={activeTab === 'Flashcards' || activeTab === 'Exams'}
         onSubmitAI={handlers.handleAISubmit}
         isGenerating={handlers.isGenerating}
+      />
+
+      {/* Upload note modal */}
+      <UploadNoteModal
+        setId={Number(setId)}
+        isOpen={handlers.isUploadNoteModalOpen}
+        onClose={() => handlers.setIsUploadNoteModalOpen(false)}
       />
 
       {/* Update modal */}

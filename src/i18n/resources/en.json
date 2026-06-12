@@ -1515,6 +1515,7 @@
       "generating": "Generating with AI…",
       "creating": "Creating…",
       "newNote": "New note",
+      "uploadNote": "Upload note",
       "newFlashcard": "New flashcard",
       "newExam": "New exam",
       "newMindmap": "New mindmap",
@@ -1554,6 +1555,23 @@
       "generatedFromNotes": "Generated from {{count}} note(s)",
       "generatedFromFiles": "Generated from {{count}} file(s)",
       "generatedFromUrls": "Generated from {{count}} URL(s)"
+    },
+    "upload": {
+      "title": "Upload notes",
+      "subtitle": "Each file becomes a new note in this set.",
+      "dropzone": "Drag & drop files here, or click to browse",
+      "dropzoneHint": "Supports .md and .txt files",
+      "selectedFiles": "Selected files",
+      "removeFile": "Remove file",
+      "invalidType": "{{fileName}} is not a .md or .txt file",
+      "cta_one": "Create {{count}} note",
+      "cta_other": "Create {{count}} notes",
+      "uploading": "Uploading…",
+      "success_one": "Created {{count}} note from your files",
+      "success_other": "Created {{count}} notes from your files",
+      "partialFail": "{{failed}} of {{total}} files failed to import",
+      "fail": "Failed to import notes. Please try again.",
+      "importedFrom": "Imported from {{fileName}}"
     }
   },
   "analysis": {

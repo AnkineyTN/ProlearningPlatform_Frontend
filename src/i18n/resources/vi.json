@@ -1922,6 +1922,7 @@
       "generating": "Đang tạo với AI…",
       "creating": "Đang tạo…",
       "newNote": "Ghi chú mới",
+      "uploadNote": "Tải lên ghi chú",
       "newFlashcard": "Flashcard mới",
       "newExam": "Bài thi mới",
       "newMindmap": "Sơ đồ tư duy mới",
@@ -1961,6 +1962,23 @@
       "generatedFromNotes": "Tạo từ {{count}} ghi chú",
       "generatedFromFiles": "Tạo từ {{count}} tệp",
       "generatedFromUrls": "Tạo từ {{count}} URL"
+    },
+    "upload": {
+      "title": "Tải lên ghi chú",
+      "subtitle": "Mỗi tệp sẽ trở thành một ghi chú mới trong bộ này.",
+      "dropzone": "Kéo thả tệp vào đây, hoặc bấm để chọn tệp",
+      "dropzoneHint": "Hỗ trợ tệp .md và .txt",
+      "selectedFiles": "Tệp đã chọn",
+      "removeFile": "Xoá tệp",
+      "invalidType": "{{fileName}} không phải tệp .md hoặc .txt",
+      "cta_one": "Tạo {{count}} ghi chú",
+      "cta_other": "Tạo {{count}} ghi chú",
+      "uploading": "Đang tải lên…",
+      "success_one": "Đã tạo {{count}} ghi chú từ tệp của bạn",
+      "success_other": "Đã tạo {{count}} ghi chú từ tệp của bạn",
+      "partialFail": "{{failed}}/{{total}} tệp nhập thất bại",
+      "fail": "Nhập ghi chú thất bại. Vui lòng thử lại.",
+      "importedFrom": "Nhập từ {{fileName}}"
     }
   },
   "analysis": {

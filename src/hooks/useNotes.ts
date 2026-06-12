@@ -140,6 +140,80 @@ export const useCreateNote = () => {
   });
 };
 
+function extractCreatedNoteId(body: unknown): number | undefined {
+  if (!body || typeof body !== "object") return undefined;
+  const raw = (body as { data?: unknown }).data;
+  if (typeof raw === "number") return raw;
+  if (raw && typeof raw === "object") {
+    const r = raw as { id?: unknown; noteId?: unknown; note_id?: unknown };
+    const candidate = r.id ?? r.noteId ?? r.note_id;
+    if (typeof candidate === "number") return candidate;
+    if (typeof candidate === "string" && candidate !== "") {
+      const parsed = Number(candidate);
+      if (!Number.isNaN(parsed)) return parsed;
+    }
+  }
+  return undefined;
+}
+
+/** Create a note and persist its content in one step (used by file import).
+ * The create response shape varies across backend versions, so fall back to
+ * fetching the newest note of the set when no id can be extracted. */
+export const useImportNoteFromFile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      setId,
+      title,
+      description,
+      privacy,
+      content,
+    }: {
+      setId: number;
+      title: string;
+      description: string;
+      privacy: string;
+      content: string;
+    }) => {
+      const createRes = await noteAPI.createNote(setId, {
+        setId,
+        title,
+        description,
+        privacy,
+      });
+
+      let noteId = extractCreatedNoteId(createRes.data);
+
+      if (!noteId) {
+        const listRes = await noteAPI.getAllNotesBySet(setId, {
+          page: 0,
+          size: 1,
+          sort: "id,DESC",
+        });
+        const normalized = normalizeNotesBySetResponse(listRes.data, 0, 1);
+        noteId = normalized.items[0]?.id;
+      }
+
+      if (!noteId) {
+        throw new Error("Could not resolve the id of the created note");
+      }
+
+      if (content) {
+        await noteAPI.autoSaveNote(setId, noteId, { title, content });
+      }
+
+      return noteId;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    },
+    onError: (error) => {
+      console.error("Error importing note from file:", error);
+    },
+  });
+};
+
 export const useUpdateNote = () => {
   const queryClient = useQueryClient();
 

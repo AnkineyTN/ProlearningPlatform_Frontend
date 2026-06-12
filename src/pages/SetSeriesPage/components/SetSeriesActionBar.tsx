@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Plus } from 'lucide-react';
+import { Plus, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {
@@ -15,6 +15,7 @@ interface SetSeriesActionBarProps {
   isGenerating: boolean;
   isCreatingNote: boolean;
   onNewClick: () => void;
+  onUploadNoteClick: () => void;
 
   // Notes filters
   notesSearch: string;
@@ -54,6 +55,7 @@ export default function SetSeriesActionBar({
   isGenerating,
   isCreatingNote,
   onNewClick,
+  onUploadNoteClick,
   notesSearch,
   onNotesSearchChange,
   notesPrivacy,
@@ -106,6 +108,21 @@ export default function SetSeriesActionBar({
                 { defaultValue: t('set.actions.newItem') },
               )}
       </Button>
+      {activeTab === 'Notes' && (
+        <Button
+          size='sm'
+          variant='outline'
+          onClick={onUploadNoteClick}
+          disabled={isDisabled}
+          className={cn(
+            'font-semibold gap-1',
+            isDisabled && 'opacity-55 cursor-not-allowed',
+          )}
+        >
+          <Upload className='size-4' />
+          {t('set.actions.uploadNote')}
+        </Button>
+      )}
       <div className='w-px h-5 bg-[var(--pl-border)] shrink-0 mx-0.5' />
 
       {activeTab === 'Notes' && (

@@ -53,6 +53,7 @@ export function useSetSeriesHandlers({
   // --- Modal visibility ---
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isUploadNoteModalOpen, setIsUploadNoteModalOpen] = useState(false);
 
   // --- Per-tab filter state ---
   const [notesSearch, setNotesSearch] = useState('');
@@ -451,6 +452,8 @@ export function useSetSeriesHandlers({
     isCreateModalOpen,
     setIsCreateModalOpen,
     isUpdateModalOpen,
+    isUploadNoteModalOpen,
+    setIsUploadNoteModalOpen,
 
     // Selected items
     selectedNote,
