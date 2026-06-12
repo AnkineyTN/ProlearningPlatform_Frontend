@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import type { AISubmitData } from '@/components/modals/CreateAITab';
 import {
@@ -40,6 +41,7 @@ export function useSetSeriesHandlers({
   setActiveTab,
 }: UseSetSeriesHandlersParams) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   // --- Selected items for the update modal ---
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
@@ -144,15 +146,15 @@ export function useSetSeriesHandlers({
           const description =
             result.data.description ||
             (data.source === 'notes'
-              ? `Generated from ${data.notes?.length ?? 0} note(s)`
+              ? t('set.handlers.generatedFromNotes', { count: data.notes?.length ?? 0 })
               : data.source === 'files'
-                ? `Generated from ${data.files?.length ?? 0} file(s)`
-                : `Generated from ${data.urls?.length ?? 0} URL(s)`);
+                ? t('set.handlers.generatedFromFiles', { count: data.files?.length ?? 0 })
+                : t('set.handlers.generatedFromUrls', { count: data.urls?.length ?? 0 }));
 
           navigate(`/sets/${setId}/flashcards/editor`, {
             state: {
               title:
-                data.title || result.data.title || 'AI Generated Flashcards',
+                data.title || result.data.title || t('set.handlers.aiFlashcardsTitle'),
               description,
               privacy: data.privacy,
               generatedFlashcards: flashcards,
@@ -161,7 +163,7 @@ export function useSetSeriesHandlers({
         }
       } catch (error) {
         console.error('Error generating flashcards:', error);
-        toast.error('Failed to generate flashcards. Please try again.');
+        toast.error(t('set.handlers.generateFlashcardsError'));
       }
       return;
     }
@@ -214,18 +216,17 @@ export function useSetSeriesHandlers({
         setIsCreateModalOpen(false);
 
         const content = result.data?.content ?? '';
-        const sourceDesc =
-          data.source === 'notes'
-            ? `${data.notes?.length ?? 0} note(s)`
-            : data.source === 'files'
-              ? `${data.files?.length ?? 0} file(s)`
-              : `${data.urls?.length ?? 0} URL(s)`;
 
         navigate(`/sets/${setId}/exams/editor`, {
           state: {
             title: data.title || result.data?.title || '',
             description:
-              result.data?.description || `Generated from ${sourceDesc}`,
+              result.data?.description ||
+              (data.source === 'notes'
+                ? t('set.handlers.generatedFromNotes', { count: data.notes?.length ?? 0 })
+                : data.source === 'files'
+                  ? t('set.handlers.generatedFromFiles', { count: data.files?.length ?? 0 })
+                  : t('set.handlers.generatedFromUrls', { count: data.urls?.length ?? 0 })),
             privacy: data.privacy,
             duration: result.data?.duration,
             aiContent: content,
@@ -233,7 +234,7 @@ export function useSetSeriesHandlers({
         });
       } catch (error) {
         console.error('Error generating exam with AI:', error);
-        toast.error('Failed to generate exam. Please try again.');
+        toast.error(t('set.handlers.generateExamError'));
       }
     }
   };
@@ -255,7 +256,7 @@ export function useSetSeriesHandlers({
           setIsCreateModalOpen(false);
         } catch (error) {
           console.error('Error creating note:', error);
-          toast.error('Failed to create note. Please try again.');
+          toast.error(t('set.handlers.createNoteError'));
         }
         break;
       case 'Flashcards':
@@ -270,7 +271,7 @@ export function useSetSeriesHandlers({
           });
         } catch (error) {
           console.error('Error navigating to flashcard editor:', error);
-          toast.error('Failed to create flashcard. Please try again.');
+          toast.error(t('set.handlers.createFlashcardError'));
         }
         break;
       case 'Exams':
@@ -285,7 +286,7 @@ export function useSetSeriesHandlers({
           });
         } catch (error) {
           console.error('Error navigating to exam editor:', error);
-          toast.error('Failed to create exam. Please try again.');
+          toast.error(t('set.handlers.createExamError'));
         }
         break;
       default:
@@ -319,12 +320,12 @@ export function useSetSeriesHandlers({
           id: selectedNote.id,
           payload,
         });
-        toast.success('Note updated successfully');
+        toast.success(t('set.handlers.noteUpdated'));
         setIsUpdateModalOpen(false);
         setSelectedNote(null);
       } catch (error) {
         console.error('Error updating note:', error);
-        toast.error('Failed to update note. Please try again.');
+        toast.error(t('set.handlers.updateNoteError'));
       }
     }
 
@@ -341,12 +342,12 @@ export function useSetSeriesHandlers({
           flashcardId: selectedFlashcard.id,
           payload,
         });
-        toast.success('Flashcard updated successfully');
+        toast.success(t('set.handlers.flashcardUpdated'));
         setIsUpdateModalOpen(false);
         setSelectedFlashcard(null);
       } catch (error) {
         console.error('Error updating flashcard:', error);
-        toast.error('Failed to update flashcard. Please try again.');
+        toast.error(t('set.handlers.updateFlashcardError'));
       }
     }
 
@@ -363,12 +364,12 @@ export function useSetSeriesHandlers({
           examId: selectedExam.id,
           data: payload,
         });
-        toast.success('Exam updated successfully');
+        toast.success(t('set.handlers.examUpdated'));
         setIsUpdateModalOpen(false);
         setSelectedExam(null);
       } catch (error) {
         console.error('Error updating exam:', error);
-        toast.error('Failed to update exam. Please try again.');
+        toast.error(t('set.handlers.updateExamError'));
       }
     }
   };
@@ -379,10 +380,10 @@ export function useSetSeriesHandlers({
         setId: Number(setId),
         noteId: id,
       });
-      toast.success('Note deleted successfully');
+      toast.success(t('set.handlers.noteDeleted'));
     } catch (error) {
       console.error('Error deleting note:', error);
-      toast.error('Failed to delete note. Please try again.');
+      toast.error(t('set.handlers.deleteNoteError'));
     }
   };
 
@@ -392,10 +393,10 @@ export function useSetSeriesHandlers({
         setId: Number(setId),
         flashcardId: id,
       });
-      toast.success('Flashcard deleted successfully');
+      toast.success(t('set.handlers.flashcardDeleted'));
     } catch (error) {
       console.error('Error deleting flashcard:', error);
-      toast.error('Failed to delete flashcard. Please try again.');
+      toast.error(t('set.handlers.deleteFlashcardError'));
     }
   };
 
@@ -411,10 +412,10 @@ export function useSetSeriesHandlers({
         setId: Number(setId),
         examId: id,
       });
-      toast.success('Exam deleted successfully');
+      toast.success(t('set.handlers.examDeleted'));
     } catch (error) {
       console.error('Error deleting exam:', error);
-      toast.error('Failed to delete exam. Please try again.');
+      toast.error(t('set.handlers.deleteExamError'));
     }
   };
 

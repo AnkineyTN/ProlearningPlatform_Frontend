@@ -113,7 +113,7 @@ const CreateNewModal = ({
       onClose();
     } catch (err) {
       console.error('CreateNewModal submit error', err);
-      toast.error('Failed to create new item. Please try again.');
+      toast.error(t('modal.createError'));
     }
   };
 
@@ -123,7 +123,7 @@ const CreateNewModal = ({
       await Promise.resolve(onSubmitAI(aiData));
     } catch (err) {
       console.error('CreateNewModal AI submit error', err);
-      toast.error('Failed to generate. Please try again.');
+      toast.error(t('modal.generateError'));
     }
   };
 

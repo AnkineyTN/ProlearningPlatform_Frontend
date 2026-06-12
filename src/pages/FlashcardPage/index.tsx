@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -62,6 +63,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     setId: Number(flashcardId),
   });
 
+  const { t } = useTranslation();
   const updateCardMutation = useUpdateCard();
   const deleteCardMutation = useDeleteCard();
   const deleteFlashcardMutation = useDeleteFlashcard();
@@ -256,7 +258,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       navigate(`/sets/${setId}/flashcards/${flashcardId}/study`);
     } catch (error) {
       console.error('Failed to start session:', error);
-      toast.error('Không thể bắt đầu phiên học');
+      toast.error(t('flashcard.page.startSessionError'));
     }
   };
 
@@ -287,7 +289,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         navigate(`/sets/${setId}/flashcards/${flashcardId}/study`);
       } catch (error) {
         console.error('Failed to continue session:', error);
-        toast.error('Không thể tiếp tục phiên học');
+        toast.error(t('flashcard.page.continueSessionError'));
       }
     }
   };
@@ -305,7 +307,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         await startNewSession();
       } catch (error) {
         console.error('Failed to cancel session:', error);
-        toast.error('Không thể hủy phiên học cũ');
+        toast.error(t('flashcard.page.cancelSessionError'));
       }
     }
   };
@@ -392,7 +394,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     return (
       <div className='min-h-screen flex items-center justify-center'>
         <div className='text-lg text-muted-foreground'>
-          Loading flashcards...
+          {t('flashcard.page.loading')}
         </div>
       </div>
     );
@@ -404,10 +406,10 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       <div className='min-h-screen flex items-center justify-center'>
         <div className='text-center'>
           <div className='text-lg text-destructive mb-2'>
-            Error loading flashcards
+            {t('flashcard.page.error')}
           </div>
           <div className='text-sm text-muted-foreground'>
-            {error instanceof Error ? error.message : 'Unknown error'}
+            {error instanceof Error ? error.message : t('flashcard.page.unknownError')}
           </div>
         </div>
       </div>
@@ -420,10 +422,10 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       <div className='min-h-screen flex items-center justify-center'>
         <div className='text-center'>
           <div className='text-lg text-muted-foreground mb-2'>
-            No flashcards available
+            {t('flashcard.page.empty')}
           </div>
           <div className='text-sm text-muted-foreground'>
-            This flashcard set is empty
+            {t('flashcard.page.emptySub')}
           </div>
         </div>
       </div>
@@ -445,10 +447,10 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         data,
       });
       await refetch();
-      toast.success('Card updated successfully');
+      toast.success(t('flashcard.page.cardUpdated'));
     } catch (error) {
       console.error('Failed to update card:', error);
-      toast.error('Failed to update card. Please try again.');
+      toast.error(t('flashcard.page.updateCardError'));
     }
   };
 
@@ -460,10 +462,10 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         cardId,
       });
       await refetch();
-      toast.success('Card deleted successfully');
+      toast.success(t('flashcard.page.cardDeleted'));
     } catch (error) {
       console.error('Failed to delete card:', error);
-      toast.error('Failed to delete card. Please try again.');
+      toast.error(t('flashcard.page.deleteCardError'));
     }
   };
 
@@ -473,11 +475,11 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         setId: Number(setId),
         flashcardId: Number(flashcardId),
       });
-      toast.success('Flashcard set deleted successfully');
+      toast.success(t('flashcard.page.setDeleted'));
       navigate(`/sets/${setId}`);
     } catch (error) {
       console.error('Error deleting flashcard:', error);
-      toast.error('Failed to delete flashcard. Please try again.');
+      toast.error(t('flashcard.page.deleteSetError'));
     }
   };
 
@@ -491,7 +493,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       navigate(`/sets/${setId}/exams/${examId}`);
     } catch (error) {
       console.error('Failed to generate exam:', error);
-      toast.error('Failed to generate exam. Please try again.');
+      toast.error(t('flashcard.page.generateExamError'));
     }
   };
 

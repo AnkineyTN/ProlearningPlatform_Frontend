@@ -40,7 +40,7 @@ export default function ForgotPassword() {
   );
 
   const [submitting, setSubmitting] = useState(false);
-  const resendLock = useCountdown({ seconds: 60, autoStart: true });
+  const resendLock = useCountdown({ seconds: 60, autoStart: false });
 
   const defaultEmail = useMemo(() => state.email ?? '', [state.email]);
 
@@ -188,15 +188,17 @@ export default function ForgotPassword() {
             {t('forgotPassword.submit')}
           </button>
 
-          <div className='text-[11.5px] text-[var(--pl-text-faint)] text-center'>
-            {resendLock.isDone ? (
-              <span>{t('forgotPassword.canResend')}</span>
-            ) : (
-              <span>
-                {t('forgotPassword.resendIn', { time: resendLock.format() })}
-              </span>
-            )}
-          </div>
+          {resendLock.isRunning && (
+            <div className='text-[11.5px] text-[var(--pl-text-faint)] text-center'>
+              {resendLock.isDone ? (
+                <span>{t('forgotPassword.canResend')}</span>
+              ) : (
+                <span>
+                  {t('forgotPassword.resendIn', { time: resendLock.format() })}
+                </span>
+              )}
+            </div>
+          )}
         </form>
 
         {email ? (

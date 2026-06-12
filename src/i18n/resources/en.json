@@ -170,7 +170,8 @@
     "pomodoroUpdated": "Asset updated.",
     "pomodoroUpdateError": "Could not update asset.",
     "pomodoroDeleted": "Asset deleted.",
-    "pomodoroDeleteError": "Could not delete asset."
+    "pomodoroDeleteError": "Could not delete asset.",
+    "superAdmin": "Super admin"
   },
   "calendar": {
     "days": {
@@ -236,7 +237,38 @@
     "markAsRead": "Mark as read",
     "markAllRead": "Mark all as read",
     "tabInvites": "Invites",
-    "emptyInvites": "No pending invitations"
+    "emptyInvites": "No pending invitations",
+    "timeJustNow": "Just now",
+    "timeMinutesAgo_one": "{{count}} minute ago",
+    "timeMinutesAgo_other": "{{count}} minutes ago",
+    "timeHoursAgo_one": "{{count}} hour ago",
+    "timeHoursAgo_other": "{{count}} hours ago",
+    "timeDaysAgo_one": "{{count}} day ago",
+    "timeDaysAgo_other": "{{count}} days ago",
+    "timeMonthsAgo_one": "{{count}} month ago",
+    "timeMonthsAgo_other": "{{count}} months ago",
+    "timeYearsAgo_one": "{{count}} year ago",
+    "timeYearsAgo_other": "{{count}} years ago",
+    "acceptInviteError": "Failed to accept invitation",
+    "declineInviteSuccess": "Invitation declined",
+    "declineInviteError": "Failed to decline invitation",
+    "inviteStatusAccepted": "Accepted",
+    "inviteStatusDeclined": "Declined",
+    "inviteExpired": "Invitation expired",
+    "inviteOpen": "Open →",
+    "inviteAccept": "Accept",
+    "inviteDecline": "Decline",
+    "viewReviewBundle": "View review bundle",
+    "timeCompactJustNow": "Just now",
+    "timeCompactMinutesAgo": "{{count}}m ago",
+    "timeCompactHoursAgo": "{{count}}h ago",
+    "timeCompactDaysAgo": "{{count}}d ago",
+    "timeCompactMonthsAgo": "{{count}}mo ago",
+    "timeCompactYearsAgo": "{{count}}y ago",
+    "timeToday": "Today",
+    "timeYesterday": "Yesterday",
+    "timeThisWeek": "This week",
+    "loading": "Loading…"
   },
   "landing": {
     "createAccount": "Create an account",
@@ -424,7 +456,9 @@
     "titleTooLong": "Title must be less than 100 characters",
     "unlisted": "Unlisted",
     "update": "Update {{type}}",
-    "updateButton": "Update"
+    "updateButton": "Update",
+    "createError": "Failed to create new item. Please try again.",
+    "generateError": "Failed to generate. Please try again."
   },
   "onboarding": {
     "back": "Back",
@@ -964,6 +998,22 @@
       "timeUp": "Time's up! Submitting your exam...",
       "totalScore": "Total Score:",
       "unansweredWarning": "Warning: You still have unanswered questions."
+    },
+    "retry": {
+      "title": "Retry Wrong Answers",
+      "loading": "Loading statistics...",
+      "noData": "No wrong answer statistics yet.",
+      "noDataSub": "Essay questions pending grading won't appear here.",
+      "desc": "Select questions to retry. AI will create a new test with variant questions on the same topics.",
+      "selectAll": "Select all ({{count}} questions)",
+      "wrongRate": "{{pct}}% wrong",
+      "attempts": "{{incorrect}}/{{total}} attempts",
+      "selectedCount": "{{count}} selected",
+      "cancel": "Cancel",
+      "create": "Create review exam",
+      "created": "Created!",
+      "success": "Review exam created! Check the Review tab in your Set.",
+      "error": "Failed to create review exam. Please try again."
     }
   },
   "profile": {
@@ -1481,6 +1531,29 @@
       "pendingSection": "PENDING",
       "doneSection": "DONE",
       "empty": "Add your first task for this set above."
+    },
+    "handlers": {
+      "generateFlashcardsError": "Failed to generate flashcards. Please try again.",
+      "generateExamError": "Failed to generate exam. Please try again.",
+      "createNoteError": "Failed to create note. Please try again.",
+      "createFlashcardError": "Failed to create flashcard. Please try again.",
+      "createExamError": "Failed to create exam. Please try again.",
+      "noteUpdated": "Note updated successfully",
+      "updateNoteError": "Failed to update note. Please try again.",
+      "flashcardUpdated": "Flashcard updated successfully",
+      "updateFlashcardError": "Failed to update flashcard. Please try again.",
+      "examUpdated": "Exam updated successfully",
+      "updateExamError": "Failed to update exam. Please try again.",
+      "noteDeleted": "Note deleted successfully",
+      "deleteNoteError": "Failed to delete note. Please try again.",
+      "flashcardDeleted": "Flashcard deleted successfully",
+      "deleteFlashcardError": "Failed to delete flashcard. Please try again.",
+      "examDeleted": "Exam deleted successfully",
+      "deleteExamError": "Failed to delete exam. Please try again.",
+      "aiFlashcardsTitle": "AI Generated Flashcards",
+      "generatedFromNotes": "Generated from {{count}} note(s)",
+      "generatedFromFiles": "Generated from {{count}} file(s)",
+      "generatedFromUrls": "Generated from {{count}} URL(s)"
     }
   },
   "analysis": {
@@ -1705,6 +1778,88 @@
       "typFlashcard": "Flashcard",
       "typExam": "Exam",
       "mobileToggle": "Trending & community"
+    }
+  },
+  "note": {
+    "fileUpload": {
+      "errorEmptyFile": "Upload failed: the file is empty (0 bytes).",
+      "errorBackend": "Upload failed: {{message}}",
+      "errorFailed": "Failed to upload file",
+      "errorFileEmpty": "\"{{name}}\" is empty (0 bytes). Please pick another file.",
+      "errorInvalidType": "Invalid file type. Please upload images, PDF, DOC, DOCX, PPTX, or TXT.",
+      "errorInvalidNote": "Invalid note",
+      "success": "File uploaded successfully"
+    }
+  },
+  "collaboration": {
+    "members": {
+      "noMembers": "No members yet",
+      "roleUpdated": "Role updated",
+      "updateRoleError": "Failed to update role",
+      "memberRemoved": "Member removed",
+      "removeMemberError": "Failed to remove member"
+    },
+    "invite": {
+      "ownerOnly": "Only the owner can invite collaborators.",
+      "role": "Role:",
+      "inviteButton": "Invite",
+      "inviteCount": "({{count}})",
+      "invitationsSent_one": "{{count}} invitation sent",
+      "invitationsSent_other": "{{count}} invitations sent",
+      "errorUserNotFound": "User not found",
+      "errorAlreadyMember": "Already a member",
+      "errorCannotInviteSelf": "Cannot invite yourself",
+      "errorFailedToInvite": "Failed to invite",
+      "errorFailedToSend": "Failed to send invitations"
+    }
+  },
+  "flashcard": {
+    "page": {
+      "loading": "Loading flashcards...",
+      "error": "Error loading flashcards",
+      "unknownError": "Unknown error",
+      "empty": "No flashcards available",
+      "emptySub": "This flashcard set is empty",
+      "cardUpdated": "Card updated successfully",
+      "updateCardError": "Failed to update card. Please try again.",
+      "cardDeleted": "Card deleted successfully",
+      "deleteCardError": "Failed to delete card. Please try again.",
+      "setDeleted": "Flashcard set deleted successfully",
+      "deleteSetError": "Failed to delete flashcard. Please try again.",
+      "generateExamError": "Failed to generate exam. Please try again.",
+      "startSessionError": "Cannot start study session",
+      "continueSessionError": "Cannot continue study session",
+      "cancelSessionError": "Cannot cancel old session"
+    },
+    "import": {
+      "title": "Insert Data",
+      "previewTitle": "Preview Import",
+      "importTitle": "Import flashcards",
+      "cardsFound": "{{count}} cards found",
+      "formatLabel": "Format",
+      "contentLabel": "Your content",
+      "contentPlaceholder": "Paste your flashcard content here…",
+      "cancel": "Cancel",
+      "preview": "Preview",
+      "insert": "Insert {{count}} cards",
+      "termLabel": "Term",
+      "definitionLabel": "Definition",
+      "emptyContentError": "Please enter content to import",
+      "noValidCardsError": "No valid cards found. Please check the format.",
+      "parseFirstError": "Please parse content first",
+      "formatPipe": "Pipe separated  (Term | Definition)",
+      "formatTab": "Tab separated  (Term [TAB] Definition)",
+      "formatComma": "Comma separated  (Term, Definition)",
+      "formatPipeDesc": "Each line: Term | Definition",
+      "formatTabDesc": "Each line: Term [TAB] Definition",
+      "formatCommaDesc": "Each line: Term, Definition",
+      "exampleLabel": "Example · {{description}}"
+    },
+    "cardEdit": {
+      "emptyError": "Front and back card cannot be empty",
+      "notImageError": "Please select an image file",
+      "imageSizeError": "Image size must be less than 5MB",
+      "uploadImageError": "Failed to upload image. Please try again."
     }
   }
 }

@@ -187,7 +187,8 @@
     "pomodoroUpdated": "Đã cập nhật asset.",
     "pomodoroUpdateError": "Không cập nhật được asset.",
     "pomodoroDeleted": "Đã xoá asset.",
-    "pomodoroDeleteError": "Không xoá được asset."
+    "pomodoroDeleteError": "Không xoá được asset.",
+    "superAdmin": "Quản trị viên cấp cao"
   },
   "calendar": {
     "days": {
@@ -774,7 +775,38 @@
     "markAsRead": "Đánh dấu đã đọc",
     "markAllRead": "Đánh dấu tất cả đã đọc",
     "tabInvites": "Lời mời",
-    "emptyInvites": "Không có lời mời nào đang chờ"
+    "emptyInvites": "Không có lời mời nào đang chờ",
+    "timeJustNow": "Vừa xong",
+    "timeMinutesAgo_one": "{{count}} phút trước",
+    "timeMinutesAgo_other": "{{count}} phút trước",
+    "timeHoursAgo_one": "{{count}} giờ trước",
+    "timeHoursAgo_other": "{{count}} giờ trước",
+    "timeDaysAgo_one": "{{count}} ngày trước",
+    "timeDaysAgo_other": "{{count}} ngày trước",
+    "timeMonthsAgo_one": "{{count}} tháng trước",
+    "timeMonthsAgo_other": "{{count}} tháng trước",
+    "timeYearsAgo_one": "{{count}} năm trước",
+    "timeYearsAgo_other": "{{count}} năm trước",
+    "acceptInviteError": "Chấp nhận lời mời thất bại",
+    "declineInviteSuccess": "Đã từ chối lời mời",
+    "declineInviteError": "Từ chối lời mời thất bại",
+    "inviteStatusAccepted": "Đã chấp nhận",
+    "inviteStatusDeclined": "Đã từ chối",
+    "inviteExpired": "Lời mời đã hết hạn",
+    "inviteOpen": "Mở →",
+    "inviteAccept": "Chấp nhận",
+    "inviteDecline": "Từ chối",
+    "viewReviewBundle": "Xem gói ôn tập",
+    "timeCompactJustNow": "Vừa xong",
+    "timeCompactMinutesAgo": "{{count}} phút",
+    "timeCompactHoursAgo": "{{count}} giờ",
+    "timeCompactDaysAgo": "{{count}} ngày",
+    "timeCompactMonthsAgo": "{{count}} tháng",
+    "timeCompactYearsAgo": "{{count}} năm",
+    "timeToday": "Hôm nay",
+    "timeYesterday": "Hôm qua",
+    "timeThisWeek": "Tuần này",
+    "loading": "Đang tải…"
   },
   "landing": {
     "createAccount": "Tạo tài khoản",
@@ -962,7 +994,9 @@
     "titleTooLong": "Tiêu đề phải ít hơn 100 ký tự",
     "unlisted": "Không công khai",
     "update": "Chỉnh sửa {{type}}",
-    "updateButton": "Chỉnh sửa"
+    "updateButton": "Chỉnh sửa",
+    "createError": "Tạo mới thất bại. Vui lòng thử lại.",
+    "generateError": "Tạo thất bại. Vui lòng thử lại."
   },
   "onboarding": {
     "back": "Quay lại",
@@ -1373,6 +1407,22 @@
       "timeUp": "Hết giờ! Đang nộp bài...",
       "totalScore": "Tổng điểm:",
       "unansweredWarning": "Cảnh báo: Bạn vẫn còn câu chưa trả lời."
+    },
+    "retry": {
+      "title": "Luyện lại câu sai",
+      "loading": "Đang tải thống kê...",
+      "noData": "Chưa có dữ liệu thống kê câu sai.",
+      "noDataSub": "Câu essay đang chờ chấm sẽ không hiển thị ở đây.",
+      "desc": "Chọn các câu bạn muốn ôn lại. AI sẽ tạo bài kiểm tra mới với câu hỏi biến thể trên cùng chủ đề.",
+      "selectAll": "Chọn tất cả ({{count}} câu)",
+      "wrongRate": "{{pct}}% sai",
+      "attempts": "{{incorrect}}/{{total}} lần",
+      "selectedCount": "{{count}} câu được chọn",
+      "cancel": "Hủy",
+      "create": "Tạo bài ôn tập",
+      "created": "Đã tạo!",
+      "success": "Đã tạo Exam ôn tập! Kiểm tra trong tab Review của Set.",
+      "error": "Tạo Exam thất bại. Vui lòng thử lại."
     }
   },
   "profile": {
@@ -1888,6 +1938,29 @@
       "pendingSection": "CHƯA XONG",
       "doneSection": "ĐÃ XONG",
       "empty": "Thêm task đầu tiên cho set này ở trên."
+    },
+    "handlers": {
+      "generateFlashcardsError": "Tạo flashcard thất bại. Vui lòng thử lại.",
+      "generateExamError": "Tạo bài thi thất bại. Vui lòng thử lại.",
+      "createNoteError": "Tạo ghi chú thất bại. Vui lòng thử lại.",
+      "createFlashcardError": "Tạo flashcard thất bại. Vui lòng thử lại.",
+      "createExamError": "Tạo bài thi thất bại. Vui lòng thử lại.",
+      "noteUpdated": "Cập nhật ghi chú thành công",
+      "updateNoteError": "Cập nhật ghi chú thất bại. Vui lòng thử lại.",
+      "flashcardUpdated": "Cập nhật flashcard thành công",
+      "updateFlashcardError": "Cập nhật flashcard thất bại. Vui lòng thử lại.",
+      "examUpdated": "Cập nhật bài thi thành công",
+      "updateExamError": "Cập nhật bài thi thất bại. Vui lòng thử lại.",
+      "noteDeleted": "Xoá ghi chú thành công",
+      "deleteNoteError": "Xoá ghi chú thất bại. Vui lòng thử lại.",
+      "flashcardDeleted": "Xoá flashcard thành công",
+      "deleteFlashcardError": "Xoá flashcard thất bại. Vui lòng thử lại.",
+      "examDeleted": "Xoá bài thi thành công",
+      "deleteExamError": "Xoá bài thi thất bại. Vui lòng thử lại.",
+      "aiFlashcardsTitle": "Flashcard tạo bởi AI",
+      "generatedFromNotes": "Tạo từ {{count}} ghi chú",
+      "generatedFromFiles": "Tạo từ {{count}} tệp",
+      "generatedFromUrls": "Tạo từ {{count}} URL"
     }
   },
   "analysis": {
@@ -2112,6 +2185,88 @@
       "typFlashcard": "Thẻ học",
       "typExam": "Đề thi",
       "mobileToggle": "Xu hướng & cộng đồng"
+    }
+  },
+  "note": {
+    "fileUpload": {
+      "errorEmptyFile": "Tải lên thất bại: tệp rỗng (0 bytes).",
+      "errorBackend": "Tải lên thất bại: {{message}}",
+      "errorFailed": "Tải tệp lên thất bại",
+      "errorFileEmpty": "\"{{name}}\" rỗng (0 bytes). Vui lòng chọn tệp khác.",
+      "errorInvalidType": "Định dạng tệp không hợp lệ. Vui lòng tải lên ảnh, PDF, DOC, DOCX, PPTX hoặc TXT.",
+      "errorInvalidNote": "Ghi chú không hợp lệ",
+      "success": "Tải tệp lên thành công"
+    }
+  },
+  "collaboration": {
+    "members": {
+      "noMembers": "Chưa có thành viên",
+      "roleUpdated": "Đã cập nhật quyền",
+      "updateRoleError": "Cập nhật quyền thất bại",
+      "memberRemoved": "Đã xoá thành viên",
+      "removeMemberError": "Xoá thành viên thất bại"
+    },
+    "invite": {
+      "ownerOnly": "Chỉ chủ sở hữu mới có thể mời cộng tác viên.",
+      "role": "Quyền:",
+      "inviteButton": "Mời",
+      "inviteCount": "({{count}})",
+      "invitationsSent_one": "Đã gửi {{count}} lời mời",
+      "invitationsSent_other": "Đã gửi {{count}} lời mời",
+      "errorUserNotFound": "Không tìm thấy người dùng",
+      "errorAlreadyMember": "Đã là thành viên",
+      "errorCannotInviteSelf": "Không thể mời chính mình",
+      "errorFailedToInvite": "Gửi lời mời thất bại",
+      "errorFailedToSend": "Gửi lời mời thất bại"
+    }
+  },
+  "flashcard": {
+    "page": {
+      "loading": "Đang tải flashcard...",
+      "error": "Lỗi khi tải flashcard",
+      "unknownError": "Lỗi không xác định",
+      "empty": "Không có flashcard",
+      "emptySub": "Bộ flashcard này chưa có thẻ nào",
+      "cardUpdated": "Đã cập nhật thẻ thành công",
+      "updateCardError": "Cập nhật thẻ thất bại. Vui lòng thử lại.",
+      "cardDeleted": "Đã xóa thẻ thành công",
+      "deleteCardError": "Xóa thẻ thất bại. Vui lòng thử lại.",
+      "setDeleted": "Đã xóa bộ flashcard thành công",
+      "deleteSetError": "Xóa flashcard thất bại. Vui lòng thử lại.",
+      "generateExamError": "Tạo bài thi thất bại. Vui lòng thử lại.",
+      "startSessionError": "Không thể bắt đầu phiên học",
+      "continueSessionError": "Không thể tiếp tục phiên học",
+      "cancelSessionError": "Không thể hủy phiên học cũ"
+    },
+    "import": {
+      "title": "Nhập dữ liệu",
+      "previewTitle": "Xem trước nhập",
+      "importTitle": "Nhập flashcard",
+      "cardsFound": "Tìm thấy {{count}} thẻ",
+      "formatLabel": "Định dạng",
+      "contentLabel": "Nội dung của bạn",
+      "contentPlaceholder": "Dán nội dung flashcard vào đây…",
+      "cancel": "Hủy",
+      "preview": "Xem trước",
+      "insert": "Chèn {{count}} thẻ",
+      "termLabel": "Thuật ngữ",
+      "definitionLabel": "Định nghĩa",
+      "emptyContentError": "Vui lòng nhập nội dung để nhập",
+      "noValidCardsError": "Không tìm thấy thẻ hợp lệ. Vui lòng kiểm tra định dạng.",
+      "parseFirstError": "Vui lòng phân tích nội dung trước",
+      "formatPipe": "Phân cách bằng | (Thuật ngữ | Định nghĩa)",
+      "formatTab": "Phân cách bằng Tab (Thuật ngữ [TAB] Định nghĩa)",
+      "formatComma": "Phân cách bằng dấu phẩy (Thuật ngữ, Định nghĩa)",
+      "formatPipeDesc": "Mỗi dòng: Thuật ngữ | Định nghĩa",
+      "formatTabDesc": "Mỗi dòng: Thuật ngữ [TAB] Định nghĩa",
+      "formatCommaDesc": "Mỗi dòng: Thuật ngữ, Định nghĩa",
+      "exampleLabel": "Ví dụ · {{description}}"
+    },
+    "cardEdit": {
+      "emptyError": "Mặt trước và mặt sau không được để trống",
+      "notImageError": "Vui lòng chọn tệp ảnh",
+      "imageSizeError": "Kích thước ảnh phải nhỏ hơn 5MB",
+      "uploadImageError": "Tải ảnh lên thất bại. Vui lòng thử lại."
     }
   }
 }

@@ -222,7 +222,7 @@ const AdminDashboardPage = () => {
                     {fullName}
                   </div>
                   <div className='text-[10.5px] text-muted-foreground'>
-                    Super admin
+                    {t('adminDashboard.superAdmin')}
                   </div>
                 </div>
                 <ChevronRight className='w-[13px] h-[13px] text-muted-foreground' />

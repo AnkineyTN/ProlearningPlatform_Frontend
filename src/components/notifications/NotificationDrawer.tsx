@@ -214,20 +214,23 @@ function getTypeConfig(type: string): TypeConfig {
   return NOTIFICATION_TYPE_CONFIG[type] ?? DEFAULT_TYPE_CONFIG;
 }
 
-function compactRelativeTime(iso: string): string {
+function compactRelativeTime(
+  iso: string,
+  t: (key: string, opts?: Record<string, unknown>) => string,
+): string {
   const then = new Date(iso).getTime();
   if (Number.isNaN(then)) return '';
   const seconds = Math.floor((Date.now() - then) / 1000);
-  if (seconds < 60) return 'Just now';
+  if (seconds < 60) return t('notificationsPanel.timeCompactJustNow');
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
+  if (minutes < 60) return t('notificationsPanel.timeCompactMinutesAgo', { count: minutes });
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return t('notificationsPanel.timeCompactHoursAgo', { count: hours });
   const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}d ago`;
+  if (days < 30) return t('notificationsPanel.timeCompactDaysAgo', { count: days });
   const months = Math.floor(days / 30);
-  if (months < 12) return `${months}mo ago`;
-  return `${Math.floor(days / 365)}y ago`;
+  if (months < 12) return t('notificationsPanel.timeCompactMonthsAgo', { count: months });
+  return t('notificationsPanel.timeCompactYearsAgo', { count: Math.floor(days / 365) });
 }
 
 type Bucket = 'today' | 'yesterday' | 'thisWeek' | 'earlier';
@@ -282,6 +285,7 @@ function InviteActions({
   item: UserNotificationItem;
   onDone: () => void;
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const resourceType = INVITE_TYPES[item.type];
   const data = item.data as
@@ -333,7 +337,7 @@ function InviteActions({
       onDone();
       navigate(buildDestUrl());
     } catch {
-      toast.error('Failed to accept invitation');
+      toast.error(t('notificationsPanel.acceptInviteError'));
     }
   };
 
@@ -343,10 +347,10 @@ function InviteActions({
       await declineMutation.mutateAsync({ setId, resourceType, resourceId });
       await markRead.mutateAsync(item.id).catch(() => {});
       setLocalStatus('declined');
-      toast.success('Invitation declined');
+      toast.success(t('notificationsPanel.declineInviteSuccess'));
       onDone();
     } catch {
-      toast.error('Failed to decline invitation');
+      toast.error(t('notificationsPanel.declineInviteError'));
     }
   };
 
@@ -360,14 +364,14 @@ function InviteActions({
       >
         <span className='flex items-center gap-1 rounded-full bg-[var(--pl-success-soft)] px-2 py-0.5 text-xs font-medium text-[var(--pl-success)]'>
           <Check className='size-3' />
-          Accepted
+          {t('notificationsPanel.inviteStatusAccepted')}
         </span>
         <button
           type='button'
           onClick={handleOpen}
           className='text-xs font-medium text-primary hover:underline'
         >
-          Open →
+          {t('notificationsPanel.inviteOpen')}
         </button>
       </div>
     );
@@ -378,7 +382,7 @@ function InviteActions({
       <div className='mt-2' onClick={(e) => e.stopPropagation()}>
         <span className='flex w-fit items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'>
           <X className='size-3' />
-          Declined
+          {t('notificationsPanel.inviteStatusDeclined')}
         </span>
       </div>
     );
@@ -392,7 +396,7 @@ function InviteActions({
           onClick={handleOpen}
           className='text-xs font-medium text-primary hover:underline'
         >
-          Open →
+          {t('notificationsPanel.inviteOpen')}
         </button>
       </div>
     );
@@ -403,7 +407,7 @@ function InviteActions({
       <div className='mt-2'>
         <span className='inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'>
           <AlertTriangle className='size-3' />
-          Invitation expired
+          {t('notificationsPanel.inviteExpired')}
         </span>
       </div>
     );
@@ -423,7 +427,7 @@ function InviteActions({
         ) : (
           <Check className='size-3' />
         )}
-        Accept
+        {t('notificationsPanel.inviteAccept')}
       </Button>
       <Button
         size='sm'
@@ -437,7 +441,7 @@ function InviteActions({
         ) : (
           <X className='size-3' />
         )}
-        Decline
+        {t('notificationsPanel.inviteDecline')}
       </Button>
     </div>
   );
@@ -500,7 +504,7 @@ function NotificationCard({
             {title}
           </p>
           <span className='shrink-0 text-[11px] font-medium text-muted-foreground'>
-            {compactRelativeTime(item.createdAt)}
+            {compactRelativeTime(item.createdAt, t)}
           </span>
         </div>
         <p className='mt-1 text-sm text-muted-foreground'>{message}</p>
@@ -514,7 +518,7 @@ function NotificationCard({
             }}
             className='mt-2 inline-flex items-center gap-1 rounded-full bg-[var(--pl-accent-soft)] px-2.5 py-1 text-xs font-medium text-[var(--pl-accent)] hover:bg-[var(--pl-accent-soft-2)]'
           >
-            View review bundle
+            {t('notificationsPanel.viewReviewBundle')}
             <ChevronRight className='size-3' />
           </button>
         )}
@@ -653,9 +657,9 @@ export default function NotificationDrawer({
   const tabKeys: NotificationTab[] = ['all', 'unread', 'invites'];
 
   const bucketLabel = (b: Bucket) => {
-    if (b === 'today') return 'Today';
-    if (b === 'yesterday') return 'Yesterday';
-    if (b === 'thisWeek') return 'This week';
+    if (b === 'today') return t('notificationsPanel.timeToday');
+    if (b === 'yesterday') return t('notificationsPanel.timeYesterday');
+    if (b === 'thisWeek') return t('notificationsPanel.timeThisWeek');
     return t('notificationsPanel.sectionEarlier');
   };
 
@@ -786,7 +790,7 @@ export default function NotificationDrawer({
                     {listQuery.isFetchingNextPage ? (
                       <>
                         <Loader2 className='size-3.5 animate-spin' />
-                        Loading…
+                        {t('notificationsPanel.loading')}
                       </>
                     ) : (
                       t('notificationsPanel.seeAll')

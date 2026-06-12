@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Loader2, UserPlus, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -38,6 +39,7 @@ export default function InviteTab({
   members,
   onInvitedSwitchToMembers,
 }: InviteTabProps) {
+  const { t } = useTranslation();
   const [keyword, setKeyword] = useState('');
   const [debouncedKeyword, setDebouncedKeyword] = useState('');
   const [selectedUsers, setSelectedUsers] = useState<SelectedUser[]>([]);
@@ -136,25 +138,25 @@ export default function InviteTab({
       const succeeded = results.filter((r) => r.success);
 
       if (succeeded.length > 0) {
-        toast.success(`${succeeded.length} invitation(s) sent`);
+        toast.success(t('collaboration.invite.invitationsSent', { count: succeeded.length }));
       }
       if (failed.length > 0) {
         failed.forEach((f) => {
           const errorMsg =
             f.error === 'User not found'
-              ? 'User not found'
+              ? t('collaboration.invite.errorUserNotFound')
               : f.error === 'User is already a member'
-                ? 'Already a member'
+                ? t('collaboration.invite.errorAlreadyMember')
                 : f.error === 'Cannot invite yourself'
-                  ? 'Cannot invite yourself'
-                  : 'Failed to invite';
+                  ? t('collaboration.invite.errorCannotInviteSelf')
+                  : t('collaboration.invite.errorFailedToInvite');
           toast.error(`${f.email ?? f.userId}: ${errorMsg}`);
         });
       }
       setSelectedUsers([]);
       onInvitedSwitchToMembers();
     } catch {
-      toast.error('Failed to send invitations');
+      toast.error(t('collaboration.invite.errorFailedToSend'));
     }
   };
 
@@ -168,7 +170,7 @@ export default function InviteTab({
     return (
       <div className='flex flex-col gap-4'>
         <p className='rounded-md bg-[var(--pl-bg-sunken)] px-3 py-2 text-sm text-muted-foreground'>
-          Only the owner can invite collaborators.
+          {t('collaboration.invite.ownerOnly')}
         </p>
       </div>
     );
@@ -218,7 +220,7 @@ export default function InviteTab({
 
       {resourceType === 'notes' && (
         <div className='flex items-center gap-2'>
-          <span className='text-sm text-muted-foreground'>Role:</span>
+          <span className='text-sm text-muted-foreground'>{t('collaboration.invite.role')}</span>
           {(['EDITOR', 'VIEWER'] as const).map((r) => (
             <Button
               key={r}
@@ -244,8 +246,8 @@ export default function InviteTab({
         ) : (
           <>
             <UserPlus className='size-4' />
-            Invite{' '}
-            {selectedUsers.length > 0 ? `(${selectedUsers.length})` : ''}
+            {t('collaboration.invite.inviteButton')}{' '}
+            {selectedUsers.length > 0 ? t('collaboration.invite.inviteCount', { count: selectedUsers.length }) : ''}
           </>
         )}
       </Button>

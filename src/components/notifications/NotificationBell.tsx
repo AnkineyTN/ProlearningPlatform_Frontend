@@ -50,20 +50,23 @@ import { notificationAPI } from '@/services/endpoints/notification';
 import type { UserNotificationItem } from '@/services/types/notification.types';
 import type { ResourceType } from '@/services/endpoints/collaboration';
 
-function compactRelativeTime(iso: string): string {
+function compactRelativeTime(
+  iso: string,
+  t: (key: string, opts?: Record<string, unknown>) => string,
+): string {
   const then = new Date(iso).getTime();
   if (Number.isNaN(then)) return '';
   const seconds = Math.floor((Date.now() - then) / 1000);
-  if (seconds < 60) return 'Just now';
+  if (seconds < 60) return t('notificationsPanel.timeJustNow');
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes} minutes ago`;
+  if (minutes < 60) return t('notificationsPanel.timeMinutesAgo', { count: minutes });
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours} hours ago`;
+  if (hours < 24) return t('notificationsPanel.timeHoursAgo', { count: hours });
   const days = Math.floor(hours / 24);
-  if (days < 30) return `${days} days ago`;
+  if (days < 30) return t('notificationsPanel.timeDaysAgo', { count: days });
   const months = Math.floor(days / 30);
-  if (months < 12) return `${months} months ago`;
-  return `${Math.floor(days / 365)} years ago`;
+  if (months < 12) return t('notificationsPanel.timeMonthsAgo', { count: months });
+  return t('notificationsPanel.timeYearsAgo', { count: Math.floor(days / 365) });
 }
 
 const INVITE_TYPES: Record<string, ResourceType> = {
@@ -243,6 +246,7 @@ function InviteActions({
   item: UserNotificationItem;
   onDone: () => void;
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const resourceType = INVITE_TYPES[item.type];
   const data = item.data as
@@ -296,7 +300,7 @@ function InviteActions({
       onDone();
       navigate(buildDestUrl());
     } catch {
-      toast.error('Failed to accept invitation');
+      toast.error(t('notificationsPanel.acceptInviteError'));
     }
   };
 
@@ -308,10 +312,10 @@ function InviteActions({
         /* ignore */
       });
       setLocalStatus('declined');
-      toast.success('Invitation declined');
+      toast.success(t('notificationsPanel.declineInviteSuccess'));
       onDone();
     } catch {
-      toast.error('Failed to decline invitation');
+      toast.error(t('notificationsPanel.declineInviteError'));
     }
   };
 
@@ -325,14 +329,14 @@ function InviteActions({
       >
         <span className='flex items-center gap-1 rounded-full bg-[var(--pl-success-soft)] px-2 py-0.5 text-xs font-medium text-[var(--pl-success)]'>
           <Check className='size-3' />
-          Accepted
+          {t('notificationsPanel.inviteStatusAccepted')}
         </span>
         <button
           type='button'
           onClick={handleOpen}
           className='text-xs font-medium text-primary hover:underline'
         >
-          Open →
+          {t('notificationsPanel.inviteOpen')}
         </button>
       </div>
     );
@@ -343,7 +347,7 @@ function InviteActions({
       <div className='mt-2' onClick={(e) => e.stopPropagation()}>
         <span className='flex w-fit items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'>
           <X className='size-3' />
-          Declined
+          {t('notificationsPanel.inviteStatusDeclined')}
         </span>
       </div>
     );
@@ -357,7 +361,7 @@ function InviteActions({
           onClick={handleOpen}
           className='text-xs font-medium text-primary hover:underline'
         >
-          Open →
+          {t('notificationsPanel.inviteOpen')}
         </button>
       </div>
     );
@@ -369,7 +373,7 @@ function InviteActions({
       <div className='mt-2'>
         <span className='inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'>
           <AlertTriangle className='size-3' />
-          Invitation expired
+          {t('notificationsPanel.inviteExpired')}
         </span>
       </div>
     );
@@ -389,7 +393,7 @@ function InviteActions({
         ) : (
           <Check className='size-3' />
         )}
-        Accept
+        {t('notificationsPanel.inviteAccept')}
       </Button>
       <Button
         size='sm'
@@ -403,7 +407,7 @@ function InviteActions({
         ) : (
           <X className='size-3' />
         )}
-        Decline
+        {t('notificationsPanel.inviteDecline')}
       </Button>
     </div>
   );
@@ -497,7 +501,7 @@ function NotificationRow({
           {message}
         </p>
         <p className='mt-1 text-xs font-medium text-primary/90'>
-          {compactRelativeTime(item.createdAt)}
+          {compactRelativeTime(item.createdAt, t)}
         </p>
 
         {/* WEEKLY_SUMMARY chip */}
@@ -510,7 +514,7 @@ function NotificationRow({
             }}
             className='mt-2 inline-flex items-center gap-1 rounded-full bg-[var(--pl-accent-soft)] px-2.5 py-1 text-xs font-medium text-[var(--pl-accent)] hover:bg-[var(--pl-accent-soft-2)]'
           >
-            View review bundle
+            {t('notificationsPanel.viewReviewBundle')}
             <ChevronRight className='size-3' />
           </button>
         )}

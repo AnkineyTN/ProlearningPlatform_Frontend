@@ -1,4 +1,5 @@
 import { Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import type { ResourceType } from '@/services/endpoints/collaboration';
 import type { CollabMember } from '@/services/types/collaboration.types';
@@ -27,6 +28,7 @@ export default function MembersTab({
   members,
   currentUserId,
 }: MembersTabProps) {
+  const { t } = useTranslation();
   const updateRoleMutation = useUpdateMemberRole(
     setId,
     resourceType,
@@ -43,20 +45,20 @@ export default function MembersTab({
         targetUserId: member.userId,
         role: newRole,
       });
-      toast.success('Role updated');
+      toast.success(t('collaboration.members.roleUpdated'));
     } catch {
-      toast.error('Failed to update role');
+      toast.error(t('collaboration.members.updateRoleError'));
     }
   };
 
   const handleRemoveMember = async (member: CollabMember) => {
     try {
       await removeMutation.mutateAsync(member.userId);
-      toast.success('Member removed');
+      toast.success(t('collaboration.members.memberRemoved'));
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ?? 'Failed to remove member';
+          ?.message ?? t('collaboration.members.removeMemberError');
       toast.error(msg);
     }
   };
@@ -69,7 +71,7 @@ export default function MembersTab({
         </div>
       ) : members.length === 0 ? (
         <p className='py-6 text-center text-sm text-muted-foreground'>
-          No members yet
+          {t('collaboration.members.noMembers')}
         </p>
       ) : (
         members.map((member) => (

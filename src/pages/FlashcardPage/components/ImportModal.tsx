@@ -1,5 +1,6 @@
 import { X, ArrowLeft, Upload } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -22,32 +23,23 @@ type Props = {
   onInsert: (cards: ImportedCard[]) => void;
 };
 
-const FORMATS = {
-  simple: {
-    label: 'Pipe separated  (Term | Definition)',
-    example:
-      'Variable | A container for storing data values\nFunction | A block of code that performs a specific task\nArray | A data structure that stores multiple values',
-    separator: '|',
-    description: 'Each line: Term | Definition',
-  },
-  tab: {
-    label: 'Tab separated  (Term [TAB] Definition)',
-    example:
-      'Variable\tA container for storing data values\nFunction\tA block of code that performs a specific task',
-    separator: '\t',
-    description: 'Each line: Term [TAB] Definition',
-  },
-  comma: {
-    label: 'Comma separated  (Term, Definition)',
-    example:
-      'Variable,A container for storing data values\nFunction,A block of code that performs a specific task',
-    separator: ',',
-    description: 'Each line: Term, Definition',
-  },
+const FORMAT_SEPARATORS: Record<string, string> = {
+  simple: '|',
+  tab: '\t',
+  comma: ',',
+};
+
+const FORMAT_EXAMPLES: Record<string, string> = {
+  simple:
+    'Variable | A container for storing data values\nFunction | A block of code that performs a specific task\nArray | A data structure that stores multiple values',
+  tab: 'Variable\tA container for storing data values\nFunction\tA block of code that performs a specific task',
+  comma:
+    'Variable,A container for storing data values\nFunction,A block of code that performs a specific task',
 };
 
 const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
-  const [format, setFormat] = useState<keyof typeof FORMATS>('simple');
+  const { t } = useTranslation();
+  const [format, setFormat] = useState<keyof typeof FORMAT_SEPARATORS>('simple');
   const [content, setContent] = useState('');
   const [preview, setPreview] = useState<ImportedCard[]>([]);
   const [showPreview, setShowPreview] = useState(false);
@@ -56,11 +48,11 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
 
   const handleParse = () => {
     if (!content.trim()) {
-      toast.error('Please enter content to import');
+      toast.error(t('flashcard.import.emptyContentError'));
       return;
     }
     const lines = content.split('\n').filter((l) => l.trim());
-    const separator = FORMATS[format].separator;
+    const separator = FORMAT_SEPARATORS[format];
     const parsed: ImportedCard[] = [];
     lines.forEach((line) => {
       const parts = line.split(separator);
@@ -72,7 +64,7 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
       }
     });
     if (parsed.length === 0) {
-      toast.error('No valid cards found. Please check the format.');
+      toast.error(t('flashcard.import.noValidCardsError'));
       return;
     }
     setPreview(parsed);
@@ -81,7 +73,7 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
 
   const handleInsert = () => {
     if (preview.length === 0) {
-      toast.error('Please parse content first');
+      toast.error(t('flashcard.import.parseFirstError'));
       return;
     }
     onInsert(preview);
@@ -112,11 +104,11 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
             <div>
               <p className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-0.5'>
                 {showPreview
-                  ? `${preview.length} cards found`
-                  : 'Import flashcards'}
+                  ? t('flashcard.import.cardsFound', { count: preview.length })
+                  : t('flashcard.import.importTitle')}
               </p>
               <h2 className='font-[family-name:var(--font-display)] text-xl font-medium tracking-tight'>
-                {showPreview ? 'Preview Import' : 'Insert Data'}
+                {showPreview ? t('flashcard.import.previewTitle') : t('flashcard.import.title')}
               </h2>
             </div>
           </div>
@@ -135,21 +127,21 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
               {/* Format selector */}
               <div>
                 <label className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block'>
-                  Format
+                  {t('flashcard.import.formatLabel')}
                 </label>
                 <Select
                   value={format}
-                  onValueChange={(v) => setFormat(v as keyof typeof FORMATS)}
+                  onValueChange={(v) => setFormat(v as keyof typeof FORMAT_SEPARATORS)}
                 >
                   <SelectTrigger className='w-full bg-[var(--pl-bg)] border-border'>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value='simple'>
-                      {FORMATS.simple.label}
+                      {t('flashcard.import.formatPipe')}
                     </SelectItem>
-                    <SelectItem value='tab'>{FORMATS.tab.label}</SelectItem>
-                    <SelectItem value='comma'>{FORMATS.comma.label}</SelectItem>
+                    <SelectItem value='tab'>{t('flashcard.import.formatTab')}</SelectItem>
+                    <SelectItem value='comma'>{t('flashcard.import.formatComma')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -157,22 +149,24 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
               {/* Example */}
               <div className='bg-secondary/50 rounded-xl p-4 border border-border/50'>
                 <p className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-2'>
-                  Example · {FORMATS[format].description}
+                  {t('flashcard.import.exampleLabel', {
+                    description: t(`flashcard.import.format${format.charAt(0).toUpperCase() + format.slice(1)}Desc`),
+                  })}
                 </p>
                 <pre className='font-[family-name:var(--font-mono-pl)] text-xs text-muted-foreground whitespace-pre-wrap leading-relaxed'>
-                  {FORMATS[format].example}
+                  {FORMAT_EXAMPLES[format]}
                 </pre>
               </div>
 
               {/* Content input */}
               <div>
                 <label className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block'>
-                  Your content
+                  {t('flashcard.import.contentLabel')}
                 </label>
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  placeholder='Paste your flashcard content here…'
+                  placeholder={t('flashcard.import.contentPlaceholder')}
                   className='w-full h-52 px-4 py-3 bg-[var(--pl-bg)] border border-border rounded-xl resize-none text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-colors font-[family-name:var(--font-mono-pl)]'
                 />
               </div>
@@ -190,13 +184,13 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
                   <div className='flex-1 min-w-0 grid grid-cols-2 gap-4'>
                     <div>
                       <p className='text-[10px] uppercase tracking-widest text-muted-foreground/50 mb-1'>
-                        Term
+                        {t('flashcard.import.termLabel')}
                       </p>
                       <p className='text-sm font-medium'>{card.term}</p>
                     </div>
                     <div className='border-l border-border pl-4'>
                       <p className='text-[10px] uppercase tracking-widest text-muted-foreground/50 mb-1'>
-                        Definition
+                        {t('flashcard.import.definitionLabel')}
                       </p>
                       <p className='text-sm text-muted-foreground'>
                         {card.definition}
@@ -216,16 +210,16 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
             onClick={handleClose}
             className='text-muted-foreground'
           >
-            Cancel
+            {t('flashcard.import.cancel')}
           </Button>
           {!showPreview ? (
             <Button onClick={handleParse} className='gap-2'>
               <Upload className='w-3.5 h-3.5' />
-              Preview
+              {t('flashcard.import.preview')}
             </Button>
           ) : (
             <Button onClick={handleInsert} className='gap-2'>
-              Insert {preview.length} cards
+              {t('flashcard.import.insert', { count: preview.length })}
             </Button>
           )}
         </div>

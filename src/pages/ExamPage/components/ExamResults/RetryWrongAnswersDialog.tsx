@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { AlertCircle, CheckCircle, Loader2, RotateCcw } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -27,6 +28,7 @@ export default function RetryWrongAnswersDialog({
   setId,
   examId,
 }: RetryWrongAnswersDialogProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [done, setDone] = useState(false);
@@ -50,15 +52,13 @@ export default function RetryWrongAnswersDialog({
         body: { questionIds: Array.from(selectedIds) },
       });
       setDone(true);
-      toast.success(
-        'Đã tạo Exam ôn tập! Kiểm tra trong tab Review của Set.',
-      );
+      toast.success(t('exam.retry.success'));
       setTimeout(() => {
         onOpenChange(false);
         navigate(`/sets/${setId}/review`);
       }, 1500);
     } catch {
-      toast.error('Tạo Exam thất bại. Vui lòng thử lại.');
+      toast.error(t('exam.retry.error'));
     }
   };
 
@@ -70,7 +70,7 @@ export default function RetryWrongAnswersDialog({
         <DialogHeader>
           <DialogTitle className='flex items-center gap-2'>
             <RotateCcw className='w-5 h-5 text-[var(--pl-warning)]' />
-            Luyện lại câu sai
+            {t('exam.retry.title')}
           </DialogTitle>
         </DialogHeader>
 
@@ -78,25 +78,22 @@ export default function RetryWrongAnswersDialog({
           {statsLoading && (
             <div className='flex items-center justify-center gap-2 py-8 text-muted-foreground'>
               <Loader2 className='w-5 h-5 animate-spin' />
-              <span className='text-sm'>Đang tải thống kê...</span>
+              <span className='text-sm'>{t('exam.retry.loading')}</span>
             </div>
           )}
 
           {!statsLoading && stats.length === 0 && (
             <div className='flex flex-col items-center gap-2 py-8 text-muted-foreground text-center'>
               <AlertCircle className='w-8 h-8' />
-              <p className='text-sm'>Chưa có dữ liệu thống kê câu sai.</p>
-              <p className='text-xs'>
-                Câu essay đang chờ chấm sẽ không hiển thị ở đây.
-              </p>
+              <p className='text-sm'>{t('exam.retry.noData')}</p>
+              <p className='text-xs'>{t('exam.retry.noDataSub')}</p>
             </div>
           )}
 
           {!statsLoading && stats.length > 0 && (
             <>
               <p className='text-sm text-muted-foreground'>
-                Chọn các câu bạn muốn ôn lại. AI sẽ tạo bài kiểm tra mới với câu
-                hỏi biến thể trên cùng chủ đề.
+                {t('exam.retry.desc')}
               </p>
 
               <div className='flex items-center gap-2 pb-1 border-b border-border'>
@@ -117,7 +114,7 @@ export default function RetryWrongAnswersDialog({
                   htmlFor='select-all-retry'
                   className='text-sm font-medium cursor-pointer'
                 >
-                  Chọn tất cả ({stats.length} câu)
+                  {t('exam.retry.selectAll', { count: stats.length })}
                 </label>
               </div>
 
@@ -172,11 +169,11 @@ export default function RetryWrongAnswersDialog({
                                     : 'text-muted-foreground'
                               }`}
                             >
-                              {pct}% sai
+                              {t('exam.retry.wrongRate', { pct })}
                             </span>
                           </div>
                           <span className='text-xs text-muted-foreground shrink-0'>
-                            {stat.incorrectCount}/{stat.totalAttempts} lần
+                            {t('exam.retry.attempts', { incorrect: stat.incorrectCount, total: stat.totalAttempts })}
                           </span>
                         </div>
                       </div>
@@ -190,7 +187,7 @@ export default function RetryWrongAnswersDialog({
 
         <div className='flex items-center justify-between pt-3 border-t border-border mt-2'>
           <span className='text-sm text-muted-foreground'>
-            {selectedIds.size} câu được chọn
+            {t('exam.retry.selectedCount', { count: selectedIds.size })}
           </span>
           <div className='flex gap-2'>
             <Button
@@ -198,7 +195,7 @@ export default function RetryWrongAnswersDialog({
               size='sm'
               onClick={() => onOpenChange(false)}
             >
-              Hủy
+              {t('exam.retry.cancel')}
             </Button>
             <Button
               size='sm'
@@ -215,7 +212,7 @@ export default function RetryWrongAnswersDialog({
               ) : (
                 <RotateCcw className='w-4 h-4' />
               )}
-              {done ? 'Đã tạo!' : 'Tạo bài ôn tập'}
+              {done ? t('exam.retry.created') : t('exam.retry.create')}
             </Button>
           </div>
         </div>

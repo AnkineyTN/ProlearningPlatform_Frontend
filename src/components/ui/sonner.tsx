@@ -7,20 +7,15 @@ export function Toaster() {
   return (
     <Sonner
       theme={theme as 'light' | 'dark' | 'system'}
+      richColors
       style={
         {
           '--normal-bg': 'var(--pl-bg-elev)',
           '--normal-border': 'var(--pl-border)',
           '--normal-text': 'var(--pl-text)',
-          '--success-bg': 'var(--pl-accent-soft)',
+          '--success-bg': 'var(--pl-bg-elev)',
           '--success-border': 'var(--pl-accent-border)',
           '--success-text': 'var(--pl-accent-strong)',
-          '--error-bg': 'var(--pl-danger-soft)',
-          '--error-border': 'var(--pl-danger-border)',
-          '--error-text': 'var(--pl-danger-text)',
-          '--warning-bg': 'var(--pl-warning-soft)',
-          '--warning-border': 'var(--pl-warning-border)',
-          '--warning-text': 'var(--pl-warning-text)',
           '--info-bg': 'var(--pl-bg-elev)',
           '--info-border': 'var(--pl-border)',
           '--info-text': 'var(--pl-text)',

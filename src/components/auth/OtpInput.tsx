@@ -17,6 +17,7 @@ export default function OtpInput({
   const [values, setValues] = useState<string[]>(() => Array(length).fill(''));
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
   const [isCompleting, setIsCompleting] = useState(false);
+  const lastSubmittedRef = useRef<string | null>(null);
   const { t } = useTranslation();
 
   const otp = useMemo(() => values.join(''), [values]);
@@ -31,12 +32,17 @@ export default function OtpInput({
     if (values.some((v) => v === '')) return;
     if (disabled) return;
     if (isCompleting) return;
+    // Re-render with the same full OTP (e.g. after a failed verify) must not
+    // re-submit, otherwise error toasts fire in a loop.
+    if (lastSubmittedRef.current === otp) return;
 
+    lastSubmittedRef.current = otp;
     setIsCompleting(true);
     Promise.resolve(onComplete(otp)).finally(() => setIsCompleting(false));
   }, [autoSubmit, disabled, isCompleting, length, onComplete, otp, values]);
 
   const setAt = (idx: number, next: string) => {
+    lastSubmittedRef.current = null;
     setValues((prev) => {
       const copy = [...prev];
       copy[idx] = next;
@@ -44,7 +50,10 @@ export default function OtpInput({
     });
   };
 
-  const clearAll = () => setValues(Array(length).fill(''));
+  const clearAll = () => {
+    lastSubmittedRef.current = null;
+    setValues(Array(length).fill(''));
+  };
 
   const handleChange = (idx: number, raw: string) => {
     if (disabled) return;
@@ -56,6 +65,7 @@ export default function OtpInput({
 
     // If user types/pastes multiple digits into a single box, spread them forward.
     const chars = digits.slice(0, length - idx).split('');
+    lastSubmittedRef.current = null;
     setValues((prev) => {
       const copy = [...prev];
       for (let i = 0; i < chars.length; i++) {

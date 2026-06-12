@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import {
@@ -28,18 +29,21 @@ interface UseNoteFileUploadParams {
   onFileUploaded: (file: UploadedNoteFile) => void;
 }
 
-function extractUploadErrorMessage(err: unknown): string {
+function extractUploadErrorMessage(
+  err: unknown,
+  t: (key: string, opts?: Record<string, unknown>) => string,
+): string {
   if (axios.isAxiosError(err)) {
     const data = err.response?.data as
       | { error?: { message?: string }; message?: string }
       | undefined;
     const backendMsg = data?.error?.message ?? data?.message;
     if (backendMsg === 'Empty file') {
-      return 'Upload failed: the file is empty (0 bytes).';
+      return t('note.fileUpload.errorEmptyFile');
     }
-    if (backendMsg) return `Upload failed: ${backendMsg}`;
+    if (backendMsg) return t('note.fileUpload.errorBackend', { message: backendMsg });
   }
-  return 'Failed to upload file';
+  return t('note.fileUpload.errorFailed');
 }
 
 const VALID_DOC_TYPES = [
@@ -63,6 +67,7 @@ export function useNoteFileUpload({
   noteId,
   onFileUploaded,
 }: UseNoteFileUploadParams) {
+  const { t } = useTranslation();
   const [isUploading, setIsUploading] = useState(false);
   const uploadDocumentMutation = useUploadDocumentFile();
   const uploadImageMutation = useUploadImageFile();
@@ -77,9 +82,7 @@ export function useNoteFileUpload({
     if (!file) return;
 
     if (file.size === 0) {
-      toast.error(
-        `"${file.name}" is empty (0 bytes). Please pick another file.`,
-      );
+      toast.error(t('note.fileUpload.errorFileEmpty', { name: file.name }));
       event.target.value = '';
       return;
     }
@@ -95,14 +98,12 @@ export function useNoteFileUpload({
       VALID_DOC_TYPES.includes(file.type) ||
       VALID_EXT_FALLBACKS.has(extFallback);
     if (!isImage && !isAcceptedDoc) {
-      toast.error(
-        'Invalid file type. Please upload images, PDF, DOC, DOCX, PPTX, or TXT.',
-      );
+      toast.error(t('note.fileUpload.errorInvalidType'));
       return;
     }
 
     if (!setId || !noteId) {
-      toast.error('Invalid note');
+      toast.error(t('note.fileUpload.errorInvalidNote'));
       return;
     }
 
@@ -172,9 +173,9 @@ export function useNoteFileUpload({
         });
       }
 
-      toast.success('File uploaded successfully');
+      toast.success(t('note.fileUpload.success'));
     } catch (error) {
-      toast.error(extractUploadErrorMessage(error));
+      toast.error(extractUploadErrorMessage(error, t));
       console.error(error);
     } finally {
       setIsUploading(false);

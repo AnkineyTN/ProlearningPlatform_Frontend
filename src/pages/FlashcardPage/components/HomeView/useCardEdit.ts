@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useUploadImageFile } from '@/hooks/useImageUpload';
 import type { Card as CardData } from '@/services/types/flashcard.types';
@@ -30,6 +31,7 @@ interface UpdateCardArgs {
 export function useCardEdit(
   onUpdateCard: (data: UpdateCardArgs) => void | Promise<void>,
 ) {
+  const { t } = useTranslation();
   const [editingCardId, setEditingCardId] = useState<number | null>(null);
   const [editData, setEditData] = useState<EditData>(emptyEditData);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -53,7 +55,7 @@ export function useCardEdit(
 
   const saveEdit = async (card: CardData) => {
     if (!editData.frontCard.trim() || !editData.backCard.trim()) {
-      toast.error('Front and back card cannot be empty');
+      toast.error(t('flashcard.cardEdit.emptyError'));
       return;
     }
     await onUpdateCard({
@@ -76,11 +78,11 @@ export function useCardEdit(
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) {
-      toast.error('Please select an image file');
+      toast.error(t('flashcard.cardEdit.notImageError'));
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('Image size must be less than 5MB');
+      toast.error(t('flashcard.cardEdit.imageSizeError'));
       return;
     }
     try {
@@ -93,7 +95,7 @@ export function useCardEdit(
       }));
       if (fileInputRef.current) fileInputRef.current.value = '';
     } catch {
-      toast.error('Failed to upload image. Please try again.');
+      toast.error(t('flashcard.cardEdit.uploadImageError'));
     }
   };
 
