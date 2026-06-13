@@ -1,6 +1,12 @@
 import { useEffect, useRef, useCallback } from "react";
 import type { ContentType } from "@/services/types/activityLog.types";
 import { activityLogAPI } from "@/services/endpoints/activityLog";
+import {
+  flushPending,
+  savePending,
+  type PendingPayload,
+} from "@/services/activityQueue";
+import { usePomodoroContext } from "@/contexts/PomodoroContext";
 
 const IDLE_THRESHOLDS: Record<ContentType, number> = {
   NOTE: 120,
@@ -10,49 +16,12 @@ const IDLE_THRESHOLDS: Record<ContentType, number> = {
 };
 
 const FLUSH_INTERVAL_MS = 60_000;
-const PENDING_KEY = "pendingActivity";
 
 type SessionOptions = {
   contentType: ContentType;
   setId?: number | null;
   todoId?: number | null;
 };
-
-type PendingPayload = {
-  contentType: ContentType;
-  setId?: number | null;
-  todoId?: number | null;
-  activeDuration: number;
-  rawDuration: number;
-  score?: number | null;
-  itemsCount: number;
-  clientTimestamp: string;
-};
-
-function savePending(payload: PendingPayload) {
-  try {
-    const existing: PendingPayload[] = JSON.parse(
-      localStorage.getItem(PENDING_KEY) ?? "[]",
-    );
-    existing.push(payload);
-    localStorage.setItem(PENDING_KEY, JSON.stringify(existing));
-  } catch {
-    // ignore storage errors
-  }
-}
-
-async function flushPending() {
-  try {
-    const raw = localStorage.getItem(PENDING_KEY);
-    if (!raw) return;
-    const pending: PendingPayload[] = JSON.parse(raw);
-    if (pending.length === 0) return;
-    localStorage.removeItem(PENDING_KEY);
-    await Promise.allSettled(pending.map((p) => activityLogAPI.logActivity(p)));
-  } catch {
-    // ignore
-  }
-}
 
 export function useSessionTracker(opts: SessionOptions) {
   const { contentType, setId, todoId } = opts;
@@ -66,6 +35,16 @@ export function useSessionTracker(opts: SessionOptions) {
   const lastEventTime = useRef(Date.now());
   const hasFlushed = useRef(false);
 
+  // While a Pomodoro focus block is running it logs the study time itself, so
+  // the per-page tracker must not log too — otherwise the same minutes count
+  // twice. Kept in a ref so timers/handlers read the latest value.
+  const { engine } = usePomodoroContext();
+  const focusRunning = engine.running && engine.type === "POMODORO";
+  const focusRunningRef = useRef(focusRunning);
+  useEffect(() => {
+    focusRunningRef.current = focusRunning;
+  }, [focusRunning]);
+
   const buildPayload = useCallback((): PendingPayload => ({
     contentType,
     setId: setId ?? null,
@@ -77,9 +56,18 @@ export function useSessionTracker(opts: SessionOptions) {
     clientTimestamp: startTimestamp.current,
   }), [contentType, setId, todoId]);
 
+  const resetAccumulators = useCallback(() => {
+    activeDuration.current = 0;
+    rawDuration.current = 0;
+    itemsCount.current = 0;
+    startTimestamp.current = new Date().toISOString();
+  }, []);
+
   const flush = useCallback(
     async (finalScore?: number) => {
       if (hasFlushed.current) return;
+      // Pomodoro focus is logging this time slice; skip to avoid double counting.
+      if (focusRunningRef.current) return;
       if (finalScore !== undefined) scoreRef.current = finalScore;
 
       const payload = buildPayload();
@@ -121,15 +109,17 @@ export function useSessionTracker(opts: SessionOptions) {
     EVENTS.forEach((e) => window.addEventListener(e, handler, { passive: true }));
 
     const interval = setInterval(() => {
+      // Discard time accrued while Pomodoro focus is running — it's logged there.
+      if (focusRunningRef.current) {
+        resetAccumulators();
+        return;
+      }
       if (!hasFlushed.current) {
         const payload = buildPayload();
         if (payload.activeDuration >= 30) {
           activityLogAPI.logActivity(payload).catch(() => savePending(payload));
           // Reset accumulators after periodic flush (don't mark as fully flushed)
-          activeDuration.current = 0;
-          rawDuration.current = 0;
-          itemsCount.current = 0;
-          startTimestamp.current = new Date().toISOString();
+          resetAccumulators();
         }
       }
     }, FLUSH_INTERVAL_MS);
@@ -139,13 +129,10 @@ export function useSessionTracker(opts: SessionOptions) {
     };
 
     const onBeforeUnload = () => {
+      if (focusRunningRef.current) return;
       const payload = buildPayload();
-      if (payload.activeDuration >= 30) {
-        navigator.sendBeacon &&
-          navigator.sendBeacon(
-            "/api/activity-log",
-            JSON.stringify(payload),
-          );
+      if (payload.activeDuration >= 30 && navigator.sendBeacon) {
+        navigator.sendBeacon("/api/activity-log", JSON.stringify(payload));
       }
     };
 
@@ -159,7 +146,7 @@ export function useSessionTracker(opts: SessionOptions) {
       window.removeEventListener("beforeunload", onBeforeUnload);
       flush();
     };
-  }, [flush, recordEvent, buildPayload]);
+  }, [flush, recordEvent, buildPayload, resetAccumulators]);
 
   return { recordEvent, recordItem, flush };
 }

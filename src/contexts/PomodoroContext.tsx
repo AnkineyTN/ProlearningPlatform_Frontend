@@ -14,6 +14,10 @@ import {
 } from '@/hooks/usePomodoro';
 import { DEFAULT_SETTING, STORAGE_KEYS } from '@/pages/Pomodoro/constants';
 import { usePomodoroEngine } from '@/pages/Pomodoro/usePomodoroEngine';
+import { logActivityOnce } from '@/services/activityQueue';
+
+// Don't log negligible focus stretches as study activity.
+const MIN_FOCUS_SECONDS = 30;
 
 import type {
   PomodoroSetting,
@@ -52,6 +56,20 @@ export const PomodoroProvider = ({ children }: { children: ReactNode }) => {
     setting,
     onSessionEnd: (s) => {
       recordSession.mutate(s);
+      // A finished focus block counts as study time on the activity heatmap.
+      // Logged as NOTE until the backend exposes a dedicated focus content type.
+      if (s.type === 'POMODORO' && s.duration >= MIN_FOCUS_SECONDS) {
+        logActivityOnce({
+          contentType: 'NOTE',
+          setId: null,
+          todoId: null,
+          activeDuration: s.duration,
+          rawDuration: s.duration,
+          score: null,
+          itemsCount: 0,
+          clientTimestamp: s.startedAt,
+        });
+      }
     },
   });
 
