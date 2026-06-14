@@ -14,6 +14,7 @@ export type SocialNote = {
   numCards: number | null;
   numQuestions: number | null;
   duration: number | null;
+  isFavorited?: boolean;
 };
 
 export type SocialParams = {

@@ -15,6 +15,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ShareDialog } from '@/components/collaboration/ShareDialog';
+import FavoriteButton from '@/components/favorite/FavoriteButton';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import ModeToggle from '@/components/theme/mode-toggle';
 import { Button } from '@/components/ui/button';
@@ -31,6 +32,7 @@ interface ExamHomeViewProps {
   onBack: () => void;
   isStarting?: boolean;
   userRole?: CollabRole;
+  isFavorited?: boolean;
 }
 
 const questionTypeIcon = (type: string) => {
@@ -55,6 +57,7 @@ export default function ExamHomeView({
   onBack,
   isStarting = false,
   userRole = 'OWNER',
+  isFavorited = false,
 }: ExamHomeViewProps) {
   const { t } = useTranslation();
   const currentUserId = useAuth().user?.id;
@@ -76,6 +79,12 @@ export default function ExamHomeView({
           {t('exam.back')}
         </button>
         <div className='flex items-center gap-2'>
+          <FavoriteButton
+            type='EXAM'
+            id={examId}
+            isFavorited={isFavorited}
+            className='h-9 w-9 rounded-lg border border-[var(--pl-border)]'
+          />
           <Button
             size='sm'
             className='flex h-9 w-9 items-center justify-center hover:bg-[var(--pl-bg-hover)] place-items-center rounded-lg border border-[var(--pl-border)] bg-transparent text-[var(--pl-text-muted)] cursor-pointer'

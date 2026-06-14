@@ -20,6 +20,8 @@ export type NoteDetail = {
   noteImages?: NoteDocItem[];
   /** Role of the current user for this note (collaboration). */
   userRole?: 'OWNER' | 'EDITOR' | 'VIEWER';
+  /** Whether the current user has favorited this note. */
+  isFavorited?: boolean;
 };
 
 export type NoteFileRegionCommentDto = {

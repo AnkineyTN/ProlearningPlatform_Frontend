@@ -97,6 +97,7 @@ export type Quiz = {
   createdAt?: string;
   updatedAt?: string;
   userRole?: 'OWNER' | 'EDITOR' | 'VIEWER';
+  isFavorited?: boolean;
 };
 
 export type CreateQuizRequest = {

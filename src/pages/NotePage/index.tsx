@@ -236,6 +236,7 @@ export const NotePage = () => {
         showAiPanel={showAiPanel}
         onToggleAiPanel={() => setShowAiPanel((v) => !v)}
         onlineUsers={onlineUsers}
+        isFavorited={noteDetail?.isFavorited}
       />
 
       <div className='flex-1 overflow-hidden'>

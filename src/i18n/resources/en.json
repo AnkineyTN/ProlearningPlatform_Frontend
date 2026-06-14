@@ -574,6 +574,7 @@
   },
   "sidebar": {
     "blog": "Blog",
+    "collection": "Collection",
     "dashboard": "Dashboard",
     "logout": "Logout",
     "pomodoro": "Pomodoro",
@@ -1759,6 +1760,30 @@
       "description": "We couldn't verify your payment. Please contact support if you were charged."
     },
     "goHome": "Go to Dashboard"
+  },
+  "favorite": {
+    "add": "Add to favorites",
+    "remove": "Remove from favorites",
+    "added": "Added to favorites",
+    "removed": "Removed from favorites",
+    "error": "Could not update favorite. Please try again."
+  },
+  "collection": {
+    "sharedTitle": "Shared with me",
+    "favoritesTitle": "Favorites",
+    "collaborationKicker": "Collaboration",
+    "favoritesKicker": "Your collection",
+    "viewShared": "Shared with me",
+    "viewFavorites": "Favorites",
+    "tab": {
+      "note": "Notes",
+      "flashcard": "Flashcards",
+      "exam": "Exams"
+    },
+    "emptyNotes": "No notes shared with you yet",
+    "emptyFlashcards": "No flashcard sets shared with you yet",
+    "emptyExams": "No exams shared with you yet",
+    "emptyFavorites": "You haven't favorited anything here yet"
   },
   "social": {
     "explore": "Explore",

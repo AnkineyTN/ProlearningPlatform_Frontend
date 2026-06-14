@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { ShareDialog } from '@/components/collaboration/ShareDialog';
+import FavoriteButton from '@/components/favorite/FavoriteButton';
 import type { CollabRole } from '@/services/types/collaboration.types';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -13,6 +14,7 @@ interface FlashcardHeaderProps {
   description: string;
   setTitle?: string;
   userRole?: CollabRole;
+  isFavorited?: boolean;
 }
 
 export default function FlashcardHeader({
@@ -22,6 +24,7 @@ export default function FlashcardHeader({
   description,
   setTitle,
   userRole = 'OWNER',
+  isFavorited = false,
 }: FlashcardHeaderProps) {
   const navigate = useNavigate();
   const currentUserId = useAuth().user?.id;
@@ -49,6 +52,12 @@ export default function FlashcardHeader({
             </div>
           </div>
           <div className='flex items-center gap-3 shrink-0'>
+            <FavoriteButton
+              type='FLASHCARD'
+              id={flashcardId}
+              isFavorited={isFavorited}
+              className='h-9 w-9 rounded-lg border border-[var(--pl-border)]'
+            />
             <Button
               size='sm'
               className='flex h-9 w-9 items-center justify-center hover:bg-[var(--pl-bg-hover)] place-items-center rounded-lg border border-[var(--pl-border)] bg-transparent text-[var(--pl-text-muted)] cursor-pointer'

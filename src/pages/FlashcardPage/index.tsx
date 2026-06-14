@@ -509,6 +509,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         description={description}
         setTitle={setTitle}
         userRole={userRole}
+        isFavorited={data?.data.isFavorited}
       />
       <ContinueSessionDialog
         open={showContinueDialog}

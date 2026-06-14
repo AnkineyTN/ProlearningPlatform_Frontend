@@ -188,6 +188,7 @@ export default function ExamPage({ setId, examId }: Props) {
         onBack={() => navigate(`/sets/${setId}/exams`)}
         isStarting={isStartingAttempt}
         userRole={userRole}
+        isFavorited={data?.data?.isFavorited}
       />
     );
   }

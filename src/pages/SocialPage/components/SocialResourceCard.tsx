@@ -2,6 +2,7 @@ import { FileText, FilePen, SwatchBook, HelpCircle, Clock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { formatDate } from '@/lib/utils';
 import type { SocialItemType } from '@/services/types/social.types';
+import FavoriteButton from '@/components/favorite/FavoriteButton';
 import { UserAvatar } from './RailSidebar';
 
 const TYPE_ICON: Record<SocialItemType, React.ElementType> = {
@@ -20,6 +21,7 @@ export type SocialCardItem = {
   ownerAvatar?: string | null;
   numQuestions?: number | null;
   duration?: number | null;
+  isFavorited?: boolean;
 };
 
 type Props = {
@@ -39,9 +41,17 @@ const SocialResourceCard = ({ item, onAccess }: Props) => {
       onClick={onAccess}
       className='bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] hover:border-[var(--pl-accent-border)] rounded-[14px] p-[18px] cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_oklch(0_0_0/0.08)] flex flex-col'
     >
-      {/* Icon */}
-      <div className='w-9 h-9 rounded-[9px] bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)] grid place-items-center shrink-0 mb-[14px]'>
-        <Icon size={16} />
+      {/* Icon + favorite */}
+      <div className='flex items-start justify-between mb-[14px]'>
+        <div className='w-9 h-9 rounded-[9px] bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)] grid place-items-center shrink-0'>
+          <Icon size={16} />
+        </div>
+        <FavoriteButton
+          type={item.type}
+          id={item.id}
+          isFavorited={item.isFavorited}
+          className='w-8 h-8 rounded-full'
+        />
       </div>
 
       {/* Title */}

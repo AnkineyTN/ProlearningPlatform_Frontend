@@ -136,6 +136,7 @@ const SectionBlock = ({
                 ownerAvatar: item.ownerAvatar,
                 numQuestions: item.numQuestions,
                 duration: item.duration,
+                isFavorited: item.isFavorited,
               }}
               onAccess={() => openItem(item)}
             />

@@ -58,6 +58,7 @@ export type FlashcardDetail = {
   createMethod: 'MANUAL' | 'AI' | 'REVIEW';
   cards: Card[];
   userRole?: 'OWNER' | 'EDITOR' | 'VIEWER';
+  isFavorited?: boolean;
 };
 
 export type FlashcardDetailResponse = {

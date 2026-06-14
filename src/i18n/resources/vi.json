@@ -1113,6 +1113,7 @@
   },
   "sidebar": {
     "blog": "Blog",
+    "collection": "Bộ sưu tập",
     "dashboard": "Trang chủ",
     "logout": "Đăng xuất",
     "pomodoro": "Pomodoro",
@@ -2166,6 +2167,30 @@
       "description": "Chúng tôi không thể xác minh thanh toán. Vui lòng liên hệ hỗ trợ nếu bạn đã bị trừ tiền."
     },
     "goHome": "Về trang chủ"
+  },
+  "favorite": {
+    "add": "Thêm vào yêu thích",
+    "remove": "Bỏ yêu thích",
+    "added": "Đã thêm vào yêu thích",
+    "removed": "Đã bỏ khỏi yêu thích",
+    "error": "Không thể cập nhật yêu thích. Vui lòng thử lại."
+  },
+  "collection": {
+    "sharedTitle": "Được chia sẻ với tôi",
+    "favoritesTitle": "Yêu thích",
+    "collaborationKicker": "Cộng tác",
+    "favoritesKicker": "Bộ sưu tập của bạn",
+    "viewShared": "Được chia sẻ",
+    "viewFavorites": "Yêu thích",
+    "tab": {
+      "note": "Ghi chú",
+      "flashcard": "Thẻ học",
+      "exam": "Đề thi"
+    },
+    "emptyNotes": "Chưa có ghi chú nào được chia sẻ với bạn",
+    "emptyFlashcards": "Chưa có bộ thẻ học nào được chia sẻ với bạn",
+    "emptyExams": "Chưa có đề thi nào được chia sẻ với bạn",
+    "emptyFavorites": "Bạn chưa thả tim cho mục nào ở đây"
   },
   "social": {
     "explore": "Khám phá",

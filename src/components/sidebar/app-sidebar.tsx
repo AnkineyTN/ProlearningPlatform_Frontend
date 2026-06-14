@@ -14,7 +14,7 @@ import {
   PanelLeftOpen,
   Bell,
   Map as MapIcon,
-  Users,
+  Library,
   Globe,
 } from 'lucide-react';
 
@@ -83,7 +83,7 @@ const AppSidebar = () => {
       url: '/review-bundles',
       badge: bundleCount > 0 ? bundleCount : undefined,
     },
-    { title: 'Shared with me', icon: Users, url: '/shared' },
+    { title: t('sidebar.collection'), icon: Library, url: '/collection' },
     {
       title: t('sidebar.notifications'),
       icon: Bell,

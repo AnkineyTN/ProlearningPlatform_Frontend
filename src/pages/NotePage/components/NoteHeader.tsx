@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { ShareDialog } from '@/components/collaboration/ShareDialog';
+import FavoriteButton from '@/components/favorite/FavoriteButton';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -50,6 +51,7 @@ interface NoteHeaderProps {
   showAiPanel?: boolean;
   onToggleAiPanel?: () => void;
   onlineUsers?: { name: string; color: string }[];
+  isFavorited?: boolean;
 }
 
 const togglePillBase =
@@ -74,6 +76,7 @@ export const NoteHeader = ({
   showAiPanel = true,
   onToggleAiPanel,
   onlineUsers = [],
+  isFavorited = false,
 }: NoteHeaderProps) => {
   const navigate = useNavigate();
   const { setId: setIdParam } = useParams<{ setId: string }>();
@@ -112,6 +115,13 @@ export const NoteHeader = ({
 
           <div className='flex items-center gap-1.5 ml-auto'>
             <OnlineUsersAvatars users={onlineUsers} />
+
+            <FavoriteButton
+              type='NOTE'
+              id={noteId}
+              isFavorited={isFavorited}
+              className='h-9 w-9 rounded-lg border border-[var(--pl-border)]'
+            />
 
             <Button
               variant='ghost'

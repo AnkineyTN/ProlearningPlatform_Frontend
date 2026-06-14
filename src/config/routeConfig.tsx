@@ -34,7 +34,7 @@ import FlashcardInviteAcceptPage from '@/pages/FlashcardInviteAcceptPage';
 import RoadmapsListPage from '@/pages/RoadmapPage';
 import CreateRoadmapPage from '@/pages/RoadmapPage/CreateRoadmapPage';
 import RoadmapDetailPage from '@/pages/RoadmapPage/RoadmapDetailPage';
-import SharedResourcesPage from '@/pages/SharedResourcesPage';
+import CollectionPage from '@/pages/CollectionPage';
 import SocialPage from '@/pages/SocialPage';
 import CalendarCallbackPage from '@/pages/CalendarCallbackPage';
 import UpgradePage from '@/pages/UpgradePage';
@@ -318,8 +318,8 @@ export const routeConfig: RouteObject[] = [
         element: <RoadmapDetailPage />,
       },
       {
-        path: 'shared',
-        element: <SharedResourcesPage />,
+        path: 'collection',
+        element: <CollectionPage />,
       },
       {
         path: 'social',
