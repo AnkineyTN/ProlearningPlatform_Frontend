@@ -1,23 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  BookOpen,
-  CalendarCheck,
-  ExternalLink,
-  FileText,
-  FlipHorizontal,
-  GraduationCap,
-  X,
-} from 'lucide-react';
+import { CalendarCheck, ExternalLink, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { todoAPI } from '@/services/endpoints/todo';
-import { useGlobalSearch } from '@/hooks/useGlobalSearch';
-import { useAuth } from '@/hooks/useAuth';
 import { ResourceMentionInput } from './SetMentionInput';
-import type { SearchResourceType } from '@/services/types/search.types';
 import type {
   Goal,
   ResourceRef,
@@ -27,121 +16,14 @@ import type {
   TodoType,
 } from '@/services/types/todo.types';
 import type { ResourceType } from '../constants';
+import { RESOURCE_ICONS, RESOURCE_COLORS } from './todoResourceMeta';
+import ResourceSearchPicker from './ResourceSearchPicker';
 
 type TodoDetailModalProps = {
   open: boolean;
   todo: Todo | null;
   goals: Goal[];
   onClose: () => void;
-};
-
-const RESOURCE_ICONS: Record<ResourceType, React.ReactNode> = {
-  set: <BookOpen className='w-3.5 h-3.5' />,
-  note: <FileText className='w-3.5 h-3.5' />,
-  flashcard: <FlipHorizontal className='w-3.5 h-3.5' />,
-  exam: <GraduationCap className='w-3.5 h-3.5' />,
-};
-
-const RESOURCE_COLORS: Record<ResourceType, string> = {
-  set: 'oklch(0.7 0.15 260)',
-  note: 'oklch(0.72 0.12 180)',
-  flashcard: 'oklch(0.7 0.15 310)',
-  exam: 'oklch(0.72 0.15 40)',
-};
-
-const SEARCH_TYPE_MAP: Record<ResourceType, SearchResourceType> = {
-  set: 'SET',
-  note: 'NOTE',
-  flashcard: 'FLASHCARD',
-  exam: 'EXAM',
-};
-
-function extractSearchItems(data: unknown): Record<string, unknown>[] {
-  if (!data) return [];
-  if (Array.isArray(data)) return data as Record<string, unknown>[];
-  const o = data as Record<string, unknown>;
-  if (Array.isArray(o.content)) return o.content as Record<string, unknown>[];
-  if (Array.isArray(o.items)) return o.items as Record<string, unknown>[];
-  if (Array.isArray(o.data)) return o.data as Record<string, unknown>[];
-  return [];
-}
-
-const ResourceSearchPicker = ({
-  type,
-  onAdd,
-}: {
-  type: ResourceType;
-  onAdd: (ref: ResourceRef) => void;
-}) => {
-  const { t } = useTranslation();
-  const { user } = useAuth();
-  const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setDebouncedQuery(query.trim()), 400);
-    return () => window.clearTimeout(timer);
-  }, [query]);
-
-  const { data: searchResult, isFetching } = useGlobalSearch(debouncedQuery, {
-    searchType: SEARCH_TYPE_MAP[type],
-    size: 50,
-  });
-
-  const allItems = extractSearchItems(searchResult?.data);
-  const items = user
-    ? allItems.filter((item) => Number(item.userId) === user.id)
-    : allItems;
-
-  const handleSelect = (item: Record<string, unknown>) => {
-    const id = Number(item.id ?? item.resourceId);
-    if (!id) return;
-    const setId = item.setId != null ? Number(item.setId) : null;
-    const title = String(
-      item.title ?? item.name ?? item.code ?? `${type} #${id}`,
-    );
-    onAdd({ id, setId, title });
-    setQuery('');
-    setDebouncedQuery('');
-  };
-
-  return (
-    <div className='relative'>
-      <input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder={t('todo.detailModal.searchResource', {
-          type: t(`todo.resource.${type}`),
-        })}
-        className='w-full rounded-lg border border-[var(--pl-border)] bg-transparent text-xs px-2 py-1.5 text-[var(--pl-text)] outline-none focus:border-[var(--pl-accent)]'
-        autoFocus
-      />
-      {debouncedQuery.length > 0 && (
-        <div className='mt-1 rounded-lg border border-[var(--pl-border)] bg-[var(--pl-bg)] max-h-44 overflow-y-auto shadow-lg'>
-          {isFetching ? (
-            <div className='px-3 py-2 text-xs text-[var(--pl-text-faint)]'>
-              ...
-            </div>
-          ) : items.length === 0 ? (
-            <div className='px-3 py-2 text-xs text-[var(--pl-text-faint)]'>
-              {t('todo.detailModal.noResults')}
-            </div>
-          ) : (
-            items.map((item, i) => (
-              <button
-                key={i}
-                type='button'
-                onClick={() => handleSelect(item)}
-                className='w-full text-left px-3 py-2 text-xs text-[var(--pl-text)] hover:bg-[var(--pl-bg-hover)] border-b border-[var(--pl-border)] last:border-0 truncate'
-              >
-                {String(item.title ?? item.name ?? item.code ?? item.id ?? '—')}
-              </button>
-            ))
-          )}
-        </div>
-      )}
-    </div>
-  );
 };
 
 const TodoDetailModal = ({

@@ -1,14 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  CalendarCheck,
-  ChevronDown,
-  Filter,
-  Pencil,
-  Plus,
-  Trash2,
-  X,
-} from 'lucide-react';
+import { ChevronDown, Filter, Plus, X } from 'lucide-react';
 import type {
   Goal,
   ResourceRef,
@@ -22,51 +14,21 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
-const PRIORITY_CLASS: Record<TodoPriority, string> = {
-  HIGH: 'text-[var(--pl-danger-text)] bg-[var(--pl-danger-soft)]',
-  MEDIUM: 'text-[var(--pl-warning-text)] bg-[var(--pl-warning-soft)]',
-  LOW: 'text-[var(--pl-text-faint)] bg-transparent',
-} as const;
-
-const effectiveStatus = (todo: Todo): TodoStatus =>
-  todo.completed || todo.status === 'DONE' ? 'DONE' : todo.status;
-
-const PRIORITY_OPTIONS: TodoPriority[] = ['HIGH', 'MEDIUM', 'LOW'];
-const STATUS_OPTIONS: TodoStatus[] = ['TODO', 'DONE', 'SKIPPED'];
-
-const PRIORITY_LABEL_KEY: Record<TodoPriority, string> = {
-  HIGH: 'todo.filter.priorityHigh',
-  MEDIUM: 'todo.filter.priorityMedium',
-  LOW: 'todo.filter.priorityLow',
-};
-const STATUS_LABEL_KEY: Record<TodoStatus, string> = {
-  TODO: 'todo.filter.statusTodo',
-  DONE: 'todo.filter.statusDone',
-  SKIPPED: 'todo.filter.statusSkipped',
-};
-
-const STATUS_BADGE_CLASS: Record<TodoStatus, string> = {
-  TODO: 'border-[var(--pl-border)] bg-[var(--pl-bg-hover)] text-[var(--pl-text-muted)]',
-  DONE: 'border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]',
-  SKIPPED:
-    'border-[var(--pl-border)] bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)]',
-};
-
-const PRIORITY_BADGE_CLASS: Record<TodoPriority, string> = {
-  HIGH: 'border-[var(--pl-danger-border)] bg-[var(--pl-danger-soft)] text-[var(--pl-danger-text)]',
-  MEDIUM:
-    'border-[var(--pl-warning-border)] bg-[var(--pl-warning-soft)] text-[var(--pl-warning-text)]',
-  LOW: 'border-[var(--pl-border)] bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)]',
-};
-import {
-  ResourceMentionInput,
-  renderTitleWithRefs,
-  LinkedResourceChips,
-  type MentionResourceType,
-} from './SetMentionInput';
+import { ResourceMentionInput, type MentionResourceType } from './SetMentionInput';
 import { todayIso } from '../utils/dateHelpers';
 import { Button } from '@/components/ui/button';
+import {
+  effectiveStatus,
+  PRIORITY_OPTIONS,
+  STATUS_OPTIONS,
+  PRIORITY_LABEL_KEY,
+  STATUS_LABEL_KEY,
+  STATUS_BADGE_CLASS,
+  PRIORITY_BADGE_CLASS,
+} from '../constants';
+import Ring from './Ring';
+import TodayTaskRow from './TodayTaskRow';
+import GoalProgressRow from './GoalProgressRow';
 
 type TodaySectionProps = {
   todos: Todo[];
@@ -85,210 +47,6 @@ type TodaySectionProps = {
   onNewGoal: () => void;
   onEditGoal: (goal: Goal) => void;
   onDeleteGoal: (id: number) => void;
-};
-
-const Ring = ({ percent, size = 64 }: { percent: number; size?: number }) => {
-  const stroke = 5;
-  const r = (size - stroke) / 2;
-  const c = 2 * Math.PI * r;
-  const offset = c - (percent / 100) * c;
-  return (
-    <div
-      className='relative grid place-items-center'
-      style={{ width: size, height: size }}
-    >
-      <svg width={size} height={size} className='-rotate-90'>
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          fill='none'
-          stroke='var(--pl-border)'
-          strokeWidth={stroke}
-        />
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          fill='none'
-          stroke='var(--pl-accent)'
-          strokeWidth={stroke}
-          strokeLinecap='round'
-          strokeDasharray={c}
-          strokeDashoffset={offset}
-          style={{ transition: 'stroke-dashoffset 360ms ease' }}
-        />
-      </svg>
-      <div className='absolute text-center'>
-        <div className='text-[15px] font-display leading-none text-[var(--pl-text)]'>
-          {percent}
-        </div>
-        <div className='text-[8.5px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)]'>
-          %
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const TodayTaskRow = ({
-  todo,
-  onToggle,
-  onOpen,
-  onDelete,
-}: {
-  todo: Todo;
-  onToggle: (id: number) => void;
-  onOpen: (todo: Todo) => void;
-  onDelete: (id: number) => void;
-}) => {
-  const isDone = todo.completed || todo.status === 'DONE';
-  const accent = todo.goalColor ?? 'var(--pl-text-faint)';
-
-  return (
-    <div className='group flex items-center gap-3 rounded-[10px] px-3 py-2.5 hover:bg-[var(--pl-bg-hover)] transition-colors'>
-      <span
-        className='w-[3px] self-stretch rounded-full flex-shrink-0'
-        style={{ background: accent }}
-      />
-      <button
-        onClick={() => onToggle(todo.id)}
-        className={`w-[18px] h-[18px] rounded-full grid place-items-center flex-shrink-0 transition-all border ${
-          isDone
-            ? 'bg-[var(--pl-accent)] border-[var(--pl-accent)]'
-            : 'bg-transparent border-[var(--pl-border-strong)]'
-        }`}
-      >
-        {isDone && (
-          <svg
-            viewBox='0 0 24 24'
-            width={11}
-            height={11}
-            stroke='var(--pl-accent-fg)'
-            fill='none'
-            strokeWidth={2.8}
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          >
-            <path d='M20 6L9 17l-5-5' />
-          </svg>
-        )}
-      </button>
-      <button onClick={() => onOpen(todo)} className='flex-1 min-w-0 text-left'>
-        <div
-          className={`text-[13.5px] truncate ${isDone ? 'line-through text-[var(--pl-text-faint)]' : 'text-[var(--pl-text)]'}`}
-        >
-          {renderTitleWithRefs(todo.title, todo, isDone)}
-        </div>
-        <div className='flex items-center gap-1.5 mt-0.5 flex-wrap'>
-          {todo.priority !== 'LOW' && (
-            <span
-              className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${PRIORITY_CLASS[todo.priority]}`}
-            >
-              {todo.priority}
-            </span>
-          )}
-          {todo.goalTitle && (
-            <>
-              <span className='text-[10px] text-[var(--pl-text-faint)]'>·</span>
-              <span className='text-[10px] truncate' style={{ color: accent }}>
-                {todo.goalTitle}
-              </span>
-            </>
-          )}
-          <LinkedResourceChips todo={todo} />
-        </div>
-      </button>
-      {todo.calendarSynced && (
-        <CalendarCheck className='w-3.5 h-3.5 flex-shrink-0 text-[var(--pl-accent)]' />
-      )}
-      <button
-        onClick={() => onDelete(todo.id)}
-        className='opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded hover:bg-[var(--pl-bg-elev)] text-[var(--pl-text-faint)]'
-      >
-        <Trash2 className='w-3 h-3' />
-      </button>
-    </div>
-  );
-};
-
-const GoalProgressRow = ({
-  goal,
-  selected,
-  onSelect,
-  onEdit,
-  onDelete,
-}: {
-  goal: Goal;
-  selected: boolean;
-  onSelect: (id: number) => void;
-  onEdit: (g: Goal) => void;
-  onDelete: (id: number) => void;
-}) => {
-  const accent = goal.color ?? '#6366f1';
-  return (
-    <div
-      onClick={() => onSelect(goal.id)}
-      className='group w-full flex items-center gap-3 py-2 px-2 -mx-2 rounded-[8px] transition-colors text-left cursor-pointer'
-      style={{
-        background: selected
-          ? `color-mix(in oklch, ${accent} 12%, var(--pl-bg-elev))`
-          : 'transparent',
-        outline: selected
-          ? `1.5px solid color-mix(in oklch, ${accent} 40%, transparent)`
-          : 'none',
-      }}
-    >
-      <span
-        className='w-2 h-2 rounded-full flex-shrink-0'
-        style={{ background: accent }}
-      />
-      <div className='flex-1 min-w-0'>
-        <div className='flex items-baseline justify-between gap-3 mb-1'>
-          <div className='text-[13px] font-medium truncate text-[var(--pl-text)]'>
-            {goal.title}
-          </div>
-          <div className='flex items-center gap-2 flex-shrink-0'>
-            <span className='text-[10.5px] font-mono-pl text-[var(--pl-text-faint)]'>
-              {goal.completedTodos}/{goal.totalTodos}
-            </span>
-            <span
-              className='text-[11.5px] font-semibold'
-              style={{ color: accent }}
-            >
-              {goal.progress}%
-            </span>
-          </div>
-        </div>
-        <div className='h-1 rounded-full overflow-hidden bg-[var(--pl-bg-hover)]'>
-          <div
-            className='h-full rounded-full transition-all'
-            style={{ width: `${goal.progress}%`, background: accent }}
-          />
-        </div>
-      </div>
-      <div className='flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0'>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onEdit(goal);
-          }}
-          className='p-1 rounded hover:bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)]'
-        >
-          <Pencil className='w-3 h-3' />
-        </button>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete(goal.id);
-          }}
-          className='p-1 rounded hover:bg-[var(--pl-bg-hover)] text-destructive'
-        >
-          <Trash2 className='w-3 h-3' />
-        </button>
-      </div>
-    </div>
-  );
 };
 
 const TodaySection = ({
