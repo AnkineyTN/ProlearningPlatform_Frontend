@@ -1359,7 +1359,19 @@
     },
     "filter": {
       "clear": "Clear filter",
-      "emptyForGoal": "No tasks for this goal today."
+      "emptyForGoal": "No tasks for this goal today.",
+      "emptyForFilters": "No tasks match these filters today.",
+      "noGoal": "No goal",
+      "priorityLabel": "Priority",
+      "statusLabel": "Status",
+      "priorityAll": "All priorities",
+      "priorityHigh": "High",
+      "priorityMedium": "Medium",
+      "priorityLow": "Low",
+      "statusAll": "All statuses",
+      "statusTodo": "To do",
+      "statusDone": "Done",
+      "statusSkipped": "Skipped"
     }
   },
   "common": {

@@ -1766,7 +1766,19 @@
     },
     "filter": {
       "clear": "Bỏ lọc",
-      "emptyForGoal": "Goal này chưa có task nào hôm nay."
+      "emptyForGoal": "Goal này chưa có task nào hôm nay.",
+      "emptyForFilters": "Không có task nào khớp bộ lọc hôm nay.",
+      "noGoal": "Chưa gắn goal",
+      "priorityLabel": "Mức độ",
+      "statusLabel": "Trạng thái",
+      "priorityAll": "Mọi mức độ",
+      "priorityHigh": "Cao",
+      "priorityMedium": "Trung bình",
+      "priorityLow": "Thấp",
+      "statusAll": "Mọi trạng thái",
+      "statusTodo": "Cần làm",
+      "statusDone": "Hoàn thành",
+      "statusSkipped": "Bỏ qua"
     }
   },
   "common": {
