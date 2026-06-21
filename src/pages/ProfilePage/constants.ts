@@ -31,6 +31,7 @@ export type ProfileFormData = z.infer<typeof profileSchema>;
 export const profileTabs = [
   'profile',
   'preferences',
+  'ai',
   'security',
   'billing',
 ] as const;

@@ -1024,6 +1024,7 @@
     "tabs": {
       "profile": "Profile",
       "preferences": "Preferences",
+      "ai": "AI Provider",
       "security": "Security",
       "billing": "Plan & Billing"
     },
@@ -1120,6 +1121,69 @@
       "change": "Change avatar",
       "success": "Avatar updated",
       "error": "Failed to upload avatar"
+    }
+  },
+  "llm": {
+    "title": "AI Provider",
+    "sub": "Bring your own API key. The active config powers all AI features — flashcard & exam generation, roadmaps, notes and knowledge analysis.",
+    "loading": "Loading configs…",
+    "active": "Active",
+    "setActive": "Set active",
+    "addConfig": "Add another key",
+    "noActiveWarning": "No active AI config. AI features are disabled until you set one as active.",
+    "providers": {
+      "openai": "OpenAI",
+      "anthropic": "Anthropic",
+      "google": "Google",
+      "groq": "Groq"
+    },
+    "empty": {
+      "title": "No AI provider configured",
+      "desc": "Add your own LLM API key to unlock AI generation across ProLearning.",
+      "cta": "Add your first key"
+    },
+    "fields": {
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "e.g. gpt-4o-mini",
+      "apiKey": "API key",
+      "apiKeyPlaceholder": "Paste your secret key",
+      "apiKeyKeep": "leave blank to keep",
+      "apiKeyEditHint": "Leave blank to keep the existing key.",
+      "displayName": "Display name (optional)",
+      "displayNamePlaceholder": "e.g. My OpenAI key",
+      "setActive": "Set as active",
+      "setActiveDesc": "Use this config for all AI requests.",
+      "firstHint": "This is your first config — it will be activated automatically."
+    },
+    "dialog": {
+      "addTitle": "Add AI provider",
+      "editTitle": "Edit AI provider",
+      "sub": "Your API key is encrypted at rest and never shown again.",
+      "modelRequired": "Please enter a model.",
+      "apiKeyRequired": "Please enter your API key.",
+      "createSuccess": "AI provider added.",
+      "updateSuccess": "AI provider updated.",
+      "saveFailed": "Could not save config. Please try again."
+    },
+    "delete": {
+      "title": "Delete this config?",
+      "desc": "This config will be permanently removed.",
+      "descActive": "This is your active AI config. Deleting it will disable AI features until you set another config as active.",
+      "confirm": "Delete"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…"
+    },
+    "toast": {
+      "activated": "Active config updated.",
+      "activateFailed": "Could not set active config.",
+      "deleted": "Config deleted.",
+      "deleteFailed": "Could not delete config."
     }
   },
   "googleCalendar": {

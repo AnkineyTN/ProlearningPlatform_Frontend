@@ -16,6 +16,7 @@ import {
   type ProfileFormData,
   type ProfileTab,
 } from './constants';
+import ProfileAiProvider from './components/AiProvider';
 import ProfileBasicInfo from './components/BasicInfo';
 import ProfileBilling from './components/Billing';
 import ProfileLearningInfo from './components/LearningInfo';
@@ -150,6 +151,7 @@ export default function ProfilePage() {
   const tabs: { id: ProfileTab; label: string }[] = [
     { id: 'profile', label: t('profile.tabs.profile') },
     { id: 'preferences', label: t('profile.tabs.preferences') },
+    { id: 'ai', label: t('profile.tabs.ai') },
     { id: 'security', label: t('profile.tabs.security') },
     { id: 'billing', label: t('profile.tabs.billing') },
   ];
@@ -212,6 +214,10 @@ export default function ProfilePage() {
 
         <TabsContent value='preferences'>
           <ProfilePreferences />
+        </TabsContent>
+
+        <TabsContent value='ai'>
+          <ProfileAiProvider />
         </TabsContent>
 
         <TabsContent value='security'>

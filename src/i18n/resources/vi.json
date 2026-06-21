@@ -1433,6 +1433,7 @@
     "tabs": {
       "profile": "Hồ sơ",
       "preferences": "Tuỳ chỉnh",
+      "ai": "Nhà cung cấp AI",
       "security": "Bảo mật",
       "billing": "Gói & thanh toán"
     },
@@ -1529,6 +1530,69 @@
       "change": "Đổi ảnh đại diện",
       "success": "Đã cập nhật ảnh đại diện",
       "error": "Tải ảnh đại diện thất bại"
+    }
+  },
+  "llm": {
+    "title": "Nhà cung cấp AI",
+    "sub": "Dùng API key của riêng bạn. Cấu hình đang kích hoạt sẽ phục vụ mọi tính năng AI — tạo flashcard & đề thi, lộ trình, ghi chú và phân tích kiến thức.",
+    "loading": "Đang tải cấu hình…",
+    "active": "Đang dùng",
+    "setActive": "Đặt làm chính",
+    "addConfig": "Thêm key khác",
+    "noActiveWarning": "Chưa có cấu hình AI nào được kích hoạt. Các tính năng AI sẽ bị tắt cho đến khi bạn chọn một cấu hình.",
+    "providers": {
+      "openai": "OpenAI",
+      "anthropic": "Anthropic",
+      "google": "Google",
+      "groq": "Groq"
+    },
+    "empty": {
+      "title": "Chưa cấu hình nhà cung cấp AI",
+      "desc": "Thêm API key LLM của riêng bạn để mở khoá các tính năng AI trong ProLearning.",
+      "cta": "Thêm key đầu tiên"
+    },
+    "fields": {
+      "provider": "Nhà cung cấp",
+      "model": "Mô hình",
+      "modelPlaceholder": "vd: gpt-4o-mini",
+      "apiKey": "API key",
+      "apiKeyPlaceholder": "Dán secret key của bạn",
+      "apiKeyKeep": "để trống nếu giữ nguyên",
+      "apiKeyEditHint": "Để trống để giữ nguyên key hiện tại.",
+      "displayName": "Tên hiển thị (tuỳ chọn)",
+      "displayNamePlaceholder": "vd: Key OpenAI của tôi",
+      "setActive": "Đặt làm cấu hình chính",
+      "setActiveDesc": "Dùng cấu hình này cho mọi yêu cầu AI.",
+      "firstHint": "Đây là cấu hình đầu tiên — sẽ được kích hoạt tự động."
+    },
+    "dialog": {
+      "addTitle": "Thêm nhà cung cấp AI",
+      "editTitle": "Sửa nhà cung cấp AI",
+      "sub": "API key của bạn được mã hoá khi lưu và không bao giờ hiển thị lại.",
+      "modelRequired": "Vui lòng nhập mô hình.",
+      "apiKeyRequired": "Vui lòng nhập API key.",
+      "createSuccess": "Đã thêm nhà cung cấp AI.",
+      "updateSuccess": "Đã cập nhật nhà cung cấp AI.",
+      "saveFailed": "Không thể lưu cấu hình. Vui lòng thử lại."
+    },
+    "delete": {
+      "title": "Xoá cấu hình này?",
+      "desc": "Cấu hình này sẽ bị xoá vĩnh viễn.",
+      "descActive": "Đây là cấu hình AI đang dùng. Xoá nó sẽ tắt các tính năng AI cho đến khi bạn chọn cấu hình khác làm chính.",
+      "confirm": "Xoá"
+    },
+    "actions": {
+      "edit": "Sửa",
+      "delete": "Xoá",
+      "cancel": "Huỷ",
+      "save": "Lưu",
+      "saving": "Đang lưu…"
+    },
+    "toast": {
+      "activated": "Đã cập nhật cấu hình chính.",
+      "activateFailed": "Không thể đặt cấu hình chính.",
+      "deleted": "Đã xoá cấu hình.",
+      "deleteFailed": "Không thể xoá cấu hình."
     }
   },
   "googleCalendar": {
