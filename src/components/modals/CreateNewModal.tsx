@@ -10,7 +10,9 @@ import {
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
+import type { NoteAIGenerateData } from './ai-tab/types';
 import CreateAITab, { type AISubmitData } from './CreateAITab';
+import CreateNoteAITab from './CreateNoteAITab';
 import CreateManualTab, {
   type ManualErrors,
 } from './create-modal/CreateManualTab';
@@ -32,6 +34,7 @@ type Props = {
   setId?: number;
   showAITab?: boolean;
   onSubmitAI?: (data: AISubmitData) => void | Promise<void>;
+  onSubmitNoteAI?: (data: NoteAIGenerateData) => void | Promise<void>;
   isGenerating?: boolean;
 };
 
@@ -45,6 +48,7 @@ const CreateNewModal = ({
   setId,
   showAITab = false,
   onSubmitAI,
+  onSubmitNoteAI,
   isGenerating,
 }: Props) => {
   const { t } = useTranslation();
@@ -59,6 +63,7 @@ const CreateNewModal = ({
   const [errors, setErrors] = useState<ManualErrors>({});
 
   const [aiData, setAiData] = useState<AISubmitData | null>(null);
+  const [noteAiData, setNoteAiData] = useState<NoteAIGenerateData | null>(null);
   const [aiValid, setAiValid] = useState(false);
 
   useEffect(() => {
@@ -118,9 +123,14 @@ const CreateNewModal = ({
   };
 
   const handleSubmitAI = async () => {
-    if (!aiData || !onSubmitAI) return;
     try {
-      await Promise.resolve(onSubmitAI(aiData));
+      if (type === 'Note') {
+        if (!noteAiData || !onSubmitNoteAI) return;
+        await Promise.resolve(onSubmitNoteAI(noteAiData));
+      } else {
+        if (!aiData || !onSubmitAI) return;
+        await Promise.resolve(onSubmitAI(aiData));
+      }
     } catch (err) {
       console.error('CreateNewModal AI submit error', err);
       toast.error(t('modal.generateError'));
@@ -140,18 +150,24 @@ const CreateNewModal = ({
     setAiData(data);
   }, []);
 
+  const handleNoteAIDataChange = useCallback((data: NoteAIGenerateData) => {
+    setNoteAiData(data);
+  }, []);
+
   const handleAIValidityChange = useCallback((valid: boolean) => {
     setAiValid(valid);
   }, []);
 
   const subtitle = t(`modal.subtitle.${typeLower}`, { defaultValue: '' });
   const isAI = mode === 'ai';
+  const isNote = type === 'Note';
   const canShowAITab =
     showAITab &&
     !isUpdateMode &&
-    (type === 'Flashcard' || type === 'Exam') &&
     setId !== undefined &&
-    onSubmitAI !== undefined;
+    (isNote
+      ? onSubmitNoteAI !== undefined
+      : (type === 'Flashcard' || type === 'Exam') && onSubmitAI !== undefined);
 
   return (
     <Dialog
@@ -163,9 +179,9 @@ const CreateNewModal = ({
       <DialogContent
         className={cn(
           'gap-0 px-8 py-7',
-          isAI
+          isAI && !isNote
             ? 'w-full max-w-4xl sm:max-w-4xl max-h-[90vh] overflow-y-auto'
-            : 'w-full max-w-2xl sm:max-w-2xl',
+            : 'w-full max-w-2xl sm:max-w-2xl max-h-[90vh] overflow-y-auto',
         )}
         showCloseButton={!isGenerating}
         onEscapeKeyDown={(e) => {
@@ -212,7 +228,15 @@ const CreateNewModal = ({
           />
         )}
 
-        {isAI && setId !== undefined && (
+        {isAI && setId !== undefined && isNote && (
+          <CreateNoteAITab
+            isLoading={isGenerating}
+            onValidityChange={handleAIValidityChange}
+            onDataChange={handleNoteAIDataChange}
+          />
+        )}
+
+        {isAI && setId !== undefined && !isNote && (
           <CreateAITab
             type={type as 'Flashcard' | 'Exam'}
             setId={setId}

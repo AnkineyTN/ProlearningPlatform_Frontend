@@ -6,6 +6,8 @@ import type {
   GetAllNotesBySetApiResponse,
   GetAllNotesBySetQuery,
   AutoSaveNoteRequest,
+  AIGenerateNoteRequest,
+  AIGenerateNoteResponse,
   ExplainTextRequest,
   ExplainTextResponseBody,
   UploadFileResponse,
@@ -75,6 +77,11 @@ export const noteAPI = {
     data: AutoSaveNoteRequest,
   ): Promise<AxiosResponse<AutoSaveNoteResponse>> =>
     api.patch(`/sets/${setId}/notes/save/${noteId}`, data),
+  aiGenerateNote: (
+    setId: number,
+    data: AIGenerateNoteRequest,
+  ): Promise<AxiosResponse<AIGenerateNoteResponse>> =>
+    api.post(`/sets/${setId}/notes/ai-generate`, data),
   explainText: (
     setId: number,
     data: ExplainTextRequest,

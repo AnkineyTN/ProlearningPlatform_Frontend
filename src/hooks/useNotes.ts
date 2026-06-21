@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { noteAPI } from "@/services/endpoints/notes";
 import {
   type CreateNotePayload,
+  type AIGenerateNoteRequest,
   type ExplainTextRequest,
   type SummarizeFileRequest,
   type ConvertToVectorDBRequest,
@@ -210,6 +211,27 @@ export const useImportNoteFromFile = () => {
     },
     onError: (error) => {
       console.error("Error importing note from file:", error);
+    },
+  });
+};
+
+// Hook to generate a note with AI from a topic + reference links
+export const useAIGenerateNote = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      setId,
+      data,
+    }: {
+      setId: number;
+      data: AIGenerateNoteRequest;
+    }) => noteAPI.aiGenerateNote(setId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    },
+    onError: (error) => {
+      console.error("Error generating note with AI:", error);
     },
   });
 };

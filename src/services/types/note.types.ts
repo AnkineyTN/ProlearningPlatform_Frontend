@@ -113,6 +113,24 @@ export type AutoSaveNoteRequest = {
   content: string;
 };
 
+export type AIGenerateNoteRequest = {
+  language: 'English' | 'Vietnamese';
+  privacy: 'PUBLIC' | 'PRIVATE';
+  topic: string;
+  description: string;
+  reference_links: string[];
+};
+
+export type AIGenerateNoteResponse = {
+  status: number;
+  message: string;
+  data: {
+    noteId: number;
+    title: string;
+    content: string;
+  };
+};
+
 export type ExplainTextRequest = {
   language: 'English' | 'Vietnamese';
   note_id: number;

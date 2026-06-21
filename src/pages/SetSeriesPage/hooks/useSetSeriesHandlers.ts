@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import type { AISubmitData } from '@/components/modals/CreateAITab';
+import type { NoteAIGenerateData } from '@/components/modals/ai-tab/types';
 import {
   useDeleteFlashcard,
   useGenerateFlashcardsFromFiles,
@@ -18,7 +19,12 @@ import {
   useGenerateExamFromNotes,
   useGenerateExamFromWeb,
 } from '@/hooks/useExams';
-import { useCreateNote, useDeleteNote, useUpdateNote } from '@/hooks/useNotes';
+import {
+  useAIGenerateNote,
+  useCreateNote,
+  useDeleteNote,
+  useUpdateNote,
+} from '@/hooks/useNotes';
 import type { ExamAIDifficultyDistribution } from '@/services/types/exam.types';
 import type { Note } from '@/components/cards/NoteCard';
 import type { Flashcard } from '@/components/cards/FlashCard';
@@ -79,6 +85,7 @@ export function useSetSeriesHandlers({
   const deleteExamMutation = useDeleteExam();
   const updateExamMutation = useUpdateExam();
   const createNoteMutation = useCreateNote();
+  const aiGenerateNoteMutation = useAIGenerateNote();
   const updateNoteMutation = useUpdateNote();
   const deleteNoteMutation = useDeleteNote();
   const generateFlashcardsMutation = useGenerateFlashcardsFromNotes();
@@ -95,7 +102,8 @@ export function useSetSeriesHandlers({
     generateFlashcardsFromWebMutation.isPending ||
     generateExamFromFilesMutation.isPending ||
     generateExamFromNotesMutation.isPending ||
-    generateExamFromWebMutation.isPending;
+    generateExamFromWebMutation.isPending ||
+    aiGenerateNoteMutation.isPending;
 
   const isCreatingNote = createNoteMutation.isPending;
 
@@ -103,6 +111,32 @@ export function useSetSeriesHandlers({
 
   const handleCreateButtonClick = () => {
     setIsCreateModalOpen(true);
+  };
+
+  const handleNoteAISubmit = async (data: NoteAIGenerateData) => {
+    try {
+      const result = await aiGenerateNoteMutation.mutateAsync({
+        setId: Number(setId),
+        data: {
+          topic: data.topic,
+          description: data.description,
+          reference_links: data.referenceLinks,
+          language: data.language as 'English' | 'Vietnamese',
+          privacy: data.privacy,
+        },
+      });
+
+      const noteId = result.data?.data?.noteId;
+      setIsCreateModalOpen(false);
+
+      if (noteId) {
+        toast.success(t('set.handlers.noteGenerated'));
+        navigate(`/sets/${setId}/notes/${noteId}`);
+      }
+    } catch (error) {
+      console.error('Error generating note with AI:', error);
+      toast.error(t('set.handlers.generateNoteError'));
+    }
   };
 
   const handleAISubmit = async (data: AISubmitData) => {
@@ -495,6 +529,7 @@ export function useSetSeriesHandlers({
     // Handlers
     handleCreateButtonClick,
     handleAISubmit,
+    handleNoteAISubmit,
     handleCreate,
     handleUpdate,
     handleUpdateFlashcard,

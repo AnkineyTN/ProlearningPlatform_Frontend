@@ -903,6 +903,13 @@
       "noNotes": "Không có ghi chú nào",
       "webUrlsPlaceholder": "https://example.com/article",
       "webUrlsHint": "Mỗi URL trên một dòng (https://…)",
+      "note": {
+        "topicLabel": "Chủ đề",
+        "topicPlaceholder": "VD: Cách mạng Pháp, Cây tìm kiếm nhị phân…",
+        "topicHint": "AI sẽ viết nội dung và tự đặt tên cho ghi chú.",
+        "descriptionPlaceholder": "Thêm ngữ cảnh — nội dung cần có, độ sâu, đối tượng, các phần cần đưa vào…",
+        "referenceLinksLabel": "Liên kết tham khảo"
+      },
       "mcq": "Trắc nghiệm",
       "tf": "Đúng / Sai",
       "essay": "Tự luận",
@@ -2021,6 +2028,8 @@
       "generateFlashcardsError": "Tạo flashcard thất bại. Vui lòng thử lại.",
       "generateExamError": "Tạo bài thi thất bại. Vui lòng thử lại.",
       "createNoteError": "Tạo ghi chú thất bại. Vui lòng thử lại.",
+      "noteGenerated": "Tạo ghi chú bằng AI thành công",
+      "generateNoteError": "Tạo ghi chú bằng AI thất bại. Vui lòng thử lại.",
       "createFlashcardError": "Tạo flashcard thất bại. Vui lòng thử lại.",
       "createExamError": "Tạo bài thi thất bại. Vui lòng thử lại.",
       "noteUpdated": "Cập nhật ghi chú thành công",

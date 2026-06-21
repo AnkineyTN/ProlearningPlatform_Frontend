@@ -22,6 +22,14 @@ export type AISubmitData = {
   difficulty?: ExamAIDifficultyDistribution;
 };
 
+export type NoteAIGenerateData = {
+  topic: string;
+  description: string;
+  referenceLinks: string[];
+  language: string;
+  privacy: AIPrivacy;
+};
+
 export const DEFAULT_DIFFICULTY: ExamAIDifficultyDistribution = {
   Easy: 50,
   Medium: 30,

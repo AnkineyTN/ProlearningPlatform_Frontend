@@ -365,6 +365,13 @@
       "noNotes": "No notes found",
       "webUrlsPlaceholder": "https://example.com/article",
       "webUrlsHint": "Enter one URL per line (https://…)",
+      "note": {
+        "topicLabel": "Topic",
+        "topicPlaceholder": "E.g. The French Revolution, Binary search trees…",
+        "topicHint": "AI will write the note and name it for you.",
+        "descriptionPlaceholder": "Add context — what to cover, depth, audience, sections to include…",
+        "referenceLinksLabel": "Reference links"
+      },
       "mcq": "Multiple Choice",
       "tf": "True / False",
       "essay": "Essay",
@@ -1614,6 +1621,8 @@
       "generateFlashcardsError": "Failed to generate flashcards. Please try again.",
       "generateExamError": "Failed to generate exam. Please try again.",
       "createNoteError": "Failed to create note. Please try again.",
+      "noteGenerated": "Note generated successfully",
+      "generateNoteError": "Failed to generate note. Please try again.",
       "createFlashcardError": "Failed to create flashcard. Please try again.",
       "createExamError": "Failed to create exam. Please try again.",
       "noteUpdated": "Note updated successfully",

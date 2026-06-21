@@ -141,8 +141,13 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
         isOpen={handlers.isCreateModalOpen}
         onClose={() => handlers.setIsCreateModalOpen(false)}
         onSubmit={handlers.handleCreate}
-        showAITab={activeTab === 'Flashcards' || activeTab === 'Exams'}
+        showAITab={
+          activeTab === 'Flashcards' ||
+          activeTab === 'Exams' ||
+          activeTab === 'Notes'
+        }
         onSubmitAI={handlers.handleAISubmit}
+        onSubmitNoteAI={handlers.handleNoteAISubmit}
         isGenerating={handlers.isGenerating}
       />
 
