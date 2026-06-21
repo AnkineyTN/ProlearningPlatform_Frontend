@@ -1,4 +1,4 @@
-import { Earth, EarthLock, LockKeyhole } from 'lucide-react';
+import { Earth, LockKeyhole } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Label } from '@/components/ui/label';
@@ -30,14 +30,6 @@ const PrivacyCards = ({ value, onChange, error }: Props) => {
       icon: LockKeyhole,
     },
     {
-      value: 'Unlisted',
-      label: t('modal.unlisted'),
-      description: t('modal.privacyDesc.unlisted', {
-        defaultValue: 'Anyone with the link.',
-      }),
-      icon: EarthLock,
-    },
-    {
       value: 'Public',
       label: t('modal.public'),
       description: t('modal.privacyDesc.public', {
@@ -52,7 +44,7 @@ const PrivacyCards = ({ value, onChange, error }: Props) => {
       <Label className='text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground mb-2.5 block'>
         {t('modal.privacy')}
       </Label>
-      <div className='grid grid-cols-3 gap-3'>
+      <div className='grid grid-cols-2 gap-3'>
         {options.map((opt) => {
           const Icon = opt.icon;
           const selected = value === opt.value;

@@ -48,7 +48,7 @@ const CreateManualTab = ({
           value={title}
           onChange={(e) => onTitleChange(e.target.value)}
           className={cn(
-            'w-full h-11 px-3.5 rounded-lg bg-[var(--pl-bg-sunken)] focus-visible:ring-2',
+            'w-full h-11 px-3.5 rounded-lg bg-[var(--pl-bg-sunken)] focus-visible:ring-2 truncate',
             errors.titleEmpty || errors.titleTooLong
               ? 'border-destructive focus-visible:ring-destructive'
               : 'border-border focus-visible:ring-[var(--pl-accent-border)]',
@@ -92,7 +92,7 @@ const CreateManualTab = ({
         <Textarea
           value={description}
           onChange={(e) => onDescriptionChange(e.target.value)}
-          className='w-full px-3.5 py-3 rounded-lg bg-[var(--pl-bg-sunken)] border-border focus-visible:ring-2 focus-visible:ring-[var(--pl-accent-border)] resize-none min-h-[110px]'
+          className='w-full px-3.5 py-3 rounded-lg bg-[var(--pl-bg-sunken)] border-border focus-visible:ring-2 focus-visible:ring-[var(--pl-accent-border)] resize-none min-h-[110px] break-words'
           rows={4}
           placeholder={t(`modal.descriptionPlaceholder.${typeLower}`, {
             defaultValue: t('modal.enterDescription'),

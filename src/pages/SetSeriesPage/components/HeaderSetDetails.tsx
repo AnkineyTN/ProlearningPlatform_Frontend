@@ -147,11 +147,11 @@ const HeaderSetDetails = ({ setId }: Props) => {
                 {descriptionDisplay && (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <p className='text-[14px] text-[var(--pl-text-muted)] m-0 mb-4 max-w-200 line-clamp-2 cursor-default'>
+                      <p className='text-[14px] text-[var(--pl-text-muted)] m-0 mb-4 max-w-200 line-clamp-2 cursor-default break-words'>
                         {descriptionDisplay}
                       </p>
                     </TooltipTrigger>
-                    <TooltipContent className='max-w-[400px] whitespace-normal'>
+                    <TooltipContent className='max-w-[400px] whitespace-normal break-words'>
                       {descriptionDisplay}
                     </TooltipContent>
                   </Tooltip>

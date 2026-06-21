@@ -57,6 +57,7 @@ const Dashboard = () => {
         numNotes: (i.numNotes as number) ?? 0,
         numFlashcards: (i.numFlashcards as number) ?? 0,
         numExams: (i.numExams as number) ?? 0,
+        privacy: i.privacy as 'PUBLIC' | 'PRIVATE' | undefined,
         updated_at: getTimeAgo(i.updatedAt as string),
         created_at: new Date(i.createdAt as string).toLocaleDateString(
           'en-GB',

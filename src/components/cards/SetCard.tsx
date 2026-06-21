@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 import SetNotificationSettingsDialog from '@/components/notifications/SetNotificationSettingsDialog';
+import { cn } from '@/lib/utils';
 
 import { Button } from '../ui/button';
 import DropdownMenu from './DropdownMenu';
@@ -22,6 +23,7 @@ export type Set = {
   numNotes: number;
   numFlashcards: number;
   numExams: number;
+  privacy?: 'PUBLIC' | 'PRIVATE';
   code: string;
   duration: string;
   progress: number;
@@ -128,44 +130,31 @@ const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
         {set.title}
       </div>
 
+      {/* Privacy badge */}
+      {set.privacy && (
+        <div className='mb-3'>
+          <span
+            className={cn(
+              'text-[10px] font-semibold tracking-[0.1em] uppercase px-2 py-[3px] rounded-full',
+              set.privacy === 'PUBLIC'
+                ? 'bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]'
+                : 'bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)]',
+            )}
+          >
+            {set.privacy === 'PUBLIC'
+              ? t('list.filter.public')
+              : t('list.filter.private')}
+          </span>
+        </div>
+      )}
+
       {/* Description */}
       <div
-        className='text-[12.5px] mb-[14px] line-clamp-2 cursor-default'
+        className='text-[12.5px] mb-[14px] line-clamp-2 cursor-default h-9 break-words'
         style={{ color: 'var(--pl-text-muted)' }}
       >
         {set.description || t('modal.noDescription')}
       </div>
-
-      {/* Progress bar */}
-      {/* <div className='mb-[14px]'>
-        <div
-          className='flex justify-between text-[10.5px] mb-[5px]'
-          style={{
-            color: 'var(--pl-text-faint)',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-          }}
-        >
-          <span>Progress</span>
-          <span
-            style={{
-              fontFamily: 'var(--font-mono-pl)',
-              color: 'var(--pl-text-muted)',
-            }}
-          >
-            {progress}%
-          </span>
-        </div>
-        <div
-          className='h-1 rounded-full overflow-hidden'
-          style={{ background: 'var(--pl-border)' }}
-        >
-          <div
-            className='h-full rounded-full transition-all'
-            style={{ width: `${progress}%`, background: progressColor }}
-          />
-        </div>
-      </div> */}
 
       {/* Stats + Footer */}
       <div

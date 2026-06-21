@@ -2,7 +2,7 @@ import type { ExamAIDifficultyDistribution } from '@/services/types/exam.types';
 
 export type AISource = 'notes' | 'files' | 'web';
 
-export type AIPrivacy = 'PUBLIC' | 'PRIVATE' | 'UNLISTED';
+export type AIPrivacy = 'PUBLIC' | 'PRIVATE';
 
 export type NoteAIInput = {
   note_id: number;

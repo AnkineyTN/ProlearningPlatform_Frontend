@@ -63,6 +63,7 @@ const mapSetData = (items: any[]): Set[] =>
     numNotes: item.numNotes ?? 0,
     numFlashcards: item.numFlashcards ?? 0,
     numExams: item.numExams ?? 0,
+    privacy: item.privacy,
   }));
 
 export default function SetListPage() {
@@ -111,7 +112,7 @@ export default function SetListPage() {
     try {
       const payload: CreateSetPayload = {
         ...data,
-        privacy: data.privacy === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE',
+        privacy: data.privacy === 'Public' ? 'PUBLIC' : 'PRIVATE',
       };
       await createSetMutation.mutateAsync(payload);
       setIsCreateModalOpen(false);
@@ -134,7 +135,7 @@ export default function SetListPage() {
     try {
       const payload: UpdateSetPayload = {
         ...data,
-        privacy: data.privacy === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE',
+        privacy: data.privacy === 'Public' ? 'PUBLIC' : 'PRIVATE',
       };
       await updateSetMutation.mutateAsync({ id: selectedSet.id, payload });
       setIsUpdateModalOpen(false);
@@ -284,7 +285,7 @@ export default function SetListPage() {
               selectedSet.description === 'No description available...'
                 ? ''
                 : selectedSet.description,
-            privacy: 'Public',
+            privacy: selectedSet.privacy === 'PRIVATE' ? 'Private' : 'Public',
           }}
           isUpdateMode={true}
         />

@@ -68,7 +68,6 @@ const AITitlePrivacyRow = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value='PRIVATE'>{t('modal.private')}</SelectItem>
-            <SelectItem value='UNLISTED'>{t('modal.unlisted')}</SelectItem>
             <SelectItem value='PUBLIC'>{t('modal.public')}</SelectItem>
           </SelectContent>
         </Select>

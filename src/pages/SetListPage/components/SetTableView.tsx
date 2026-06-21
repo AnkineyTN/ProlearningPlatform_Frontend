@@ -1,12 +1,63 @@
 import { useEffect, useRef, useState } from 'react';
-import { BookOpen, MoreVertical, Brain, FileText, GraduationCap } from 'lucide-react';
+import {
+  BookOpen,
+  MoreVertical,
+  Brain,
+  FileText,
+  GraduationCap,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { type Set } from '@/components/cards/SetCard';
 import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 import DropdownMenu from '@/components/cards/DropdownMenu';
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 import SetNotificationSettingsDialog from '@/components/notifications/SetNotificationSettingsDialog';
+
+function TruncatedText({
+  text,
+  className,
+  style,
+}: {
+  text: string;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isTruncated, setIsTruncated] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const check = () => setIsTruncated(el.scrollWidth > el.clientWidth);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, [text]);
+
+  const content = (
+    <div ref={ref} className={cn('truncate', className)} style={style}>
+      {text}
+    </div>
+  );
+
+  if (!isTruncated) return content;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{content}</TooltipTrigger>
+      <TooltipContent className='max-w-[320px] break-words'>
+        {text}
+      </TooltipContent>
+    </Tooltip>
+  );
+}
 
 type RowProps = {
   set: Set;
@@ -61,13 +112,12 @@ function SetTableRow({ set, onAccess, onDelete, onUpdate }: RowProps) {
           >
             <BookOpen size={14} />
           </div>
-          <div>
-            <div
-              className='text-[13.5px] font-[500]'
+          <div className='min-w-0'>
+            <TruncatedText
+              text={set.title}
+              className='text-[13.5px] font-[500] max-w-[260px]'
               style={{ color: 'var(--pl-text)' }}
-            >
-              {set.title}
-            </div>
+            />
             {set.code && (
               <div
                 className='text-[10.5px] mt-[1px]'
@@ -84,13 +134,12 @@ function SetTableRow({ set, onAccess, onDelete, onUpdate }: RowProps) {
       </td>
 
       {/* Description */}
-      <td className='py-3 px-4 max-w-[220px]'>
-        <div
-          className='text-[12px] truncate cursor-default'
+      <td className='py-3 px-4'>
+        <TruncatedText
+          text={set.description || t('modal.noDescription')}
+          className='text-[12px] cursor-default max-w-[220px]'
           style={{ color: 'var(--pl-text-muted)' }}
-        >
-          {set.description || t('modal.noDescription')}
-        </div>
+        />
       </td>
 
       {/* Resources */}
@@ -215,7 +264,7 @@ export default function SetTableView({
 }: Props) {
   return (
     <div
-      className='rounded-[12px] overflow-hidden mb-8'
+      className='rounded-[12px] mb-8'
       style={{
         border: '1px solid var(--pl-border)',
         background: 'var(--pl-bg-elev)',

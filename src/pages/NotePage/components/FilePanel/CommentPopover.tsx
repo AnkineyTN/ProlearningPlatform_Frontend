@@ -29,7 +29,7 @@ function renderTextWithLinks(text: string) {
         target='_blank'
         rel='noopener noreferrer'
         onClick={(e) => e.stopPropagation()}
-        className='text-[var(--pl-accent)] hover:text-[var(--pl-accent-strong)] underline break-all'
+        className='text-[var(--pl-accent)] hover:text-[var(--pl-accent-strong)] underline break-words'
       >
         {part}
       </a>
