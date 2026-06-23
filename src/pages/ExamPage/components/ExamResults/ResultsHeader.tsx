@@ -1,9 +1,8 @@
 import { ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+
 import { Button } from '@/components/ui/button';
-import ModeToggle from '@/components/theme/mode-toggle';
-import NotificationBell from '@/components/notifications/NotificationBell';
 
 interface ResultsHeaderProps {
   setId: number;
@@ -15,9 +14,7 @@ export default function ResultsHeader({ setId, examId }: ResultsHeaderProps) {
   const { t } = useTranslation();
 
   return (
-    <header
-      className='flex shrink-0 items-center justify-between px-6 py-3 border-b border-border bg-[var(--pl-bg)] sticky top-0 z-10'
-    >
+    <header className='flex shrink-0 items-center justify-between px-6 py-3 border-b border-border bg-[var(--pl-bg)] sticky top-0 z-10'>
       <Button
         variant='ghost'
         size='sm'
@@ -36,8 +33,6 @@ export default function ResultsHeader({ setId, examId }: ResultsHeaderProps) {
         >
           {t('exam.results.viewExam')}
         </Button>
-        <NotificationBell />
-        <ModeToggle />
       </div>
     </header>
   );

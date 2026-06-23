@@ -2139,18 +2139,19 @@
         "front": "Mặt trước",
         "back": "Mặt sau",
         "tapToReveal": "Nhấn để xem đáp án",
-        "tapToFlip": "Nhấn vào thẻ để lật"
-      },
-      "list": {
-        "frontLabel": "Mặt trước · #{{index}}",
-        "backLabel": "Mặt sau"
+        "tapToFlip": "Nhấn vào thẻ để lật",
+        "navigate": "chuyển thẻ",
+        "press": "Nhấn",
+        "toFlip": "để lật"
       },
       "empty": "Bundle này không có thẻ nào.",
       "actions": {
         "saveFlashcard": "Lưu Flashcard",
         "flashcardSaved": "Đã tạo Flashcard",
+        "openFlashcard": "Mở flashcard",
         "createExam": "Tạo Exam",
         "examCreated": "Đã tạo Exam",
+        "openExam": "Mở exam",
         "dismiss": "Đã nắm rồi",
         "confirmTitle": "Xác nhận hoàn thành",
         "confirmDescription": "Bạn chắc chắn đã nắm nội dung trong bundle này? Bundle sẽ bị xóa nhưng các Flashcard và Exam đã tạo từ bundle sẽ không bị ảnh hưởng.",
@@ -2168,8 +2169,10 @@
       },
       "toast": {
         "flashcardSuccess": "Đã tạo Flashcard ôn tập thành công!",
+        "flashcardView": "Xem",
         "flashcardError": "Tạo Flashcard thất bại. Vui lòng thử lại.",
         "examSuccess": "Đã tạo Exam ôn tập thành công!",
+        "examView": "Xem",
         "examError": "Tạo Exam thất bại. Vui lòng thử lại.",
         "dismissSuccess": "Bundle đã được đánh dấu hoàn thành.",
         "dismissError": "Không thể xóa bundle. Vui lòng thử lại."

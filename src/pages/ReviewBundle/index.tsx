@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
   useReviewBundle,
+  useReviewBundles,
   useGenerateFlashcardFromBundle,
   useGenerateExamFromBundle,
   useDismissBundle,
@@ -23,6 +24,7 @@ export default function ReviewBundlePage() {
   const navigate = useNavigate();
 
   const { data, isLoading, isError } = useReviewBundle(bundleId);
+  const { data: bundleList } = useReviewBundles();
   const generateFlashcard = useGenerateFlashcardFromBundle();
   const generateExam = useGenerateExamFromBundle();
   const dismissBundle = useDismissBundle();
@@ -31,10 +33,21 @@ export default function ReviewBundlePage() {
   const [cardIndex, setCardIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [flashcardDone, setFlashcardDone] = useState(false);
+  const [flashcardSetId, setFlashcardSetId] = useState<string | number | null>(null);
   const [examDone, setExamDone] = useState(false);
+  const [examTarget, setExamTarget] = useState<{
+    setId: number;
+    examId: number;
+  } | null>(null);
 
   const bundle = data?.data;
   const cards = bundle?.cards ?? [];
+
+  // Neither the bundle detail nor the exam-from-bundle response carries setId,
+  // so fall back to the list item, which always does.
+  const bundleSetId = bundleList?.data?.find(
+    (b) => b.id === Number(bundleId),
+  )?.setId;
 
   const handlePrev = () => {
     setFlipped(false);
@@ -45,27 +58,58 @@ export default function ReviewBundlePage() {
     setCardIndex((i) => Math.min(cards.length - 1, i + 1));
   };
 
+  const openFlashcard = (setId: string | number) =>
+    navigate(`/sets/${setId}/flashcards`);
+
   const handleGenerateFlashcard = async () => {
     if (!bundleId) return;
     try {
       const res = await generateFlashcard.mutateAsync(bundleId);
       setFlashcardDone(true);
-      toast.success(t('reviewBundles.detail.toast.flashcardSuccess'));
-      const setId = (res.data as { data?: { setId?: number } })?.data?.setId;
-      if (setId) {
-        setTimeout(() => navigate(`/sets/${setId}/flashcards`), 1500);
-      }
+      const generated = res.data?.data as { id?: string | number; setId?: number };
+      const setId = generated?.id ?? generated?.setId ?? null;
+      setFlashcardSetId(setId);
+      toast.success(
+        t('reviewBundles.detail.toast.flashcardSuccess'),
+        setId
+          ? {
+              action: {
+                label: t('reviewBundles.detail.toast.flashcardView'),
+                onClick: () => openFlashcard(setId),
+              },
+            }
+          : undefined,
+      );
     } catch {
       toast.error(t('reviewBundles.detail.toast.flashcardError'));
     }
   };
 
+  const openExam = (setId: number, examId: number) =>
+    navigate(`/sets/${setId}/exams/${examId}`);
+
   const handleGenerateExam = async () => {
     if (!bundleId) return;
     try {
-      await generateExam.mutateAsync(bundleId);
+      const res = await generateExam.mutateAsync(bundleId);
       setExamDone(true);
-      toast.success(t('reviewBundles.detail.toast.examSuccess'));
+      const exam = res.data?.data;
+      const setId = exam?.setId ?? bundleSetId;
+      const examId = exam?.id;
+      const target =
+        setId != null && examId != null ? { setId, examId } : null;
+      setExamTarget(target);
+      toast.success(
+        t('reviewBundles.detail.toast.examSuccess'),
+        target
+          ? {
+              action: {
+                label: t('reviewBundles.detail.toast.examView'),
+                onClick: () => openExam(target.setId, target.examId),
+              },
+            }
+          : undefined,
+      );
     } catch {
       toast.error(t('reviewBundles.detail.toast.examError'));
     }
@@ -150,7 +194,15 @@ export default function ReviewBundlePage() {
 
         <BundleActionBar
           onGenerateFlashcard={handleGenerateFlashcard}
+          onOpenFlashcard={
+            flashcardSetId != null ? () => openFlashcard(flashcardSetId) : undefined
+          }
           onGenerateExam={handleGenerateExam}
+          onOpenExam={
+            examTarget
+              ? () => openExam(examTarget.setId, examTarget.examId)
+              : undefined
+          }
           onDismiss={handleDismiss}
           flashcardPending={generateFlashcard.isPending}
           examPending={generateExam.isPending}

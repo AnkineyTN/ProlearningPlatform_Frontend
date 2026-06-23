@@ -1,11 +1,12 @@
 import { BarChart3 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TooltipProvider } from '@/components/ui/tooltip';
-import { Badge } from '@/components/ui/badge';
-import { examAPI } from '@/services/endpoints/exam';
+
 import KnowledgeAnalysisDialog from '@/components/analysis/KnowledgeAnalysisDialog';
-import type { Exam, ExamResult } from '../../types';
+import { Badge } from '@/components/ui/badge';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { examAPI } from '@/services/endpoints/exam';
+
 import AiExplanationDialog from './AiExplanationDialog';
 import AttemptDetailDialog from './AttemptDetailDialog';
 import AttemptHistoryDialog from './AttemptHistoryDialog';
@@ -17,6 +18,7 @@ import ResultsSummaryCard from './ResultsSummaryCard';
 import RetryWrongAnswersDialog from './RetryWrongAnswersDialog';
 import { createResultHelpers } from './utils';
 
+import type { Exam, ExamResult } from '../../types';
 interface ExamResultsProps {
   setId: number;
   examId: number;
@@ -34,7 +36,10 @@ export default function ExamResults({
 }: ExamResultsProps) {
   const { t, i18n } = useTranslation();
 
-  const helpers = useMemo(() => createResultHelpers(exam, result), [exam, result]);
+  const helpers = useMemo(
+    () => createResultHelpers(exam, result),
+    [exam, result],
+  );
 
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(() => {
     const firstWrong = exam.questions.findIndex((q) => {
@@ -100,7 +105,12 @@ export default function ExamResults({
 
       const text =
         res.data?.data?.explanation?.trim() || t('exam.results.noExplanation');
-      setAiDialog({ open: true, questionId, loading: false, explanation: text });
+      setAiDialog({
+        open: true,
+        questionId,
+        loading: false,
+        explanation: text,
+      });
     } catch {
       setAiDialog({
         open: true,

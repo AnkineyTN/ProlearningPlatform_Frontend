@@ -1,4 +1,5 @@
 import {
+  ArrowRight,
   BookOpen,
   CheckCircle2,
   FileText,
@@ -7,7 +8,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,12 +20,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 
 type StatusKind = 'both' | 'flashcardOnly' | 'examOnly' | null;
 
 export function BundleActionBar({
   onGenerateFlashcard,
+  onOpenFlashcard,
   onGenerateExam,
+  onOpenExam,
   onDismiss,
   flashcardPending,
   examPending,
@@ -34,7 +38,9 @@ export function BundleActionBar({
   status,
 }: {
   onGenerateFlashcard: () => void;
+  onOpenFlashcard?: () => void;
   onGenerateExam: () => void;
+  onOpenExam?: () => void;
   onDismiss: () => void;
   flashcardPending: boolean;
   examPending: boolean;
@@ -45,49 +51,59 @@ export function BundleActionBar({
 }) {
   const { t } = useTranslation();
 
+  const canOpenFlashcard = flashcardDone && !!onOpenFlashcard;
+  const canOpenExam = examDone && !!onOpenExam;
+
   return (
     <>
       <div className='grid grid-cols-1 sm:grid-cols-3 gap-3'>
         <Button
-          onClick={onGenerateFlashcard}
-          disabled={flashcardPending || flashcardDone}
+          onClick={canOpenFlashcard ? onOpenFlashcard : onGenerateFlashcard}
+          disabled={flashcardPending || (flashcardDone && !canOpenFlashcard)}
           className='flex items-center gap-2 bg-gradient-to-r from-[var(--pl-accent)] to-[var(--pl-accent-strong)] text-[var(--pl-accent-fg)] hover:opacity-90 cursor-pointer disabled:opacity-60'
         >
           {flashcardPending ? (
             <Loader2 className='w-4 h-4 animate-spin' />
+          ) : canOpenFlashcard ? (
+            <ArrowRight className='w-4 h-4' />
           ) : flashcardDone ? (
             <CheckCircle2 className='w-4 h-4' />
           ) : (
             <BookOpen className='w-4 h-4' />
           )}
-          {flashcardDone
-            ? t('reviewBundles.detail.actions.flashcardSaved')
-            : t('reviewBundles.detail.actions.saveFlashcard')}
+          {canOpenFlashcard
+            ? t('reviewBundles.detail.actions.openFlashcard')
+            : flashcardDone
+              ? t('reviewBundles.detail.actions.flashcardSaved')
+              : t('reviewBundles.detail.actions.saveFlashcard')}
         </Button>
 
         <Button
-          onClick={onGenerateExam}
-          disabled={examPending || examDone}
-          variant='outline'
+          onClick={canOpenExam ? onOpenExam : onGenerateExam}
+          disabled={examPending || (examDone && !canOpenExam)}
           className='flex items-center gap-2 cursor-pointer disabled:opacity-60'
         >
           {examPending ? (
             <Loader2 className='w-4 h-4 animate-spin' />
+          ) : canOpenExam ? (
+            <ArrowRight className='w-4 h-4' />
           ) : examDone ? (
             <CheckCircle2 className='w-4 h-4 text-[var(--pl-success)]' />
           ) : (
             <FileText className='w-4 h-4' />
           )}
-          {examDone
-            ? t('reviewBundles.detail.actions.examCreated')
-            : t('reviewBundles.detail.actions.createExam')}
+          {canOpenExam
+            ? t('reviewBundles.detail.actions.openExam')
+            : examDone
+              ? t('reviewBundles.detail.actions.examCreated')
+              : t('reviewBundles.detail.actions.createExam')}
         </Button>
 
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
-              variant='ghost'
-              className='flex items-center gap-2 text-muted-foreground hover:text-destructive cursor-pointer'
+              variant='outline'
+              className='flex items-center gap-2 hover:text-[var(--pl-danger-text)] hover:bg-[var(--pl-danger-soft)]'
               disabled={dismissPending}
             >
               {dismissPending ? (

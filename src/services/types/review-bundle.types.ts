@@ -67,6 +67,7 @@ export type GenerateFlashcardFromBundleResponse = {
 
 export type GeneratedExam = {
   id: number;
+  setId?: number;
   title: string;
   privacy: 'PUBLIC' | 'PRIVATE';
   description: string;

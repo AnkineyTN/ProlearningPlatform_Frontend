@@ -24,6 +24,7 @@ import SetSeriesPage from '@/pages/SetSeriesPage';
 import TodoDashboard from '@/pages/TodoDashboard';
 import Pomodoro from '@/pages/Pomodoro';
 import ExamPage from '@/pages/ExamPage';
+import ExamAttemptResultPage from '@/pages/ExamPage/ExamAttemptResultPage';
 import ExamEditor from '@/pages/ExamPage/components/ExamEditor';
 import ProfilePage from '@/pages/ProfilePage';
 import ReviewBundlesPage from '@/pages/ReviewBundle/ReviewBundlesPage';
@@ -279,6 +280,10 @@ export const routeConfig: RouteObject[] = [
       {
         path: 'sets/:setId/exams/:examId/edit',
         element: <ExamUpdateWrapper />,
+      },
+      {
+        path: 'sets/:setId/exams/:examId/attempts/:attemptId',
+        element: <ExamAttemptResultPage />,
       },
       {
         path: 'sets/:setId/exams/:examId',

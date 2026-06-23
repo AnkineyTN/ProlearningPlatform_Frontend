@@ -5,6 +5,7 @@ import {
   Clock,
   Edit,
   FileText,
+  History,
   Info,
   Play,
   Share2,
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 import { ShareDialog } from '@/components/collaboration/ShareDialog';
 import FavoriteButton from '@/components/favorite/FavoriteButton';
@@ -20,6 +22,8 @@ import NotificationBell from '@/components/notifications/NotificationBell';
 import ModeToggle from '@/components/theme/mode-toggle';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+
+import AttemptHistoryDialog from './ExamResults/AttemptHistoryDialog';
 
 import type { Exam } from '../types';
 import type { CollabRole } from '@/services/types/collaboration.types';
@@ -60,8 +64,10 @@ export default function ExamHomeView({
   isFavorited = false,
 }: ExamHomeViewProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const currentUserId = useAuth().user?.id;
   const [shareOpen, setShareOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const questionTypes = ['MULTIPLE_CHOICE', 'TRUE_FALSE', 'ESSAY'].filter(
     (type) => exam.questions.filter((q) => q.type === type).length > 0,
@@ -87,6 +93,16 @@ export default function ExamHomeView({
           />
           <Button
             size='sm'
+            className='flex h-9 items-center justify-center gap-2 hover:bg-[var(--pl-bg-hover)] rounded-lg border border-[var(--pl-border)] bg-transparent px-3 text-[var(--pl-text-muted)] cursor-pointer'
+            onClick={() => setHistoryOpen(true)}
+          >
+            <History className='size-4' />
+            <span className='text-sm'>
+              {t('exam.results.attemptHistoryTitle')}
+            </span>
+          </Button>
+          <Button
+            size='sm'
             className='flex h-9 w-9 items-center justify-center hover:bg-[var(--pl-bg-hover)] place-items-center rounded-lg border border-[var(--pl-border)] bg-transparent text-[var(--pl-text-muted)] cursor-pointer'
             onClick={() => setShareOpen(true)}
           >
@@ -98,7 +114,7 @@ export default function ExamHomeView({
       </div>
 
       {/* Main content */}
-      <div className='flex-1 flex items-start justify-center px-8 py-12'>
+      <div className='flex-1 flex items-start justify-center p-8'>
         <div className='w-full max-w-2xl'>
           {/* Hero */}
           <div className='mb-8'>
@@ -122,8 +138,28 @@ export default function ExamHomeView({
             )}
           </div>
 
+          {/* Actions */}
+          <div className='flex gap-6 mb-6'>
+            <Button
+              onClick={onEditExam}
+              variant='outline'
+              className='flex-1 gap-2'
+            >
+              <Edit className='w-4 h-4' />
+              {t('exam.home.editExam')}
+            </Button>
+            <Button
+              onClick={() => void onStartExam()}
+              className='flex-1 gap-2'
+              disabled={isStarting}
+            >
+              <Play className='w-4 h-4' />
+              {isStarting ? t('exam.home.starting') : t('exam.home.startExam')}
+            </Button>
+          </div>
+
           {/* Stats row */}
-          <div className='grid grid-cols-3 gap-3 mb-6'>
+          <div className='grid grid-cols-3 gap-6 mb-6'>
             {[
               {
                 icon: <FileText className='w-4 h-4' />,
@@ -169,83 +205,58 @@ export default function ExamHomeView({
             ))}
           </div>
 
-          {/* Question breakdown */}
-          {questionTypes.length > 0 && (
-            <div className='bg-[var(--pl-bg-elev)] border border-border rounded-xl p-5 mb-5'>
-              <p className='text-xs uppercase tracking-widest text-foreground/60 mb-3'>
-                {t('exam.home.questionTypes')}
-              </p>
-              <div className='space-y-2.5'>
-                {questionTypes.map((type) => {
-                  const count = exam.questions.filter(
-                    (q) => q.type === type,
-                  ).length;
-                  const pct = Math.round((count / exam.questions.length) * 100);
-                  return (
-                    <div key={type} className='flex items-center gap-3'>
-                      <div className='flex items-center gap-2 text-foreground w-36 flex-shrink-0 text-sm'>
-                        {questionTypeIcon(type)}
-                        <span className='truncate'>
-                          {questionTypeLabel(type, t)}
+          <div className='flex gap-6'>
+            {/* Question breakdown */}
+            {questionTypes.length > 0 && (
+              <div className='bg-[var(--pl-bg-elev)] border border-border rounded-xl p-5 mb-5'>
+                <p className='text-xs uppercase tracking-widest text-foreground/60 mb-3'>
+                  {t('exam.home.questionTypes')}
+                </p>
+                <div className='space-y-2.5'>
+                  {questionTypes.map((type) => {
+                    const count = exam.questions.filter(
+                      (q) => q.type === type,
+                    ).length;
+                    return (
+                      <div key={type} className='flex items-center gap-3'>
+                        <div className='flex items-center gap-2 text-foreground w-36 flex-shrink-0'>
+                          {questionTypeIcon(type)}
+                          <span className='truncate'>
+                            {questionTypeLabel(type, t)}
+                          </span>
+                        </div>
+                        <span className='font-[family-name:var(--font-mono-pl)] text-foreground w-6 text-right'>
+                          {count}
                         </span>
                       </div>
-                      <div className='flex-1 h-1.5 bg-secondary rounded-full overflow-hidden'>
-                        <div
-                          className='h-full bg-primary rounded-full transition-all'
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                      <span className='font-[family-name:var(--font-mono-pl)] text-xs text-foreground w-6 text-right'>
-                        {count}
-                      </span>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Before start hints */}
-          <div className='bg-[var(--pl-bg-elev)] border border-border rounded-xl p-5 mb-6'>
-            <div className='flex items-center gap-2 mb-3'>
-              <Info className='w-4 h-4 text-foreground' />
-              <p className='text-xs uppercase tracking-widest text-foreground/60'>
-                {t('exam.home.beforeStart')}
-              </p>
+            {/* Before start hints */}
+            <div className='flex-1 bg-[var(--pl-bg-elev)] border border-border rounded-xl p-5 mb-6'>
+              <div className='flex items-center gap-2 mb-3'>
+                <Info className='w-4 h-4 text-foreground' />
+                <p className='text-xs uppercase tracking-widest text-foreground/60'>
+                  {t('exam.home.beforeStart')}
+                </p>
+              </div>
+              <ul className='space-y-1.5 text-sm text-foreground'>
+                {[
+                  t('exam.home.hintInternet'),
+                  t('exam.home.hintNoPause'),
+                  t('exam.home.hintProgress'),
+                  t('exam.home.hintReview'),
+                ].map((hint, i) => (
+                  <li key={i} className='flex items-start gap-2'>
+                    <span className='mt-1.5 w-1 h-1 rounded-full bg-muted-foreground/50 flex-shrink-0' />
+                    {hint}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className='space-y-1.5 text-sm text-foreground'>
-              {[
-                t('exam.home.hintInternet'),
-                t('exam.home.hintNoPause'),
-                t('exam.home.hintProgress'),
-                t('exam.home.hintReview'),
-              ].map((hint, i) => (
-                <li key={i} className='flex items-start gap-2'>
-                  <span className='mt-1.5 w-1 h-1 rounded-full bg-muted-foreground/50 flex-shrink-0' />
-                  {hint}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Actions */}
-          <div className='flex gap-3'>
-            <Button
-              onClick={onEditExam}
-              variant='outline'
-              className='flex-1 gap-2'
-            >
-              <Edit className='w-4 h-4' />
-              {t('exam.home.editExam')}
-            </Button>
-            <Button
-              onClick={() => void onStartExam()}
-              className='flex-1 gap-2'
-              disabled={isStarting}
-            >
-              <Play className='w-4 h-4' />
-              {isStarting ? t('exam.home.starting') : t('exam.home.startExam')}
-            </Button>
           </div>
         </div>
       </div>
@@ -258,6 +269,16 @@ export default function ExamHomeView({
         resourceId={examId}
         userRole={userRole}
         currentUserId={currentUserId}
+      />
+
+      <AttemptHistoryDialog
+        open={historyOpen}
+        onOpenChange={setHistoryOpen}
+        setId={setId}
+        examId={examId}
+        onSelectAttempt={(attemptId) =>
+          navigate(`/sets/${setId}/exams/${examId}/attempts/${attemptId}`)
+        }
       />
     </div>
   );

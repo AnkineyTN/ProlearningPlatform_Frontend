@@ -1732,18 +1732,19 @@
         "front": "Front side",
         "back": "Back side",
         "tapToReveal": "Tap to reveal the answer",
-        "tapToFlip": "Tap the card to flip it"
-      },
-      "list": {
-        "frontLabel": "Front side · #{{index}}",
-        "backLabel": "Back side"
+        "tapToFlip": "Tap the card to flip it",
+        "navigate": "navigate",
+        "press": "Press",
+        "toFlip": "to flip"
       },
       "empty": "This bundle has no cards.",
       "actions": {
         "saveFlashcard": "Save Flashcard",
         "flashcardSaved": "Flashcard saved",
+        "openFlashcard": "Open flashcard",
         "createExam": "Create Exam",
         "examCreated": "Exam created",
+        "openExam": "Open exam",
         "dismiss": "Got it",
         "confirmTitle": "Confirm completion",
         "confirmDescription": "Are you sure you've mastered this bundle's content? The bundle will be removed, but any flashcards and exams generated from it stay untouched.",
@@ -1761,8 +1762,10 @@
       },
       "toast": {
         "flashcardSuccess": "Review flashcard created successfully!",
+        "flashcardView": "View",
         "flashcardError": "Failed to create flashcard. Please try again.",
         "examSuccess": "Review exam created successfully!",
+        "examView": "View",
         "examError": "Failed to create exam. Please try again.",
         "dismissSuccess": "Bundle marked as completed.",
         "dismissError": "Could not delete the bundle. Please try again."

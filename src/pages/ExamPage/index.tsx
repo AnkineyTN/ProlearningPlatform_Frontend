@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import ExamHomeView from './components/ExamHomeView';
 import ExamTaking from './components/ExamTaking';
-import ExamResults from './components/ExamResults';
-import type { Exam, ExamResult, ExamSubmission } from './types';
+import type { Exam, ExamSubmission } from './types';
 import { useExamDetail } from '@/hooks/useExams';
 import { useSessionTracker } from '@/hooks/useSessionTracker';
 import { apiQuizDetailToExam } from './utils/examMapper';
@@ -16,7 +15,7 @@ import {
 import { examAPI } from '@/services/endpoints/exam';
 import type { ExamAttemptSummary } from '@/services/types/exam.types';
 
-type ViewMode = 'home' | 'taking' | 'results';
+type ViewMode = 'home' | 'taking';
 
 type Props = {
   setId: number;
@@ -27,11 +26,7 @@ export default function ExamPage({ setId, examId }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<ViewMode>('home');
-  const [examResult, setExamResult] = useState<ExamResult | null>(null);
   const [activeAttempt, setActiveAttempt] = useState<ExamAttemptSummary | null>(
-    null,
-  );
-  const [submittedAttemptId, setSubmittedAttemptId] = useState<number | null>(
     null,
   );
   const [isStartingAttempt, setIsStartingAttempt] = useState(false);
@@ -106,10 +101,12 @@ export default function ExamPage({ setId, examId }: Props) {
         timeTaken,
       );
       await flush(Math.round(mapped.percentage));
-      setExamResult(mapped);
-      setSubmittedAttemptId(activeAttempt.id);
+      const attemptId = activeAttempt.id;
       setActiveAttempt(null);
-      setViewMode('results');
+      setViewMode('home');
+      navigate(`/sets/${setId}/exams/${examId}/attempts/${attemptId}`, {
+        state: { result: mapped },
+      });
     } catch {
       toast.error(t('exam.page.submitError'));
     }
@@ -200,18 +197,6 @@ export default function ExamPage({ setId, examId }: Props) {
         onSubmit={handleSubmitExam}
         onAbandon={handleAbandonAttempt}
         onRecordItem={recordItem}
-      />
-    );
-  }
-
-  if (viewMode === 'results' && examResult) {
-    return (
-      <ExamResults
-        setId={Number(setId)}
-        examId={Number(examId)}
-        exam={exam}
-        result={examResult}
-        attemptId={submittedAttemptId ?? undefined}
       />
     );
   }

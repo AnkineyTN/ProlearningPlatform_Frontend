@@ -139,6 +139,27 @@ export const useExamDetail = (setId: number, examId: number | string) => {
   };
 };
 
+export const useExamAttempt = (
+  setId: number,
+  examId: number | string,
+  attemptId: number,
+  enabled = true,
+) => {
+  return useQuery({
+    queryKey: ["exam-attempt", setId, examId, attemptId],
+    queryFn: async () => {
+      const response = await examAPI.getExamAttempt(
+        setId,
+        Number(examId),
+        attemptId,
+      );
+      return response.data;
+    },
+    staleTime: 60 * 1000,
+    enabled: !!setId && !!examId && !!attemptId && enabled,
+  });
+};
+
 export const useExamQuestions = (
   setId: number,
   examId: number | string,
