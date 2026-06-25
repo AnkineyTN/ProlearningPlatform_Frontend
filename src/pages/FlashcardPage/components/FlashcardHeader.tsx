@@ -41,14 +41,20 @@ export default function FlashcardHeader({
           <div className='flex items-end gap-4'>
             <div className='flex items-center gap-4'>
               <SwatchBook className='w-8 h-8' />
-              <h1 className='text-3xl font-bold'>{title}</h1>
+              <h1 className='text-3xl font-bold font-[family-name:var(--font-display)]'>
+                {title}
+              </h1>
             </div>
             <div
               className='flex items-center gap-2 cursor-pointer hover:underline'
               onClick={handleClick}
             >
               <BookOpen className='w-5 h-5 text-muted-foreground' />
-              {setTitle && <span className='text-muted-foreground text-sm'>{setTitle}</span>}
+              {setTitle && (
+                <span className='text-muted-foreground text-sm'>
+                  {setTitle}
+                </span>
+              )}
             </div>
           </div>
           <div className='flex items-center gap-3 shrink-0'>

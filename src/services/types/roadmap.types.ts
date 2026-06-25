@@ -53,7 +53,44 @@ export type Roadmap = {
 };
 
 export type RoadmapDetailResponse = ApiEnvelope<Roadmap>;
-export type RoadmapListResponse = ApiEnvelope<Roadmap[]>;
+
+/* ── List item (response from GET /roadmaps — lighter than the detail shape) ── */
+
+export type RoadmapListItem = {
+  id: number;
+  setId: number | null;
+  title: string;
+  overview: string;
+  status: RoadmapStatus;
+  estimatedTotalHours: number;
+  totalChapters: number;
+  completedChapters: number;
+  totalTopics: number;
+  completedTopics: number;
+  progressPercent: number;
+  createdAt: string;
+};
+
+export type PaginationMetadata = {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  pageSize: number;
+};
+
+export type RoadmapListResponse = {
+  status: string;
+  message: string;
+  data: RoadmapListItem[];
+  metadata: PaginationMetadata;
+};
+
+export type RoadmapListQueryParams = {
+  page: number;
+  size: number;
+  sort: string;
+  status?: RoadmapStatus;
+};
 
 /* ── Preview (stateless, snake_case) ── */
 

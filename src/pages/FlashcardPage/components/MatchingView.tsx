@@ -41,6 +41,7 @@ const MatchingView = ({
     streak,
     countdown,
     showConfetti,
+    cardCount,
     setIsGameStarted,
     setExpandedHistoryId,
     setShowAllPlays,
@@ -62,7 +63,7 @@ const MatchingView = ({
   if (endTime && startTime) {
     const totalTimeMs = endTime - startTime;
     const totalDurationSec = Math.round(totalTimeMs / 1000);
-    const totalPairs = Math.min(flashcards.length, 6);
+    const totalPairs = cardCount;
     const wrongPicks = Math.round(
       Object.values(wrongCardCounts).reduce((a, b) => a + b, 0) / 2,
     );
@@ -214,7 +215,7 @@ const MatchingView = ({
   }
 
   // ── Active game board ─────────────────────────────────────────────────────
-  const totalPairs = Math.min(flashcards.length, 6);
+  const totalPairs = cardCount;
 
   return (
     <MatchingGameBoard

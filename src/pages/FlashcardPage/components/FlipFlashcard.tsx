@@ -40,9 +40,11 @@ const FlipFlashcard = ({
     isFrontCardTerm,
     isProgressTrackingEnabled,
     autoFlipDelay,
+    matchingCardCount,
     setIsFrontCardTerm,
     setIsProgressTrackingEnabled,
     setAutoFlipDelay,
+    setMatchingCardCount,
   } = useFlashcardStudySettings();
 
   const [dragOffsetX, setDragOffsetX] = useState(0);
@@ -266,9 +268,11 @@ const FlipFlashcard = ({
         isFrontCardTerm={isFrontCardTerm}
         isProgressTrackingEnabled={isProgressTrackingEnabled}
         autoFlipDelay={autoFlipDelay}
+        matchingCardCount={matchingCardCount}
         setIsFrontCardTerm={setIsFrontCardTerm}
         setIsProgressTrackingEnabled={setIsProgressTrackingEnabled}
         setAutoFlipDelay={setAutoFlipDelay}
+        setMatchingCardCount={setMatchingCardCount}
       />
     </>
   );

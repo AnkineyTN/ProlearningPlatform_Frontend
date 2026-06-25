@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -6,28 +6,63 @@ import {
   Map as MapIcon,
   Trash2,
   CheckCircle2,
+  XCircle,
   Sparkles,
   Layers,
   Loader2,
   Clock,
   ExternalLink,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { useRoadmaps, useDeleteRoadmap } from '@/hooks/useRoadmap';
 import { useAuth } from '@/hooks/useAuth';
-import type { Roadmap } from '@/services/types/roadmap.types';
-import { getTimeAgo } from '@/lib/utils';
+import type { RoadmapListItem } from '@/services/types/roadmap.types';
+import type { ListSortOption } from '@/components/lists/ResourceFiltersBar';
+import { getTimeAgo, cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import ProGateOverlay from './ProGateOverlay';
+import RoadmapFilterBar, { type RoadmapStatusFilter } from './RoadmapFilterBar';
+
+const PAGE_SIZE = 9;
+
+function buildPageWindows(current: number, total: number): (number | '...')[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i);
+  const pages = new Set([0, total - 1, current]);
+  if (current > 0) pages.add(current - 1);
+  if (current < total - 1) pages.add(current + 1);
+  const sorted = Array.from(pages).sort((a, b) => a - b);
+  const result: (number | '...')[] = [];
+  for (let i = 0; i < sorted.length; i++) {
+    if (i > 0 && sorted[i] - sorted[i - 1] > 1) result.push('...');
+    result.push(sorted[i]);
+  }
+  return result;
+}
 
 const RoadmapsListPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { data: roadmaps, isLoading } = useRoadmaps();
-  const deleteRoadmap = useDeleteRoadmap();
+  const [currentPage, setCurrentPage] = useState(0);
+  const [statusFilter, setStatusFilter] =
+    useState<RoadmapStatusFilter>('ACTIVE');
+  const [sortOption, setSortOption] = useState<ListSortOption>('id,DESC');
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
+
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [statusFilter, sortOption]);
+
+  const { data: roadmapsRes, isLoading } = useRoadmaps({
+    page: currentPage,
+    size: PAGE_SIZE,
+    sort: sortOption,
+    status: statusFilter || undefined,
+  });
+  const deleteRoadmap = useDeleteRoadmap();
 
   const isPro = user?.accountType === 'PRO';
 
@@ -41,7 +76,8 @@ const RoadmapsListPage = () => {
     }
   };
 
-  const items = roadmaps ?? [];
+  const items = roadmapsRes?.data ?? [];
+  const totalPages = roadmapsRes?.metadata?.totalPages || 1;
 
   return (
     <div className='relative min-h-screen bg-[var(--pl-bg)]'>
@@ -68,6 +104,17 @@ const RoadmapsListPage = () => {
             </Button>
           </div>
 
+          <RoadmapFilterBar
+            status={statusFilter}
+            onStatusChange={setStatusFilter}
+            sort={sortOption}
+            onSortChange={setSortOption}
+            onClearFilters={() => {
+              setStatusFilter('ACTIVE');
+              setSortOption('id,DESC');
+            }}
+          />
+
           <div className='mt-4 border-b border-[var(--pl-border)]' />
         </div>
 
@@ -80,16 +127,74 @@ const RoadmapsListPage = () => {
           ) : items.length === 0 ? (
             <EmptyState onCreate={() => navigate('/roadmaps/new')} />
           ) : (
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[14px]'>
-              {items.map((r) => (
-                <RoadmapCard
-                  key={r.id}
-                  roadmap={r}
-                  onOpen={() => navigate(`/roadmaps/${r.id}`)}
-                  onAskDelete={() => setConfirmDelete(r.id)}
-                />
-              ))}
-            </div>
+            <>
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[14px] mb-8'>
+                {items.map((r) => (
+                  <RoadmapCard
+                    key={r.id}
+                    roadmap={r}
+                    onOpen={() => navigate(`/roadmaps/${r.id}`)}
+                    onAskDelete={() => setConfirmDelete(r.id)}
+                  />
+                ))}
+              </div>
+
+              {totalPages > 1 && (
+                <div className='flex justify-center items-center gap-1'>
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
+                    disabled={currentPage === 0}
+                    className={cn(
+                      'w-8 h-8 rounded-lg grid place-items-center border border-[var(--pl-border)] transition-[background] duration-150',
+                      currentPage === 0
+                        ? 'bg-transparent text-[var(--pl-text-faint)] cursor-not-allowed opacity-40'
+                        : 'bg-[var(--pl-bg-elev)] text-[var(--pl-text)] cursor-pointer hover:bg-[var(--pl-bg-hover)]',
+                    )}
+                  >
+                    <ChevronLeft size={14} />
+                  </button>
+
+                  {buildPageWindows(currentPage, totalPages).map((p, i) =>
+                    p === '...' ? (
+                      <span
+                        key={`ellipsis-${i}`}
+                        className='w-8 h-8 grid place-items-center text-[12px] text-[var(--pl-text-faint)]'
+                      >
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={p}
+                        onClick={() => setCurrentPage(p)}
+                        className={cn(
+                          'w-8 h-8 rounded-lg grid place-items-center text-[12.5px] tabular-nums border transition-[background,color] duration-150 cursor-pointer',
+                          p === currentPage
+                            ? 'bg-[var(--pl-accent-soft)] border-[var(--pl-accent-border)] text-[var(--pl-accent-strong)] font-medium'
+                            : 'bg-[var(--pl-bg-elev)] border-[var(--pl-border)] text-[var(--pl-text-muted)] hover:bg-[var(--pl-bg-hover)]',
+                        )}
+                      >
+                        {p + 1}
+                      </button>
+                    ),
+                  )}
+
+                  <button
+                    onClick={() =>
+                      setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
+                    }
+                    disabled={currentPage >= totalPages - 1}
+                    className={cn(
+                      'w-8 h-8 rounded-lg grid place-items-center border border-[var(--pl-border)] transition-[background] duration-150',
+                      currentPage >= totalPages - 1
+                        ? 'bg-transparent text-[var(--pl-text-faint)] cursor-not-allowed opacity-40'
+                        : 'bg-[var(--pl-bg-elev)] text-[var(--pl-text)] cursor-pointer hover:bg-[var(--pl-bg-hover)]',
+                    )}
+                  >
+                    <ChevronRight size={14} />
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
 
@@ -112,14 +217,14 @@ const RoadmapCard = ({
   onOpen,
   onAskDelete,
 }: {
-  roadmap: Roadmap;
+  roadmap: RoadmapListItem;
   onOpen: () => void;
   onAskDelete: () => void;
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const isDone = roadmap.status === 'COMPLETED';
-  const totalChapters = roadmap.chapters?.length ?? 0;
+  const isAbandoned = roadmap.status === 'ABANDONED';
   return (
     <div
       className='group relative rounded-[14px] overflow-hidden cursor-pointer transition-all bg-[var(--pl-bg-elev)] border border-[var(--pl-border)]'
@@ -128,8 +233,21 @@ const RoadmapCard = ({
       <div className='p-5'>
         <div className='flex items-start justify-between gap-3 mb-3'>
           <div className='flex items-center gap-2'>
-            <div className='w-9 h-9 rounded-[9px] grid place-items-center bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]'>
-              {isDone ? <CheckCircle2 size={16} /> : <MapIcon size={16} />}
+            <div
+              className={cn(
+                'w-9 h-9 rounded-[9px] grid place-items-center',
+                isAbandoned
+                  ? 'bg-[var(--pl-danger-soft)] text-[var(--pl-danger-text)]'
+                  : 'bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]',
+              )}
+            >
+              {isAbandoned ? (
+                <XCircle size={16} />
+              ) : isDone ? (
+                <CheckCircle2 size={16} />
+              ) : (
+                <MapIcon size={16} />
+              )}
             </div>
             {roadmap.estimatedTotalHours > 0 && (
               <span className='flex items-center gap-1 text-[10.5px] uppercase tracking-[0.12em] px-2 py-[3px] rounded-full bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)] font-mono-pl'>
@@ -138,18 +256,20 @@ const RoadmapCard = ({
               </span>
             )}
           </div>
-          <Button
-            variant='ghost'
-            size='icon'
-            onClick={(e) => {
-              e.stopPropagation();
-              onAskDelete();
-            }}
-            className='opacity-0 group-hover:opacity-100 transition-opacity h-auto w-auto p-1 rounded-md hover:bg-[var(--pl-bg-hover)]'
-            title={t('roadmap.card.deleteTitle')}
-          >
-            <Trash2 size={13} className='text-[var(--pl-text-faint)]' />
-          </Button>
+          {!isAbandoned && (
+            <Button
+              variant='ghost'
+              size='icon'
+              onClick={(e) => {
+                e.stopPropagation();
+                onAskDelete();
+              }}
+              className='opacity-0 group-hover:opacity-100 transition-opacity h-auto w-auto p-1 rounded-md hover:bg-[var(--pl-bg-hover)]'
+              title={t('roadmap.card.deleteTitle')}
+            >
+              <Trash2 size={13} className='text-[var(--pl-text-faint)]' />
+            </Button>
+          )}
         </div>
 
         <h3 className='text-[16px] font-medium mb-1 line-clamp-2 text-[var(--pl-text)]'>
@@ -163,7 +283,7 @@ const RoadmapCard = ({
           <span className='flex items-center gap-1 text-[var(--pl-text-muted)]'>
             <Layers size={11} />
             {t('roadmap.card.chaptersTopics', {
-              chapters: totalChapters,
+              chapters: roadmap.totalChapters,
               topics: roadmap.totalTopics,
             })}
           </span>

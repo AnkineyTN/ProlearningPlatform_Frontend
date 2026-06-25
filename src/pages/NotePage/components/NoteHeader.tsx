@@ -3,6 +3,7 @@ import {
   FileCode,
   FileText,
   LoaderCircle,
+  Layers,
   Share2,
   Sparkles,
   Upload,
@@ -44,6 +45,8 @@ interface NoteHeaderProps {
     kind: 'doc' | 'image';
   }) => void;
   onExport: (format: ExportFormat) => void;
+  onGenerateFlashcard?: () => void;
+  isGeneratingFlashcard?: boolean;
   attachedFileCount?: number;
   showFilesPanel?: boolean;
   onToggleFilesPanel?: () => void;
@@ -69,6 +72,8 @@ export const NoteHeader = ({
   userRole = 'OWNER',
   onFileUploaded,
   onExport,
+  onGenerateFlashcard,
+  isGeneratingFlashcard = false,
   attachedFileCount = 0,
   showFilesPanel = true,
   onToggleFilesPanel,
@@ -135,6 +140,23 @@ export const NoteHeader = ({
 
             {userRole !== 'VIEWER' && (
               <>
+                {onGenerateFlashcard && (
+                  <Button
+                    variant='ghost'
+                    size='sm'
+                    className='gap-2 text-[var(--pl-text-muted)] hover:text-[var(--pl-text)]'
+                    onClick={onGenerateFlashcard}
+                    disabled={isGeneratingFlashcard}
+                  >
+                    {isGeneratingFlashcard ? (
+                      <LoaderCircle className='w-4 h-4 animate-spin' />
+                    ) : (
+                      <Layers className='w-4 h-4' />
+                    )}
+                    Generate Flashcard
+                  </Button>
+                )}
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button

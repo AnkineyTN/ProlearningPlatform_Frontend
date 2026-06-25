@@ -6,6 +6,7 @@ import {
   useGameRanking,
   useSaveGameResult,
 } from '@/hooks/useFlashcards';
+import { useFlashcardStudySettings } from '@/hooks/useFlashcardStudySettings';
 
 export interface MatchingCard {
   id: string;
@@ -55,6 +56,8 @@ export const useMatchingGame = ({
 
   const saveGameResult = useSaveGameResult();
   const isPublic = privacy === 'PUBLIC';
+  const { matchingCardCount } = useFlashcardStudySettings();
+  const cardCount = Math.min(matchingCardCount, flashcards.length);
 
   const { data: rankingData, refetch: refetchRanking } = useGameRanking(
     Number(setId),
@@ -103,7 +106,7 @@ export const useMatchingGame = ({
   useEffect(() => {
     if (endTime && startTime && !resultSaved) {
       const durationSeconds = Math.round((endTime - startTime) / 1000);
-      const totalCards = Math.min(flashcards.length, 6);
+      const totalCards = cardCount;
       setSnapshotPrevRun(historyData?.data?.[0] ?? null);
       setResultSaved(true);
       saveGameResult.mutate(
@@ -139,7 +142,9 @@ export const useMatchingGame = ({
   }, [countdown]);
 
   const initializeGame = () => {
-    const selectedFlashcards = flashcards.slice(0, 6);
+    const selectedFlashcards = [...flashcards]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, cardCount);
     const termCards: MatchingCard[] = selectedFlashcards.map((card) => ({
       id: `term-${card.id}`,
       content: card.frontCard,
@@ -204,7 +209,7 @@ export const useMatchingGame = ({
           setMatchedPairs(newMatchedPairs);
           setSelectedCards([]);
           setStreak((s) => s + 1);
-          if (newMatchedPairs.size === Math.min(flashcards.length, 6)) {
+          if (newMatchedPairs.size === cardCount) {
             setShowConfetti(true);
             setTimeout(() => setEndTime(Date.now()), 700);
           }
@@ -303,6 +308,7 @@ export const useMatchingGame = ({
     streak,
     countdown,
     showConfetti,
+    cardCount,
     // Setters
     setIsGameStarted,
     setExpandedHistoryId,

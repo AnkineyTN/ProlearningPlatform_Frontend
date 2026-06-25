@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 const AUTO_FLIP_DELAYS = [3, 5, 10, 15] as const;
+const MATCHING_CARD_COUNTS = [6, 9, 12, 15] as const;
 
 type Props = {
   open: boolean;
@@ -17,9 +18,11 @@ type Props = {
   isFrontCardTerm: boolean;
   isProgressTrackingEnabled: boolean;
   autoFlipDelay: number | null;
+  matchingCardCount: number;
   setIsFrontCardTerm: (v: boolean) => void;
   setIsProgressTrackingEnabled: (v: boolean) => void;
   setAutoFlipDelay: (v: number | null) => void;
+  setMatchingCardCount: (v: number) => void;
 };
 
 const FlashcardSettingsDialog = ({
@@ -28,9 +31,11 @@ const FlashcardSettingsDialog = ({
   isFrontCardTerm,
   isProgressTrackingEnabled,
   autoFlipDelay,
+  matchingCardCount,
   setIsFrontCardTerm,
   setIsProgressTrackingEnabled,
   setAutoFlipDelay,
+  setMatchingCardCount,
 }: Props) => (
   <Dialog open={open} onOpenChange={onOpenChange}>
     <DialogContent className='sm:max-w-md'>
@@ -87,6 +92,34 @@ const FlashcardSettingsDialog = ({
               ))}
             </div>
           )}
+        </div>
+
+        {/* Matching game card count */}
+        <div className='space-y-3'>
+          <div>
+            <p className='font-medium'>Matching Game Cards</p>
+            <p className='text-sm text-muted-foreground'>
+              Number of cards used when playing the matching game
+            </p>
+          </div>
+          <div className='flex gap-2'>
+            {MATCHING_CARD_COUNTS.map((n) => (
+              <Button
+                key={n}
+                variant='outline'
+                size='sm'
+                onClick={() => setMatchingCardCount(n)}
+                className='cursor-pointer'
+                style={{
+                  background: matchingCardCount === n ? 'var(--pl-accent-soft)' : undefined,
+                  borderColor: matchingCardCount === n ? 'var(--pl-accent-border)' : undefined,
+                  color: matchingCardCount === n ? 'var(--pl-accent-strong)' : undefined,
+                }}
+              >
+                {n}
+              </Button>
+            ))}
+          </div>
         </div>
 
         {/* Front Side */}

@@ -4,6 +4,7 @@ export type FlashcardStudySettings = {
   isFrontCardTerm: boolean;
   isProgressTrackingEnabled: boolean;
   autoFlipDelay: number | null; // seconds; null = disabled
+  matchingCardCount: number; // number of cards used in the matching game
 };
 
 const STORAGE_KEY = "flashcard-study-settings";
@@ -12,6 +13,7 @@ const DEFAULTS: FlashcardStudySettings = {
   isFrontCardTerm: true,
   isProgressTrackingEnabled: true,
   autoFlipDelay: null,
+  matchingCardCount: 6,
 };
 
 function read(): FlashcardStudySettings {
@@ -48,10 +50,15 @@ export function useFlashcardStudySettings() {
     setSettings((s) => ({ ...s, autoFlipDelay: v }));
   }, []);
 
+  const setMatchingCardCount = useCallback((v: number) => {
+    setSettings((s) => ({ ...s, matchingCardCount: v }));
+  }, []);
+
   return {
     ...settings,
     setIsFrontCardTerm,
     setIsProgressTrackingEnabled,
     setAutoFlipDelay,
+    setMatchingCardCount,
   };
 }

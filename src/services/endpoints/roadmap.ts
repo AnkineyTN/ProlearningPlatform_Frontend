@@ -8,12 +8,25 @@ import type {
   PreviewRoadmapPayload,
   PreviewRoadmapResponse,
   RoadmapDetailResponse,
+  RoadmapListQueryParams,
   RoadmapListResponse,
   StartTopicResponse,
 } from '../types/roadmap.types';
 
 export const roadmapAPI = {
-  list: (): Promise<AxiosResponse<RoadmapListResponse>> => api.get('/roadmaps'),
+  list: ({
+    page,
+    size,
+    sort,
+    status,
+  }: RoadmapListQueryParams): Promise<AxiosResponse<RoadmapListResponse>> => {
+    const sp = new URLSearchParams();
+    sp.set('page', String(page));
+    sp.set('size', String(size));
+    sp.set('sort', sort);
+    if (status) sp.set('status', status);
+    return api.get(`/roadmaps?${sp.toString()}`);
+  },
 
   getById: (id: number): Promise<AxiosResponse<RoadmapDetailResponse>> =>
     api.get(`/roadmaps/${id}`),

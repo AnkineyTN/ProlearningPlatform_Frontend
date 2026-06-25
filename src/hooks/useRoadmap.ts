@@ -5,17 +5,18 @@ import type {
   CreateRoadmapPayload,
   PreviewRoadmapPayload,
   Roadmap,
+  RoadmapListQueryParams,
 } from '@/services/types/roadmap.types';
 
 const ROADMAP_KEY = ['roadmaps'] as const;
 const roadmapDetailKey = (id: number) => ['roadmaps', id] as const;
 
-export const useRoadmaps = () =>
+export const useRoadmaps = (params: RoadmapListQueryParams) =>
   useQuery({
-    queryKey: ROADMAP_KEY,
+    queryKey: [...ROADMAP_KEY, params],
     queryFn: async () => {
-      const res = await roadmapAPI.list();
-      return res.data.data;
+      const res = await roadmapAPI.list(params);
+      return res.data;
     },
   });
 

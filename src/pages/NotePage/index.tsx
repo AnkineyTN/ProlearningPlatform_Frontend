@@ -2,7 +2,8 @@ import './notes.css';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import {
   ResizableHandle,
@@ -10,11 +11,13 @@ import {
   ResizablePanelGroup,
 } from '@/components/ui/resizable';
 import { useAuth } from '@/hooks/useAuth';
+import { useGenerateFlashcardsFromNotes } from '@/hooks/useFlashcards';
 import {
   useAutoSaveNote,
   useNoteDetail,
   useNoteFileRegionComments,
 } from '@/hooks/useNotes';
+import { mapI18nToAiApiLanguage } from '@/lib/utils';
 import { AISummarizePanel } from '@/pages/NotePage/components/AISummarizePanel';
 import {
   exportNoteAsHtml,
@@ -42,6 +45,8 @@ export const NotePage = () => {
     id: string;
   }>();
   const numericSetId = setIdParam ? Number(setIdParam) : 0;
+  const navigate = useNavigate();
+  const { i18n } = useTranslation();
   const currentUser = useAuth().user;
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -60,6 +65,7 @@ export const NotePage = () => {
     noteId ? parseInt(noteId) : 0,
   );
   const autoSaveMutation = useAutoSaveNote();
+  const generateFlashcardsMutation = useGenerateFlashcardsFromNotes();
   const autoSaveMutationRef = useRef(autoSaveMutation);
   autoSaveMutationRef.current = autoSaveMutation;
 
@@ -188,6 +194,48 @@ export const NotePage = () => {
     toast.success('Note exported successfully');
   }, [title]);
 
+  const handleGenerateFlashcard = useCallback(async () => {
+    if (!setId || !numericNoteId) return;
+    try {
+      const documentUrls = noteFiles
+        .filter((f) => f.kind === 'doc')
+        .map((f) => f.fileUrl);
+
+      const result = await generateFlashcardsMutation.mutateAsync({
+        setId,
+        notes: [{ note_id: numericNoteId, document_urls: documentUrls }],
+        language: mapI18nToAiApiLanguage(i18n.language),
+        freeText: '',
+      });
+
+      const generatedFlashcards = result.data.content.split(';').map((card) => {
+        const [frontCard, backCard] = card.split('|');
+        return { frontCard: frontCard?.trim(), backCard: backCard?.trim() };
+      });
+
+      navigate(`/sets/${setId}/flashcards/editor`, {
+        state: {
+          title: result.data.title || title,
+          description: result.data.description || '',
+          privacy: noteDetail?.privacy ?? 'PRIVATE',
+          generatedFlashcards,
+        },
+      });
+    } catch (error) {
+      console.error('Failed to generate flashcards from note:', error);
+      toast.error('Failed to generate flashcards from this note');
+    }
+  }, [
+    setId,
+    numericNoteId,
+    noteFiles,
+    generateFlashcardsMutation,
+    i18n.language,
+    navigate,
+    title,
+    noteDetail?.privacy,
+  ]);
+
   const { data: fileRegionComments = [] } = useNoteFileRegionComments(
     setId,
     numericNoteId,
@@ -229,6 +277,8 @@ export const NotePage = () => {
         userRole={noteDetail?.userRole ?? 'OWNER'}
         onFileUploaded={handleFileUploaded}
         onExport={handleExport}
+        onGenerateFlashcard={handleGenerateFlashcard}
+        isGeneratingFlashcard={generateFlashcardsMutation.isPending}
         attachedFileCount={noteFiles.length}
         showFilesPanel={showFilesPanel}
         onToggleFilesPanel={() => setShowFilesPanel((v) => !v)}
