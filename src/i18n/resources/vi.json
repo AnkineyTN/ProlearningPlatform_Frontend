@@ -56,10 +56,8 @@
     "sidebarUsers": "Người dùng",
     "sidebarAppeals": "Khiếu nại & Chặn",
     "sidebarPomodoro": "Tài nguyên Pomodoro",
-    "sidebarAuditLog": "Nhật ký",
-    "sidebarSettings": "Cài đặt",
     "sidebarOps": "Vận hành",
-    "sidebarSystem": "Hệ thống",
+    "logout": "Đăng xuất",
     "adminConsole": "Admin Console",
     "adminMode": "Chế độ Admin",
     "overviewKicker": "Sức khỏe & tăng trưởng",
@@ -1601,6 +1599,23 @@
       "deleted": "Đã xoá cấu hình.",
       "deleteFailed": "Không thể xoá cấu hình."
     }
+  },
+  "aiUsage": {
+    "title": "Sử dụng AI",
+    "sub": "Hạn ngạch yêu cầu AI hàng ngày. Làm mới sau mỗi 24 giờ.",
+    "byok": "Đang dùng API Key cá nhân · Không giới hạn",
+    "generation": "Tạo nội dung",
+    "interactive": "Tương tác",
+    "used": "Đã dùng {{used}} / {{limit}} lượt",
+    "unlimited": "Không giới hạn",
+    "resets": "Làm mới sau {{time}}",
+    "loading": "Đang tải…"
+  },
+  "aiRateLimit": {
+    "title": "Đã đạt giới hạn AI hôm nay",
+    "upgradeToPro": "Nâng cấp Pro",
+    "addApiKey": "Thêm API Key",
+    "dismiss": "Đóng"
   },
   "googleCalendar": {
     "title": "Google Calendar",

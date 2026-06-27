@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { Check, Loader2, Pencil, Plus, Sparkles, Trash2 } from 'lucide-react';
+import { Check, Infinity, Loader2, Pencil, Plus, Sparkles, Trash2 } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,10 +20,90 @@ import {
   useLlmConfigs,
   useSetActiveLlmConfig,
 } from '@/hooks/useLlmConfigs';
+import { useAiUsage } from '@/hooks/useAiUsage';
 import type { LlmConfig } from '@/services/types/llm-config.types';
+import type { AiUsageSlot } from '@/services/types/ai-usage.types';
 import type { ApiErrorResponse } from '@/services/types/auth.types';
 import ProfileSection from './Section';
 import LlmConfigDialog from './LlmConfigDialog';
+
+function formatResetTime(seconds: number): string {
+  if (seconds <= 0) return '';
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  if (h > 0 && m > 0) return `${h}h ${m}m`;
+  if (h > 0) return `${h}h`;
+  return `${m}m`;
+}
+
+function UsageBar({
+  label,
+  slot,
+}: {
+  label: string;
+  slot: AiUsageSlot;
+}) {
+  const { t } = useTranslation();
+  const isUnlimited = slot.limit === -1;
+  const pct = isUnlimited ? 0 : Math.min(100, (slot.used / slot.limit) * 100);
+  const resetTime = formatResetTime(slot.resetTimeSeconds);
+
+  return (
+    <div className='mb-4 last:mb-0'>
+      <div className='flex items-center justify-between mb-1.5'>
+        <span className='text-[12.5px] font-medium text-[var(--pl-text)]'>
+          {label}
+        </span>
+        <span className='text-[12px] text-[var(--pl-text-muted)]'>
+          {isUnlimited
+            ? t('aiUsage.unlimited')
+            : t('aiUsage.used', { used: slot.used, limit: slot.limit })}
+        </span>
+      </div>
+      {!isUnlimited && (
+        <div className='h-1.5 rounded-full bg-[var(--pl-bg-hover)] overflow-hidden'>
+          <div
+            className='h-full rounded-full transition-all bg-[var(--pl-accent)]'
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+      )}
+      {!isUnlimited && resetTime && (
+        <p className='mt-1 text-[11px] text-[var(--pl-text-faint)]'>
+          {t('aiUsage.resets', { time: resetTime })}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function AiUsageSection() {
+  const { t } = useTranslation();
+  const { data, isLoading } = useAiUsage();
+
+  return (
+    <ProfileSection title={t('aiUsage.title')} sub={t('aiUsage.sub')}>
+      {isLoading ? (
+        <div className='flex items-center gap-2 py-4 text-[var(--pl-text-muted)]'>
+          <Loader2 className='w-4 h-4 animate-spin' />
+          <span className='text-sm'>{t('aiUsage.loading')}</span>
+        </div>
+      ) : data?.byokActive ? (
+        <div className='flex items-center gap-2.5 rounded-[12px] border border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft)] px-4 py-3'>
+          <Infinity className='w-4 h-4 shrink-0 text-[var(--pl-accent)]' />
+          <span className='text-[13px] text-[var(--pl-accent-strong)]'>
+            {t('aiUsage.byok')}
+          </span>
+        </div>
+      ) : data ? (
+        <>
+          <UsageBar label={t('aiUsage.generation')} slot={data.generation} />
+          <UsageBar label={t('aiUsage.interactive')} slot={data.interactive} />
+        </>
+      ) : null}
+    </ProfileSection>
+  );
+}
 
 function errMessage(err: unknown, fallback: string) {
   const payload: ApiErrorResponse | undefined = axios.isAxiosError(err)
@@ -173,6 +253,7 @@ export default function ProfileAiProvider() {
 
   return (
     <>
+      <AiUsageSection />
       <ProfileSection title={t('llm.title')} sub={t('llm.sub')}>
         {!hasActive && !isLoading && (
           <div className='flex items-start gap-2 mb-1 rounded-[12px] border border-[var(--pl-warning-border)] bg-[var(--pl-warning-soft)] px-3.5 py-2.5 text-[12.5px] text-[var(--pl-warning-text)]'>

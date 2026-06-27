@@ -39,10 +39,8 @@
     "sidebarUsers": "Users",
     "sidebarAppeals": "Appeals & Blocks",
     "sidebarPomodoro": "Pomodoro Assets",
-    "sidebarAuditLog": "Audit log",
-    "sidebarSettings": "Settings",
     "sidebarOps": "Operations",
-    "sidebarSystem": "System",
+    "logout": "Log out",
     "adminConsole": "Admin Console",
     "adminMode": "Admin mode",
     "overviewKicker": "Platform health & growth",
@@ -1192,6 +1190,23 @@
       "deleted": "Config deleted.",
       "deleteFailed": "Could not delete config."
     }
+  },
+  "aiUsage": {
+    "title": "AI Usage",
+    "sub": "Your daily AI request quota. Resets every 24 hours.",
+    "byok": "Using personal API key · Unlimited",
+    "generation": "Generation",
+    "interactive": "Interactive",
+    "used": "{{used}} / {{limit}} requests",
+    "unlimited": "Unlimited",
+    "resets": "Resets in {{time}}",
+    "loading": "Loading usage…"
+  },
+  "aiRateLimit": {
+    "title": "Daily AI Limit Reached",
+    "upgradeToPro": "Upgrade to Pro",
+    "addApiKey": "Add API Key",
+    "dismiss": "Dismiss"
   },
   "googleCalendar": {
     "title": "Google Calendar",

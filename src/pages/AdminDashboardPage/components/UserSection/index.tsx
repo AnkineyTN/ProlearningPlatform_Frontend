@@ -11,6 +11,7 @@ import {
   Filter,
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import AdminTopBar from '../TopBar';
@@ -56,18 +57,35 @@ const UsersSection = ({
 }: UsersSectionProps) => {
   const { t } = useTranslation();
   const na = t('adminOnboarding.notAvailable');
-  const [openMenu, setOpenMenu] = useState<number | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const [menuAnchor, setMenuAnchor] = useState<DOMRect | null>(null);
+  const [menuRow, setMenuRow] = useState<AdminUserDirectoryRow | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const close = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setOpenMenu(null);
+        setOpenMenuId(null);
+        setMenuAnchor(null);
+        setMenuRow(null);
       }
     };
     window.addEventListener('click', close);
     return () => window.removeEventListener('click', close);
   }, []);
+
+  const openMenu = (e: React.MouseEvent, row: AdminUserDirectoryRow) => {
+    e.stopPropagation();
+    if (openMenuId === row.user.id) {
+      setOpenMenuId(null);
+      setMenuAnchor(null);
+      setMenuRow(null);
+      return;
+    }
+    setMenuAnchor((e.currentTarget as HTMLElement).getBoundingClientRect());
+    setMenuRow(row);
+    setOpenMenuId(row.user.id);
+  };
 
   const displayOrDash = (v: string | null | undefined) =>
     v != null && v !== '' ? v : na;
@@ -79,6 +97,7 @@ const UsersSection = ({
   };
 
   return (
+    <>
     <div className='flex-1 min-w-0'>
       <AdminTopBar
         kicker={`${rows.length} ${t('adminDashboard.usersKicker')}`}
@@ -284,69 +303,17 @@ const UsersSection = ({
                         )}
                       </div>
                       {/* Actions */}
-                      <div
-                        className='px-3.5 py-3 relative flex justify-end'
-                        ref={openMenu === u.id ? menuRef : undefined}
-                      >
+                      <div className='px-3.5 py-3 flex justify-end'>
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setOpenMenu(openMenu === u.id ? null : u.id);
-                          }}
+                          onClick={(e) => openMenu(e, row)}
                           className={`w-7 h-7 rounded-[7px] grid place-items-center text-muted-foreground transition-colors ${
-                            openMenu === u.id
+                            openMenuId === u.id
                               ? 'bg-[var(--pl-bg-hover)]'
                               : 'hover:bg-[var(--pl-bg-hover)]'
                           }`}
                         >
                           <MoreHorizontal className='w-3.5 h-3.5' />
                         </button>
-                        {openMenu === u.id && (
-                          <div
-                            className='absolute top-full right-2 mt-1 bg-[var(--pl-bg-elev)] border border-border rounded-[10px] p-1 min-w-[168px] shadow-lg z-50'
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <ActionMenuItem
-                              icon={Eye}
-                              label={t('adminDashboard.viewDetail')}
-                              onClick={() => {
-                                onViewDetail(row);
-                                setOpenMenu(null);
-                              }}
-                            />
-                            <ActionMenuItem
-                              icon={Pencil}
-                              label={t('adminDashboard.editUser')}
-                              onClick={() => {
-                                onEdit(row);
-                                setOpenMenu(null);
-                              }}
-                            />
-                            <div className='h-px bg-border my-1' />
-                            <ActionMenuItem
-                              icon={u.isBlocked ? ShieldCheck : ShieldOff}
-                              label={
-                                u.isBlocked
-                                  ? t('adminDashboard.unblockUser')
-                                  : t('adminDashboard.blockUser')
-                              }
-                              kind={u.isBlocked ? 'success' : 'warning'}
-                              onClick={() => {
-                                onBlock(u.id, name, u.isBlocked);
-                                setOpenMenu(null);
-                              }}
-                            />
-                            <ActionMenuItem
-                              icon={Trash2}
-                              label={t('adminDashboard.deleteUser')}
-                              kind='danger'
-                              onClick={() => {
-                                onDelete(u.id, name);
-                                setOpenMenu(null);
-                              }}
-                            />
-                          </div>
-                        )}
                       </div>
                     </div>
                   );
@@ -389,6 +356,70 @@ const UsersSection = ({
         </div>
       </div>
     </div>
+
+    {openMenuId !== null && menuAnchor && menuRow &&
+      createPortal(
+        <div
+          ref={menuRef}
+          style={{
+            position: 'fixed',
+            top: menuAnchor.bottom + 4,
+            right: window.innerWidth - menuAnchor.right,
+          }}
+          className='bg-[var(--pl-bg-elev)] border border-border rounded-[10px] p-1 min-w-[168px] shadow-lg z-[200]'
+          onClick={(e) => e.stopPropagation()}
+        >
+          <ActionMenuItem
+            icon={Eye}
+            label={t('adminDashboard.viewDetail')}
+            onClick={() => {
+              onViewDetail(menuRow);
+              setOpenMenuId(null);
+              setMenuRow(null);
+            }}
+          />
+          <ActionMenuItem
+            icon={Pencil}
+            label={t('adminDashboard.editUser')}
+            onClick={() => {
+              onEdit(menuRow);
+              setOpenMenuId(null);
+              setMenuRow(null);
+            }}
+          />
+          <div className='h-px bg-border my-1' />
+          <ActionMenuItem
+            icon={menuRow.user.isBlocked ? ShieldCheck : ShieldOff}
+            label={
+              menuRow.user.isBlocked
+                ? t('adminDashboard.unblockUser')
+                : t('adminDashboard.blockUser')
+            }
+            kind={menuRow.user.isBlocked ? 'success' : 'warning'}
+            onClick={() => {
+              const u = menuRow.user;
+              const name = `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim();
+              onBlock(u.id, name, u.isBlocked);
+              setOpenMenuId(null);
+              setMenuRow(null);
+            }}
+          />
+          <ActionMenuItem
+            icon={Trash2}
+            label={t('adminDashboard.deleteUser')}
+            kind='danger'
+            onClick={() => {
+              const u = menuRow.user;
+              const name = `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim();
+              onDelete(u.id, name);
+              setOpenMenuId(null);
+              setMenuRow(null);
+            }}
+          />
+        </div>,
+        document.body,
+      )}
+    </>
   );
 };
 

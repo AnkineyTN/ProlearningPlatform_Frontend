@@ -13,6 +13,7 @@ import {
 import PomodoroFloatingWidget from '@/pages/Pomodoro/components/PomodoroFloatingWidget.tsx';
 import SoundLayer from '@/pages/Pomodoro/components/SoundLayer.tsx';
 import { authAPI } from '@/services/endpoints/auth.ts';
+import AiRateLimitDialog from '@/components/AiRateLimitDialog';
 
 import { routeConfig } from './config/routeConfig.tsx';
 
@@ -24,6 +25,7 @@ function AppContent() {
     <>
       <SoundLayer activeSounds={activeSounds} />
       <PomodoroFloatingWidget />
+      <AiRateLimitDialog />
       {routes}
     </>
   );

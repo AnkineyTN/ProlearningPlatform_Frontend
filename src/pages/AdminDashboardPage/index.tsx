@@ -1,18 +1,15 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard,
   Users,
   Bell,
   Timer,
-  List,
-  Settings,
   PanelLeftClose,
-  PanelLeft,
-  ChevronRight,
+  LogOut,
 } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { useLogout } from '@/hooks/useAuth';
 import AdminTopBar from './components/TopBar';
 import { useAdminDashboard } from './useAdminDashboard';
 import OverviewSection from './components/OverviewSection';
@@ -24,14 +21,9 @@ import EditUserDialog from './components/UserSection/EditUserDialog';
 import DeleteUserDialog from './components/UserSection/DeleteUserDialog';
 import BlockUserDialog from './components/UserSection/BlockUserDialog';
 import type { AdminUserDirectoryRow } from '@/services/types/adminUsers.types';
+import { Button } from '@/components/ui/button';
 
-type AdminSection =
-  | 'overview'
-  | 'users'
-  | 'appeals'
-  | 'pomodoro'
-  | 'logs'
-  | 'settings';
+type AdminSection = 'overview' | 'users' | 'appeals' | 'pomodoro';
 
 const NAV_ITEMS: {
   id: AdminSection;
@@ -44,18 +36,10 @@ const NAV_ITEMS: {
   { id: 'pomodoro', labelKey: 'sidebarPomodoro', icon: Timer },
 ];
 
-const FOOTER_ITEMS: {
-  id: AdminSection;
-  labelKey: string;
-  icon: React.ElementType;
-}[] = [
-  { id: 'logs', labelKey: 'sidebarAuditLog', icon: List },
-  { id: 'settings', labelKey: 'sidebarSettings', icon: Settings },
-];
-
 const AdminDashboardPage = () => {
   const { t } = useTranslation();
-  const { user: authUser } = useAuth();
+  const navigate = useNavigate();
+  const logout = useLogout();
   const [section, setSection] = useState<AdminSection>('overview');
   const [collapsed, setCollapsed] = useState(false);
   const [detailRow, setDetailRow] = useState<AdminUserDirectoryRow | null>(
@@ -63,17 +47,6 @@ const AdminDashboardPage = () => {
   );
 
   const dashboard = useAdminDashboard();
-
-  const initials = authUser
-    ? [authUser.firstName?.[0], authUser.lastName?.[0]]
-        .filter(Boolean)
-        .join('')
-        .toUpperCase() || 'A'
-    : 'A';
-
-  const fullName = authUser
-    ? `${authUser.firstName ?? ''} ${authUser.lastName ?? ''}`.trim() || 'Admin'
-    : 'Admin';
 
   return (
     <div className='flex min-h-screen bg-[var(--pl-bg)] text-foreground'>
@@ -171,72 +144,26 @@ const AdminDashboardPage = () => {
           })}
         </nav>
 
-        {/* System nav */}
-        {!collapsed && (
-          <div className='px-[18px] pt-[18px] pb-2 text-[10px] tracking-[0.18em] uppercase text-muted-foreground'>
-            {t('adminDashboard.sidebarSystem')}
-          </div>
-        )}
-        <nav className='px-2.5 flex flex-col gap-0.5'>
-          {FOOTER_ITEMS.map((item) => {
-            const active = section === item.id;
-            const Icon = item.icon;
-            return (
-              <button
-                key={item.id}
-                onClick={() => setSection(item.id)}
-                className={`flex items-center gap-[11px] rounded-[7px] text-[13px] text-left w-full transition-all duration-150 ${
-                  active
-                    ? 'text-[var(--pl-accent-strong)] bg-[var(--pl-accent-soft)] font-medium'
-                    : 'text-muted-foreground hover:bg-[var(--pl-bg-hover)]'
-                }`}
-                style={{
-                  padding: collapsed ? '10px 0' : '8px 10px',
-                  justifyContent: collapsed ? 'center' : 'flex-start',
-                }}
-                title={
-                  collapsed ? t(`adminDashboard.${item.labelKey}`) : undefined
-                }
-              >
-                <Icon className='w-4 h-4 shrink-0' />
-                {!collapsed && (
-                  <span>{t(`adminDashboard.${item.labelKey}`)}</span>
-                )}
-              </button>
-            );
-          })}
-        </nav>
-
         <div className='flex-1' />
 
-        {/* User card */}
-        <div className='p-3 border-t border-border'>
-          <div className='flex items-center gap-2.5 p-1.5 rounded-lg'>
-            <div className='w-[30px] h-[30px] rounded-lg shrink-0 bg-gradient-to-br from-[var(--pl-accent)] to-[oklch(0.62_0.09_185)] grid place-items-center text-white text-xs font-semibold'>
-              {initials}
-            </div>
-            {!collapsed && (
-              <>
-                <div className='flex-1 min-w-0'>
-                  <div className='text-[12.5px] font-medium truncate'>
-                    {fullName}
-                  </div>
-                  <div className='text-[10.5px] text-muted-foreground'>
-                    {t('adminDashboard.superAdmin')}
-                  </div>
-                </div>
-                <ChevronRight className='w-[13px] h-[13px] text-muted-foreground' />
-              </>
-            )}
-          </div>
-          {collapsed && (
-            <button
-              onClick={() => setCollapsed(false)}
-              className='mt-2.5 w-full grid place-items-center p-2 text-muted-foreground hover:text-foreground transition-colors'
-            >
-              <PanelLeft className='w-4 h-4' />
-            </button>
-          )}
+        {/* Logout */}
+        <div className='px-2.5 pb-4'>
+          <Button
+            onClick={() => {
+              logout();
+              navigate('/login');
+            }}
+            variant={'ghost'}
+            className='w-full'
+            style={{
+              padding: collapsed ? '10px 0' : '8px 10px',
+              justifyContent: collapsed ? 'center' : 'flex-start',
+            }}
+            title={collapsed ? t('adminDashboard.logout') : undefined}
+          >
+            <LogOut className='w-4 h-4 shrink-0' />
+            {!collapsed && <span>{t('adminDashboard.logout')}</span>}
+          </Button>
         </div>
       </aside>
 
@@ -280,28 +207,6 @@ const AdminDashboardPage = () => {
             />
             <div className='p-6 md:px-10 md:py-7'>
               <PomodoroAssetsSection />
-            </div>
-          </div>
-        )}
-
-        {(section === 'logs' || section === 'settings') && (
-          <div className='flex-1 min-w-0 flex flex-col'>
-            <AdminTopBar
-              title={
-                section === 'logs'
-                  ? t('adminDashboard.sidebarAuditLog')
-                  : t('adminDashboard.sidebarSettings')
-              }
-            />
-            <div className='flex-1 flex items-center justify-center'>
-              <div className='text-center'>
-                <div className='font-[family-name:var(--font-display)] text-[28px] text-muted-foreground'>
-                  {t('adminDashboard.placeholderTitle')}
-                </div>
-                <div className='text-sm text-muted-foreground mt-2'>
-                  {t('adminDashboard.placeholderSub')}
-                </div>
-              </div>
             </div>
           </div>
         )}

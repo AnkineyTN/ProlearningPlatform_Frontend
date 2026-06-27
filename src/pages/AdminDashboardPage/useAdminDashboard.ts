@@ -56,13 +56,16 @@ export const useAdminDashboard = () => {
       accountTypeFilter,
     ],
     queryFn: async () => {
-      const res = await adminUsersAPI.list({
-        page,
-        size: PAGE_SIZE,
-        sort: 'id,DESC',
-        keyword: debouncedKeyword.current || undefined,
-        accountType: accountTypeFilter || undefined,
-      });
+      const res =
+        accountTypeFilter === 'BLOCKED'
+          ? await adminUsersAPI.listBlocked({ page, size: PAGE_SIZE })
+          : await adminUsersAPI.list({
+              page,
+              size: PAGE_SIZE,
+              sort: 'id,DESC',
+              keyword: debouncedKeyword.current || undefined,
+              accountType: accountTypeFilter || undefined,
+            });
       return extractAdminUsersList(res.data.data);
     },
   });

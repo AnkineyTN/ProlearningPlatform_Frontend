@@ -6,6 +6,8 @@ import axios, {
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
+export const aiRateLimitBus = new EventTarget();
+
 const TOKEN_KEY = 'token';
 const REFRESH_TOKEN_KEY = 'refreshToken';
 const USER_KEY = 'user';
@@ -87,6 +89,17 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const original = error.config as RetriableRequest | undefined;
     const status = error.response?.status;
+
+    if (status === 429) {
+      const data = error.response?.data as
+        | { message?: string; metadata?: { errorCode?: string } }
+        | undefined;
+      if (data?.metadata?.errorCode === 'AI_RATE_LIMIT_EXCEEDED') {
+        aiRateLimitBus.dispatchEvent(
+          new CustomEvent('exceeded', { detail: { message: data.message ?? '' } }),
+        );
+      }
+    }
 
     if (status !== 401 || !original || original._retry) {
       if (status === 401) clearAuthAndRedirect();
