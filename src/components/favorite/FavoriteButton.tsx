@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { cn } from '@/lib/utils';
 import { useToggleFavorite } from '@/hooks/useFavorites';
 import type { FavoriteType } from '@/services/types/favorite.types';
@@ -45,9 +46,9 @@ const FavoriteButton = ({
             next ? t('favorite.added') : t('favorite.removed'),
           );
         },
-        onError: () => {
+        onError: (error) => {
           setFavorited(!optimistic);
-          toast.error(t('favorite.error'));
+          toast.error(apiErrorMessage(error, t('favorite.error')));
         },
       },
     );

@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import KnowledgeAnalysisDialog from '@/components/analysis/KnowledgeAnalysisDialog';
+import AnalysisHistoryDialog from '@/components/analysis/AnalysisHistoryDialog';
 import { Badge } from '@/components/ui/badge';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { examAPI } from '@/services/endpoints/exam';
@@ -68,6 +69,7 @@ export default function ExamResults({
   const [historyOpen, setHistoryOpen] = useState(false);
   const [detailAttemptId, setDetailAttemptId] = useState<number | null>(null);
   const [analysisOpen, setAnalysisOpen] = useState(false);
+  const [analysisHistoryOpen, setAnalysisHistoryOpen] = useState(false);
   const [retryOpen, setRetryOpen] = useState(false);
 
   const handleExplainWithAI = async (questionId: string | number) => {
@@ -195,6 +197,7 @@ export default function ExamResults({
             attemptId={attemptId}
             onOpenHistory={() => setHistoryOpen(true)}
             onOpenAnalysis={() => setAnalysisOpen(true)}
+            onOpenAnalysisHistory={() => setAnalysisHistoryOpen(true)}
             onOpenRetry={() => setRetryOpen(true)}
           />
         </div>
@@ -237,6 +240,14 @@ export default function ExamResults({
           open={analysisOpen}
           onOpenChange={setAnalysisOpen}
           target={{ kind: 'exam', setId, examId, attemptId }}
+        />
+      )}
+
+      {analysisHistoryOpen && (
+        <AnalysisHistoryDialog
+          open={analysisHistoryOpen}
+          onOpenChange={setAnalysisHistoryOpen}
+          target={{ kind: 'exam', setId, examId }}
         />
       )}
     </TooltipProvider>

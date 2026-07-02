@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import type { AISubmitData } from '@/components/modals/CreateAITab';
 import type { NoteAIGenerateData } from '@/components/modals/ai-tab/types';
 import {
@@ -135,7 +136,7 @@ export function useSetSeriesHandlers({
       }
     } catch (error) {
       console.error('Error generating note with AI:', error);
-      toast.error(t('set.handlers.generateNoteError'));
+      toast.error(apiErrorMessage(error, t('set.handlers.generateNoteError')));
     }
   };
 
@@ -198,7 +199,9 @@ export function useSetSeriesHandlers({
         }
       } catch (error) {
         console.error('Error generating flashcards:', error);
-        toast.error(t('set.handlers.generateFlashcardsError'));
+        toast.error(
+          apiErrorMessage(error, t('set.handlers.generateFlashcardsError')),
+        );
       }
       return;
     }
@@ -269,7 +272,7 @@ export function useSetSeriesHandlers({
         });
       } catch (error) {
         console.error('Error generating exam with AI:', error);
-        toast.error(t('set.handlers.generateExamError'));
+        toast.error(apiErrorMessage(error, t('set.handlers.generateExamError')));
       }
     }
   };
@@ -291,7 +294,7 @@ export function useSetSeriesHandlers({
           setIsCreateModalOpen(false);
         } catch (error) {
           console.error('Error creating note:', error);
-          toast.error(t('set.handlers.createNoteError'));
+          toast.error(apiErrorMessage(error, t('set.handlers.createNoteError')));
         }
         break;
       case 'Flashcards':
@@ -360,7 +363,7 @@ export function useSetSeriesHandlers({
         setSelectedNote(null);
       } catch (error) {
         console.error('Error updating note:', error);
-        toast.error(t('set.handlers.updateNoteError'));
+        toast.error(apiErrorMessage(error, t('set.handlers.updateNoteError')));
       }
     }
 
@@ -382,7 +385,9 @@ export function useSetSeriesHandlers({
         setSelectedFlashcard(null);
       } catch (error) {
         console.error('Error updating flashcard:', error);
-        toast.error(t('set.handlers.updateFlashcardError'));
+        toast.error(
+          apiErrorMessage(error, t('set.handlers.updateFlashcardError')),
+        );
       }
     }
 
@@ -404,7 +409,7 @@ export function useSetSeriesHandlers({
         setSelectedExam(null);
       } catch (error) {
         console.error('Error updating exam:', error);
-        toast.error(t('set.handlers.updateExamError'));
+        toast.error(apiErrorMessage(error, t('set.handlers.updateExamError')));
       }
     }
   };
@@ -418,7 +423,7 @@ export function useSetSeriesHandlers({
       toast.success(t('set.handlers.noteDeleted'));
     } catch (error) {
       console.error('Error deleting note:', error);
-      toast.error(t('set.handlers.deleteNoteError'));
+      toast.error(apiErrorMessage(error, t('set.handlers.deleteNoteError')));
     }
   };
 
@@ -431,7 +436,7 @@ export function useSetSeriesHandlers({
       toast.success(t('set.handlers.flashcardDeleted'));
     } catch (error) {
       console.error('Error deleting flashcard:', error);
-      toast.error(t('set.handlers.deleteFlashcardError'));
+      toast.error(apiErrorMessage(error, t('set.handlers.deleteFlashcardError')));
     }
   };
 
@@ -450,7 +455,7 @@ export function useSetSeriesHandlers({
       toast.success(t('set.handlers.examDeleted'));
     } catch (error) {
       console.error('Error deleting exam:', error);
-      toast.error(t('set.handlers.deleteExamError'));
+      toast.error(apiErrorMessage(error, t('set.handlers.deleteExamError')));
     }
   };
 

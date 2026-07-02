@@ -18,6 +18,7 @@ function buildPageWindows(current: number, total: number): (number | '...')[] {
   return result;
 }
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 
 import SetCard from '@/components/cards/SetCard';
 import { type Set } from '@/components/cards/SetCard';
@@ -116,8 +117,10 @@ export default function SetListPage() {
       };
       await createSetMutation.mutateAsync(payload);
       setIsCreateModalOpen(false);
-    } catch {
-      toast.error('Failed to create set. Please try again.');
+    } catch (error) {
+      toast.error(
+        apiErrorMessage(error, 'Failed to create set. Please try again.'),
+      );
     }
   };
 
@@ -125,8 +128,8 @@ export default function SetListPage() {
     try {
       await deleteSetMutation.mutateAsync(id);
       toast.success('Set deleted successfully');
-    } catch {
-      toast.error('Failed to delete set');
+    } catch (error) {
+      toast.error(apiErrorMessage(error, 'Failed to delete set'));
     }
   };
 
@@ -140,8 +143,10 @@ export default function SetListPage() {
       await updateSetMutation.mutateAsync({ id: selectedSet.id, payload });
       setIsUpdateModalOpen(false);
       setSelectedSet(null);
-    } catch {
-      toast.error('Failed to update set. Please try again.');
+    } catch (error) {
+      toast.error(
+        apiErrorMessage(error, 'Failed to update set. Please try again.'),
+      );
     }
   };
 

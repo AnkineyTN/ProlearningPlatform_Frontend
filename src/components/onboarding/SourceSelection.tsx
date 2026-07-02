@@ -11,6 +11,8 @@ import {
 } from 'lucide-react';
 import SwitchButton from './SwitchButton';
 import { useTranslation } from 'react-i18next';
+import { OnboardingStep } from './shared';
+import { optionCardClass } from './styles';
 
 type Props = {
   selectedSource: string;
@@ -39,54 +41,45 @@ const SourceSelection = ({
   ] as const;
 
   return (
-    <div className='min-h-screen flex items-center justify-center p-6'>
-      <div className='w-full max-w-3xl'>
-        <div className='text-center mb-12'>
-          <h1 className='text-4xl font-bold text-foreground mb-3'>
-            {t('onboarding.sourceSelection.header')}
-          </h1>
-          <p className='text-muted-foreground'>
-            {t('onboarding.sourceSelection.description')}
-          </p>
-        </div>
+    <OnboardingStep
+      title={t('onboarding.sourceSelection.header')}
+      description={t('onboarding.sourceSelection.description')}
+      maxWidth='max-w-3xl'
+    >
+      <div className='grid grid-cols-3 gap-4 mb-8'>
+        {sources.map((source) => {
+          const Icon = source.icon;
+          const isSelected = selectedSource === source.id;
 
-        <div className='grid grid-cols-3 gap-4 mb-8'>
-          {sources.map((source) => {
-            const Icon = source.icon;
-            const isSelected = selectedSource === source.id;
-
-            return (
-              <button
-                key={source.id}
-                onClick={() => onSourceSelect(source.id)}
-                className={`p-6 rounded-2xl border-2 transition-all ${
-                  isSelected
-                    ? 'border-[var(--pl-accent)] bg-[var(--pl-accent-soft)]'
-                    : 'border-[var(--pl-border)] bg-[var(--pl-bg-hover)] hover:border-[var(--pl-border-strong)]'
-                }`}
-              >
-                <div className='flex flex-col items-center gap-3'>
-                  <div
-                    className={`w-12 h-12 rounded-xl ${source.color} flex items-center justify-center`}
-                  >
-                    <Icon className='w-6 h-6 text-white' />
-                  </div>
-                  <span className='font-medium text-foreground'>
-                    {t(`onboarding.sourceSelection.channels.${source.id}`)}
-                  </span>
+          return (
+            <button
+              key={source.id}
+              onClick={() => onSourceSelect(source.id)}
+              className={`p-6 rounded-2xl border transition-all ${optionCardClass(
+                isSelected,
+              )}`}
+            >
+              <div className='flex flex-col items-center gap-3'>
+                <div
+                  className={`w-12 h-12 rounded-xl ${source.color || 'bg-[var(--pl-text-muted)]'} flex items-center justify-center`}
+                >
+                  <Icon className='w-6 h-6 text-white' />
                 </div>
-              </button>
-            );
-          })}
-        </div>
-
-        <SwitchButton
-          onPre={onBack}
-          onNext={onNext}
-          disableNext={!selectedSource}
-        />
+                <span className='font-medium text-[var(--pl-text)]'>
+                  {t(`onboarding.sourceSelection.channels.${source.id}`)}
+                </span>
+              </div>
+            </button>
+          );
+        })}
       </div>
-    </div>
+
+      <SwitchButton
+        onPre={onBack}
+        onNext={onNext}
+        disableNext={!selectedSource}
+      />
+    </OnboardingStep>
   );
 };
 

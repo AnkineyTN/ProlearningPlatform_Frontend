@@ -3,9 +3,12 @@ import {
   ChevronLeft,
   Book,
   Layers,
-  Infinity,
+  Infinity as InfinityIcon,
+  Globe,
+  Lock,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,6 +22,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useCreateSet } from '@/hooks/useSets';
 import type { CreateSetPayload } from '@/services/types/set.types';
+import { OnboardingStep } from './shared';
 
 function studySetToCreatePayload(studySet: {
   name: string;
@@ -59,26 +63,22 @@ const CreateStudySet = ({
     try {
       await createSetMutation.mutateAsync(studySetToCreatePayload(studySet));
       await onComplete();
-    } catch {
-      toast.error(t('onboarding.createStudySet.createFailed'));
+    } catch (error) {
+      toast.error(
+        apiErrorMessage(error, t('onboarding.createStudySet.createFailed')),
+      );
     }
   };
 
   const busy = isSubmitting || createSetMutation.isPending;
 
   return (
-    <div className='min-h-screen flex items-center justify-center p-6'>
-      <div className='w-full max-w-5xl'>
-        <div className='text-center mb-12'>
-          <h1 className='text-4xl font-bold text-foreground mb-3'>
-            {t('onboarding.createStudySet.title')}
-          </h1>
-          <p className='text-muted-foreground'>
-            {t('onboarding.createStudySet.description')}
-          </p>
-        </div>
-
-        <div className='grid md:grid-cols-2 gap-8'>
+    <OnboardingStep
+      title={t('onboarding.createStudySet.title')}
+      description={t('onboarding.createStudySet.description')}
+      maxWidth='max-w-5xl'
+    >
+      <div className='grid md:grid-cols-2 gap-8'>
           <div className='space-y-4'>
             <div>
               <Label
@@ -147,13 +147,12 @@ const CreateStudySet = ({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value='public'>
-                    🌐 {t('onboarding.createStudySet.privacyPublic')}
+                    <Globe className='w-4 h-4 text-[var(--pl-text-muted)]' />
+                    {t('onboarding.createStudySet.privacyPublic')}
                   </SelectItem>
                   <SelectItem value='private'>
-                    🔒 {t('onboarding.createStudySet.privacyPrivate')}
-                  </SelectItem>
-                  <SelectItem value='unlisted'>
-                    👁️ {t('onboarding.createStudySet.privacyUnlisted')}
+                    <Lock className='w-4 h-4 text-[var(--pl-text-muted)]' />
+                    {t('onboarding.createStudySet.privacyPrivate')}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -163,7 +162,7 @@ const CreateStudySet = ({
               type='button'
               onClick={() => void handleCreateSet()}
               disabled={!studySet.name.trim() || busy}
-              className='w-full py-4 bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] rounded-xl font-semibold hover:opacity-90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
+              className='w-full py-3.5 bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] rounded-full font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
             >
               <span>
                 {busy
@@ -173,8 +172,8 @@ const CreateStudySet = ({
             </button>
           </div>
 
-          <div className='bg-[var(--pl-bg-elev)] rounded-2xl border-2 border-ring p-6'>
-            <h3 className='text-xl font-bold text-foreground mb-6'>
+          <div className='bg-[var(--pl-bg-elev)] rounded-2xl border border-[var(--pl-border)] p-6'>
+            <h3 className='text-xl font-semibold text-[var(--pl-text)] mb-6'>
               {t('onboarding.createStudySet.whatIsStudySet')}
             </h3>
 
@@ -203,7 +202,7 @@ const CreateStudySet = ({
 
               <div className='flex items-start gap-3'>
                 <div className='w-10 h-10 bg-[var(--pl-warning-soft)] rounded-xl flex items-center justify-center flex-shrink-0'>
-                  <Infinity className='w-5 h-5 text-[var(--pl-warning)]' />
+                  <InfinityIcon className='w-5 h-5 text-[var(--pl-warning)]' />
                 </div>
                 <div>
                   <p className='text-foreground'>
@@ -234,7 +233,7 @@ const CreateStudySet = ({
             type='button'
             onClick={onBack}
             disabled={busy}
-            className='px-4 py-2 rounded-xl border border-ring bg-[var(--pl-bg)] text-foreground hover:bg-[var(--pl-bg-hover)] transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+            className='px-5 py-2.5 rounded-full border border-[var(--pl-border-strong)] bg-transparent text-[13.5px] font-medium text-[var(--pl-text)] hover:bg-[var(--pl-bg-hover)] transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
           >
             <ChevronLeft className='w-4 h-4' />
             <span>{t('onboarding.back')}</span>
@@ -243,14 +242,13 @@ const CreateStudySet = ({
             type='button'
             onClick={onSkip}
             disabled={busy}
-            className='px-4 py-2 rounded-xl bg-foreground text-background hover:opacity-90 transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+            className='px-6 py-2.5 rounded-full border border-[var(--pl-border-strong)] bg-transparent text-[13.5px] font-medium text-[var(--pl-text-muted)] hover:bg-[var(--pl-bg-hover)] transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
           >
             <span>{t('onboarding.skipForNow')}</span>
             <ChevronRight className='w-4 h-4' />
           </button>
         </div>
-      </div>
-    </div>
+    </OnboardingStep>
   );
 };
 

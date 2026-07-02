@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { useUploadImageFile } from '@/hooks/useImageUpload';
 import type { Card as CardData } from '@/services/types/flashcard.types';
 
@@ -94,8 +95,8 @@ export function useCardEdit(
         imageRemoved: false,
       }));
       if (fileInputRef.current) fileInputRef.current.value = '';
-    } catch {
-      toast.error(t('flashcard.cardEdit.uploadImageError'));
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('flashcard.cardEdit.uploadImageError')));
     }
   };
 

@@ -29,12 +29,12 @@ export function mapOnboardingDataToSubmissionPayload(
     EDUCATION_UI_TO_API[data.education] ?? "OTHER";
   const hearAppFrom =
     SOURCE_UI_TO_API[data.source] ?? "OTHER";
-  const accountType = data.premium ? "PRO" : "FREE";
-
+  // Onboarding never grants PRO directly — upgrading to PRO goes through the
+  // real payment flow at /upgrade. Always submit FREE here.
   return {
     language: lang,
     education,
     hearAppFrom,
-    accountType,
+    accountType: "FREE",
   };
 }

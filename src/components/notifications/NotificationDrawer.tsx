@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -336,8 +337,8 @@ function InviteActions({
       setLocalStatus('accepted');
       onDone();
       navigate(buildDestUrl());
-    } catch {
-      toast.error(t('notificationsPanel.acceptInviteError'));
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('notificationsPanel.acceptInviteError')));
     }
   };
 
@@ -349,8 +350,10 @@ function InviteActions({
       setLocalStatus('declined');
       toast.success(t('notificationsPanel.declineInviteSuccess'));
       onDone();
-    } catch {
-      toast.error(t('notificationsPanel.declineInviteError'));
+    } catch (error) {
+      toast.error(
+        apiErrorMessage(error, t('notificationsPanel.declineInviteError')),
+      );
     }
   };
 

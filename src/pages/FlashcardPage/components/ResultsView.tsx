@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   Brain,
+  ClipboardList,
   Loader2,
   RotateCcw,
   BookOpen,
@@ -13,6 +14,8 @@ import {
 
 import { Button } from '@/components/ui/button';
 import KnowledgeAnalysisDialog from '@/components/analysis/KnowledgeAnalysisDialog';
+import AnalysisHistoryDialog from '@/components/analysis/AnalysisHistoryDialog';
+import { useTranslation } from 'react-i18next';
 
 import type { ReviewLog } from '@/services/types/flashcard-session.types';
 import type { Card as Flashcard } from '@/services/types/flashcard.types';
@@ -55,7 +58,9 @@ const ResultsView = ({
   isProgressTrackingEnabled = true,
   sessionResult,
 }: ResultsViewProps) => {
+  const { t } = useTranslation();
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const [showAnalysisHistory, setShowAnalysisHistory] = useState(false);
   const [showLogs, setShowLogs] = useState(false);
 
   const sessionId = sessionResult?.sessionId;
@@ -63,6 +68,8 @@ const ResultsView = ({
     typeof setId === 'number' &&
     typeof flashcardId === 'number' &&
     typeof sessionId === 'number';
+  const canViewHistory =
+    typeof setId === 'number' && typeof flashcardId === 'number';
 
   const rawCorrect = sessionResult?.correctCount ?? 0;
   const rawIncorrect = sessionResult?.incorrectCount ?? 0;
@@ -216,6 +223,18 @@ const ResultsView = ({
               <Button onClick={() => setShowAnalysis(true)} className='gap-2'>
                 <Brain className='w-4 h-4' />
                 Analyze Knowledge
+              </Button>
+            )}
+            {canViewHistory && (
+              <Button
+                variant='outline'
+                onClick={() => setShowAnalysisHistory(true)}
+                className='gap-2 text-muted-foreground'
+              >
+                <ClipboardList className='w-4 h-4' />
+                {t('analysis.history.action', {
+                  defaultValue: 'View past analyses',
+                })}
               </Button>
             )}
           </div>
@@ -385,6 +404,18 @@ const ResultsView = ({
             setId: setId!,
             flashcardId: flashcardId!,
             sessionId: sessionId!,
+          }}
+        />
+      )}
+
+      {canViewHistory && showAnalysisHistory && (
+        <AnalysisHistoryDialog
+          open={showAnalysisHistory}
+          onOpenChange={setShowAnalysisHistory}
+          target={{
+            kind: 'flashcard',
+            setId: setId!,
+            flashcardId: flashcardId!,
           }}
         />
       )}

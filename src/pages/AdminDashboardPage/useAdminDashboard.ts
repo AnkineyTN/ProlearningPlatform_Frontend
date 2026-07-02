@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 
 import {
   adminUsersAPI,
@@ -107,8 +108,8 @@ export const useAdminDashboard = () => {
       toast.success(t('adminDashboard.userUpdated'));
       setEditRow(null);
     },
-    onError: () => {
-      toast.error(t('adminDashboard.updateError'));
+    onError: (error) => {
+      toast.error(apiErrorMessage(error, t('adminDashboard.updateError')));
     },
   });
 
@@ -119,8 +120,8 @@ export const useAdminDashboard = () => {
       toast.success(t('adminDashboard.userDeleted'));
       setDeleteTarget(null);
     },
-    onError: () => {
-      toast.error(t('adminDashboard.deleteError'));
+    onError: (error) => {
+      toast.error(apiErrorMessage(error, t('adminDashboard.deleteError')));
     },
   });
 
@@ -133,7 +134,8 @@ export const useAdminDashboard = () => {
       setBlockTarget(null);
       setBlockReason('');
     },
-    onError: () => toast.error(t('adminDashboard.blockError')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('adminDashboard.blockError'))),
   });
 
   const unblockMutation = useMutation({
@@ -143,7 +145,8 @@ export const useAdminDashboard = () => {
       toast.success(t('adminDashboard.userUnblocked'));
       setBlockTarget(null);
     },
-    onError: () => toast.error(t('adminDashboard.unblockError')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('adminDashboard.unblockError'))),
   });
 
   const refreshAll = () => {

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Loader2, UserPlus, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { ResourceType } from '@/services/endpoints/collaboration';
@@ -155,8 +156,10 @@ export default function InviteTab({
       }
       setSelectedUsers([]);
       onInvitedSwitchToMembers();
-    } catch {
-      toast.error(t('collaboration.invite.errorFailedToSend'));
+    } catch (error) {
+      toast.error(
+        apiErrorMessage(error, t('collaboration.invite.errorFailedToSend')),
+      );
     }
   };
 

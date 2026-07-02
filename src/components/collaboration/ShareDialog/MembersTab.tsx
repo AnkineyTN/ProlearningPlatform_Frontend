@@ -1,6 +1,7 @@
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import type { ResourceType } from '@/services/endpoints/collaboration';
 import type { CollabMember } from '@/services/types/collaboration.types';
 import {
@@ -46,8 +47,10 @@ export default function MembersTab({
         role: newRole,
       });
       toast.success(t('collaboration.members.roleUpdated'));
-    } catch {
-      toast.error(t('collaboration.members.updateRoleError'));
+    } catch (error) {
+      toast.error(
+        apiErrorMessage(error, t('collaboration.members.updateRoleError')),
+      );
     }
   };
 
@@ -56,10 +59,9 @@ export default function MembersTab({
       await removeMutation.mutateAsync(member.userId);
       toast.success(t('collaboration.members.memberRemoved'));
     } catch (err: unknown) {
-      const msg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ?? t('collaboration.members.removeMemberError');
-      toast.error(msg);
+      toast.error(
+        apiErrorMessage(err, t('collaboration.members.removeMemberError')),
+      );
     }
   };
 

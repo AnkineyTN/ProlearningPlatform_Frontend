@@ -526,6 +526,7 @@
       "description": "Select the plan that best suits your learning needs and goals.",
       "free": "Free",
       "freeFeatures": {
+        "aiLimited": "Limited AI usage",
         "basicStudyModes": "Basic study modes",
         "communityAccess": "Community access",
         "unlimitedStudySets": "Unlimited study sets"
@@ -535,11 +536,10 @@
       "pricePremium": "$9.99",
       "pricePremiumInterval": "/month",
       "premiumFeatures": {
+        "ai5x": "5× more AI than Free",
         "adFreeExperience": "Ad-free experience",
         "advancedStudyModes": "Advanced study modes",
-        "everythingInFree": "Everything in Free",
-        "offlineAccess": "Offline access",
-        "prioritySupport": "Priority support"
+        "everythingInFree": "Everything in Free"
       },
       "selectPremium": "Select Premium",
       "title": "Choose Your Plan"
@@ -725,6 +725,7 @@
     "failedGoogleConnect": "Failed to connect with Google",
     "forgotPassword": "Forgot Password?",
     "invalidEmail": "Invalid email",
+    "emailRequired": "Email is required",
     "noAccount": "Don't have an account?",
     "orContinueWith": "Or continue with",
     "password": "Password",
@@ -732,6 +733,8 @@
     "subtitle": "Sign in",
     "title": "Sign In to Your Account",
     "wrongCredentials": "Wrong username or password",
+    "networkError": "Cannot reach the server. Please check your connection and try again.",
+    "unexpectedError": "Something went wrong. Please try again.",
     "accountBlocked": "Account suspended",
     "accountBlockedDesc": "Your account has been suspended by an administrator. You may submit an appeal to request reinstatement.",
     "submitAppeal": "Submit an appeal",
@@ -749,15 +752,19 @@
     "description": "Please fill in the details to get started.",
     "email": "Email",
     "emailPlaceholder": "Your email",
-    "failed": "Account already exists",
+    "failed": "Could not create your account. Please try again.",
+    "emailExists": "This email is already registered. Try signing in instead.",
+    "emailMax": "Email must not exceed 254 characters",
+    "emailRequired": "Email is required",
+    "networkError": "Cannot reach the server. Please check your connection and try again.",
     "firstName": "First Name",
-    "firstNameMax": "First name must not exceed 50 characters",
+    "firstNameMax": "First name must not exceed 20 characters",
     "firstNameMin": "First name must be at least 2 characters",
     "firstNamePlaceholder": "Your first name",
     "haveAccount": "Already have an account?",
     "invalidEmail": "Invalid email address",
     "lastName": "Last Name",
-    "lastNameMax": "Last name must not exceed 50 characters",
+    "lastNameMax": "Last name must not exceed 20 characters",
     "lastNameMin": "Last name must be at least 2 characters",
     "lastNamePlaceholder": "Your last name",
     "orContinueWith": "Or continue with",
@@ -803,7 +810,8 @@
     "resendCode": "Resend code",
     "autoVerifyTitle": "OTP will auto-verify once all 6 digits are entered",
     "autoVerifyButton": "Auto-verify when 6 digits are entered",
-    "back": "Back"
+    "back": "Back",
+    "skip": "Skip for now"
   },
   "resetOtp": {
     "subtitle": "Recovery",
@@ -1703,7 +1711,22 @@
     "noTopics": "Topics are being assigned, please try again shortly.",
     "setEmpty": "Study a flashcard or take an exam first, then try again.",
     "stale": "Outdated",
-    "generatedAt": "Generated {{date}}"
+    "generatedAt": "Generated {{date}}",
+    "history": {
+      "title": {
+        "set": "Set analysis history",
+        "flashcard": "Flashcard analysis history",
+        "exam": "Exam analysis history"
+      },
+      "action": "View past analyses",
+      "listTitle": "History",
+      "latest": "Latest",
+      "topicCount_one": "{{count}} topic",
+      "topicCount_other": "{{count}} topics",
+      "loading": "Loading history…",
+      "error": "Could not load analysis history.",
+      "empty": "No analyses yet. Run an analysis to start building your history."
+    }
   },
   "reviewBundles": {
     "breadcrumb": "Review · Weekly bundles",

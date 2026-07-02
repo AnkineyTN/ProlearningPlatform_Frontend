@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { Image, Music2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -51,7 +52,8 @@ const PomodoroAssetsSection = () => {
       setShowCreate(false);
       toast.success(t('adminDashboard.pomodoroCreated'));
     },
-    onError: () => toast.error(t('adminDashboard.pomodoroCreateError')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('adminDashboard.pomodoroCreateError'))),
   });
 
   const createSpaceFromFileMutation = useMutation({
@@ -62,7 +64,8 @@ const PomodoroAssetsSection = () => {
       setShowCreate(false);
       toast.success(t('adminDashboard.pomodoroCreated'));
     },
-    onError: () => toast.error(t('adminDashboard.pomodoroCreateError')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('adminDashboard.pomodoroCreateError'))),
   });
 
   const createSoundMutation = useMutation({
@@ -73,7 +76,8 @@ const PomodoroAssetsSection = () => {
       setShowCreate(false);
       toast.success(t('adminDashboard.pomodoroCreated'));
     },
-    onError: () => toast.error(t('adminDashboard.pomodoroCreateError')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('adminDashboard.pomodoroCreateError'))),
   });
 
   const createSoundFromFileMutation = useMutation({
@@ -84,7 +88,8 @@ const PomodoroAssetsSection = () => {
       setShowCreate(false);
       toast.success(t('adminDashboard.pomodoroCreated'));
     },
-    onError: () => toast.error(t('adminDashboard.pomodoroCreateError')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('adminDashboard.pomodoroCreateError'))),
   });
 
   const updateSpaceMutation = useMutation({
@@ -95,7 +100,8 @@ const PomodoroAssetsSection = () => {
       setEditingItem(null);
       toast.success(t('adminDashboard.pomodoroUpdated'));
     },
-    onError: () => toast.error(t('adminDashboard.pomodoroUpdateError')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('adminDashboard.pomodoroUpdateError'))),
   });
 
   const updateSoundMutation = useMutation({
@@ -106,7 +112,8 @@ const PomodoroAssetsSection = () => {
       setEditingItem(null);
       toast.success(t('adminDashboard.pomodoroUpdated'));
     },
-    onError: () => toast.error(t('adminDashboard.pomodoroUpdateError')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('adminDashboard.pomodoroUpdateError'))),
   });
 
   const deleteSpaceMutation = useMutation({
@@ -116,7 +123,8 @@ const PomodoroAssetsSection = () => {
       setDeleteTarget(null);
       toast.success(t('adminDashboard.pomodoroDeleted'));
     },
-    onError: () => toast.error(t('adminDashboard.pomodoroDeleteError')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('adminDashboard.pomodoroDeleteError'))),
   });
 
   const deleteSoundMutation = useMutation({
@@ -126,7 +134,8 @@ const PomodoroAssetsSection = () => {
       setDeleteTarget(null);
       toast.success(t('adminDashboard.pomodoroDeleted'));
     },
-    onError: () => toast.error(t('adminDashboard.pomodoroDeleteError')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('adminDashboard.pomodoroDeleteError'))),
   });
 
   const isSpaces = subTab === 'spaces';

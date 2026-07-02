@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import ExamHomeView from './components/ExamHomeView';
 import ExamTaking from './components/ExamTaking';
 import type { Exam, ExamSubmission } from './types';
@@ -53,8 +54,8 @@ export default function ExamPage({ setId, examId }: Props) {
       }
       setActiveAttempt(attempt);
       setViewMode('taking');
-    } catch {
-      toast.error(t('exam.page.startAttemptError'));
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('exam.page.startAttemptError')));
     } finally {
       setIsStartingAttempt(false);
     }
@@ -107,8 +108,8 @@ export default function ExamPage({ setId, examId }: Props) {
       navigate(`/sets/${setId}/exams/${examId}/attempts/${attemptId}`, {
         state: { result: mapped },
       });
-    } catch {
-      toast.error(t('exam.page.submitError'));
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('exam.page.submitError')));
     }
   };
 

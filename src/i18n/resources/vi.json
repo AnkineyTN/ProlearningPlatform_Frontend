@@ -1064,6 +1064,7 @@
       "description": "Chọn gói phù hợp nhất với nhu cầu và mục tiêu học tập của bạn.",
       "free": "Miễn phí",
       "freeFeatures": {
+        "aiLimited": "AI có giới hạn",
         "basicStudyModes": "Các chế độ học cơ bản",
         "communityAccess": "Tham gia cộng đồng",
         "unlimitedStudySets": "Không giới hạn bộ học tập"
@@ -1073,6 +1074,7 @@
       "pricePremium": "$9.99",
       "pricePremiumInterval": "/tháng",
       "premiumFeatures": {
+        "ai5x": "AI gấp 5× so với gói Miễn phí",
         "adFreeExperience": "Trải nghiệm không có quảng cáo",
         "advancedStudyModes": "Chế độ học tập nâng cao",
         "everythingInFree": "Tất cả trong gói miễn phí",
@@ -1135,6 +1137,7 @@
     "failedGoogleConnect": "Kết nối với Google không thành công",
     "forgotPassword": "Quên mật khẩu?",
     "invalidEmail": "Email không hợp lệ",
+    "emailRequired": "Vui lòng nhập email",
     "noAccount": "Bạn chưa có tài khoản?",
     "orContinueWith": "Hoặc tiếp tục với",
     "password": "Mật khẩu",
@@ -1142,6 +1145,8 @@
     "subtitle": "Đăng nhập",
     "title": "Đăng Nhập Tài Khoản",
     "wrongCredentials": "Sai tên người dùng hoặc mật khẩu",
+    "networkError": "Không kết nối được máy chủ. Vui lòng kiểm tra mạng và thử lại.",
+    "unexpectedError": "Đã có lỗi xảy ra. Vui lòng thử lại.",
     "accountBlocked": "Tài khoản bị khoá",
     "accountBlockedDesc": "Tài khoản của bạn đã bị admin khoá. Bạn có thể gửi khiếu nại để yêu cầu xem xét lại.",
     "submitAppeal": "Gửi khiếu nại",
@@ -1159,15 +1164,19 @@
     "description": "Vui lòng điền thông tin để bắt đầu.",
     "email": "Email",
     "emailPlaceholder": "Email của bạn",
-    "failed": "Tài khoản đã tồn tại",
+    "failed": "Không thể tạo tài khoản. Vui lòng thử lại.",
+    "emailExists": "Email này đã được đăng ký. Hãy thử đăng nhập.",
+    "emailMax": "Email không được vượt quá 254 ký tự",
+    "emailRequired": "Vui lòng nhập email",
+    "networkError": "Không kết nối được máy chủ. Vui lòng kiểm tra mạng và thử lại.",
     "firstName": "Họ",
-    "firstNameMax": "Họ không được vượt quá 50 ký tự",
+    "firstNameMax": "Họ không được vượt quá 20 ký tự",
     "firstNameMin": "Họ phải có ít nhất 2 ký tự",
     "firstNamePlaceholder": "Tên của bạn",
     "haveAccount": "Bạn đã có tài khoản?",
     "invalidEmail": "Email không hợp lệ",
     "lastName": "Tên",
-    "lastNameMax": "Tên không được vượt quá 50 ký tự",
+    "lastNameMax": "Tên không được vượt quá 20 ký tự",
     "lastNameMin": "Tên phải có ít nhất 2 ký tự",
     "lastNamePlaceholder": "Họ của bạn",
     "orContinueWith": "Hoặc tiếp tục với",
@@ -1212,7 +1221,8 @@
     "resendCode": "Gửi lại mã",
     "autoVerifyTitle": "Mã OTP đủ 6 số sẽ tự verify",
     "autoVerifyButton": "Tự động xác nhận khi đủ 6 số",
-    "back": "Quay lại"
+    "back": "Quay lại",
+    "skip": "Bỏ qua"
   },
   "resetOtp": {
     "subtitle": "Khôi phục",
@@ -2110,7 +2120,21 @@
     "noTopics": "Đang gán chủ đề, vui lòng thử lại sau ít phút.",
     "setEmpty": "Hãy học flashcard hoặc làm bài thi trước, rồi thử lại.",
     "stale": "Đã cũ",
-    "generatedAt": "Tạo lúc {{date}}"
+    "generatedAt": "Tạo lúc {{date}}",
+    "history": {
+      "title": {
+        "set": "Lịch sử phân tích bộ học",
+        "flashcard": "Lịch sử phân tích flashcard",
+        "exam": "Lịch sử phân tích bài thi"
+      },
+      "action": "Xem các phân tích trước",
+      "listTitle": "Lịch sử",
+      "latest": "Mới nhất",
+      "topicCount_other": "{{count}} chủ đề",
+      "loading": "Đang tải lịch sử…",
+      "error": "Không thể tải lịch sử phân tích.",
+      "empty": "Chưa có phân tích nào. Hãy chạy phân tích để bắt đầu tạo lịch sử."
+    }
   },
   "reviewBundles": {
     "breadcrumb": "Ôn tập · Tổng hợp tuần",

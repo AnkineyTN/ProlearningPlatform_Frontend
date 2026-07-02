@@ -12,6 +12,7 @@ import {
   Eye,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 
 import { Button } from '@/components/ui/button';
 import { useCompleteTopic, useStartTopic } from '@/hooks/useRoadmap';
@@ -48,8 +49,8 @@ export const TopicRow = ({
       if (result.setId) {
         toast.success(t('roadmap.detail.toast.starting'));
       }
-    } catch {
-      toast.error(t('roadmap.detail.toast.startError'));
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('roadmap.detail.toast.startError')));
     }
   };
 
@@ -85,8 +86,8 @@ export const TopicRow = ({
       } else {
         toast.success(t('roadmap.detail.toast.markedDone'));
       }
-    } catch {
-      toast.error(t('roadmap.detail.toast.toggleError'));
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('roadmap.detail.toast.toggleError')));
     }
   };
 

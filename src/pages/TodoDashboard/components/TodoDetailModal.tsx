@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CalendarCheck, ExternalLink, X } from 'lucide-react';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -64,7 +65,8 @@ const TodoDetailModal = ({
       toast.success(t('todo.toast.todoUpdated'));
       onClose();
     },
-    onError: () => toast.error(t('todo.toast.todoUpdateFailed')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('todo.toast.todoUpdateFailed'))),
   });
 
   if (!open || !todo) return null;

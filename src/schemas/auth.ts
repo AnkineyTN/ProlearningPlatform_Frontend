@@ -8,13 +8,18 @@ export const signupSchema = (t: TFunction) =>
         .string()
         .trim()
         .min(2, t('signup.firstNameMin'))
-        .max(50, t('signup.firstNameMax')),
+        .max(20, t('signup.firstNameMax')),
       lastName: z
         .string()
         .trim()
         .min(2, t('signup.lastNameMin'))
-        .max(50, t('signup.lastNameMax')),
-      email: z.string().email(t('signup.invalidEmail')),
+        .max(20, t('signup.lastNameMax')),
+      email: z
+        .string()
+        .trim()
+        .min(1, t('signup.emailRequired'))
+        .max(254, t('signup.emailMax'))
+        .email(t('signup.invalidEmail')),
       password: z
         .string()
         .min(8, t('signup.passwordMin'))
@@ -29,7 +34,12 @@ export const signupSchema = (t: TFunction) =>
 
 export const loginSchema = (t: TFunction) =>
   z.object({
-    email: z.string().email(t('signin.invalidEmail')),
+    email: z
+      .string()
+      .trim()
+      .min(1, t('signin.emailRequired'))
+      .max(254, t('signup.emailMax'))
+      .email(t('signin.invalidEmail')),
     password: z
       .string()
       .min(8, t('signup.passwordMin'))

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -329,8 +330,8 @@ export default function ExamEditor() {
         toast.success('Exam created successfully');
         navigate(`/sets/${setId}/exams/${newExamId}`);
       }
-    } catch {
-      toast.error(t('exam.editor.failedSave'));
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('exam.editor.failedSave')));
     }
   };
 

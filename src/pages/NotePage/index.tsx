@@ -2,6 +2,7 @@ import './notes.css';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -149,8 +150,8 @@ export const NotePage = () => {
             setLastSavedAt(new Date());
             toast.success('Note saved successfully');
           },
-          onError: () => {
-            toast.error('Failed to save note');
+          onError: (error) => {
+            toast.error(apiErrorMessage(error, 'Failed to save note'));
           },
         },
       );
@@ -223,7 +224,9 @@ export const NotePage = () => {
       });
     } catch (error) {
       console.error('Failed to generate flashcards from note:', error);
-      toast.error('Failed to generate flashcards from this note');
+      toast.error(
+        apiErrorMessage(error, 'Failed to generate flashcards from this note'),
+      );
     }
   }, [
     setId,

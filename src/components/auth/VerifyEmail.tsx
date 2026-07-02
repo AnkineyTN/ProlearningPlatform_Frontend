@@ -67,10 +67,10 @@ export default function VerifyEmail() {
     }
   };
 
-  const handleReturnToLogin = () => {
-    // Signup flow: user is already auto-logged in, so going back means
-    // continuing into the app. Forgot flow: not authenticated → go to login.
-    navigate(after === 'forgot' ? '/login' : '/dashboard');
+  const handleSecondaryAction = () => {
+    // Signup flow: user is already auto-logged in; skipping verification for now
+    // continues into onboarding. Forgot flow: not authenticated → back to login.
+    navigate(after === 'forgot' ? '/login' : '/onboarding');
   };
 
   const handleResend = async () => {
@@ -191,10 +191,10 @@ export default function VerifyEmail() {
         <p className='mt-6 text-center text-[12.5px] text-[var(--pl-text-muted)]'>
           <button
             type='button'
-            onClick={handleReturnToLogin}
+            onClick={handleSecondaryAction}
             className='font-semibold text-[var(--pl-accent-strong)] hover:opacity-80 transition-opacity cursor-pointer'
           >
-            {t('verifyEmail.back')}
+            {after === 'forgot' ? t('verifyEmail.back') : t('verifyEmail.skip')}
           </button>
         </p>
       </div>

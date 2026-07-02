@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import i18n from '@/i18n/config';
 import { type OnboardingData } from '@/components/onboarding/type';
 import LanguageSelection from '@/components/onboarding/LanguageSelection';
@@ -68,7 +69,29 @@ const OnboardingApp: React.FC = () => {
     saveOnboardingDraft({ currentStep, data });
   }, [hydrated, currentStep, data]);
 
-  const persistFinish = async () => {
+  // Enter advances the selection steps (1–3) when a choice has been made. The
+  // later steps have ambiguous actions (skip / upgrade / create) so we leave
+  // those to explicit clicks.
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Enter' || e.shiftKey) return;
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+      const canAdvance =
+        (currentStep === 1 && !!data.language) ||
+        (currentStep === 2 && !!data.education) ||
+        (currentStep === 3 && !!data.source);
+      if (!canAdvance) return;
+
+      if (currentStep === 1) void i18n.changeLanguage(data.language);
+      setCurrentStep((prev) => Math.min(prev + 1, TOTAL_STEPS));
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [currentStep, data.language, data.education, data.source]);
+
+  const persistFinish = async (destination = '/dashboard') => {
     if (user?.id == null) {
       toast.error(t('onboarding.submitMissingUser'));
       return;
@@ -77,9 +100,9 @@ const OnboardingApp: React.FC = () => {
     try {
       await authAPI.updateMe(mapOnboardingDataToSubmissionPayload(data));
       clearOnboardingDraft();
-      navigate('/dashboard');
-    } catch {
-      toast.error(t('onboarding.submitError'));
+      navigate(destination);
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('onboarding.submitError')));
     } finally {
       setFinishing(false);
     }
@@ -101,13 +124,13 @@ const OnboardingApp: React.FC = () => {
   };
 
   const handleSkipPremium = () => {
-    setData({ ...data, premium: false });
     handleNext();
   };
 
+  // Upgrading to PRO uses the real payment flow: finish onboarding first (so the
+  // collected preferences are saved), then send the user to the checkout page.
   const handleSelectPremium = () => {
-    setData({ ...data, premium: true });
-    handleNext();
+    void persistFinish('/upgrade');
   };
 
   const handleStudySetChange = (field: string, value: string) => {

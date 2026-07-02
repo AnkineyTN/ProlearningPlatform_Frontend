@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { Heart, RotateCcw, Trash2, Upload, X } from 'lucide-react';
 import {
   Dialog,
@@ -79,8 +80,8 @@ const SpacePicker = ({
       setUploadName('');
       if (fileRef.current) fileRef.current.value = '';
       toast.success(t('pomodoro.toast.spaceCreated'));
-    } catch {
-      toast.error(t('pomodoro.toast.uploadFailed'));
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('pomodoro.toast.uploadFailed')));
     }
   };
 

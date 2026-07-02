@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -56,8 +57,8 @@ const CreateRoadmapPage = () => {
       });
       setDraft(result);
       setStep('preview');
-    } catch {
-      toast.error(t('roadmap.create.previewError'));
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('roadmap.create.previewError')));
     }
   };
 
@@ -69,8 +70,8 @@ const CreateRoadmapPage = () => {
       setStep('done');
       toast.success(t('roadmap.create.createSuccess'));
       setTimeout(() => navigate(`/roadmaps/${created.id}`), 800);
-    } catch {
-      toast.error(t('roadmap.create.createError'));
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('roadmap.create.createError')));
     }
   };
 

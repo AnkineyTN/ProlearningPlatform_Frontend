@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 
 import {
   useCreateNoteExplain,
@@ -103,8 +104,8 @@ export function useNoteSummaries({
         ),
       );
       toast.success('Summary saved');
-    } catch {
-      toast.error('Failed to save summary');
+    } catch (error) {
+      toast.error(apiErrorMessage(error, 'Failed to save summary'));
     }
   };
 

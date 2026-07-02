@@ -10,6 +10,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
@@ -159,7 +160,7 @@ export function NoteFileRow({
         toast.success('Comment saved');
       } catch (e) {
         console.error(e);
-        toast.error('Failed to save comment');
+        toast.error(apiErrorMessage(e, 'Failed to save comment'));
       } finally {
         setCommentSaving(false);
       }
@@ -176,7 +177,7 @@ export function NoteFileRow({
         toast.success('Comment removed');
       } catch (e) {
         console.error(e);
-        toast.error('Failed to delete comment');
+        toast.error(apiErrorMessage(e, 'Failed to delete comment'));
         return;
       }
     }
@@ -214,7 +215,7 @@ export function NoteFileRow({
       onFileSummarize(response.data.data.summary, fileName);
       toast.success('File summarized successfully');
     } catch (error) {
-      toast.error('Failed to summarize file');
+      toast.error(apiErrorMessage(error, 'Failed to summarize file'));
       console.error(error);
     }
   };
@@ -241,7 +242,7 @@ export function NoteFileRow({
       onDeleted();
       toast.success('File deleted successfully');
     } catch (error) {
-      toast.error('Failed to delete file');
+      toast.error(apiErrorMessage(error, 'Failed to delete file'));
       console.error(error);
     } finally {
       setIsDeleting(false);

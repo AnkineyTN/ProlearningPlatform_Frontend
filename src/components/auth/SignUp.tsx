@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import LogoFG from '@/assets/logo_fg';
 import { cn } from '@/lib/utils';
+import { getApiError, prettifyApiMessage } from '@/lib/apiError';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 
@@ -36,6 +37,7 @@ const SignUp = () => {
   const {
     register,
     handleSubmit,
+    setError: setFieldError,
     formState: { errors },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchemaInstance),
@@ -53,6 +55,7 @@ const SignUp = () => {
 
   const onSubmit = async (data: SignupFormData) => {
     setError(null);
+
     try {
       await signup.mutateAsync({
         firstName: data.firstName,
@@ -61,17 +64,39 @@ const SignUp = () => {
         password: data.password,
         role: 'ROLE_USER',
       });
-      toast.success('🎉 ' + t('signup.success'));
+    } catch (err: unknown) {
+      const { code, message, status, isNetwork } = getApiError(err);
+      const haystack = `${code ?? ''} ${message ?? ''}`;
+      if (isNetwork) {
+        setError(t('signup.networkError'));
+      } else if (status === 409 || /EXIST|ALREADY|DUPLICATE/i.test(haystack)) {
+        setFieldError('email', { message: t('signup.emailExists') });
+      } else if (status === 400 && /email/i.test(haystack)) {
+        setFieldError('email', { message: t('signup.invalidEmail') });
+      } else {
+        setError(prettifyApiMessage(message) ?? t('signup.failed'));
+      }
+      return;
+    }
+
+    toast.success('🎉 ' + t('signup.success'));
+
+    // Account is created; auto-login is a convenience. If it fails (e.g. a
+    // transient error), the account still exists — send them to the login page
+    // rather than showing a misleading "signup failed" error.
+    try {
       await login.mutateAsync({
         email: data.email,
         password: data.password,
       });
-      navigate('/verify-email', {
-        state: { email: data.email, after: 'signup' },
-      });
     } catch {
-      setError(t('signup.failed'));
+      navigate('/login');
+      return;
     }
+
+    navigate('/verify-email', {
+      state: { email: data.email, after: 'signup' },
+    });
   };
 
   const inputClass = (hasError: boolean) =>
@@ -146,6 +171,7 @@ const SignUp = () => {
                 </span>
                 <Input
                   type='text'
+                  maxLength={20}
                   {...register('firstName')}
                   placeholder={t('signup.firstNamePlaceholder')}
                   className={inputClass(!!errors.firstName)}
@@ -168,6 +194,7 @@ const SignUp = () => {
                 </span>
                 <Input
                   type='text'
+                  maxLength={20}
                   {...register('lastName')}
                   placeholder={t('signup.lastNamePlaceholder')}
                   className={inputClass(!!errors.lastName)}
@@ -192,6 +219,7 @@ const SignUp = () => {
               </span>
               <Input
                 type='email'
+                maxLength={254}
                 {...register('email')}
                 placeholder={t('signup.emailPlaceholder')}
                 className={inputClass(!!errors.email)}

@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import {
   BookOpen,
   Brain,
   ChevronRight,
+  History,
   Loader2,
   MoreHorizontal,
   Pencil,
@@ -15,6 +17,7 @@ import {
 import CreateNewModal from '@/components/modals/CreateNewModal';
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 import KnowledgeAnalysisDialog from '@/components/analysis/KnowledgeAnalysisDialog';
+import AnalysisHistoryDialog from '@/components/analysis/AnalysisHistoryDialog';
 import { useDeleteSet, useSet, useUpdateSet } from '@/hooks/useSets';
 import { Button } from '@/components/ui/button';
 import {
@@ -46,6 +49,7 @@ const HeaderSetDetails = ({ setId }: Props) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showActionsMenu, setShowActionsMenu] = useState(false);
   const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
+  const [showAnalysisHistory, setShowAnalysisHistory] = useState(false);
 
   const handleUpdateSubmit = async (data: {
     title: string;
@@ -74,9 +78,12 @@ const HeaderSetDetails = ({ setId }: Props) => {
       );
       setShowDeleteDialog(false);
       navigate('/sets');
-    } catch {
+    } catch (error) {
       toast.error(
-        t('toast.setDeleteFailed', { defaultValue: 'Failed to delete set' }),
+        apiErrorMessage(
+          error,
+          t('toast.setDeleteFailed', { defaultValue: 'Failed to delete set' }),
+        ),
       );
     }
   };
@@ -165,15 +172,34 @@ const HeaderSetDetails = ({ setId }: Props) => {
             <div className='flex items-center gap-2'>
               {/* Knowledge Analysis CTA */}
               {!isLoading && !isError && setDetail && (
-                <Button
-                  onClick={() => setShowAnalysisDialog(true)}
-                  className='rounded-full font-semibold text-[13px] flex items-center gap-2 border-0 cursor-pointer transition-[opacity] duration-150 hover:opacity-[0.88]'
-                >
-                  <Brain size={14} strokeWidth={2.5} />
-                  {t('set.header.analyzeKnowledge', {
-                    defaultValue: 'Analyze my knowledge',
-                  })}
-                </Button>
+                <>
+                  <Button
+                    onClick={() => setShowAnalysisDialog(true)}
+                    className='rounded-full font-semibold text-[13px] flex items-center gap-2 border-0 cursor-pointer transition-[opacity] duration-150 hover:opacity-[0.88]'
+                  >
+                    <Brain size={14} strokeWidth={2.5} />
+                    {t('set.header.analyzeKnowledge', {
+                      defaultValue: 'Analyze my knowledge',
+                    })}
+                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant='ghost'
+                        size='icon'
+                        onClick={() => setShowAnalysisHistory(true)}
+                        className='w-[34px] h-[34px] rounded-lg border border-[var(--pl-border)] bg-transparent text-[var(--pl-text-muted)] cursor-pointer transition-[background] duration-150 hover:bg-[var(--pl-bg-hover)]'
+                      >
+                        <History size={14} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {t('analysis.history.action', {
+                        defaultValue: 'View past analyses',
+                      })}
+                    </TooltipContent>
+                  </Tooltip>
+                </>
               )}
               <div className='w-px h-5 bg-[var(--pl-border)]' />
               <Button
@@ -243,6 +269,14 @@ const HeaderSetDetails = ({ setId }: Props) => {
         <KnowledgeAnalysisDialog
           open={showAnalysisDialog}
           onOpenChange={setShowAnalysisDialog}
+          target={{ kind: 'set', setId: id }}
+        />
+      )}
+
+      {showAnalysisHistory && (
+        <AnalysisHistoryDialog
+          open={showAnalysisHistory}
+          onOpenChange={setShowAnalysisHistory}
           target={{ kind: 'set', setId: id }}
         />
       )}

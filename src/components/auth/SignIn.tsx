@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import LogoFG from '@/assets/logo_fg';
 import { cn } from '@/lib/utils';
+import { getApiError, prettifyApiMessage } from '@/lib/apiError';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 
@@ -61,14 +62,27 @@ const SignIn = () => {
       await login.mutateAsync(data);
       navigate('/dashboard');
     } catch (err: unknown) {
-      const status = (
-        err as { response?: { data?: { metadata?: { code?: string } } } }
-      )?.response?.data?.metadata?.code;
-      if (status === 'ACCOUNT_BLOCKED') {
+      const { code, message, status, isNetwork } = getApiError(err);
+
+      if (code === 'ACCOUNT_BLOCKED') {
         setIsBlocked(true);
         setAppealEmail(data.email);
-      } else {
+      } else if (code === 'EMAIL_NOT_VERIFIED') {
+        toast.info(message ?? t('signin.wrongCredentials'));
+        navigate('/verify-email', {
+          state: { email: data.email, after: 'signup' },
+        });
+      } else if (isNetwork) {
+        setError(t('signin.networkError'));
+      } else if (
+        status === 400 ||
+        status === 401 ||
+        status === 404 ||
+        /CREDENTIAL|PASSWORD|INVALID|NOT_FOUND/i.test(code ?? '')
+      ) {
         setError(t('signin.wrongCredentials'));
+      } else {
+        setError(prettifyApiMessage(message) ?? t('signin.unexpectedError'));
       }
     }
   };
@@ -156,6 +170,7 @@ const SignIn = () => {
               </span>
               <Input
                 type='text'
+                maxLength={254}
                 {...register('email')}
                 placeholder={t('signup.emailPlaceholder')}
                 required

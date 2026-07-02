@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { useSetData, useUpdateSet } from '@/hooks/useSets';
 import { useGlobalSearch } from '@/hooks/useGlobalSearch';
 import { useStreak, useActivitySummary } from '@/hooks/useActivityLog';
@@ -77,8 +78,8 @@ const Dashboard = () => {
       await updateSetMutation.mutateAsync({ id: selectedSet.id, payload });
       setIsUpdateModalOpen(false);
       setSelectedSet(null);
-    } catch {
-      toast.error('Failed to update set');
+    } catch (error) {
+      toast.error(apiErrorMessage(error, 'Failed to update set'));
     }
   };
 

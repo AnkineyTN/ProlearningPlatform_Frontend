@@ -1,6 +1,7 @@
 import { GripVertical, ImagePlus, Loader2, Trash2, X } from 'lucide-react';
 import { useRef } from 'react';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -34,8 +35,10 @@ export default function FlashcardItemComponent({
       onUpdate(card.id, 'imageUrl', result.url);
       onUpdate(card.id, 'assetId', result.assetId);
       fileInputRef.current!.value = '';
-    } catch {
-      toast.error('Failed to upload image. Please try again.');
+    } catch (error) {
+      toast.error(
+        apiErrorMessage(error, 'Failed to upload image. Please try again.'),
+      );
     }
   };
 

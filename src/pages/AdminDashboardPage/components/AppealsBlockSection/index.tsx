@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { Check, FileText } from 'lucide-react';
 import {
   appealsAPI,
@@ -60,7 +61,8 @@ const AppealsBlocksSection = () => {
       setReviewingId(null);
       toast.success(t('adminDashboard.appealReviewed'));
     },
-    onError: () => toast.error(t('adminDashboard.appealReviewError')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('adminDashboard.appealReviewError'))),
   });
 
   const unblockMutation = useMutation({
@@ -69,7 +71,8 @@ const AppealsBlocksSection = () => {
       void qc.invalidateQueries({ queryKey: ['admin', 'users'] });
       toast.success(t('adminDashboard.userUnblocked'));
     },
-    onError: () => toast.error(t('adminDashboard.unblockError')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('adminDashboard.unblockError'))),
   });
 
   const appeals = appealsQuery.data ?? [];

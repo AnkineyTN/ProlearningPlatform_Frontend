@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -64,8 +65,8 @@ const CreateForm = ({
         assetId: result.assetId,
         assetType: assetType as AdminCreateFromUrlRequest['assetType'],
       });
-    } catch {
-      toast.error(t('adminDashboard.pomodoroUploadError'));
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('adminDashboard.pomodoroUploadError')));
     }
   };
 

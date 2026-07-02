@@ -3,6 +3,7 @@ import { AlertCircle, CheckCircle, Loader2, RotateCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -57,8 +58,8 @@ export default function RetryWrongAnswersDialog({
         onOpenChange(false);
         navigate(`/sets/${setId}/review`);
       }, 1500);
-    } catch {
-      toast.error(t('exam.retry.error'));
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('exam.retry.error')));
     }
   };
 

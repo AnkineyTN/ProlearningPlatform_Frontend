@@ -3,6 +3,7 @@ import { ArrowLeft, Plus, Shuffle, Upload, MoreHorizontal } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -275,9 +276,12 @@ export default function FlashcardEditor({
         });
         navigate(`/sets/${setId}/flashcards/${res.data.data.id}`);
       }
-    } catch {
+    } catch (error) {
       toast.error(
-        'Flashcard title already exists. Please choose a different title.',
+        apiErrorMessage(
+          error,
+          'Flashcard title already exists. Please choose a different title.',
+        ),
       );
     }
   };

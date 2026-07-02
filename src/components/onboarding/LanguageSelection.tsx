@@ -1,6 +1,8 @@
-import { Check, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 import SwitchButton from './SwitchButton';
 import { useTranslation } from 'react-i18next';
+import { OnboardingStep, SelectionCheck } from './shared';
+import { optionCardClass } from './styles';
 
 type Props = {
   selectedLanguage: string;
@@ -16,78 +18,58 @@ const LanguageSelection = ({
   onBack,
 }: Props) => {
   const { t } = useTranslation();
+  const languages = [
+    { id: 'en', flag: '🇺🇸', code: 'EN', name: 'English' },
+    { id: 'vi', flag: '🇻🇳', code: 'VI', name: 'Tiếng Việt' },
+  ] as const;
+
   return (
-    <div className='min-h-screen flex items-center justify-center p-6'>
-      <div className='w-full max-w-2xl'>
-        <div className='text-center mb-12'>
-          <h1 className='text-4xl font-bold text-foreground mb-3'>
-            {t('onboarding.languageSelection.header')}
-          </h1>
-          <p className='text-muted-foreground'>
-            {t('onboarding.languageSelection.description')}
-          </p>
-        </div>
-
-        <div className='space-y-4 mb-8'>
-          <button
-            onClick={() => onLanguageSelect('en')}
-            className={`w-full flex items-center justify-between p-5 rounded-xl border-2 transition-all ${
-              selectedLanguage === 'en'
-                ? 'border-[var(--pl-accent)] bg-[var(--pl-accent-soft)]'
-                : 'border-[var(--pl-border)] bg-[var(--pl-bg-hover)] hover:border-[var(--pl-border-strong)]'
-            }`}
-          >
-            <div className='flex items-center gap-4'>
-              <span className='text-2xl'>🇺🇸</span>
-              <div className='text-left'>
-                <div className='text-sm text-muted-foreground'>EN</div>
-                <div className='font-semibold text-foreground'>English</div>
+    <OnboardingStep
+      title={t('onboarding.languageSelection.header')}
+      description={t('onboarding.languageSelection.description')}
+    >
+      <div className='space-y-3 mb-6'>
+        {languages.map((lang) => {
+          const isSelected = selectedLanguage === lang.id;
+          return (
+            <button
+              key={lang.id}
+              onClick={() => onLanguageSelect(lang.id)}
+              className={`w-full flex items-center justify-between p-5 rounded-2xl border transition-all ${optionCardClass(
+                isSelected,
+              )}`}
+            >
+              <div className='flex items-center gap-4'>
+                <span className='text-2xl'>{lang.flag}</span>
+                <div className='text-left'>
+                  <div className='text-[11px] tracking-[0.12em] uppercase text-[var(--pl-text-faint)]'>
+                    {lang.code}
+                  </div>
+                  <div className='font-semibold text-[var(--pl-text)]'>
+                    {lang.name}
+                  </div>
+                </div>
               </div>
-            </div>
-            {selectedLanguage === 'en' && (
-              <div className='w-6 h-6 bg-foreground rounded-full flex items-center justify-center'>
-                <Check className='w-4 h-4 text-background' />
-              </div>
-            )}
-          </button>
-
-          <button
-            onClick={() => onLanguageSelect('vi')}
-            className={`w-full flex items-center justify-between p-5 rounded-xl border-2 transition-all ${
-              selectedLanguage === 'vi'
-                ? 'border-[var(--pl-accent)] bg-[var(--pl-accent-soft)]'
-                : 'border-[var(--pl-border)] bg-[var(--pl-bg-hover)] hover:border-[var(--pl-border-strong)]'
-            }`}
-          >
-            <div className='flex items-center gap-4'>
-              <span className='text-2xl'>🇻🇳</span>
-              <div className='text-left'>
-                <div className='text-sm text-muted-foreground'>VI</div>
-                <div className='font-semibold text-foreground'>Tiếng Việt</div>
-              </div>
-            </div>
-            {selectedLanguage === 'vi' && (
-              <div className='w-6 h-6 bg-foreground rounded-full flex items-center justify-center'>
-                <Check className='w-4 h-4 text-background' />
-              </div>
-            )}
-          </button>
-        </div>
-
-        <div className='bg-[var(--pl-bg)] rounded-xl p-4 flex items-start gap-3 mb-8'>
-          <Info className='w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5' />
-          <p className='text-sm text-muted-foreground'>
-            {t('onboarding.languageSelection.info')}
-          </p>
-        </div>
-
-        <SwitchButton
-          onPre={onBack}
-          onNext={onNext}
-          disableNext={!selectedLanguage}
-        />
+              {isSelected && <SelectionCheck />}
+            </button>
+          );
+        })}
       </div>
-    </div>
+
+      <div className='bg-[var(--pl-accent-soft-2)] border border-[var(--pl-border)] rounded-2xl p-4 flex items-start gap-3 mb-8'>
+        <Info className='w-5 h-5 text-[var(--pl-text-muted)] flex-shrink-0 mt-0.5' />
+        <p className='text-[13px] text-[var(--pl-text-muted)]'>
+          {t('onboarding.languageSelection.info')}
+        </p>
+      </div>
+
+      <SwitchButton
+        onPre={onBack}
+        onNext={onNext}
+        disableNext={!selectedLanguage}
+        hideBack
+      />
+    </OnboardingStep>
   );
 };
 

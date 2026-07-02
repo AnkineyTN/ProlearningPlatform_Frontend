@@ -1,6 +1,7 @@
 import { Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -266,8 +267,8 @@ function GoogleCalendarSection() {
     try {
       const authUrl = await connectCalendar.mutateAsync();
       window.open(authUrl, 'google-calendar-auth', 'width=500,height=600');
-    } catch {
-      toast.error(t('googleCalendar.toast.connectFailed'));
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('googleCalendar.toast.connectFailed')));
     }
   };
 
@@ -275,8 +276,10 @@ function GoogleCalendarSection() {
     try {
       await disconnectCalendar.mutateAsync();
       toast.success(t('googleCalendar.toast.disconnected'));
-    } catch {
-      toast.error(t('googleCalendar.toast.disconnectFailed'));
+    } catch (error) {
+      toast.error(
+        apiErrorMessage(error, t('googleCalendar.toast.disconnectFailed')),
+      );
     }
   };
 

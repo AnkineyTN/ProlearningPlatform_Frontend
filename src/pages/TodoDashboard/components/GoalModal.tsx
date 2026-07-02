@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { X, CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { useTranslation } from 'react-i18next';
 import { format, parseISO } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -122,7 +123,8 @@ const GoalModal = ({
       toast.success(t('todo.toast.goalCreated'));
       onClose();
     },
-    onError: () => toast.error(t('todo.toast.goalCreateFailed')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('todo.toast.goalCreateFailed'))),
   });
 
   const updateMutation = useMutation({
@@ -138,7 +140,8 @@ const GoalModal = ({
       toast.success(t('todo.toast.goalUpdated'));
       onClose();
     },
-    onError: () => toast.error(t('todo.toast.goalUpdateFailed')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('todo.toast.goalUpdateFailed'))),
   });
 
   if (!open) return null;

@@ -1,4 +1,4 @@
-import { Brain, History, Home, RotateCcw } from 'lucide-react';
+import { Brain, ClipboardList, History, Home, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ interface ResultsActionsProps {
   attemptId?: number;
   onOpenHistory: () => void;
   onOpenAnalysis: () => void;
+  onOpenAnalysisHistory: () => void;
   onOpenRetry: () => void;
 }
 
@@ -16,6 +17,7 @@ export default function ResultsActions({
   attemptId,
   onOpenHistory,
   onOpenAnalysis,
+  onOpenAnalysisHistory,
   onOpenRetry,
 }: ResultsActionsProps) {
   const navigate = useNavigate();
@@ -43,6 +45,15 @@ export default function ResultsActions({
           {t('analysis.actions.analyze', { defaultValue: 'Analyze Knowledge' })}
         </Button>
       )}
+
+      <Button
+        variant='outline'
+        className='gap-2 text-muted-foreground'
+        onClick={onOpenAnalysisHistory}
+      >
+        <ClipboardList className='w-4 h-4' />
+        {t('analysis.history.action', { defaultValue: 'View past analyses' })}
+      </Button>
 
       <Button variant='outline' className='gap-2' onClick={onOpenRetry}>
         <RotateCcw className='w-4 h-4' />

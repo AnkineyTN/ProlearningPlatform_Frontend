@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { Button } from '@/components/ui/button';
 import {
   useReviewBundle,
@@ -80,8 +81,10 @@ export default function ReviewBundlePage() {
             }
           : undefined,
       );
-    } catch {
-      toast.error(t('reviewBundles.detail.toast.flashcardError'));
+    } catch (error) {
+      toast.error(
+        apiErrorMessage(error, t('reviewBundles.detail.toast.flashcardError')),
+      );
     }
   };
 
@@ -110,8 +113,10 @@ export default function ReviewBundlePage() {
             }
           : undefined,
       );
-    } catch {
-      toast.error(t('reviewBundles.detail.toast.examError'));
+    } catch (error) {
+      toast.error(
+        apiErrorMessage(error, t('reviewBundles.detail.toast.examError')),
+      );
     }
   };
 
@@ -121,8 +126,10 @@ export default function ReviewBundlePage() {
       await dismissBundle.mutateAsync(bundleId);
       toast.success(t('reviewBundles.detail.toast.dismissSuccess'));
       navigate('/review-bundles');
-    } catch {
-      toast.error(t('reviewBundles.detail.toast.dismissError'));
+    } catch (error) {
+      toast.error(
+        apiErrorMessage(error, t('reviewBundles.detail.toast.dismissError')),
+      );
     }
   };
 

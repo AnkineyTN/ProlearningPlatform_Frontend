@@ -43,7 +43,6 @@ const AITitlePrivacyRow = ({
           placeholder={t('modal.ai.titleAutoPlaceholder', {
             defaultValue: 'Auto-generate',
           })}
-          className='h-11 px-3.5 rounded-lg bg-[var(--pl-bg-sunken)]'
         />
         <p
           className='text-xs text-muted-foreground italic mt-1.5'

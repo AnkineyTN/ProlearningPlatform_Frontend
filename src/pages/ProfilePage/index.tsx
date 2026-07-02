@@ -2,13 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { useTranslation } from 'react-i18next';
 
 import { useAuth, useSetAvatar, useUpdateMe } from '@/hooks/useAuth';
 import { useUploadImageFile } from '@/hooks/useImageUpload';
-import type { ApiErrorResponse } from '@/services/types/auth.types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   isProfileTab,
@@ -82,8 +81,8 @@ export default function ProfilePage() {
       const uploaded = await uploadImage.mutateAsync(file);
       await setAvatar.mutateAsync(uploaded.assetId);
       toast.success(t('profile.avatar.success'));
-    } catch {
-      toast.error(t('profile.avatar.error'));
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('profile.avatar.error')));
     } finally {
       setAvatarUploading(false);
       e.target.value = '';
@@ -137,10 +136,7 @@ export default function ProfilePage() {
       setValue('currentPassword', '');
       setValue('newPassword', '');
     } catch (err: unknown) {
-      const payloadErr: ApiErrorResponse | undefined = axios.isAxiosError(err)
-        ? (err.response?.data as ApiErrorResponse | undefined)
-        : undefined;
-      toast.error(payloadErr?.message ?? t('profile.toast.updateFailed'));
+      toast.error(apiErrorMessage(err, t('profile.toast.updateFailed')));
     } finally {
       setLoading(false);
     }

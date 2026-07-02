@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { useExplainText } from '@/hooks/useNotes';
 import { mapI18nToAiApiLanguage } from '@/lib/utils';
 
@@ -39,8 +40,8 @@ export function useAiExplain({
         onResult(selectedText, response.data.data.answer);
         onSuccess?.();
         toast.success('Explained successfully');
-      } catch {
-        toast.error('Failed to explain text');
+      } catch (error) {
+        toast.error(apiErrorMessage(error, 'Failed to explain text'));
       }
     },
     [setId, noteId, i18n.language, explainTextMutation, onResult, onSuccess],

@@ -16,6 +16,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 
 import { useRoadmaps, useDeleteRoadmap } from '@/hooks/useRoadmap';
 import { useAuth } from '@/hooks/useAuth';
@@ -71,8 +72,8 @@ const RoadmapsListPage = () => {
       await deleteRoadmap.mutateAsync(id);
       toast.success(t('roadmap.delete.success'));
       setConfirmDelete(null);
-    } catch {
-      toast.error(t('roadmap.delete.error'));
+    } catch (error) {
+      toast.error(apiErrorMessage(error, t('roadmap.delete.error')));
     }
   };
 

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 
 import {
   Dialog,
@@ -118,7 +119,7 @@ const CreateNewModal = ({
       onClose();
     } catch (err) {
       console.error('CreateNewModal submit error', err);
-      toast.error(t('modal.createError'));
+      toast.error(apiErrorMessage(err, t('modal.createError')));
     }
   };
 
@@ -133,7 +134,7 @@ const CreateNewModal = ({
       }
     } catch (err) {
       console.error('CreateNewModal AI submit error', err);
-      toast.error(t('modal.generateError'));
+      toast.error(apiErrorMessage(err, t('modal.generateError')));
     }
   };
 

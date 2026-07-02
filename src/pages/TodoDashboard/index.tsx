@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { apiErrorMessage } from '@/lib/apiError';
 import { useTranslation } from 'react-i18next';
 import { todoAPI } from '@/services/endpoints/todo';
 import type { Goal, ResourceRef, Todo } from '@/services/types/todo.types';
@@ -56,7 +57,8 @@ const TodoDashboard = () => {
       setNewTask('');
       setNewTaskRefs({ set: [], note: [], flashcard: [], exam: [] });
     },
-    onError: () => toast.error(t('todo.toast.createFailed')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('todo.toast.createFailed'))),
   });
 
   const toggleTodo = useMutation({
@@ -73,7 +75,8 @@ const TodoDashboard = () => {
       qc.invalidateQueries({ queryKey: ['todos'] });
       qc.invalidateQueries({ queryKey: ['goals'] });
     },
-    onError: () => toast.error(t('todo.toast.deleteFailed')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('todo.toast.deleteFailed'))),
   });
 
   const deleteGoal = useMutation({
@@ -83,7 +86,8 @@ const TodoDashboard = () => {
       qc.invalidateQueries({ queryKey: ['todos'] });
       toast.success(t('todo.toast.goalDeleted'));
     },
-    onError: () => toast.error(t('todo.toast.goalDeleteFailed')),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t('todo.toast.goalDeleteFailed'))),
   });
 
   const handleAddTodayTask = () => {
