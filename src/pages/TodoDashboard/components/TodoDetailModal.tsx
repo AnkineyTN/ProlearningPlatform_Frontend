@@ -331,7 +331,7 @@ const TodoDetailModal = ({
                   return (
                     <div
                       key={`${type}-${ref.id}`}
-                      className='inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 border text-[11px] group'
+                      className='inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 border text-[11px] group max-w-full'
                       style={{
                         borderColor: `color-mix(in oklch, ${RESOURCE_COLORS[type]} 40%, transparent)`,
                         background: `color-mix(in oklch, ${RESOURCE_COLORS[type]} 10%, transparent)`,
@@ -342,13 +342,15 @@ const TodoDetailModal = ({
                       <a
                         href={navUrl}
                         onClick={(e) => e.stopPropagation()}
-                        className='hover:underline flex items-center gap-1'
+                        className='hover:underline flex items-center gap-1 min-w-0'
                         target='_self'
                         rel='noopener noreferrer'
                       >
-                        {ref.title ??
-                          `${t(`todo.resource.${type}`)} #${ref.id}`}
-                        <ExternalLink className='w-2.5 h-2.5 opacity-60' />
+                        <span className='truncate'>
+                          {ref.title ??
+                            `${t(`todo.resource.${type}`)} #${ref.id}`}
+                        </span>
+                        <ExternalLink className='w-2.5 h-2.5 opacity-60 shrink-0' />
                       </a>
                       <button
                         onClick={() => removeRef(type, ref.id)}

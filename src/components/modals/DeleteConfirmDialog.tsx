@@ -37,11 +37,19 @@ const DeleteConfirmDialog = ({
               <Trash2 className='w-5 h-5 text-destructive' />
             </div>
             <div>
-              <AlertDialogTitle className='font-[family-name:var(--font-display)] text-xl font-medium tracking-wider'>
+              <AlertDialogTitle className='font-[family-name:var(--font-display)] text-xl font-medium tracking-wider break-words'>
                 {title}
               </AlertDialogTitle>
-              <AlertDialogDescription className='text-sm text-muted-foreground mt-1.5'>
-                {t('modal.deleteConfirmation')} {itemName ? `${itemName}` : ''}?
+              <AlertDialogDescription className='text-sm text-muted-foreground mt-1.5 break-words'>
+                {t('modal.deleteConfirmation')}{' '}
+                {itemName ? (
+                  <span className='font-medium text-foreground break-all'>
+                    {itemName}
+                  </span>
+                ) : (
+                  ''
+                )}
+                ?
                 <span className='block mt-1 text-muted-foreground/70'>
                   {t('modal.deleteConfirmationWarning')}
                 </span>

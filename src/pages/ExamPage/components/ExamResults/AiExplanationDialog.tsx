@@ -40,7 +40,7 @@ export default function AiExplanationDialog({
               </p>
             </div>
           ) : (
-            <p className='text-sm whitespace-pre-wrap leading-relaxed'>
+            <p className='text-sm whitespace-pre-wrap break-words leading-relaxed'>
               {explanation}
             </p>
           )}

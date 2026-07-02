@@ -16,7 +16,7 @@ export default function NarrativeBlock({
         {icon}
         <h3 className='text-sm font-semibold'>{label}</h3>
       </div>
-      <p className='text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed'>
+      <p className='text-sm text-muted-foreground whitespace-pre-wrap break-words leading-relaxed'>
         {text}
       </p>
     </section>

@@ -32,7 +32,7 @@ const DeleteUserDialog = ({
           <AlertDialogTitle>
             {t('adminDashboard.deleteConfirmTitle')}
           </AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogDescription className='break-words'>
             {t('adminDashboard.deleteConfirmDescription', {
               name: target?.label ?? '',
             })}

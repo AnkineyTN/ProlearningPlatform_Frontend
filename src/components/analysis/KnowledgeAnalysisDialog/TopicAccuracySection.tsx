@@ -28,10 +28,10 @@ export default function TopicAccuracySection({
           return (
             <li key={topic.topic} className='space-y-1'>
               <div className='flex items-center justify-between gap-3'>
-                <span className='text-sm font-medium truncate'>
+                <span className='text-sm font-medium truncate min-w-0'>
                   {topic.topic}
                 </span>
-                <span className={`text-xs font-semibold ${colors.text}`}>
+                <span className={`text-xs font-semibold shrink-0 ${colors.text}`}>
                   {pct}%
                 </span>
               </div>

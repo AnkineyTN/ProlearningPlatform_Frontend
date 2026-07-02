@@ -118,7 +118,7 @@ export default function AttemptDetailDialog({
                         className='rounded-lg border border-border p-3 space-y-1'
                       >
                         <div className='flex items-start justify-between gap-2'>
-                          <p className='font-medium text-sm flex-1'>
+                          <p className='font-medium text-sm flex-1 min-w-0 break-words'>
                             Q{idx + 1}:{' '}
                             {ans.questionContent ?? `ID ${ans.questionId}`}
                           </p>
@@ -128,10 +128,10 @@ export default function AttemptDetailDialog({
                             <XCircle className='w-4 h-4 text-[var(--pl-danger)] shrink-0' />
                           )}
                         </div>
-                        <p className='text-xs text-muted-foreground'>
+                        <p className='text-xs text-muted-foreground break-words'>
                           {t('exam.results.tableScore')}: {ans.earnedPoints}
                           {ans.feedback ? (
-                            <span className='block mt-1 text-foreground'>
+                            <span className='block mt-1 text-foreground break-words'>
                               {ans.feedback}
                             </span>
                           ) : null}

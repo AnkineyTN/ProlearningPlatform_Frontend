@@ -38,8 +38,8 @@ const CreateManualTab = ({
   const typeLower = type.toLowerCase();
 
   return (
-    <div className='space-y-5'>
-      <div>
+    <div className='space-y-5 min-w-0'>
+      <div className='min-w-0'>
         <Label className='text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground mb-2 block'>
           {t('modal.title')}
         </Label>
@@ -48,7 +48,7 @@ const CreateManualTab = ({
           value={title}
           onChange={(e) => onTitleChange(e.target.value)}
           className={cn(
-            'w-full h-11 px-3.5 rounded-lg bg-[var(--pl-bg-sunken)] focus-visible:ring-2 truncate',
+            'w-full min-w-0 h-11 px-3.5 rounded-lg bg-[var(--pl-bg-sunken)] focus-visible:ring-2',
             errors.titleEmpty || errors.titleTooLong
               ? 'border-destructive focus-visible:ring-destructive'
               : 'border-border focus-visible:ring-[var(--pl-accent-border)]',
@@ -77,7 +77,7 @@ const CreateManualTab = ({
         </p>
       </div>
 
-      <div>
+      <div className='min-w-0'>
         <div className='flex items-baseline justify-between mb-2'>
           <Label className='text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground'>
             {t('modal.description')}
@@ -92,7 +92,7 @@ const CreateManualTab = ({
         <Textarea
           value={description}
           onChange={(e) => onDescriptionChange(e.target.value)}
-          className='w-full px-3.5 py-3 rounded-lg bg-[var(--pl-bg-sunken)] border-border focus-visible:ring-2 focus-visible:ring-[var(--pl-accent-border)] resize-none min-h-[110px] break-words'
+          className='w-full min-w-0 px-3.5 py-3 rounded-lg bg-[var(--pl-bg-sunken)] border-border focus-visible:ring-2 focus-visible:ring-[var(--pl-accent-border)] resize-none min-h-[110px] break-words'
           rows={4}
           placeholder={t(`modal.descriptionPlaceholder.${typeLower}`, {
             defaultValue: t('modal.enterDescription'),

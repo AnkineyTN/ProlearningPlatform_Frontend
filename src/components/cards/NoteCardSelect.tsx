@@ -59,12 +59,14 @@ const NoteCardSelect = ({
         </div>
 
         <h2
-          className='font-semibold mb-1'
+          className='font-semibold mb-1 break-words line-clamp-2'
           style={{ fontFamily: 'var(--font-display)' }}
         >
           {note.title}
         </h2>
-        <p className='text-sm text-muted-foreground mb-4'>{note.description}</p>
+        <p className='text-sm text-muted-foreground mb-4 break-words line-clamp-3'>
+          {note.description}
+        </p>
         <div className='flex justify-between items-center text-xs text-muted-foreground'>
           <span className='flex items-center gap-1'>
             <Clock className='w-3 h-3' /> {note.timeAgo}
@@ -82,13 +84,18 @@ const NoteCardSelect = ({
             {t('modal.ai.noteDocuments', { defaultValue: 'Documents' })}
           </p>
           {docs!.map((doc) => (
-            <label key={doc.fileUrl} className='flex items-center gap-2 cursor-pointer'>
+            <label
+              key={doc.fileUrl}
+              className='flex items-center gap-2 cursor-pointer min-w-0'
+            >
               <Checkbox
                 checked={selectedDocUrls?.includes(doc.fileUrl) ?? false}
                 onCheckedChange={() => onDocToggle?.(doc.fileUrl)}
               />
               <File className='w-3.5 h-3.5 text-muted-foreground shrink-0' />
-              <span className='text-xs text-muted-foreground truncate'>{doc.fileName}</span>
+              <span className='text-xs text-muted-foreground truncate min-w-0'>
+                {doc.fileName}
+              </span>
             </label>
           ))}
         </div>

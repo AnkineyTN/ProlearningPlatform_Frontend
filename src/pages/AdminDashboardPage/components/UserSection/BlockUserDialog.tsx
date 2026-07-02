@@ -38,7 +38,7 @@ const BlockUserDialog = ({
           <DialogTitle>{t('adminDashboard.blockDialogTitle')}</DialogTitle>
         </DialogHeader>
         <div className='space-y-4 py-2'>
-          <p className='text-sm text-muted-foreground'>
+          <p className='text-sm text-muted-foreground break-words'>
             {t('adminDashboard.blockDialogDesc', { name: userName })}
           </p>
           <div className='space-y-2'>
