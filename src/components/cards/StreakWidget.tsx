@@ -10,8 +10,8 @@ const StreakWidget = () => {
   if (isLoading || !streak) {
     return (
       <Card className='p-4 space-y-3 animate-pulse'>
-        <div className='h-4 bg-muted rounded w-1/2' />
-        <div className='h-8 bg-muted rounded w-1/3' />
+        <div className='h-4 bg-[var(--pl-bg-sunken)] rounded w-1/2' />
+        <div className='h-8 bg-[var(--pl-bg-sunken)] rounded w-1/3' />
       </Card>
     );
   }
@@ -39,7 +39,7 @@ const StreakWidget = () => {
       </div>
 
       <div className='grid grid-cols-2 gap-2 text-sm'>
-        <div className='bg-muted/40 rounded-md p-2'>
+        <div className='bg-[var(--pl-bg-sunken)]/40 rounded-md p-2'>
           <p className='text-muted-foreground text-xs'>
             {t('streak.longest', { defaultValue: 'Longest' })}
           </p>
@@ -47,7 +47,7 @@ const StreakWidget = () => {
             {streak.longestStreak} {t('streak.days', { defaultValue: 'days' })}
           </p>
         </div>
-        <div className='bg-muted/40 rounded-md p-2'>
+        <div className='bg-[var(--pl-bg-sunken)]/40 rounded-md p-2'>
           <p className='text-muted-foreground text-xs'>
             {t('streak.today', { defaultValue: 'Today' })}
           </p>

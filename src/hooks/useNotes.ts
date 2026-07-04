@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getApiError } from "@/lib/apiError";
 import { noteAPI } from "@/services/endpoints/notes";
 import {
   type CreateNotePayload,
@@ -86,6 +87,11 @@ export const useNoteDetail = (setId: number, noteId: number) => {
       return normalizeNoteDetail(response.data.data);
     },
     enabled: !!setId && !!noteId,
+    retry: (failureCount, error) => {
+      const status = getApiError(error).status;
+      if (status === 401 || status === 403 || status === 404) return false;
+      return failureCount < 2;
+    },
   });
 };
 

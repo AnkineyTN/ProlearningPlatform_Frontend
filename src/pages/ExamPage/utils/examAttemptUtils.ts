@@ -44,6 +44,14 @@ export function buildExamAttemptAnswers(
   });
 }
 
+export function computeTimeTakenSeconds(detail: ExamAttemptDetail): number {
+  if (!detail.startedAt || !detail.submittedAt) return 0;
+  const started = new Date(detail.startedAt).getTime();
+  const submitted = new Date(detail.submittedAt).getTime();
+  if (Number.isNaN(started) || Number.isNaN(submitted)) return 0;
+  return Math.max(0, Math.round((submitted - started) / 1000));
+}
+
 export function examAttemptDetailToExamResult(
   detail: ExamAttemptDetail,
   exam: Exam,

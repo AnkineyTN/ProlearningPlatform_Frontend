@@ -46,6 +46,16 @@ import SetEmptyState from './components/SetEmptyState';
 import SetListSkeleton from './components/SetListSkeleton';
 
 const PAGE_SIZE = 9;
+const VIEW_MODE_STORAGE_KEY = 'setlist-view-mode';
+
+function readStoredViewMode(): ViewMode {
+  try {
+    const raw = localStorage.getItem(VIEW_MODE_STORAGE_KEY);
+    return raw === 'grid' || raw === 'table' ? raw : 'grid';
+  } catch {
+    return 'grid';
+  }
+}
 
 const mapSetData = (items: any[]): Set[] =>
   items.map((item) => ({
@@ -75,10 +85,19 @@ export default function SetListPage() {
   const [debouncedQ, setDebouncedQ] = useState('');
   const [privacyFilter, setPrivacyFilter] = useState<ListPrivacyFilter>('');
   const [sortOption, setSortOption] = useState<ListSortOption>('id,DESC');
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [viewMode, setViewModeState] = useState<ViewMode>(readStoredViewMode);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedSet, setSelectedSet] = useState<Set | null>(null);
+
+  const setViewMode = (mode: ViewMode) => {
+    setViewModeState(mode);
+    try {
+      localStorage.setItem(VIEW_MODE_STORAGE_KEY, mode);
+    } catch {
+      // ignore
+    }
+  };
 
   const createSetMutation = useCreateSet();
   const deleteSetMutation = useDeleteSet();
@@ -264,7 +283,10 @@ export default function SetListPage() {
             )}
           </>
         ) : (
-          <SetEmptyState onCreateClick={() => setIsCreateModalOpen(true)} />
+          <SetEmptyState
+            isFiltered={Boolean(debouncedQ || privacyFilter)}
+            onCreateClick={() => setIsCreateModalOpen(true)}
+          />
         )}
       </div>
 

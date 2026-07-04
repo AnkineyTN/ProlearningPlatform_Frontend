@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { apiErrorMessage } from '@/lib/apiError';
+import { ResourceAccessError } from '@/components/collaboration/ResourceAccessError';
 
 import {
   useDeleteCard,
@@ -408,16 +409,11 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
   // Error state
   if (isError) {
     return (
-      <div className='min-h-screen flex items-center justify-center'>
-        <div className='text-center'>
-          <div className='text-lg text-destructive mb-2'>
-            {t('flashcard.page.error')}
-          </div>
-          <div className='text-sm text-muted-foreground'>
-            {error instanceof Error ? error.message : t('flashcard.page.unknownError')}
-          </div>
-        </div>
-      </div>
+      <ResourceAccessError
+        resource='flashcard'
+        error={error}
+        onRetry={() => void refetch()}
+      />
     );
   }
 

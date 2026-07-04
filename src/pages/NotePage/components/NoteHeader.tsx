@@ -4,6 +4,7 @@ import {
   FileText,
   LoaderCircle,
   Layers,
+  Printer,
   Share2,
   Sparkles,
   Upload,
@@ -181,6 +182,10 @@ export const NoteHeader = ({
                     <DropdownMenuItem onClick={() => onExport('html')}>
                       <FileCode className='w-4 h-4 mr-2 text-[var(--pl-warning-text)]' />
                       HTML (.html)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onExport('pdf')}>
+                      <Printer className='w-4 h-4 mr-2 text-[var(--pl-danger-text)]' />
+                      PDF (.pdf)
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

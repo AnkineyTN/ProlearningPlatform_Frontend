@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { getApiError } from '@/lib/apiError';
 import { flashcardAPI } from '@/services/endpoints/flashcard';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -61,6 +62,11 @@ export const useFlashcardDetail = (setId: number, flashcardId: number) => {
     },
     staleTime: 5 * 60 * 1000,
     enabled: !!flashcardId,
+    retry: (failureCount, error) => {
+      const status = getApiError(error).status;
+      if (status === 401 || status === 403 || status === 404) return false;
+      return failureCount < 2;
+    },
   });
 };
 

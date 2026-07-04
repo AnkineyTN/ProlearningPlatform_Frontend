@@ -402,7 +402,7 @@
     "deleteConfirmation": "Are you sure you want to delete",
     "deleteConfirmationTitle": "Confirm Delete",
     "deleteConfirmationWarning": "This action cannot be undone.",
-    "description": "Description",
+    "description": "Description (optional)",
     "enterDescription": "Enter description",
     "generateWithAI": "Generate with AI",
     "method": {
@@ -422,7 +422,6 @@
     "optional": "Optional",
     "optionalLabel": "optional",
     "editLaterHint": "You can edit everything after creating.",
-    "titleHint": "Keep it short — you'll see it in the Library.",
     "tabs": {
       "manual": "Create manually",
       "ai": "Generate by AI"
@@ -458,7 +457,10 @@
     "thisFlashcard": "this flashcard",
     "title": "Title",
     "titleEmpty": "Title is required",
-    "titleTooLong": "Title must be less than 100 characters",
+    "titleTooLong": "You've reached the 100 character limit",
+    "descriptionTooShort": "Description must be at least 3 characters",
+    "descriptionTooLong": "You've reached the 500 character limit",
+    "charCount": "{{current}}/{{max}}",
     "unlisted": "Unlisted",
     "update": "Update {{type}}",
     "updateButton": "Update",
@@ -575,7 +577,15 @@
     "title": "Set Library",
     "your_set": "Your Set",
     "your_workspace": "Your workspace",
-    "searchPlaceholder": "Search sets…"
+    "searchPlaceholder": "Search sets…",
+    "emptyTitle": "No sets yet",
+    "emptyDescription": "Create your first study set to get started",
+    "createButton": "Create your first set",
+    "noResultsTitle": "No sets found",
+    "noResultsDescription": "Try adjusting your search or filters"
+  },
+  "setCard": {
+    "notificationSettings": "Notification settings"
   },
   "sidebar": {
     "blog": "Blog",
@@ -1958,7 +1968,32 @@
       "errorInvalidType": "Invalid file type. Please upload images, PDF, DOC, DOCX, PPTX, or TXT.",
       "errorInvalidNote": "Invalid note",
       "success": "File uploaded successfully"
+    },
+    "unsavedDialog": {
+      "title": "Your note isn't saved yet",
+      "description": "You have unsaved changes. Do you want to save them before leaving?",
+      "saveAndExit": "Save & exit",
+      "exitWithoutSaving": "Exit without saving",
+      "cancel": "Keep editing",
+      "beforeUnload": "You have unsaved changes that may be lost."
     }
+  },
+  "resourceAccess": {
+    "type": {
+      "note": "note",
+      "flashcard": "flashcard set",
+      "exam": "exam"
+    },
+    "accessDenied": {
+      "title": "You no longer have access to this {{resource}}",
+      "description": "The owner has changed the sharing permissions of this {{resource}} or removed your access. Please contact the owner if you need access again."
+    },
+    "loadError": {
+      "title": "Couldn't load this {{resource}}",
+      "description": "Something went wrong while loading this {{resource}}. Please check your connection and try again."
+    },
+    "backButton": "Back to dashboard",
+    "retry": "Try again"
   },
   "collaboration": {
     "members": {

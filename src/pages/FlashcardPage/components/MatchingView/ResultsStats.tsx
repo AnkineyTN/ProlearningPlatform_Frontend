@@ -74,7 +74,7 @@ const MatchingResultsStats = ({
       {/* CARDS REVIEWED */}
       <div className='rounded-2xl border border-border bg-[var(--pl-bg)] p-5'>
         <div className='flex items-center justify-between mb-4'>
-          <div className='w-9 h-9 rounded-lg bg-muted flex items-center justify-center'>
+          <div className='w-9 h-9 rounded-lg bg-[var(--pl-bg-sunken)] flex items-center justify-center'>
             <Layers className='w-4 h-4 text-muted-foreground' />
           </div>
         </div>
@@ -96,7 +96,7 @@ const MatchingResultsStats = ({
       {/* MATCHES / MIN */}
       <div className='rounded-2xl border border-border bg-[var(--pl-bg)] p-5'>
         <div className='flex items-center justify-between mb-4'>
-          <div className='w-9 h-9 rounded-lg bg-muted flex items-center justify-center'>
+          <div className='w-9 h-9 rounded-lg bg-[var(--pl-bg-sunken)] flex items-center justify-center'>
             <Zap className='w-4 h-4 text-muted-foreground' />
           </div>
           <span

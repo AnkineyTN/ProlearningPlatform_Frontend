@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { apiErrorMessage } from '@/lib/apiError';
@@ -66,6 +66,7 @@ const CreateNewModal = ({
   const [aiData, setAiData] = useState<AISubmitData | null>(null);
   const [noteAiData, setNoteAiData] = useState<NoteAIGenerateData | null>(null);
   const [aiValid, setAiValid] = useState(false);
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -84,24 +85,31 @@ const CreateNewModal = ({
 
   const handleTitleChange = (value: string) => {
     setTitle(value);
-    if (errors.titleEmpty || errors.titleTooLong) {
-      setErrors((prev) => ({
-        ...prev,
-        titleEmpty: false,
-        titleTooLong: false,
-      }));
-    }
+    setErrors((prev) => ({
+      ...prev,
+      titleEmpty: false,
+      titleTooLong: value.length >= 100,
+    }));
   };
 
-  const handlePrivacyChange = (value: string) => {
-    setPrivacy(value);
-    if (errors.privacy) setErrors((prev) => ({ ...prev, privacy: false }));
+  const handleDescriptionChange = (value: string) => {
+    setDescription(value);
+    setErrors((prev) => ({
+      ...prev,
+      descriptionTooShort: false,
+      descriptionTooLong: value.length >= 500,
+    }));
   };
 
   const handleSubmitManual = async () => {
     const newErrors: ManualErrors = {};
     if (!title.trim()) newErrors.titleEmpty = true;
-    if (title.length >= 100) newErrors.titleTooLong = true;
+    if (title.length > 100) newErrors.titleTooLong = true;
+    const descriptionLength = description.trim().length;
+    if (descriptionLength > 0 && descriptionLength < 3) {
+      newErrors.descriptionTooShort = true;
+    }
+    if (description.length > 500) newErrors.descriptionTooLong = true;
     if (!privacy) newErrors.privacy = true;
 
     if (Object.keys(newErrors).length > 0) {
@@ -185,6 +193,12 @@ const CreateNewModal = ({
             : 'w-full max-w-2xl sm:max-w-2xl max-h-[90vh] overflow-y-auto',
         )}
         showCloseButton={!isGenerating}
+        onOpenAutoFocus={(e) => {
+          if (!isAI) {
+            e.preventDefault();
+            titleInputRef.current?.focus();
+          }
+        }}
         onEscapeKeyDown={(e) => {
           if (isGenerating) e.preventDefault();
         }}
@@ -221,10 +235,9 @@ const CreateNewModal = ({
             type={type}
             title={title}
             onTitleChange={handleTitleChange}
+            titleInputRef={titleInputRef}
             description={description}
-            onDescriptionChange={setDescription}
-            privacy={privacy}
-            onPrivacyChange={handlePrivacyChange}
+            onDescriptionChange={handleDescriptionChange}
             errors={errors}
           />
         )}

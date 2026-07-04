@@ -251,7 +251,7 @@ export default function ExamHomeView({
                   t('exam.home.hintReview'),
                 ].map((hint, i) => (
                   <li key={i} className='flex items-start gap-2'>
-                    <span className='mt-1.5 w-1 h-1 rounded-full bg-muted-foreground/50 flex-shrink-0' />
+                    <span className='mt-1.5 w-1 h-1 rounded-full bg-[var(--pl-bg-sunken)]-foreground/50 flex-shrink-0' />
                     {hint}
                   </li>
                 ))}

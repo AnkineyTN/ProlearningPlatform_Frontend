@@ -1,3 +1,4 @@
+import { getApiError } from "@/lib/apiError";
 import { examAPI } from "@/services/endpoints/exam";
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
@@ -51,6 +52,12 @@ export const useExams = ({
   });
 };
 
+const retryUnlessDenied = (failureCount: number, error: unknown) => {
+  const status = getApiError(error).status;
+  if (status === 401 || status === 403 || status === 404) return false;
+  return failureCount < 2;
+};
+
 export const useExamDetail = (setId: number, examId: number | string) => {
   const [quizResult, questionsResult, examsResult] = useQueries({
     queries: [
@@ -62,10 +69,7 @@ export const useExamDetail = (setId: number, examId: number | string) => {
         },
         staleTime: 5 * 60 * 1000,
         enabled: !!setId && !!examId,
-        retry: (_, error) => {
-          const err = error as { response?: { status?: number } };
-          return err?.response?.status !== 404;
-        },
+        retry: retryUnlessDenied,
       },
       {
         queryKey: ["exam-questions", setId, examId, 0, 100, "id,ASC"],
@@ -81,6 +85,7 @@ export const useExamDetail = (setId: number, examId: number | string) => {
         },
         staleTime: 5 * 60 * 1000,
         enabled: !!setId && !!examId,
+        retry: retryUnlessDenied,
       },
       {
         queryKey: ["exams", setId, 0, 100, "id,ASC"],
@@ -94,6 +99,7 @@ export const useExamDetail = (setId: number, examId: number | string) => {
         },
         staleTime: 5 * 60 * 1000,
         enabled: !!setId && !!examId,
+        retry: retryUnlessDenied,
       },
     ],
   });
@@ -131,6 +137,7 @@ export const useExamDetail = (setId: number, examId: number | string) => {
     data,
     isLoading,
     isError,
+    error: quizResult.error ?? questionsResult.error ?? examsResult.error,
     refetch: () => {
       quizResult.refetch();
       questionsResult.refetch();

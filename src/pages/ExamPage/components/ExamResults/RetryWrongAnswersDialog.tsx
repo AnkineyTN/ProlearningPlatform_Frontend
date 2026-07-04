@@ -155,7 +155,7 @@ export default function RetryWrongAnswersDialog({
                         </p>
                         <div className='flex items-center gap-3 mt-1.5'>
                           <div className='flex items-center gap-1.5 flex-1'>
-                            <div className='h-1.5 flex-1 rounded-full bg-muted overflow-hidden'>
+                            <div className='h-1.5 flex-1 rounded-full bg-[var(--pl-bg-sunken)] overflow-hidden'>
                               <div
                                 className='h-full rounded-full bg-[var(--pl-danger)] transition-all'
                                 style={{ width: `${pct}%` }}
@@ -174,7 +174,10 @@ export default function RetryWrongAnswersDialog({
                             </span>
                           </div>
                           <span className='text-xs text-muted-foreground shrink-0'>
-                            {t('exam.retry.attempts', { incorrect: stat.incorrectCount, total: stat.totalAttempts })}
+                            {t('exam.retry.attempts', {
+                              incorrect: stat.incorrectCount,
+                              total: stat.totalAttempts,
+                            })}
                           </span>
                         </div>
                       </div>

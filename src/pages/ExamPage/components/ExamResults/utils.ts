@@ -45,12 +45,20 @@ export const createResultHelpers = (exam: Exam, result: ExamResult) => {
   const isAnswerCorrect = (questionId: string | number) => {
     const question = exam.questions.find((q) => q.id === questionId);
     const graded = getGradedForQuestion(questionId);
+
+    if (question?.type === 'ESSAY') {
+      if (!graded) return null;
+      if (typeof graded.isCorrect === 'boolean') return graded.isCorrect;
+      // AI essay grading awards partial credit rather than a strict pass/fail
+      // flag, so treat >=80% of the max points as correct instead of
+      // requiring a perfect score.
+      if (!question.score) return null;
+      return (graded.earnedPoints ?? 0) >= question.score * 0.8;
+    }
+
     if (graded) return graded.isCorrect;
     const submission = getSubmissionForQuestion(questionId);
-    if (!question || !submission) {
-      return question?.type === 'ESSAY' ? null : false;
-    }
-    if (question.type === 'ESSAY') return null;
+    if (!question || !submission) return false;
     const correctAnswerIds = question.answers
       .filter((a) => a.isCorrect)
       .map((a) => a.id);

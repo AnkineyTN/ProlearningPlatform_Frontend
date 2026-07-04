@@ -5,7 +5,10 @@ import { useExamAttempt, useExamDetail } from '@/hooks/useExams';
 
 import ExamResults from './components/ExamResults';
 import type { Exam, ExamResult } from './types';
-import { examAttemptDetailToExamResult } from './utils/examAttemptUtils';
+import {
+  computeTimeTakenSeconds,
+  examAttemptDetailToExamResult,
+} from './utils/examAttemptUtils';
 import { apiQuizDetailToExam } from './utils/examMapper';
 
 export default function ExamAttemptResultPage() {
@@ -40,7 +43,12 @@ export default function ExamAttemptResultPage() {
   const result: ExamResult | null =
     passedResult ??
     (exam && attemptData?.data
-      ? examAttemptDetailToExamResult(attemptData.data, exam, [], 0)
+      ? examAttemptDetailToExamResult(
+          attemptData.data,
+          exam,
+          [],
+          computeTimeTakenSeconds(attemptData.data),
+        )
       : null);
 
   const isLoading = examLoading || (!passedResult && attemptLoading);

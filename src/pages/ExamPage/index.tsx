@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { apiErrorMessage } from '@/lib/apiError';
+import { ResourceAccessError } from '@/components/collaboration/ResourceAccessError';
 import ExamHomeView from './components/ExamHomeView';
 import ExamTaking from './components/ExamTaking';
 import type { Exam, ExamSubmission } from './types';
@@ -37,7 +38,10 @@ export default function ExamPage({ setId, examId }: Props) {
     setId: Number(examId),
   });
 
-  const { data, isLoading, isError } = useExamDetail(Number(setId), examId);
+  const { data, isLoading, isError, error, refetch } = useExamDetail(
+    Number(setId),
+    examId,
+  );
 
   const exam: Exam | null = data?.data ? apiQuizDetailToExam(data.data) : null;
   const userRole = data?.data?.userRole ?? 'OWNER';
@@ -125,19 +129,12 @@ export default function ExamPage({ setId, examId }: Props) {
 
   if (isError || !exam) {
     return (
-      <div className='min-h-[calc(100vh-200px)] flex items-center justify-center'>
-        <div className='text-center'>
-          <p className='text-muted-foreground mb-4'>
-            {t('exam.page.loadError')}
-          </p>
-          <button
-            onClick={() => navigate(`/sets/${setId}/exams`)}
-            className='text-primary hover:underline'
-          >
-            {t('exam.backToExams')}
-          </button>
-        </div>
-      </div>
+      <ResourceAccessError
+        resource='exam'
+        error={error}
+        onRetry={refetch}
+        className='min-h-[calc(100vh-200px)]'
+      />
     );
   }
 

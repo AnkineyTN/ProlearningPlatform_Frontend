@@ -31,11 +31,13 @@ export default function TopicAccuracySection({
                 <span className='text-sm font-medium truncate min-w-0'>
                   {topic.topic}
                 </span>
-                <span className={`text-xs font-semibold shrink-0 ${colors.text}`}>
+                <span
+                  className={`text-xs font-semibold shrink-0 ${colors.text}`}
+                >
                   {pct}%
                 </span>
               </div>
-              <div className='h-1.5 rounded-full bg-muted overflow-hidden'>
+              <div className='h-1.5 rounded-full bg-[var(--pl-bg-sunken)] overflow-hidden'>
                 <div
                   className={`h-full rounded-full transition-all ${colors.bar}`}
                   style={{ width: `${pct}%` }}

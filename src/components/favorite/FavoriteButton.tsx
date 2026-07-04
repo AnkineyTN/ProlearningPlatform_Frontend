@@ -42,9 +42,7 @@ const FavoriteButton = ({
         onSuccess: (next) => {
           setFavorited(next);
           onToggled?.(next);
-          toast.success(
-            next ? t('favorite.added') : t('favorite.removed'),
-          );
+          toast.success(next ? t('favorite.added') : t('favorite.removed'));
         },
         onError: (error) => {
           setFavorited(!optimistic);
@@ -63,7 +61,7 @@ const FavoriteButton = ({
       aria-label={favorited ? t('favorite.remove') : t('favorite.add')}
       title={favorited ? t('favorite.remove') : t('favorite.add')}
       className={cn(
-        'grid place-items-center transition-all duration-200 disabled:opacity-60',
+        'grid place-items-center transition-all duration-200 disabled:opacity-60 cursor-pointer',
         favorited
           ? 'text-[var(--pl-danger)] hover:bg-[var(--pl-danger-soft)]'
           : 'text-[var(--pl-text-faint)] hover:text-[var(--pl-danger)] hover:bg-[var(--pl-bg-hover)]',

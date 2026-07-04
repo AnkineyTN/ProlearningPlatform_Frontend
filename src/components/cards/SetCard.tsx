@@ -65,7 +65,7 @@ const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
 
   return (
     <div
-      className='group relative rounded-[14px] p-[18px] cursor-pointer transition-all duration-200 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] hover:border-[var(--pl-accent-border)] hover:-translate-y-0.5'
+      className='group relative cursor-pointer rounded-[14px] p-[18px] transition-all duration-200 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] hover:border-[var(--pl-accent-border)] hover:-translate-y-0.5'
       onClick={() => {
         if (!showMenu && !showDeleteDialog && !showNotifDialog)
           onAccess(set.id);

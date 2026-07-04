@@ -12,6 +12,7 @@ import type {
   ListPrivacyFilter,
   ListSortOption,
 } from '@/components/lists/ResourceFiltersBar';
+import { Button } from '@/components/ui/button';
 
 export type ViewMode = 'grid' | 'table';
 
@@ -40,7 +41,8 @@ export default function SetFilterBar({
   onViewModeChange,
   onClearFilters,
 }: Props) {
-  const hasActiveFilters = search.length > 0 || privacy !== '' || sort !== 'id,DESC';
+  const hasActiveFilters =
+    search.length > 0 || privacy !== '' || sort !== 'id,DESC';
   const { t } = useTranslation();
 
   const privacyOptions: { value: ListPrivacyFilter; label: string }[] = [
@@ -167,34 +169,20 @@ export default function SetFilterBar({
           border: '1px solid var(--pl-border)',
         }}
       >
-        <button
+        <Button
           onClick={() => onViewModeChange('grid')}
-          className='px-2 py-2 transition-all'
-          style={{
-            background:
-              viewMode === 'grid' ? 'var(--pl-accent-soft)' : 'transparent',
-            color:
-              viewMode === 'grid'
-                ? 'var(--pl-accent-strong)'
-                : 'var(--pl-text-faint)',
-          }}
+          className='px-2 py-2 transition-all h-9 w-9'
+          variant={viewMode === 'grid' ? 'default' : 'ghost'}
         >
           <Grid2x2 className='size-4' />
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => onViewModeChange('table')}
-          className='px-2 py-2 transition-all'
-          style={{
-            background:
-              viewMode === 'table' ? 'var(--pl-accent-soft)' : 'transparent',
-            color:
-              viewMode === 'table'
-                ? 'var(--pl-accent-strong)'
-                : 'var(--pl-text-faint)',
-          }}
+          className='px-2 py-2 transition-all h-9 w-9'
+          variant={viewMode === 'table' ? 'default' : 'ghost'}
         >
           <List className='size-4' />
-        </button>
+        </Button>
       </div>
     </div>
   );

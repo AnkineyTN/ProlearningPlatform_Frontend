@@ -1,11 +1,24 @@
 import './notes.css';
 
+import { Loader2 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { apiErrorMessage } from '@/lib/apiError';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useBlocker, useNavigate, useParams } from 'react-router-dom';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { ResourceAccessError } from '@/components/collaboration/ResourceAccessError';
+import { Button } from '@/components/ui/button';
 import {
   ResizableHandle,
   ResizablePanel,
@@ -23,6 +36,7 @@ import { AISummarizePanel } from '@/pages/NotePage/components/AISummarizePanel';
 import {
   exportNoteAsHtml,
   exportNoteAsMarkdown,
+  exportNoteAsPdf,
   exportNoteAsText,
   type ExportFormat,
 } from '@/pages/NotePage/downloadNoteHtml';
@@ -47,7 +61,7 @@ export const NotePage = () => {
   }>();
   const numericSetId = setIdParam ? Number(setIdParam) : 0;
   const navigate = useNavigate();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const currentUser = useAuth().user;
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -59,12 +73,29 @@ export const NotePage = () => {
     { name: string; color: string }[]
   >([]);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+  const [isDirty, setIsDirty] = useState(false);
+  const [isSavingBeforeExit, setIsSavingBeforeExit] = useState(false);
   const editorRef = useRef<NoteEditorHandle>(null);
 
-  const { data: noteDetail, isLoading: isLoadingNote } = useNoteDetail(
-    numericSetId,
-    noteId ? parseInt(noteId) : 0,
+  const blocker = useBlocker(
+    useCallback(
+      ({
+        currentLocation,
+        nextLocation,
+      }: {
+        currentLocation: { pathname: string };
+        nextLocation: { pathname: string };
+      }) => isDirty && currentLocation.pathname !== nextLocation.pathname,
+      [isDirty],
+    ),
   );
+
+  const {
+    data: noteDetail,
+    isLoading: isLoadingNote,
+    error: noteError,
+    refetch: refetchNote,
+  } = useNoteDetail(numericSetId, noteId ? parseInt(noteId) : 0);
   const autoSaveMutation = useAutoSaveNote();
   const generateFlashcardsMutation = useGenerateFlashcardsFromNotes();
   const autoSaveMutationRef = useRef(autoSaveMutation);
@@ -115,7 +146,15 @@ export const NotePage = () => {
   }, [noteDetail]);
 
   useEffect(() => {
-    if (isInitialLoadRef.current) return;
+    if (!noteError) return;
+    setIsDirty(false);
+    if (blocker.state === 'blocked') blocker.proceed?.();
+  }, [noteError, blocker]);
+
+  useEffect(() => {
+    if (isInitialLoadRef.current || noteError) return;
+
+    setIsDirty(true);
 
     const timer = setTimeout(() => {
       if (setId && noteId && (title || content)) {
@@ -127,14 +166,17 @@ export const NotePage = () => {
             content,
           },
           {
-            onSuccess: () => setLastSavedAt(new Date()),
+            onSuccess: () => {
+              setLastSavedAt(new Date());
+              setIsDirty(false);
+            },
           },
         );
       }
     }, 5000);
 
     return () => clearTimeout(timer);
-  }, [title, content, noteId, setId]);
+  }, [title, content, noteId, setId, noteError]);
 
   const handleSave = useCallback(() => {
     if (setId && noteId) {
@@ -148,6 +190,7 @@ export const NotePage = () => {
         {
           onSuccess: () => {
             setLastSavedAt(new Date());
+            setIsDirty(false);
             toast.success('Note saved successfully');
           },
           onError: (error) => {
@@ -157,6 +200,48 @@ export const NotePage = () => {
       );
     }
   }, [setId, noteId, title, content]);
+
+  const handleExitWithoutSaving = useCallback(() => {
+    setIsDirty(false);
+    blocker.proceed?.();
+  }, [blocker]);
+
+  const handleSaveAndExit = useCallback(() => {
+    if (!setId || !noteId) {
+      handleExitWithoutSaving();
+      return;
+    }
+    setIsSavingBeforeExit(true);
+    autoSaveMutationRef.current.mutate(
+      {
+        setId,
+        noteId: parseInt(noteId),
+        title,
+        content,
+      },
+      {
+        onSuccess: () => {
+          setIsDirty(false);
+          setIsSavingBeforeExit(false);
+          blocker.proceed?.();
+        },
+        onError: (error) => {
+          setIsSavingBeforeExit(false);
+          toast.error(apiErrorMessage(error, 'Failed to save note'));
+        },
+      },
+    );
+  }, [setId, noteId, title, content, blocker, handleExitWithoutSaving]);
+
+  useEffect(() => {
+    if (!isDirty) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [isDirty]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -182,6 +267,11 @@ export const NotePage = () => {
   }, []);
 
   const handleExport = useCallback(async (format: ExportFormat) => {
+    if (format === 'pdf') {
+      const html = (await editorRef.current?.getHTML()) || '';
+      exportNoteAsPdf(title, html);
+      return;
+    }
     if (format === 'html') {
       const html = (await editorRef.current?.getHTML()) || '';
       exportNoteAsHtml(title, html);
@@ -270,6 +360,16 @@ export const NotePage = () => {
     );
   }
 
+  if (noteError) {
+    return (
+      <ResourceAccessError
+        resource='note'
+        error={noteError}
+        onRetry={() => void refetchNote()}
+      />
+    );
+  }
+
   return (
     <div className='flex flex-col w-full h-screen bg-[var(--pl-bg-sunken)]'>
       <NoteHeader
@@ -354,6 +454,49 @@ export const NotePage = () => {
           ) : null}
         </ResizablePanelGroup>
       </div>
+
+      <AlertDialog
+        open={blocker.state === 'blocked'}
+        onOpenChange={(open) => {
+          if (!open && !isSavingBeforeExit) blocker.reset?.();
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t('note.unsavedDialog.title')}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('note.unsavedDialog.description')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isSavingBeforeExit}>
+              {t('note.unsavedDialog.cancel')}
+            </AlertDialogCancel>
+            <Button
+              variant='outline'
+              onClick={handleExitWithoutSaving}
+              disabled={isSavingBeforeExit}
+              className='border-[var(--pl-danger-border)] text-[var(--pl-danger-text)] hover:bg-[var(--pl-danger-soft)]'
+            >
+              {t('note.unsavedDialog.exitWithoutSaving')}
+            </Button>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                handleSaveAndExit();
+              }}
+              disabled={isSavingBeforeExit}
+            >
+              {isSavingBeforeExit ? (
+                <Loader2 className='w-4 h-4 animate-spin' />
+              ) : null}
+              {t('note.unsavedDialog.saveAndExit')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

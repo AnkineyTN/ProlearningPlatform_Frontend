@@ -389,7 +389,7 @@
       "deleteConfirmation": "Bạn có chắc chắn muốn xóa",
       "deleteConfirmationTitle": "Xác nhận xóa",
       "deleteConfirmationWarning": "Hành động này không thể hoàn tác.",
-      "description": "Mô tả",
+      "description": "Mô tả (tùy chọn)",
       "enterDescription": "Nhập mô tả",
       "generateWithAI": "Tạo với AI",
       "method": {
@@ -409,7 +409,6 @@
       "optional": "Tùy chọn",
       "optionalLabel": "không bắt buộc",
       "editLaterHint": "Bạn có thể chỉnh sửa mọi thứ sau khi tạo.",
-      "titleHint": "Đặt tên ngắn gọn — bạn sẽ thấy nó trong Library.",
       "tabs": {
         "manual": "Tạo manually",
         "ai": "Generate by AI"
@@ -960,7 +959,6 @@
     "optional": "Tùy chọn",
     "optionalLabel": "không bắt buộc",
     "editLaterHint": "Bạn có thể chỉnh sửa mọi thứ sau khi tạo.",
-    "titleHint": "Đặt tên ngắn gọn — bạn sẽ thấy nó trong Library.",
     "tabs": {
       "manual": "Tạo manually",
       "ai": "Generate by AI"
@@ -996,7 +994,10 @@
     "thisFlashcard": "thẻ ghi nhớ này",
     "title": "Tiêu đề",
     "titleEmpty": "Vui lòng nhập tiêu đề",
-    "titleTooLong": "Tiêu đề phải ít hơn 100 ký tự",
+    "titleTooLong": "Đã đạt giới hạn 100 ký tự",
+    "descriptionTooShort": "Mô tả phải có ít nhất 3 ký tự",
+    "descriptionTooLong": "Đã đạt giới hạn 500 ký tự",
+    "charCount": "{{current}}/{{max}}",
     "unlisted": "Không công khai",
     "update": "Chỉnh sửa {{type}}",
     "updateButton": "Chỉnh sửa",
@@ -1116,7 +1117,15 @@
     "title": "Danh sách tài liệu",
     "your_set": "Bộ học tập của bạn",
     "your_workspace": "Không gian của bạn",
-    "searchPlaceholder": "Tìm bộ học…"
+    "searchPlaceholder": "Tìm bộ học…",
+    "emptyTitle": "Chưa có bộ học nào",
+    "emptyDescription": "Tạo bộ học đầu tiên để bắt đầu",
+    "createButton": "Tạo bộ học đầu tiên",
+    "noResultsTitle": "Không tìm thấy bộ học nào",
+    "noResultsDescription": "Hãy thử điều chỉnh tìm kiếm hoặc bộ lọc"
+  },
+  "setCard": {
+    "notificationSettings": "Cài đặt thông báo"
   },
   "sidebar": {
     "blog": "Blog",
@@ -2366,7 +2375,32 @@
       "errorInvalidType": "Định dạng tệp không hợp lệ. Vui lòng tải lên ảnh, PDF, DOC, DOCX, PPTX hoặc TXT.",
       "errorInvalidNote": "Ghi chú không hợp lệ",
       "success": "Tải tệp lên thành công"
+    },
+    "unsavedDialog": {
+      "title": "Ghi chú chưa được lưu",
+      "description": "Bạn có thay đổi chưa được lưu. Bạn có muốn lưu trước khi thoát không?",
+      "saveAndExit": "Lưu và thoát",
+      "exitWithoutSaving": "Thoát không lưu",
+      "cancel": "Tiếp tục chỉnh sửa",
+      "beforeUnload": "Bạn có thay đổi chưa được lưu có thể bị mất."
     }
+  },
+  "resourceAccess": {
+    "type": {
+      "note": "ghi chú",
+      "flashcard": "bộ thẻ học",
+      "exam": "đề thi"
+    },
+    "accessDenied": {
+      "title": "Bạn không còn quyền truy cập {{resource}} này",
+      "description": "Chủ sở hữu đã thay đổi quyền chia sẻ của {{resource}} này hoặc đã gỡ quyền truy cập của bạn. Vui lòng liên hệ chủ sở hữu nếu bạn cần truy cập lại."
+    },
+    "loadError": {
+      "title": "Không tải được {{resource}}",
+      "description": "Đã xảy ra lỗi khi tải {{resource}}. Vui lòng kiểm tra kết nối và thử lại."
+    },
+    "backButton": "Về trang chính",
+    "retry": "Thử lại"
   },
   "collaboration": {
     "members": {

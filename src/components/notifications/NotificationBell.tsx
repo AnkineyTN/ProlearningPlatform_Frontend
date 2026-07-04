@@ -60,14 +60,18 @@ function compactRelativeTime(
   const seconds = Math.floor((Date.now() - then) / 1000);
   if (seconds < 60) return t('notificationsPanel.timeJustNow');
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return t('notificationsPanel.timeMinutesAgo', { count: minutes });
+  if (minutes < 60)
+    return t('notificationsPanel.timeMinutesAgo', { count: minutes });
   const hours = Math.floor(minutes / 60);
   if (hours < 24) return t('notificationsPanel.timeHoursAgo', { count: hours });
   const days = Math.floor(hours / 24);
   if (days < 30) return t('notificationsPanel.timeDaysAgo', { count: days });
   const months = Math.floor(days / 30);
-  if (months < 12) return t('notificationsPanel.timeMonthsAgo', { count: months });
-  return t('notificationsPanel.timeYearsAgo', { count: Math.floor(days / 365) });
+  if (months < 12)
+    return t('notificationsPanel.timeMonthsAgo', { count: months });
+  return t('notificationsPanel.timeYearsAgo', {
+    count: Math.floor(days / 365),
+  });
 }
 
 const INVITE_TYPES: Record<string, ResourceType> = {
@@ -220,18 +224,18 @@ const NOTIFICATION_TYPE_CONFIG: Record<string, TypeConfig> = {
   GENERAL: {
     icon: Bell,
     iconColor: 'text-muted-foreground',
-    bgColor: 'bg-muted',
+    bgColor: 'bg-[var(--pl-bg-sunken)]',
     borderColor: 'border-muted-foreground',
-    dotColor: 'bg-muted-foreground',
+    dotColor: 'bg-[var(--pl-bg-sunken)]-foreground',
   },
 };
 
 const DEFAULT_TYPE_CONFIG: TypeConfig = {
   icon: Bell,
   iconColor: 'text-muted-foreground',
-  bgColor: 'bg-muted',
+  bgColor: 'bg-[var(--pl-bg-sunken)]',
   borderColor: 'border-muted-foreground',
-  dotColor: 'bg-muted-foreground',
+  dotColor: 'bg-[var(--pl-bg-sunken)]-foreground',
 };
 
 function getTypeConfig(type: string): TypeConfig {
@@ -301,7 +305,9 @@ function InviteActions({
       onDone();
       navigate(buildDestUrl());
     } catch (error) {
-      toast.error(apiErrorMessage(error, t('notificationsPanel.acceptInviteError')));
+      toast.error(
+        apiErrorMessage(error, t('notificationsPanel.acceptInviteError')),
+      );
     }
   };
 
@@ -348,7 +354,7 @@ function InviteActions({
   if (localStatus === 'declined') {
     return (
       <div className='mt-2' onClick={(e) => e.stopPropagation()}>
-        <span className='flex w-fit items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'>
+        <span className='flex w-fit items-center gap-1 rounded-full bg-[var(--pl-bg-sunken)] px-2 py-0.5 text-xs font-medium text-muted-foreground'>
           <X className='size-3' />
           {t('notificationsPanel.inviteStatusDeclined')}
         </span>
@@ -374,7 +380,7 @@ function InviteActions({
   if (isExpired) {
     return (
       <div className='mt-2'>
-        <span className='inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'>
+        <span className='inline-flex items-center gap-1 rounded-full bg-[var(--pl-bg-sunken)] px-2 py-0.5 text-xs font-medium text-muted-foreground'>
           <AlertTriangle className='size-3' />
           {t('notificationsPanel.inviteExpired')}
         </span>
@@ -537,7 +543,7 @@ function NotificationRow({
             }}
             className={cn(
               'flex size-7 items-center justify-center rounded-full transition-colors',
-              'hover:bg-muted focus-visible:bg-muted focus-visible:outline-none',
+              'hover:bg-[var(--pl-bg-sunken)] focus-visible:bg-[var(--pl-bg-sunken)] focus-visible:outline-none',
             )}
             aria-label={t('notificationsPanel.markAsRead')}
             title={t('notificationsPanel.markAsRead')}

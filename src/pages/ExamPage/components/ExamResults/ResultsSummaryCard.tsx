@@ -33,7 +33,7 @@ export default function ResultsSummaryCard({
     : t('exam.results.heroSubtitleFailed', { pct: pct.toFixed(1) });
 
   const ringColor = result.passed ? 'var(--pl-accent)' : 'var(--pl-danger)';
-  const ringGlow  = result.passed
+  const ringGlow = result.passed
     ? 'var(--pl-accent-soft)'
     : 'color-mix(in oklch, var(--pl-danger) 45%, transparent)';
 
@@ -77,13 +77,21 @@ export default function ResultsSummaryCard({
           <div className='inline-flex relative items-center justify-center mb-8'>
             <svg width='220' height='220' viewBox='0 0 220 220'>
               <circle
-                cx='110' cy='110' r={radius}
-                fill='none' strokeWidth='8'
-                stroke='var(--pl-border)' opacity='0.3'
+                cx='110'
+                cy='110'
+                r={radius}
+                fill='none'
+                strokeWidth='8'
+                stroke='var(--pl-border)'
+                opacity='0.3'
               />
               <circle
-                cx='110' cy='110' r={radius}
-                fill='none' strokeWidth='8' strokeLinecap='round'
+                cx='110'
+                cy='110'
+                r={radius}
+                fill='none'
+                strokeWidth='8'
+                strokeLinecap='round'
                 stroke={ringColor}
                 strokeDasharray={`${dash} ${circumference - dash}`}
                 transform='rotate(-90 110 110)'
@@ -102,7 +110,9 @@ export default function ResultsSummaryCard({
                 <span className='text-2xl text-muted-foreground'>%</span>
               </span>
               <span className='text-xs text-muted-foreground mt-2'>
-                {result.passed ? t('exam.results.passed') : t('exam.results.keepPracticing')}
+                {result.passed
+                  ? t('exam.results.passed')
+                  : t('exam.results.keepPracticing')}
               </span>
             </div>
           </div>
@@ -114,10 +124,14 @@ export default function ResultsSummaryCard({
         {/* Score */}
         <div className='rounded-2xl border border-border bg-[var(--pl-bg)] p-5'>
           <div className='flex items-center justify-between mb-4'>
-            <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${passedScoreClass}`}>
+            <div
+              className={`w-9 h-9 rounded-lg flex items-center justify-center ${passedScoreClass}`}
+            >
               <Award className='w-4 h-4' />
             </div>
-            <span className={`inline-flex items-center text-[11px] px-2 py-1 rounded-full border ${passedBadgeClass}`}>
+            <span
+              className={`inline-flex items-center text-[11px] px-2 py-1 rounded-full border ${passedBadgeClass}`}
+            >
               {result.earnedScore}/{result.totalScore} {t('exam.common.points')}
             </span>
           </div>
@@ -125,7 +139,8 @@ export default function ResultsSummaryCard({
             {t('exam.results.score').toUpperCase()}
           </p>
           <p className='font-[family-name:var(--font-display)] text-3xl font-medium mb-1'>
-            {pct.toFixed(1)}<span className='text-base text-muted-foreground'>%</span>
+            {pct.toFixed(1)}
+            <span className='text-base text-muted-foreground'>%</span>
           </p>
           <p className='text-xs text-muted-foreground'>
             {result.passed
@@ -151,19 +166,23 @@ export default function ResultsSummaryCard({
           </p>
           <p className='font-[family-name:var(--font-display)] text-3xl font-medium mb-1 text-[var(--pl-accent-strong)]'>
             {correctCount}{' '}
-            <span className='text-base text-muted-foreground'>/ {totalNonEssay}</span>
+            <span className='text-base text-muted-foreground'>
+              / {totalNonEssay}
+            </span>
           </p>
           <p className='text-xs text-muted-foreground'>
             {totalNonEssay - correctCount === 0
               ? t('exam.results.allCorrect')
-              : t('exam.results.toReview', { count: totalNonEssay - correctCount })}
+              : t('exam.results.toReview', {
+                  count: totalNonEssay - correctCount,
+                })}
           </p>
         </div>
 
         {/* Time */}
         <div className='rounded-2xl border border-border bg-[var(--pl-bg)] p-5'>
           <div className='flex items-center justify-between mb-4'>
-            <div className='w-9 h-9 rounded-lg bg-muted flex items-center justify-center'>
+            <div className='w-9 h-9 rounded-lg bg-[var(--pl-bg-sunken)] flex items-center justify-center'>
               <Clock className='w-4 h-4 text-muted-foreground' />
             </div>
           </div>

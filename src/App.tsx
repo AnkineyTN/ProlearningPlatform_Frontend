@@ -1,7 +1,7 @@
 import './i18n/config';
 
 import { useEffect } from 'react';
-import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
+import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 
 import { ColorThemeProvider } from '@/components/theme/color-theme-provider.tsx';
 import { ThemeProvider } from '@/components/theme/theme-provider.tsx';
@@ -17,19 +17,33 @@ import AiRateLimitDialog from '@/components/AiRateLimitDialog';
 
 import { routeConfig } from './config/routeConfig.tsx';
 
-// Renders inside Router so useLocation works, and inside PomodoroProvider.
-function AppContent() {
-  const routes = useRoutes(routeConfig);
+// Renders inside the router so useLocation/useNavigate work, and inside PomodoroProvider.
+function AppShell() {
   const { activeSounds } = usePomodoroContext();
   return (
     <>
       <SoundLayer activeSounds={activeSounds} />
       <PomodoroFloatingWidget />
       <AiRateLimitDialog />
-      {routes}
+      <Outlet />
     </>
   );
 }
+
+function RootLayout() {
+  return (
+    <PomodoroProvider>
+      <AppShell />
+    </PomodoroProvider>
+  );
+}
+
+const router = createBrowserRouter([
+  {
+    element: <RootLayout />,
+    children: routeConfig,
+  },
+]);
 
 function App() {
   useEffect(() => {
@@ -77,11 +91,7 @@ function App() {
     <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
       <Toaster />
       <ColorThemeProvider>
-        <PomodoroProvider>
-          <Router>
-            <AppContent />
-          </Router>
-        </PomodoroProvider>
+        <RouterProvider router={router} />
       </ColorThemeProvider>
     </ThemeProvider>
   );

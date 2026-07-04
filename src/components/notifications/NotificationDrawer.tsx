@@ -197,18 +197,18 @@ const NOTIFICATION_TYPE_CONFIG: Record<string, TypeConfig> = {
   GENERAL: {
     icon: Bell,
     iconColor: 'text-muted-foreground',
-    bgColor: 'bg-muted',
+    bgColor: 'bg-[var(--pl-bg-sunken)]',
     borderColor: 'border-muted-foreground',
-    dotColor: 'bg-muted-foreground',
+    dotColor: 'bg-[var(--pl-bg-sunken)]-foreground',
   },
 };
 
 const DEFAULT_TYPE_CONFIG: TypeConfig = {
   icon: Bell,
   iconColor: 'text-muted-foreground',
-  bgColor: 'bg-muted',
+  bgColor: 'bg-[var(--pl-bg-sunken)]',
   borderColor: 'border-muted-foreground',
-  dotColor: 'bg-muted-foreground',
+  dotColor: 'bg-[var(--pl-bg-sunken)]-foreground',
 };
 
 function getTypeConfig(type: string): TypeConfig {
@@ -224,14 +224,20 @@ function compactRelativeTime(
   const seconds = Math.floor((Date.now() - then) / 1000);
   if (seconds < 60) return t('notificationsPanel.timeCompactJustNow');
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return t('notificationsPanel.timeCompactMinutesAgo', { count: minutes });
+  if (minutes < 60)
+    return t('notificationsPanel.timeCompactMinutesAgo', { count: minutes });
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return t('notificationsPanel.timeCompactHoursAgo', { count: hours });
+  if (hours < 24)
+    return t('notificationsPanel.timeCompactHoursAgo', { count: hours });
   const days = Math.floor(hours / 24);
-  if (days < 30) return t('notificationsPanel.timeCompactDaysAgo', { count: days });
+  if (days < 30)
+    return t('notificationsPanel.timeCompactDaysAgo', { count: days });
   const months = Math.floor(days / 30);
-  if (months < 12) return t('notificationsPanel.timeCompactMonthsAgo', { count: months });
-  return t('notificationsPanel.timeCompactYearsAgo', { count: Math.floor(days / 365) });
+  if (months < 12)
+    return t('notificationsPanel.timeCompactMonthsAgo', { count: months });
+  return t('notificationsPanel.timeCompactYearsAgo', {
+    count: Math.floor(days / 365),
+  });
 }
 
 type Bucket = 'today' | 'yesterday' | 'thisWeek' | 'earlier';
@@ -338,7 +344,9 @@ function InviteActions({
       onDone();
       navigate(buildDestUrl());
     } catch (error) {
-      toast.error(apiErrorMessage(error, t('notificationsPanel.acceptInviteError')));
+      toast.error(
+        apiErrorMessage(error, t('notificationsPanel.acceptInviteError')),
+      );
     }
   };
 
@@ -383,7 +391,7 @@ function InviteActions({
   if (localStatus === 'declined') {
     return (
       <div className='mt-2' onClick={(e) => e.stopPropagation()}>
-        <span className='flex w-fit items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'>
+        <span className='flex w-fit items-center gap-1 rounded-full bg-[var(--pl-bg-sunken)] px-2 py-0.5 text-xs font-medium text-muted-foreground'>
           <X className='size-3' />
           {t('notificationsPanel.inviteStatusDeclined')}
         </span>
@@ -408,7 +416,7 @@ function InviteActions({
   if (isExpired) {
     return (
       <div className='mt-2'>
-        <span className='inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'>
+        <span className='inline-flex items-center gap-1 rounded-full bg-[var(--pl-bg-sunken)] px-2 py-0.5 text-xs font-medium text-muted-foreground'>
           <AlertTriangle className='size-3' />
           {t('notificationsPanel.inviteExpired')}
         </span>
@@ -506,9 +514,6 @@ function NotificationCard({
           <p className='text-sm font-semibold leading-snug text-foreground'>
             {title}
           </p>
-          <span className='shrink-0 text-[11px] font-medium text-muted-foreground'>
-            {compactRelativeTime(item.createdAt, t)}
-          </span>
         </div>
         <p className='mt-1 text-sm text-muted-foreground'>{message}</p>
 
@@ -526,24 +531,30 @@ function NotificationCard({
           </button>
         )}
 
-        {isInviteType(item.type) && (
-          <InviteActions item={item} onDone={onRefresh} />
-        )}
+        <div className='flex items-end justify-between gap-2'>
+          {isInviteType(item.type) && (
+            <InviteActions item={item} onDone={onRefresh} />
+          )}
+          <div className='shrink-0 text-[11px] font-medium text-muted-foreground'>
+            {compactRelativeTime(item.createdAt, t)}
+          </div>
+        </div>
       </div>
       {!item.isRead && (
-        <button
-          type='button'
+        <Button
+          variant='ghost'
+          size='icon'
           disabled={isActivating}
           onClick={(e) => {
             e.stopPropagation();
             onMarkRead(item);
           }}
-          className='absolute right-2 top-2 flex size-6 items-center justify-center rounded-full opacity-0 transition-opacity hover:bg-muted group-hover:opacity-100 focus-visible:opacity-100'
+          className='absolute right-2 top-2 flex size-6 items-center justify-center rounded-full opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100'
           aria-label={t('notificationsPanel.markAsRead')}
           title={t('notificationsPanel.markAsRead')}
         >
           <span className={cn('size-2 rounded-full', config.dotColor)} />
-        </button>
+        </Button>
       )}
     </div>
   );
