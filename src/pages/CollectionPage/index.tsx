@@ -235,6 +235,7 @@ export default function CollectionPage() {
                     {sharedNotes.map((note) => (
                       <div key={note.id} className='relative'>
                         <NoteCard
+                          setId={note.setId}
                           note={{
                             id: note.id,
                             title: note.title,
@@ -266,6 +267,7 @@ export default function CollectionPage() {
                     {sharedFlashcards.map((fc) => (
                       <div key={fc.id} className='relative'>
                         <FlashCard
+                          setId={fc.setId}
                           flashcard={{
                             id: fc.id,
                             title: fc.title,
@@ -299,6 +301,7 @@ export default function CollectionPage() {
                     {sharedExams.map((exam) => (
                       <div key={exam.id} className='relative'>
                         <ExamCard
+                          setId={exam.setId}
                           exam={{
                             id: exam.id,
                             title: exam.title,

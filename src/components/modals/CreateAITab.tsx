@@ -43,6 +43,7 @@ const CreateAITab = ({
   const [selectedNotes, setSelectedNotes] = useState<NoteAIInput[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [webUrlsText, setWebUrlsText] = useState('');
+  const [existingExamFile, setExistingExamFile] = useState<File[]>([]);
 
   const [aiTitle, setAiTitle] = useState('');
   const [aiPrivacy, setAiPrivacy] = useState<AIPrivacy>('PRIVATE');
@@ -74,9 +75,12 @@ const CreateAITab = ({
   const hasSource =
     (source === 'notes' && selectedNotes.length > 0) ||
     (source === 'files' && uploadedFiles.length > 0) ||
-    (source === 'web' && webUrls.length > 0);
+    (source === 'web' && webUrls.length > 0) ||
+    (source === 'existing-exam' && existingExamFile.length > 0);
   const valid = isExam
-    ? hasSource && totalQuestions > 0 && difficultySum === 100
+    ? source === 'existing-exam'
+      ? hasSource
+      : hasSource && totalQuestions > 0 && difficultySum === 100
     : hasSource;
 
   useEffect(() => {
@@ -94,6 +98,7 @@ const CreateAITab = ({
     if (source === 'notes') data.notes = selectedNotes;
     if (source === 'files') data.files = uploadedFiles;
     if (source === 'web') data.urls = webUrls;
+    if (source === 'existing-exam') data.files = existingExamFile;
     if (isExam) {
       data.questionCounts = counts;
       data.difficulty = difficulty;
@@ -104,6 +109,7 @@ const CreateAITab = ({
     selectedNotes,
     uploadedFiles,
     webUrls,
+    existingExamFile,
     aiTitle,
     aiPrivacy,
     language,
@@ -141,6 +147,7 @@ const CreateAITab = ({
         value={source}
         onChange={setSource}
         disabled={isLoading}
+        showExistingExam={isExam}
       />
 
       <div>
@@ -171,6 +178,14 @@ const CreateAITab = ({
             disabled={isLoading}
           />
         )}
+        {source === 'existing-exam' && (
+          <AIFileUploader
+            files={existingExamFile}
+            onChange={setExistingExamFile}
+            disabled={isLoading}
+            maxFiles={1}
+          />
+        )}
       </div>
 
       <AITitlePrivacyRow
@@ -181,7 +196,7 @@ const CreateAITab = ({
         disabled={isLoading}
       />
 
-      {isExam && (
+      {isExam && source !== 'existing-exam' && (
         <AIExamSettings
           counts={counts}
           onCountsChange={setCounts}

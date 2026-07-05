@@ -1,4 +1,4 @@
-import { Bell, Edit, Trash2 } from 'lucide-react';
+import { Bell, Edit, Link2, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
@@ -7,12 +7,14 @@ type Props = {
   onUpdate: (e: React.MouseEvent) => void;
   onDelete: (e: React.MouseEvent) => void;
   onNotificationSettings?: (e: React.MouseEvent) => void;
+  onCopyLink?: (e: React.MouseEvent) => void;
 };
 
 const DropdownMenu = ({
   onUpdate,
   onDelete,
   onNotificationSettings,
+  onCopyLink,
 }: Props) => {
   const { t } = useTranslation();
   return (
@@ -37,6 +39,16 @@ const DropdownMenu = ({
         <Edit className='w-4 h-4' />
         {t('modal.updateButton')}
       </Button>
+      {onCopyLink && (
+        <Button
+          variant='ghost'
+          onClick={onCopyLink}
+          className='w-full transition-colors cursor-pointer flex justify-start pl-3 items-center gap-2'
+        >
+          <Link2 className='w-4 h-4' />
+          {t('common.copyLink')}
+        </Button>
+      )}
       <Button
         variant='ghost'
         onClick={onDelete}

@@ -1,4 +1,4 @@
-import { Check, FileText, FileUp, Link2 } from 'lucide-react';
+import { Check, FileText, FileUp, Link2, Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Label } from '@/components/ui/label';
@@ -10,9 +10,15 @@ type Props = {
   value: AISource;
   onChange: (value: AISource) => void;
   disabled?: boolean;
+  showExistingExam?: boolean;
 };
 
-const AISourcePicker = ({ value, onChange, disabled }: Props) => {
+const AISourcePicker = ({
+  value,
+  onChange,
+  disabled,
+  showExistingExam,
+}: Props) => {
   const { t } = useTranslation();
 
   const cards = [
@@ -40,6 +46,20 @@ const AISourcePicker = ({ value, onChange, disabled }: Props) => {
         defaultValue: 'Articles, Wikipedia, MDN — AI crawls them.',
       }),
     },
+    ...(showExistingExam
+      ? [
+          {
+            value: 'existing-exam' as const,
+            icon: Copy,
+            label: t('modal.ai.fromExistingExam', {
+              defaultValue: 'Similar to Exam',
+            }),
+            description: t('modal.ai.fromExistingExamDesc', {
+              defaultValue: 'Upload a past exam — AI creates a similar one.',
+            }),
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -47,7 +67,12 @@ const AISourcePicker = ({ value, onChange, disabled }: Props) => {
       <Label className='text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground mb-2.5 block'>
         {t('modal.ai.sourceLabel', { defaultValue: 'Content source' })}
       </Label>
-      <div className='grid grid-cols-3 gap-3'>
+      <div
+        className={cn(
+          'grid gap-3',
+          cards.length === 4 ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-3',
+        )}
+      >
         {cards.map((card) => {
           const Icon = card.icon;
           const selected = value === card.value;

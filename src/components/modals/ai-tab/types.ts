@@ -1,6 +1,6 @@
 import type { ExamAIDifficultyDistribution } from '@/services/types/exam.types';
 
-export type AISource = 'notes' | 'files' | 'web';
+export type AISource = 'notes' | 'files' | 'web' | 'existing-exam';
 
 export type AIPrivacy = 'PUBLIC' | 'PRIVATE';
 

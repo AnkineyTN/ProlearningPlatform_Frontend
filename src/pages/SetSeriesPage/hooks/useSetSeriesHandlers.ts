@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { apiErrorMessage } from '@/lib/apiError';
+import { apiErrorMessage, getApiError } from '@/lib/apiError';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import type { AISubmitData } from '@/components/modals/CreateAITab';
 import type { NoteAIGenerateData } from '@/components/modals/ai-tab/types';
 import {
@@ -16,6 +17,7 @@ import {
 import {
   useDeleteExam,
   useUpdateExam,
+  useGenerateExamFromExistingExam,
   useGenerateExamFromFiles,
   useGenerateExamFromNotes,
   useGenerateExamFromWeb,
@@ -63,22 +65,48 @@ export function useSetSeriesHandlers({
   const [isUploadNoteModalOpen, setIsUploadNoteModalOpen] = useState(false);
 
   // --- Per-tab filter state ---
+  // Sort/privacy/method selections persist per-Set in localStorage so a
+  // refresh (or revisiting the set) keeps the user's chosen view.
   const [notesSearch, setNotesSearch] = useState('');
-  const [notesPrivacy, setNotesPrivacy] = useState<ListPrivacyFilter>('');
-  const [notesSort, setNotesSort] = useState<ListSortOption>('id,DESC');
+  const [notesPrivacy, setNotesPrivacy] = usePersistedState<ListPrivacyFilter>(
+    `set-${setId}-notes-privacy`,
+    '',
+  );
+  const [notesSort, setNotesSort] = usePersistedState<ListSortOption>(
+    `set-${setId}-notes-sort`,
+    'id,DESC',
+  );
 
   const [flashcardsSearch, setFlashcardsSearch] = useState('');
   const [flashcardsPrivacy, setFlashcardsPrivacy] =
-    useState<ListPrivacyFilter>('');
+    usePersistedState<ListPrivacyFilter>(
+      `set-${setId}-flashcards-privacy`,
+      '',
+    );
   const [flashcardsMethod, setFlashcardsMethod] =
-    useState<ListCreateMethodFilter>('');
+    usePersistedState<ListCreateMethodFilter>(
+      `set-${setId}-flashcards-method`,
+      '',
+    );
   const [flashcardsSort, setFlashcardsSort] =
-    useState<ListSortOption>('id,DESC');
+    usePersistedState<ListSortOption>(
+      `set-${setId}-flashcards-sort`,
+      'id,DESC',
+    );
 
   const [examsSearch, setExamsSearch] = useState('');
-  const [examsPrivacy, setExamsPrivacy] = useState<ListPrivacyFilter>('');
-  const [examsMethod, setExamsMethod] = useState<ListCreateMethodFilter>('');
-  const [examsSort, setExamsSort] = useState<ListSortOption>('id,DESC');
+  const [examsPrivacy, setExamsPrivacy] = usePersistedState<ListPrivacyFilter>(
+    `set-${setId}-exams-privacy`,
+    '',
+  );
+  const [examsMethod, setExamsMethod] = usePersistedState<ListCreateMethodFilter>(
+    `set-${setId}-exams-method`,
+    '',
+  );
+  const [examsSort, setExamsSort] = usePersistedState<ListSortOption>(
+    `set-${setId}-exams-sort`,
+    'id,DESC',
+  );
 
   // --- Mutations ---
   const updateFlashcardMutation = useUpdateFlashcard();
@@ -95,6 +123,7 @@ export function useSetSeriesHandlers({
   const generateExamFromFilesMutation = useGenerateExamFromFiles();
   const generateExamFromNotesMutation = useGenerateExamFromNotes();
   const generateExamFromWebMutation = useGenerateExamFromWeb();
+  const generateExamFromExistingExamMutation = useGenerateExamFromExistingExam();
 
   // --- Computed flags ---
   const isGenerating =
@@ -104,6 +133,7 @@ export function useSetSeriesHandlers({
     generateExamFromFilesMutation.isPending ||
     generateExamFromNotesMutation.isPending ||
     generateExamFromWebMutation.isPending ||
+    generateExamFromExistingExamMutation.isPending ||
     aiGenerateNoteMutation.isPending;
 
   const isCreatingNote = createNoteMutation.isPending;
@@ -247,6 +277,12 @@ export function useSetSeriesHandlers({
             difficulty,
             freeText: data.freeText,
           });
+        } else if (data.source === 'existing-exam' && data.files?.[0]) {
+          result = await generateExamFromExistingExamMutation.mutateAsync({
+            setId: Number(setId),
+            file: data.files[0],
+            description: data.freeText,
+          });
         }
 
         if (!result) return;
@@ -264,7 +300,9 @@ export function useSetSeriesHandlers({
                 ? t('set.handlers.generatedFromNotes', { count: data.notes?.length ?? 0 })
                 : data.source === 'files'
                   ? t('set.handlers.generatedFromFiles', { count: data.files?.length ?? 0 })
-                  : t('set.handlers.generatedFromUrls', { count: data.urls?.length ?? 0 })),
+                  : data.source === 'existing-exam'
+                    ? t('set.handlers.generatedFromExistingExam')
+                    : t('set.handlers.generatedFromUrls', { count: data.urls?.length ?? 0 })),
             privacy: data.privacy,
             duration: result.data?.duration,
             aiContent: content,
@@ -294,7 +332,14 @@ export function useSetSeriesHandlers({
           setIsCreateModalOpen(false);
         } catch (error) {
           console.error('Error creating note:', error);
+          if (getApiError(error).status === 404) {
+            toast.error(t('set.handlers.setNotFound'));
+            setIsCreateModalOpen(false);
+            navigate('/sets');
+            return;
+          }
           toast.error(apiErrorMessage(error, t('set.handlers.createNoteError')));
+          throw error;
         }
         break;
       case 'Flashcards':

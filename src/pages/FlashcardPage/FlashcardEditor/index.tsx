@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ArrowLeft, Plus, Shuffle, Upload, MoreHorizontal } from 'lucide-react';
+import { ArrowLeft, Plus, Upload } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -375,21 +375,13 @@ export default function FlashcardEditor({
         {/* Controls bar */}
         <div className='flex items-center justify-between mb-5'>
           <div className='flex items-center gap-2'>
-            <button
+            <Button
+              variant='outline'
               onClick={() => setIsImportModalOpen(true)}
-              className='flex items-center gap-2 px-3.5 py-2 bg-[var(--pl-bg)] border border-border rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer'
             >
               <Upload className='w-3.5 h-3.5' />
               Import
-            </button>
-          </div>
-          <div className='flex items-center gap-2 text-muted-foreground'>
-            <button className='w-8 h-8 rounded-lg border border-border bg-[var(--pl-bg)] flex items-center justify-center hover:bg-secondary transition-colors cursor-pointer'>
-              <Shuffle className='w-3.5 h-3.5' />
-            </button>
-            <button className='w-8 h-8 rounded-lg border border-border bg-[var(--pl-bg)] flex items-center justify-center hover:bg-secondary transition-colors cursor-pointer'>
-              <MoreHorizontal className='w-3.5 h-3.5' />
-            </button>
+            </Button>
           </div>
         </div>
 

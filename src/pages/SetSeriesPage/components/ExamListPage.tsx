@@ -81,6 +81,7 @@ export default function ExamListPage({
         {exams.map((exam) => (
           <ExamCard
             key={exam.id}
+            setId={setId}
             exam={{
               id: exam.id,
               title: exam.title,

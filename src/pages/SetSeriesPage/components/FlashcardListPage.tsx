@@ -87,6 +87,7 @@ const FlashcardListPage = ({
         {flashcards.map((flashcard) => (
           <FlashCard
             key={flashcard.id}
+            setId={setId}
             flashcard={{
               id: flashcard.id,
               title: flashcard.title,

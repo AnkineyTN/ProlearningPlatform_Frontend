@@ -11,6 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 
 interface ImportedCard {
   term: string;
@@ -39,7 +41,8 @@ const FORMAT_EXAMPLES: Record<string, string> = {
 
 const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
   const { t } = useTranslation();
-  const [format, setFormat] = useState<keyof typeof FORMAT_SEPARATORS>('simple');
+  const [format, setFormat] =
+    useState<keyof typeof FORMAT_SEPARATORS>('simple');
   const [content, setContent] = useState('');
   const [preview, setPreview] = useState<ImportedCard[]>([]);
   const [showPreview, setShowPreview] = useState(false);
@@ -88,18 +91,15 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
   };
 
   return (
-    <div className='fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4'>
+    <div className='fixed inset-0 flex items-center justify-center z-50 p-4'>
       <div className='bg-[var(--pl-bg)] border border-border rounded-2xl shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col'>
         {/* Header */}
         <div className='flex items-center justify-between px-6 py-5 border-b border-border'>
           <div className='flex items-center gap-3'>
             {showPreview && (
-              <button
-                onClick={() => setShowPreview(false)}
-                className='w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer'
-              >
+              <Button onClick={() => setShowPreview(false)} variant='ghost'>
                 <ArrowLeft className='w-4 h-4' />
-              </button>
+              </Button>
             )}
             <div>
               <p className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-0.5'>
@@ -108,16 +108,15 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
                   : t('flashcard.import.importTitle')}
               </p>
               <h2 className='font-[family-name:var(--font-display)] text-xl font-medium tracking-tight'>
-                {showPreview ? t('flashcard.import.previewTitle') : t('flashcard.import.title')}
+                {showPreview
+                  ? t('flashcard.import.previewTitle')
+                  : t('flashcard.import.title')}
               </h2>
             </div>
           </div>
-          <button
-            onClick={handleClose}
-            className='w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer'
-          >
+          <Button onClick={handleClose} variant='ghost'>
             <X className='w-4 h-4' />
-          </button>
+          </Button>
         </div>
 
         {/* Body */}
@@ -126,12 +125,14 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
             <div className='space-y-5'>
               {/* Format selector */}
               <div>
-                <label className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block'>
+                <Label className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block'>
                   {t('flashcard.import.formatLabel')}
-                </label>
+                </Label>
                 <Select
                   value={format}
-                  onValueChange={(v) => setFormat(v as keyof typeof FORMAT_SEPARATORS)}
+                  onValueChange={(v) =>
+                    setFormat(v as keyof typeof FORMAT_SEPARATORS)
+                  }
                 >
                   <SelectTrigger className='w-full bg-[var(--pl-bg)] border-border'>
                     <SelectValue />
@@ -140,30 +141,32 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
                     <SelectItem value='simple'>
                       {t('flashcard.import.formatPipe')}
                     </SelectItem>
-                    <SelectItem value='tab'>{t('flashcard.import.formatTab')}</SelectItem>
-                    <SelectItem value='comma'>{t('flashcard.import.formatComma')}</SelectItem>
+                    <SelectItem value='tab'>
+                      {t('flashcard.import.formatTab')}
+                    </SelectItem>
+                    <SelectItem value='comma'>
+                      {t('flashcard.import.formatComma')}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Example */}
-              <div className='bg-secondary/50 rounded-xl p-4 border border-border/50'>
-                <p className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-2'>
-                  {t('flashcard.import.exampleLabel', {
-                    description: t(`flashcard.import.format${format.charAt(0).toUpperCase() + format.slice(1)}Desc`),
-                  })}
+              <div className='bg-[var(--pl-bg-sunken)] rounded-xl p-4 border border-border'>
+                <p className='text-xs uppercase tracking-widest text-muted-foreground mb-2'>
+                  {t('flashcard.import.exampleLabel')}
                 </p>
-                <pre className='font-[family-name:var(--font-mono-pl)] text-xs text-muted-foreground whitespace-pre-wrap leading-relaxed'>
+                <pre className='font-[family-name:var(--font-mono-pl)] text-xs whitespace-pre-wrap leading-relaxed'>
                   {FORMAT_EXAMPLES[format]}
                 </pre>
               </div>
 
               {/* Content input */}
               <div>
-                <label className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block'>
+                <Label className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block'>
                   {t('flashcard.import.contentLabel')}
-                </label>
-                <textarea
+                </Label>
+                <Textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder={t('flashcard.import.contentPlaceholder')}
@@ -176,26 +179,26 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
               {preview.map((card, i) => (
                 <div
                   key={i}
-                  className='bg-[var(--pl-bg)] border border-border rounded-xl px-4 py-3 flex items-start gap-3'
+                  className='bg-[var(--pl-bg)] border border-border rounded-xl px-4 py-3 grid grid-cols-[20px_10rem_minmax(0,1fr)] gap-4 items-start'
                 >
-                  <span className='font-[family-name:var(--font-mono-pl)] text-xs text-muted-foreground/60 mt-0.5 w-5 text-right flex-shrink-0'>
+                  <span className='font-[family-name:var(--font-mono-pl)] text-xs text-muted-foreground/60 mt-0.5 text-right'>
                     {i + 1}
                   </span>
-                  <div className='flex-1 min-w-0 grid grid-cols-2 gap-4'>
-                    <div>
-                      <p className='text-[10px] uppercase tracking-widest text-muted-foreground/50 mb-1'>
-                        {t('flashcard.import.termLabel')}
-                      </p>
-                      <p className='text-sm font-medium'>{card.term}</p>
-                    </div>
-                    <div className='border-l border-border pl-4'>
-                      <p className='text-[10px] uppercase tracking-widest text-muted-foreground/50 mb-1'>
-                        {t('flashcard.import.definitionLabel')}
-                      </p>
-                      <p className='text-sm text-muted-foreground'>
-                        {card.definition}
-                      </p>
-                    </div>
+                  <div className='min-w-0'>
+                    <p className='text-[10px] uppercase tracking-widest text-muted-foreground/50 mb-1'>
+                      {t('flashcard.import.termLabel')}
+                    </p>
+                    <p className='text-sm font-medium break-words'>
+                      {card.term}
+                    </p>
+                  </div>
+                  <div className='min-w-0 border-l border-border pl-4'>
+                    <p className='text-[10px] uppercase tracking-widest text-muted-foreground/50 mb-1'>
+                      {t('flashcard.import.definitionLabel')}
+                    </p>
+                    <p className='text-sm text-muted-foreground break-words'>
+                      {card.definition}
+                    </p>
                   </div>
                 </div>
               ))}

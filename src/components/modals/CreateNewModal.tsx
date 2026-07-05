@@ -127,7 +127,6 @@ const CreateNewModal = ({
       onClose();
     } catch (err) {
       console.error('CreateNewModal submit error', err);
-      toast.error(apiErrorMessage(err, t('modal.createError')));
     }
   };
 

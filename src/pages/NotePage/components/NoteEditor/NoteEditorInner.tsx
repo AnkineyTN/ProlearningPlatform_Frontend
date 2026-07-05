@@ -121,6 +121,39 @@ export default function NoteEditorInner({
     [editorInstance],
   );
 
+  const insertCodeBlockAtCursor = useCallback(() => {
+    if (!editorInstance) return;
+    const { block } = editorInstance.getTextCursorPosition();
+    const isEmptyParagraph =
+      block.type === 'paragraph' &&
+      Array.isArray(block.content) &&
+      block.content.length === 0;
+
+    const targetBlock = isEmptyParagraph
+      ? editorInstance.updateBlock(block, { type: 'codeBlock' })
+      : editorInstance.insertBlocks(
+          [{ type: 'codeBlock' }],
+          block,
+          'after',
+        )[0];
+
+    editorInstance.setTextCursorPosition(targetBlock, 'end');
+    editorInstance.focus();
+  }, [editorInstance]);
+
+  useEffect(() => {
+    const container = editorContainerRef.current;
+    if (!container) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.altKey && e.key.toLowerCase() === 'c') {
+        e.preventDefault();
+        insertCodeBlockAtCursor();
+      }
+    };
+    container.addEventListener('keydown', onKeyDown);
+    return () => container.removeEventListener('keydown', onKeyDown);
+  }, [insertCodeBlockAtCursor]);
+
   const selection = useTextSelection(editorContainerRef);
   const { explain, isPending } = useAiExplain({
     setId,

@@ -353,12 +353,15 @@
       "uploadFilesDesc": "PDF, DOCX, PPTX, TXT...",
       "fromWeb": "Web URL",
       "fromWebDesc": "Articles, Wikipedia, MDN...",
+      "fromExistingExam": "Similar to Exam",
+      "fromExistingExamDesc": "Upload a past exam — AI creates a similar one.",
       "sourceLabel": "Content source",
       "contentLabel": "Content",
       "titleAutoPlaceholder": "Auto-generate",
       "titleAutoHint": "Leave empty for AI to name it.",
       "aiSettings": "AI settings",
       "fileHint": "PDF, DOCX, PPTX, TXT (Maximum 3 files)",
+      "fileHintSingle": "PDF, DOCX, PPTX, TXT (1 file)",
       "maxFiles": "Maximum 3 files allowed",
       "noNotes": "No notes found",
       "webUrlsPlaceholder": "https://example.com/article",
@@ -1493,7 +1496,9 @@
       "days_one": "{{count}} day ago",
       "days_other": "{{count}} days ago"
     },
-    "edit": "Edit"
+    "edit": "Edit",
+    "copyLink": "Copy link",
+    "linkCopied": "Link copied to clipboard"
   },
   "pomodoro": {
     "backToTimer": "Back to timer",
@@ -1654,6 +1659,7 @@
       "generateFlashcardsError": "Failed to generate flashcards. Please try again.",
       "generateExamError": "Failed to generate exam. Please try again.",
       "createNoteError": "Failed to create note. Please try again.",
+      "setNotFound": "This set no longer exists.",
       "noteGenerated": "Note generated successfully",
       "generateNoteError": "Failed to generate note. Please try again.",
       "createFlashcardError": "Failed to create flashcard. Please try again.",
@@ -1673,7 +1679,8 @@
       "aiFlashcardsTitle": "AI Generated Flashcards",
       "generatedFromNotes": "Generated from {{count}} note(s)",
       "generatedFromFiles": "Generated from {{count}} file(s)",
-      "generatedFromUrls": "Generated from {{count}} URL(s)"
+      "generatedFromUrls": "Generated from {{count}} URL(s)",
+      "generatedFromExistingExam": "Generated from an existing exam"
     },
     "upload": {
       "title": "Upload notes",
@@ -1976,6 +1983,9 @@
       "exitWithoutSaving": "Exit without saving",
       "cancel": "Keep editing",
       "beforeUnload": "You have unsaved changes that may be lost."
+    },
+    "aiExplain": {
+      "rateLimited": "You've reached the AI Explain limit of {{limit}} requests per minute. Please wait a moment and try again."
     }
   },
   "resourceAccess": {
@@ -2057,7 +2067,7 @@
       "formatPipeDesc": "Each line: Term | Definition",
       "formatTabDesc": "Each line: Term [TAB] Definition",
       "formatCommaDesc": "Each line: Term, Definition",
-      "exampleLabel": "Example · {{description}}"
+      "exampleLabel": "Example"
     },
     "cardEdit": {
       "emptyError": "Front and back card cannot be empty",

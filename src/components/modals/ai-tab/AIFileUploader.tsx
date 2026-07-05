@@ -38,14 +38,18 @@ const AIFileUploader = ({ files, onChange, disabled, maxFiles = 3 }: Props) => {
       <div className='w-full border-2 border-dashed border-border rounded-xl p-7 text-center hover:border-foreground/50 transition-colors bg-[var(--pl-bg-sunken)]'>
         <Upload className='w-10 h-10 mx-auto mb-3 text-muted-foreground' />
         <p className='text-sm text-muted-foreground mb-3'>
-          {t('modal.ai.fileHint', {
-            defaultValue: 'PDF, DOCX, PPTX, TXT (Maximum 3 files)',
-          })}
+          {maxFiles > 1
+            ? t('modal.ai.fileHint', {
+                defaultValue: 'PDF, DOCX, PPTX, TXT (Maximum 3 files)',
+              })
+            : t('modal.ai.fileHintSingle', {
+                defaultValue: 'PDF, DOCX, PPTX, TXT (1 file)',
+              })}
         </p>
         <label className='inline-block'>
           <input
             type='file'
-            multiple
+            multiple={maxFiles > 1}
             onChange={handleUpload}
             className='hidden'
             accept='.pdf,.docx,.txt,.doc,.pptx'

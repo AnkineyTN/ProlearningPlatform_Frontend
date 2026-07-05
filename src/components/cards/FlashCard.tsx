@@ -1,5 +1,13 @@
-import { SwatchBook, MoreVertical, Clock, Pencil, Trash2 } from 'lucide-react';
+import {
+  SwatchBook,
+  MoreVertical,
+  Clock,
+  Link2,
+  Pencil,
+  Trash2,
+} from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+import { toast } from 'sonner';
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
@@ -15,12 +23,19 @@ export interface Flashcard {
 
 type Props = {
   flashcard: Flashcard;
+  setId?: number;
   onAccess: (id: number | string) => void;
   onUpdate?: (flashcard: Flashcard) => void;
   onDelete?: (flashcardId: number | string) => void;
 };
 
-const FlashCard = ({ flashcard, onAccess, onUpdate, onDelete }: Props) => {
+const FlashCard = ({
+  flashcard,
+  setId,
+  onAccess,
+  onUpdate,
+  onDelete,
+}: Props) => {
   const { t } = useTranslation();
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -75,7 +90,7 @@ const FlashCard = ({ flashcard, onAccess, onUpdate, onDelete }: Props) => {
           </button>
 
           {showMenu && (
-            <div className='absolute top-[calc(100%+4px)] right-0 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[10px] p-1 z-50 min-w-[130px] shadow-[0_8px_20px_oklch(0_0_0/0.12)]'>
+            <div className='absolute top-[calc(100%+4px)] right-0 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[10px] p-1 z-50 min-w-[150px] shadow-[0_8px_20px_oklch(0_0_0/0.12)]'>
               {[
                 {
                   label: t('common.edit'),
@@ -84,6 +99,19 @@ const FlashCard = ({ flashcard, onAccess, onUpdate, onDelete }: Props) => {
                     e.stopPropagation();
                     setShowMenu(false);
                     onUpdate?.(flashcard);
+                  },
+                  danger: false,
+                },
+                {
+                  label: t('common.copyLink'),
+                  icon: Link2,
+                  action: (e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    setShowMenu(false);
+                    navigator.clipboard.writeText(
+                      `${window.location.origin}/sets/${setId}/flashcards/${flashcard.id}`,
+                    );
+                    toast.success(t('common.linkCopied'));
                   },
                   danger: false,
                 },

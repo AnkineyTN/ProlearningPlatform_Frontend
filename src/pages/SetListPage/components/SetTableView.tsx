@@ -7,6 +7,7 @@ import {
   GraduationCap,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 import { type Set } from '@/components/cards/SetCard';
 import { Button } from '@/components/ui/button';
@@ -224,6 +225,14 @@ function SetTableRow({ set, onAccess, onDelete, onUpdate }: RowProps) {
                 e.stopPropagation();
                 setShowMenu(false);
                 setShowDeleteDialog(true);
+              }}
+              onCopyLink={(e) => {
+                e.stopPropagation();
+                setShowMenu(false);
+                navigator.clipboard.writeText(
+                  `${window.location.origin}/sets/${set.id}`,
+                );
+                toast.success(t('common.linkCopied'));
               }}
             />
           )}

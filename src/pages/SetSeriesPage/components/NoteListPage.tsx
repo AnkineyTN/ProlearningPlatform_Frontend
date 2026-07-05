@@ -100,6 +100,7 @@ const NoteListPage = ({
             <NoteCard
               key={note.id}
               note={noteForUI}
+              setId={setId}
               onAccess={() => handleAccess(note.id)}
               onUpdate={() => onUpdate(noteForUI)}
               onDelete={() => onDelete(note.id)}

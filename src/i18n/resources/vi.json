@@ -890,12 +890,15 @@
       "uploadFilesDesc": "PDF, DOCX, PPTX, TXT — AI đọc và tóm tắt.",
       "fromWeb": "Web URL",
       "fromWebDesc": "Bài blog, Wikipedia, MDN — AI tự crawl.",
+      "fromExistingExam": "Giống đề thi có sẵn",
+      "fromExistingExamDesc": "Tải lên một đề thi cũ — AI sẽ tạo đề tương tự.",
       "sourceLabel": "Nguồn nội dung",
       "contentLabel": "Nội dung",
       "titleAutoPlaceholder": "Auto-generate",
       "titleAutoHint": "Để trống để AI tự đặt.",
       "aiSettings": "AI settings",
       "fileHint": "PDF, DOCX, PPTX, TXT (tối đa 3 tệp)",
+      "fileHintSingle": "PDF, DOCX, PPTX, TXT (1 tệp)",
       "maxFiles": "Tối đa 3 tệp",
       "noNotes": "Không có ghi chú nào",
       "webUrlsPlaceholder": "https://example.com/article",
@@ -1901,7 +1904,9 @@
       "days_one": "{{count}} ngày trước",
       "days_other": "{{count}} ngày trước"
     },
-    "edit": "Sửa"
+    "edit": "Sửa",
+    "copyLink": "Sao chép liên kết",
+    "linkCopied": "Đã sao chép liên kết"
   },
   "pomodoro": {
     "backToTimer": "Quay lại hẹn giờ",
@@ -2062,6 +2067,7 @@
       "generateFlashcardsError": "Tạo flashcard thất bại. Vui lòng thử lại.",
       "generateExamError": "Tạo bài thi thất bại. Vui lòng thử lại.",
       "createNoteError": "Tạo ghi chú thất bại. Vui lòng thử lại.",
+      "setNotFound": "Bộ học tập này không còn tồn tại.",
       "noteGenerated": "Tạo ghi chú bằng AI thành công",
       "generateNoteError": "Tạo ghi chú bằng AI thất bại. Vui lòng thử lại.",
       "createFlashcardError": "Tạo flashcard thất bại. Vui lòng thử lại.",
@@ -2081,7 +2087,8 @@
       "aiFlashcardsTitle": "Flashcard tạo bởi AI",
       "generatedFromNotes": "Tạo từ {{count}} ghi chú",
       "generatedFromFiles": "Tạo từ {{count}} tệp",
-      "generatedFromUrls": "Tạo từ {{count}} URL"
+      "generatedFromUrls": "Tạo từ {{count}} URL",
+      "generatedFromExistingExam": "Tạo từ một đề thi có sẵn"
     },
     "upload": {
       "title": "Tải lên ghi chú",
@@ -2383,6 +2390,9 @@
       "exitWithoutSaving": "Thoát không lưu",
       "cancel": "Tiếp tục chỉnh sửa",
       "beforeUnload": "Bạn có thay đổi chưa được lưu có thể bị mất."
+    },
+    "aiExplain": {
+      "rateLimited": "Bạn đã đạt giới hạn {{limit}} lượt giải thích AI mỗi phút. Vui lòng chờ một chút rồi thử lại."
     }
   },
   "resourceAccess": {
@@ -2464,7 +2474,7 @@
       "formatPipeDesc": "Mỗi dòng: Thuật ngữ | Định nghĩa",
       "formatTabDesc": "Mỗi dòng: Thuật ngữ [TAB] Định nghĩa",
       "formatCommaDesc": "Mỗi dòng: Thuật ngữ, Định nghĩa",
-      "exampleLabel": "Ví dụ · {{description}}"
+      "exampleLabel": "Ví dụ"
     },
     "cardEdit": {
       "emptyError": "Mặt trước và mặt sau không được để trống",

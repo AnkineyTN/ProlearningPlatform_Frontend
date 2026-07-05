@@ -38,6 +38,7 @@ import {
   type ListPrivacyFilter,
   type ListSortOption,
 } from '@/components/lists/ResourceFiltersBar';
+import { usePersistedState } from '@/hooks/usePersistedState';
 
 import SetListHeader from './components/SetListHeader';
 import SetFilterBar, { type ViewMode } from './components/SetFilterBar';
@@ -83,8 +84,14 @@ export default function SetListPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [listSearch, setListSearch] = useState('');
   const [debouncedQ, setDebouncedQ] = useState('');
-  const [privacyFilter, setPrivacyFilter] = useState<ListPrivacyFilter>('');
-  const [sortOption, setSortOption] = useState<ListSortOption>('id,DESC');
+  const [privacyFilter, setPrivacyFilter] = usePersistedState<ListPrivacyFilter>(
+    'sets-list-privacy',
+    '',
+  );
+  const [sortOption, setSortOption] = usePersistedState<ListSortOption>(
+    'sets-list-sort',
+    'id,DESC',
+  );
   const [viewMode, setViewModeState] = useState<ViewMode>(readStoredViewMode);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);

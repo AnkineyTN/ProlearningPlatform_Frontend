@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 import SetNotificationSettingsDialog from '@/components/notifications/SetNotificationSettingsDialog';
@@ -112,6 +113,14 @@ const SetCard = ({ set, onAccess, onDelete, onUpdate }: Props) => {
                 e.stopPropagation();
                 setShowMenu(false);
                 setShowDeleteDialog(true);
+              }}
+              onCopyLink={(e) => {
+                e.stopPropagation();
+                setShowMenu(false);
+                navigator.clipboard.writeText(
+                  `${window.location.origin}/sets/${set.id}`,
+                );
+                toast.success(t('common.linkCopied'));
               }}
             />
           )}

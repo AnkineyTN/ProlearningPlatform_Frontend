@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 import {
   Collapsible,
   CollapsibleContent,
@@ -60,10 +61,11 @@ export function NoteFileRow({
   onFileSummarize: (summary: string, fileName: string) => void;
   onDeleted: () => void;
 }) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageWidth, setPageWidth] = useState(520);
   const pdfWrapRef = useRef<HTMLDivElement>(null);
@@ -220,8 +222,7 @@ export function NoteFileRow({
     }
   };
 
-  const handleDelete = async (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleDelete = async () => {
     if (!setId || !noteId) {
       toast.error('Invalid note');
       return;
@@ -280,7 +281,10 @@ export function NoteFileRow({
           size='sm'
           variant='ghost'
           className='shrink-0 h-8 w-8 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-danger-text)] hover:bg-[var(--pl-danger-soft)]'
-          onClick={handleDelete}
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowDeleteDialog(true);
+          }}
           disabled={isDeleting}
           aria-label='Delete file'
         >
@@ -359,6 +363,17 @@ export function NoteFileRow({
           </Card>
         </div>
       </CollapsibleContent>
+
+      <DeleteConfirmDialog
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={() => {
+          setShowDeleteDialog(false);
+          void handleDelete();
+        }}
+        title={t('modal.delete')}
+        itemName={fileName}
+      />
     </Collapsible>
   );
 }

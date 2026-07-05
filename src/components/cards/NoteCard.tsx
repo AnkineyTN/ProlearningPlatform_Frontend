@@ -1,6 +1,14 @@
-import { Clock, FileText, MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import {
+  Clock,
+  FileText,
+  Link2,
+  MoreVertical,
+  Pencil,
+  Trash2,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 import { cn } from '@/lib/utils';
 
@@ -15,12 +23,13 @@ export interface Note {
 
 type Props = {
   note: Note;
+  setId?: number;
   onAccess: (id: number) => void;
   onDelete?: (id: number) => void;
   onUpdate?: (note: Note) => void;
 };
 
-const NoteCard = ({ note, onAccess, onDelete, onUpdate }: Props) => {
+const NoteCard = ({ note, setId, onAccess, onDelete, onUpdate }: Props) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -74,7 +83,7 @@ const NoteCard = ({ note, onAccess, onDelete, onUpdate }: Props) => {
           </button>
 
           {showMenu && (
-            <div className='absolute top-[calc(100%+4px)] right-0 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[10px] p-1 z-50 min-w-[130px] shadow-[0_8px_20px_oklch(0_0_0/0.12)]'>
+            <div className='absolute top-[calc(100%+4px)] right-0 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-[10px] p-1 z-50 min-w-[150px] shadow-[0_8px_20px_oklch(0_0_0/0.12)]'>
               {[
                 {
                   label: t('common.edit'),
@@ -83,6 +92,19 @@ const NoteCard = ({ note, onAccess, onDelete, onUpdate }: Props) => {
                     e.stopPropagation();
                     setShowMenu(false);
                     onUpdate?.(note);
+                  },
+                  danger: false,
+                },
+                {
+                  label: t('common.copyLink'),
+                  icon: Link2,
+                  action: (e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    setShowMenu(false);
+                    navigator.clipboard.writeText(
+                      `${window.location.origin}/sets/${setId}/notes/${note.id}`,
+                    );
+                    toast.success(t('common.linkCopied'));
                   },
                   danger: false,
                 },
