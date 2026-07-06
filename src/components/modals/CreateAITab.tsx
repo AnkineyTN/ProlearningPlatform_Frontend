@@ -46,7 +46,7 @@ const CreateAITab = ({
   const [existingExamFile, setExistingExamFile] = useState<File[]>([]);
 
   const [aiTitle, setAiTitle] = useState('');
-  const [aiPrivacy, setAiPrivacy] = useState<AIPrivacy>('PRIVATE');
+  const [aiPrivacy, setAiPrivacy] = useState<AIPrivacy>('PUBLIC');
   const [language, setLanguage] = useState(() =>
     mapI18nToAiApiLanguage(i18n.language),
   );

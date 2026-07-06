@@ -134,7 +134,7 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
                     setFormat(v as keyof typeof FORMAT_SEPARATORS)
                   }
                 >
-                  <SelectTrigger className='w-full bg-[var(--pl-bg)] border-border'>
+                  <SelectTrigger className='w-full bg-[var(--pl-bg-elev)] border-border'>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -170,7 +170,7 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder={t('flashcard.import.contentPlaceholder')}
-                  className='w-full h-52 px-4 py-3 bg-[var(--pl-bg)] border border-border rounded-xl resize-none text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-colors font-[family-name:var(--font-mono-pl)]'
+                  className='w-full h-52 px-4 py-3 bg-[var(--pl-bg-elev)] border border-border rounded-xl resize-none text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-colors font-[family-name:var(--font-mono-pl)]'
                 />
               </div>
             </div>
@@ -179,7 +179,7 @@ const ImportModal = ({ isOpen, onClose, onInsert }: Props) => {
               {preview.map((card, i) => (
                 <div
                   key={i}
-                  className='bg-[var(--pl-bg)] border border-border rounded-xl px-4 py-3 grid grid-cols-[20px_10rem_minmax(0,1fr)] gap-4 items-start'
+                  className='bg-[var(--pl-bg-elev)] border border-border rounded-xl px-4 py-3 grid grid-cols-[20px_10rem_minmax(0,1fr)] gap-4 items-start'
                 >
                   <span className='font-[family-name:var(--font-mono-pl)] text-xs text-muted-foreground/60 mt-0.5 text-right'>
                     {i + 1}

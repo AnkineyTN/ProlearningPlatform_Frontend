@@ -6,6 +6,7 @@ export default function FlashcardItemWrapper({
   index,
   onUpdate,
   onDelete,
+  onDuplicate,
   canDelete,
   onDragStart,
   onDragOver,
@@ -27,6 +28,7 @@ export default function FlashcardItemWrapper({
         index={index}
         onUpdate={onUpdate}
         onDelete={onDelete}
+        onDuplicate={onDuplicate}
         canDelete={canDelete}
         onDragStart={onDragStart}
         onDragOver={onDragOver}

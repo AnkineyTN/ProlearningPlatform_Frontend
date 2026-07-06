@@ -5,13 +5,12 @@ import {
   Brain,
   ClipboardList,
   Edit,
-  Heart,
   Loader2,
   MoreVertical,
-  Share2,
   Trash2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 
 interface ActionBarProps {
   setId: number;
@@ -34,6 +33,7 @@ export default function ActionBar({
 }: ActionBarProps) {
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
   const [showMenu, setShowMenu] = useState(false);
 
   useEffect(() => {
@@ -72,20 +72,6 @@ export default function ActionBar({
       </Button>
 
       <div className='ml-auto flex items-center gap-1'>
-        <Button
-          variant='ghost'
-          size='icon'
-          className='h-8 w-8 text-muted-foreground hover:text-foreground'
-        >
-          <Heart className='w-4 h-4' />
-        </Button>
-        <Button
-          variant='ghost'
-          size='icon'
-          className='h-8 w-8 text-muted-foreground hover:text-foreground'
-        >
-          <Share2 className='w-4 h-4' />
-        </Button>
         <div className='relative' ref={menuRef}>
           <Button
             variant='ghost'
@@ -99,29 +85,28 @@ export default function ActionBar({
             <MoreVertical className='w-4 h-4' />
           </Button>
           {showMenu && (
-            <div className='absolute right-0 mt-1.5 w-40 bg-[var(--pl-bg)] border border-border rounded-xl shadow-xl z-20 overflow-hidden py-1'>
+            <div className='absolute right-0 w-30 bg-[var(--pl-bg)] border border-border rounded-xl shadow-xl z-20 overflow-hidden'>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowMenu(false);
                   navigate(`/sets/${setId}/flashcards/${flashcardId}/update`);
                 }}
-                className='w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-foreground hover:bg-secondary transition-colors cursor-pointer'
+                className='w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-foreground hover:bg-[var(--pl-bg-hover)] transition-colors cursor-pointer'
               >
                 <Edit className='w-3.5 h-3.5 text-muted-foreground' />
-                Update
+                {t('modal.updateButton')}
               </button>
-              <div className='my-1 border-t border-border' />
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowMenu(false);
                   onRequestDeleteFlashcard();
                 }}
-                className='w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors cursor-pointer'
+                className='w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors cursor-pointer'
               >
                 <Trash2 className='w-3.5 h-3.5' />
-                Delete
+                {t('modal.delete')}
               </button>
             </div>
           )}

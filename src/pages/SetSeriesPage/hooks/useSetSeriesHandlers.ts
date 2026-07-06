@@ -394,7 +394,7 @@ export function useSetSeriesHandlers({
       try {
         const payload = {
           title: data.title,
-          privacy: data.privacy === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE',
+          privacy: data.privacy.toUpperCase() as 'PUBLIC' | 'PRIVATE',
           description: data.description,
         };
 

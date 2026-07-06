@@ -101,6 +101,11 @@ const CreateNewModal = ({
     }));
   };
 
+  const handlePrivacyChange = (value: string) => {
+    setPrivacy(value);
+    if (errors.privacy) setErrors((prev) => ({ ...prev, privacy: false }));
+  };
+
   const handleSubmitManual = async () => {
     const newErrors: ManualErrors = {};
     if (!title.trim()) newErrors.titleEmpty = true;
@@ -110,7 +115,7 @@ const CreateNewModal = ({
       newErrors.descriptionTooShort = true;
     }
     if (description.length > 500) newErrors.descriptionTooLong = true;
-    if (!privacy) newErrors.privacy = true;
+    if (type !== 'Set' && !privacy) newErrors.privacy = true;
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -237,6 +242,8 @@ const CreateNewModal = ({
             titleInputRef={titleInputRef}
             description={description}
             onDescriptionChange={handleDescriptionChange}
+            privacy={privacy}
+            onPrivacyChange={handlePrivacyChange}
             errors={errors}
           />
         )}

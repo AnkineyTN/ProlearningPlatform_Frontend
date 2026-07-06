@@ -6,6 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 
+import PrivacyCards from './PrivacyCards';
+
 export type ManualErrors = {
   titleEmpty?: boolean;
   titleTooLong?: boolean;
@@ -21,6 +23,8 @@ type Props = {
   titleInputRef?: RefObject<HTMLInputElement | null>;
   description: string;
   onDescriptionChange: (value: string) => void;
+  privacy: string;
+  onPrivacyChange: (value: string) => void;
   errors: ManualErrors;
 };
 
@@ -31,6 +35,8 @@ const CreateManualTab = ({
   titleInputRef,
   description,
   onDescriptionChange,
+  privacy,
+  onPrivacyChange,
   errors,
 }: Props) => {
   const { t } = useTranslation();
@@ -121,6 +127,13 @@ const CreateManualTab = ({
           </p>
         )}
       </div>
+      {type !== 'Set' && (
+        <PrivacyCards
+          value={privacy}
+          onChange={onPrivacyChange}
+          error={errors.privacy}
+        />
+      )}
     </div>
   );
 };

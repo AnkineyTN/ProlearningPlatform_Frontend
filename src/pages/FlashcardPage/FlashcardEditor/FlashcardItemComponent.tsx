@@ -1,9 +1,17 @@
-import { GripVertical, ImagePlus, Loader2, Trash2, X } from 'lucide-react';
+import {
+  Copy,
+  GripVertical,
+  ImagePlus,
+  Loader2,
+  Trash2,
+  X,
+} from 'lucide-react';
 import { useRef } from 'react';
 import { toast } from 'sonner';
 import { apiErrorMessage } from '@/lib/apiError';
 
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useUploadImageFile } from '@/hooks/useImageUpload';
 
@@ -14,6 +22,7 @@ export default function FlashcardItemComponent({
   index,
   onUpdate,
   onDelete,
+  onDuplicate,
   canDelete,
 }: FlashcardItemProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -48,45 +57,32 @@ export default function FlashcardItemComponent({
   };
 
   return (
-    <div className='flex items-start gap-3 bg-[var(--pl-bg)] border border-border rounded-xl p-5 mb-3 hover:shadow-sm transition-shadow group'>
+    <div className='flex items-stretch rounded-2xl border border-[var(--pl-border)] bg-[var(--pl-bg)] overflow-hidden mb-3 hover:border-[var(--pl-border-strong)] transition-colors'>
       {/* Number + drag handle */}
-      <div className='flex flex-col items-center gap-2 pt-1 flex-shrink-0'>
-        <span className='font-[family-name:var(--font-mono-pl)] text-xs text-muted-foreground/60 w-5 text-center'>
-          {index + 1}
+      <div className='flex flex-col items-center justify-center gap-2 w-14 py-4 flex-shrink-0 bg-[var(--pl-bg-hover)] border-r border-[var(--pl-border)]'>
+        <span className='font-[family-name:var(--font-mono-pl)] text-[11px] text-[var(--pl-text-faint)]'>
+          {String(index + 1).padStart(2, '0')}
         </span>
-        <button className='cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors'>
+        <button
+          className='cursor-grab active:cursor-grabbing text-[var(--pl-text-faint)] hover:text-[var(--pl-text-muted)] transition-colors'
+          title='Drag to reorder'
+        >
           <GripVertical className='w-4 h-4' />
         </button>
       </div>
 
-      {/* Term + Definition */}
-      <div className='flex-1 grid grid-cols-2 gap-5'>
-        <div className='space-y-1.5'>
-          <Textarea
-            value={card.term}
-            onChange={(e) => onUpdate(card.id, 'term', e.target.value)}
-            placeholder='Term'
-            className='w-full rounded-lg px-3 py-2.5 border-b-2 border-border focus:border-primary focus:outline-none resize-none min-h-[90px] text-sm leading-relaxed transition-colors'
-          />
-          <label className='text-[10px] uppercase tracking-widest text-muted-foreground/50 font-medium px-1'>
-            TERM
-          </label>
-        </div>
-        <div className='space-y-1.5'>
-          <Textarea
-            value={card.definition}
-            onChange={(e) => onUpdate(card.id, 'definition', e.target.value)}
-            placeholder='Definition'
-            className='w-full rounded-lg px-3 py-2.5 border-b-2 border-border focus:border-primary focus:outline-none resize-none min-h-[90px] text-sm leading-relaxed transition-colors'
-          />
-          <label className='text-[10px] uppercase tracking-widest text-muted-foreground/50 font-medium px-1'>
-            DEFINITION
-          </label>
-        </div>
-      </div>
+      {/* Term */}
+      <div className='flex-[1] min-w-0 p-4 space-y-1.5 border-r border-[var(--pl-border)] bg-[var(--pl-bg-elev)]'>
+        <Label className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)]'>
+          TERM
+        </Label>
+        <Textarea
+          value={card.term}
+          onChange={(e) => onUpdate(card.id, 'term', e.target.value)}
+          placeholder='Term'
+          className='w-full px-3! py-1! min-h-[24px] resize-none border-0 bg-[var(--pl-bg)] p-0 shadow-none text-sm leading-relaxed focus-visible:ring-0'
+        />
 
-      {/* Image + delete */}
-      <div className='flex flex-col items-center gap-2 flex-shrink-0 pt-1'>
         <Input
           ref={fileInputRef}
           type='file'
@@ -94,49 +90,66 @@ export default function FlashcardItemComponent({
           onChange={handleFileChange}
           className='hidden'
         />
-
-        {card.imageUrl ? (
-          <div className='relative group/img'>
+        {card.imageUrl && (
+          <div className='relative inline-block group/img'>
             <img
               src={card.imageUrl}
               alt='Card'
-              className='w-14 h-14 object-cover rounded-lg border border-border'
+              className='w-14 h-14 object-cover rounded-lg border border-[var(--pl-border)]'
             />
             <button
               onClick={handleRemoveImage}
-              className='absolute -top-1.5 -right-1.5 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity cursor-pointer'
+              className='absolute -top-1.5 -right-1.5 w-5 h-5 bg-[var(--pl-danger)] text-white rounded-full flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity cursor-pointer'
             >
               <X className='w-3 h-3' />
             </button>
           </div>
-        ) : (
+        )}
+      </div>
+
+      {/* Definition + actions */}
+      <div className='flex-[2] min-w-0 p-4 flex items-start gap-3 bg-[var(--pl-bg-elev)]'>
+        <div className='flex-1 min-w-0 space-y-1.5'>
+          <Label className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)]'>
+            DEFINITION
+          </Label>
+          <Textarea
+            value={card.definition}
+            onChange={(e) => onUpdate(card.id, 'definition', e.target.value)}
+            placeholder='Definition'
+            className='w-full px-3! py-1! min-h-[24px] resize-none bg-[var(--pl-bg)] border-0 p-0 shadow-none text-sm leading-relaxed text-[var(--pl-text-muted)] focus-visible:ring-0'
+          />
+        </div>
+
+        <div className='flex items-center gap-1 flex-shrink-0'>
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploadImageMutation.isPending}
-            className='w-14 h-14 rounded-lg border-2 border-dashed border-border flex flex-col items-center justify-center gap-0.5 text-muted-foreground/50 hover:border-primary/50 hover:text-primary transition-colors cursor-pointer disabled:opacity-50'
+            className='w-7 h-7 rounded-lg flex items-center justify-center text-[var(--pl-text-faint)] hover:text-[var(--pl-accent)] hover:bg-[var(--pl-accent-soft)] transition-colors cursor-pointer disabled:opacity-30'
             title='Add image'
           >
             {uploadImageMutation.isPending ? (
-              <Loader2 className='w-4 h-4 animate-spin' />
+              <Loader2 className='w-3.5 h-3.5 animate-spin' />
             ) : (
-              <>
-                <ImagePlus className='w-4 h-4' />
-                <span className='text-[9px] uppercase tracking-wide'>
-                  Image
-                </span>
-              </>
+              <ImagePlus className='w-3.5 h-3.5' />
             )}
           </button>
-        )}
-
-        <button
-          onClick={() => onDelete(card.id)}
-          disabled={!canDelete}
-          className='w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed'
-          title='Delete card'
-        >
-          <Trash2 className='w-3.5 h-3.5' />
-        </button>
+          <button
+            onClick={() => onDuplicate(card.id)}
+            className='w-7 h-7 rounded-lg flex items-center justify-center text-[var(--pl-text-faint)] hover:text-[var(--pl-text)] hover:bg-[var(--pl-bg-hover)] transition-colors cursor-pointer'
+            title='Duplicate card'
+          >
+            <Copy className='w-3.5 h-3.5' />
+          </button>
+          <button
+            onClick={() => onDelete(card.id)}
+            disabled={!canDelete}
+            className='w-7 h-7 rounded-lg flex items-center justify-center text-[var(--pl-text-faint)] hover:text-[var(--pl-danger)] hover:bg-[var(--pl-danger-soft)] transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed'
+            title='Delete card'
+          >
+            <Trash2 className='w-3.5 h-3.5' />
+          </button>
+        </div>
       </div>
     </div>
   );

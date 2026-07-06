@@ -1292,15 +1292,23 @@
       "answerRequired": "Vui lòng nhập nội dung đáp án",
       "answersHintMcq": "(Chọn đáp án đúng)",
       "answersLabel": "Đáp án",
+      "correctAnswerLabel": "Đáp án đúng",
       "createExam": "Tạo đề thi",
       "descriptionLabel": "Mô tả (tùy chọn)",
       "descriptionPlaceholder": "Nhập mô tả đề thi",
+      "duplicateQuestion": "Nhân đôi câu hỏi",
       "editExam": "Sửa đề thi",
       "examInfo": "Thông tin đề thi",
       "essayGradingNote": "Câu tự luận sẽ được chấm bằng AI trong tương lai.",
+      "optionsInstructionMcq": "Đáp án · Đánh dấu đáp án đúng",
+      "quickAdd": "Thêm câu hỏi",
       "failedCreate": "Tạo đề thi thất bại",
       "failedSave": "Lưu đề thi thất bại. Vui lòng thử lại.",
       "fixBeforeSave": "Vui lòng sửa các ô được đánh dấu trước khi lưu",
+      "leaveConfirmTitle": "Đề thi chưa được tạo",
+      "leaveConfirmDescription": "Đề thi này chưa được tạo. Bạn có chắc muốn rời đi? Mọi thông tin đã nhập sẽ bị mất.",
+      "leaveConfirmCancel": "Tiếp tục chỉnh sửa",
+      "leaveConfirmLeave": "Rời đi, không tạo",
       "loading": "Đang tải đề thi...",
       "minOneQuestion": "Đề thi cần ít nhất một câu hỏi",
       "noQuestionsYet": "Chưa có câu hỏi",
@@ -2017,7 +2025,7 @@
     "unknownError": "Lỗi không xác định",
     "notes": {
       "error": "Lỗi khi tải ghi chú. Vui lòng thử lại.",
-      "empty": "Chưa có ghi chú — hãy tạo ghi chú đầu tiên!"
+      "empty": "Không tìm thấy ghi chú nào"
     },
     "flashcards": {
       "error": "Lỗi khi tải flashcard: {{message}}",
@@ -2481,6 +2489,12 @@
       "notImageError": "Vui lòng chọn tệp ảnh",
       "imageSizeError": "Kích thước ảnh phải nhỏ hơn 5MB",
       "uploadImageError": "Tải ảnh lên thất bại. Vui lòng thử lại."
+    },
+    "editor": {
+      "leaveConfirmTitle": "Flashcard chưa được tạo",
+      "leaveConfirmDescription": "Bộ flashcard này chưa được tạo. Bạn có chắc muốn rời đi? Mọi thông tin đã nhập sẽ bị mất.",
+      "leaveConfirmCancel": "Tiếp tục chỉnh sửa",
+      "leaveConfirmLeave": "Rời đi, không tạo"
     }
   }
 }

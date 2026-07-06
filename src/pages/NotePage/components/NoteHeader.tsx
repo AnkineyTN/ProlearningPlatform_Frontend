@@ -11,8 +11,10 @@ import {
   FileDown,
   ChevronDown,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 import { ShareDialog } from '@/components/collaboration/ShareDialog';
 import FavoriteButton from '@/components/favorite/FavoriteButton';
@@ -34,6 +36,7 @@ import type { CollabRole } from '@/services/types/collaboration.types';
 interface NoteHeaderProps {
   title: string;
   onTitleChange: (title: string) => void;
+  onSaveTitle?: () => void;
   noteId: number;
   setId: number;
   userRole?: CollabRole;
@@ -68,6 +71,7 @@ const togglePillInactive =
 export const NoteHeader = ({
   title,
   onTitleChange,
+  onSaveTitle,
   noteId,
   setId,
   userRole = 'OWNER',
@@ -85,16 +89,33 @@ export const NoteHeader = ({
   isFavorited = false,
 }: NoteHeaderProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { setId: setIdParam } = useParams<{ setId: string }>();
   const _setId = setId || (setIdParam ? Number(setIdParam) : 0);
   const currentUserId = useAuth().user?.id;
   const [shareOpen, setShareOpen] = useState(false);
+  const hasWarnedTitleLimitRef = useRef(false);
 
   const { isUploading, handleFileUpload } = useNoteFileUpload({
     setId: _setId,
     noteId,
     onFileUploaded,
   });
+
+  const TITLE_MAX_LENGTH = 100;
+
+  const handleTitleChange = (value: string) => {
+    if (value.length > TITLE_MAX_LENGTH) {
+      if (!hasWarnedTitleLimitRef.current) {
+        hasWarnedTitleLimitRef.current = true;
+        toast.error(t('modal.titleTooLong'));
+      }
+      onTitleChange(value.slice(0, TITLE_MAX_LENGTH));
+      return;
+    }
+    hasWarnedTitleLimitRef.current = false;
+    onTitleChange(value);
+  };
 
   return (
     <>
@@ -113,9 +134,21 @@ export const NoteHeader = ({
 
           <Input
             value={title}
-            onChange={(e) => onTitleChange(e.target.value)}
+            onChange={(e) => handleTitleChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                onSaveTitle?.();
+                e.currentTarget.blur();
+              }
+            }}
             placeholder='Untitled Note'
-            className='flex-1 min-w-0 max-w-2xl border-none bg-transparent shadow-none px-2 h-auto py-1 font-[family-name:var(--font-display)] text-2xl font-medium tracking-tight focus-visible:ring-0'
+            className={cn(
+              'flex-1 min-w-0 max-w-2xl bg-transparent shadow-none px-2 h-auto py-1 font-[family-name:var(--font-display)] text-2xl font-medium tracking-tight focus-visible:ring-0',
+              title.length >= TITLE_MAX_LENGTH
+                ? 'border border-[var(--pl-danger)]'
+                : 'border-none',
+            )}
             readOnly={userRole === 'VIEWER'}
           />
 

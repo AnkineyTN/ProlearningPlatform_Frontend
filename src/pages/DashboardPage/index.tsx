@@ -73,7 +73,7 @@ const Dashboard = () => {
     try {
       const payload: UpdateSetPayload = {
         ...(data as UpdateSetPayload),
-        privacy: data.privacy === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE',
+        privacy: selectedSet.privacy ?? 'PUBLIC',
       };
       await updateSetMutation.mutateAsync({ id: selectedSet.id, payload });
       setIsUpdateModalOpen(false);
@@ -127,7 +127,7 @@ const Dashboard = () => {
           initialData={{
             title: selectedSet.title,
             description: selectedSet.description,
-            privacy: 'Public',
+            privacy: selectedSet.privacy === 'PRIVATE' ? 'Private' : 'Public',
           }}
         />
       )}

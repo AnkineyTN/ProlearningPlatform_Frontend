@@ -32,12 +32,6 @@ function modalPrivacyFromApi(privacy: string | undefined): string {
   return privacy?.toUpperCase() === 'PRIVATE' ? 'Private' : 'Public';
 }
 
-function mapModalPrivacyToApi(privacy: string): 'PUBLIC' | 'PRIVATE' {
-  return privacy.trim() === 'Private' || privacy.trim() === 'Unlisted'
-    ? 'PRIVATE'
-    : 'PUBLIC';
-}
-
 const HeaderSetDetails = ({ setId }: Props) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -61,7 +55,7 @@ const HeaderSetDetails = ({ setId }: Props) => {
       payload: {
         title: data.title.trim(),
         description: data.description.trim(),
-        privacy: mapModalPrivacyToApi(data.privacy),
+        privacy: setDetail?.privacy === 'PRIVATE' ? 'PRIVATE' : 'PUBLIC',
       },
     });
     toast.success(

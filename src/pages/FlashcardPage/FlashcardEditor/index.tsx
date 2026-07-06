@@ -1,10 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ArrowLeft, Plus, Upload } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { apiErrorMessage } from '@/lib/apiError';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -36,9 +47,11 @@ export default function FlashcardEditor({
   setId: number;
   flashcardId?: number;
 }) {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const isUpdateMode = !!flashcardId;
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
   const createFlashcardMutation = useCreateFlashcardManual();
   const addCardsMutation = useAddCards();
@@ -130,6 +143,21 @@ export default function FlashcardEditor({
         _action: 'CREATE',
       },
     ]);
+  };
+
+  const duplicateCard = (id: number | string) => {
+    setCards((prev) => {
+      const sourceIndex = prev.findIndex((card) => card.id === id);
+      if (sourceIndex === -1) return prev;
+      const duplicate: FlashcardCard = {
+        ...prev[sourceIndex],
+        id: crypto.randomUUID(),
+        _action: 'CREATE',
+      };
+      const newCards = [...prev];
+      newCards.splice(sourceIndex + 1, 0, duplicate);
+      return newCards;
+    });
   };
 
   const removeCard = (id: number | string) => {
@@ -288,7 +316,12 @@ export default function FlashcardEditor({
 
   const handleBack = () => {
     if (isUpdateMode) navigate(`/sets/${setId}/flashcards/${flashcardId}`);
-    else navigate(`/sets/${setId}`);
+    else setShowLeaveConfirm(true);
+  };
+
+  const handleConfirmLeave = () => {
+    setShowLeaveConfirm(false);
+    navigate(`/sets/${setId}/flashcards`);
   };
 
   if (isUpdateMode && isLoading) {
@@ -313,7 +346,7 @@ export default function FlashcardEditor({
   return (
     <div className='min-h-screen bg-[var(--pl-bg-sunken)]'>
       {/* Sticky header */}
-      <div className='sticky top-0 z-10 bg-[var(--pl-bg)] border-b border-border'>
+      <div className='sticky top-0 z-10 bg-[var(--pl-bg)] border-b border-[var(--pl-border)]'>
         <div className='max-w-5xl mx-auto px-6 py-4 flex items-center justify-between gap-6'>
           <button
             onClick={handleBack}
@@ -327,54 +360,7 @@ export default function FlashcardEditor({
               {isUpdateMode ? 'Edit Flashcard Set' : 'New Flashcard Set'}
             </h1>
           </div>
-          <Button
-            onClick={handleSave}
-            disabled={isSaving}
-            className='px-6 flex-shrink-0'
-          >
-            {isSaving ? 'Saving…' : isUpdateMode ? 'Update' : 'Create'}
-          </Button>
-        </div>
-      </div>
-
-      <div className='max-w-5xl mx-auto p-6'>
-        {/* Metadata */}
-        <div className='bg-[var(--pl-bg)] border border-border rounded-xl p-6 mb-8 space-y-5'>
-          <div>
-            <Label
-              htmlFor='fc-title'
-              className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block'
-            >
-              Title <span className='text-destructive'>*</span>
-            </Label>
-            <Input
-              id='fc-title'
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder='Enter a title for your flashcard set'
-              className='text-lg font-medium border-border focus:border-primary'
-            />
-          </div>
-          <div>
-            <Label
-              htmlFor='fc-desc'
-              className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block'
-            >
-              Description
-            </Label>
-            <Textarea
-              id='fc-desc'
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder='Add a description (optional)'
-              className='min-h-[80px] resize-none border-border focus:border-primary'
-            />
-          </div>
-        </div>
-
-        {/* Controls bar */}
-        <div className='flex items-center justify-between mb-5'>
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-4 flex-shrink-0'>
             <Button
               variant='outline'
               onClick={() => setIsImportModalOpen(true)}
@@ -382,6 +368,46 @@ export default function FlashcardEditor({
               <Upload className='w-3.5 h-3.5' />
               Import
             </Button>
+            <Button onClick={handleSave} disabled={isSaving} className='px-6'>
+              {isSaving ? 'Saving…' : isUpdateMode ? 'Update' : 'Create'}
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className='max-w-5xl mx-auto p-6'>
+        {/* Metadata */}
+        <div className='rounded-2xl border border-[var(--pl-border)] bg-[var(--pl-bg-elev)] mb-8 overflow-hidden'>
+          <div className='p-6 border-b border-[var(--pl-border)] space-y-2'>
+            <Label
+              htmlFor='fc-title'
+              className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)]'
+            >
+              {t('exam.editor.titleLabel')}{' '}
+              <span className='text-[var(--pl-danger)]'>*</span>
+            </Label>
+            <Input
+              id='fc-title'
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder='Enter a title for your flashcard set'
+              className='h-auto border-0 bg-transparent dark:bg-transparent p-0 shadow-none font-[family-name:var(--font-display)] text-2xl font-medium focus-visible:ring-0'
+            />
+          </div>
+          <div className='p-6 space-y-2'>
+            <Label
+              htmlFor='fc-desc'
+              className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)] uppercase'
+            >
+              {t('exam.editor.descriptionLabel')}
+            </Label>
+            <Textarea
+              id='fc-desc'
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder='Add a description (optional)'
+              className='min-h-[48px] resize-none border-0 bg-transparent dark:bg-transparent p-0 shadow-none text-sm leading-relaxed text-[var(--pl-text-muted)] focus-visible:ring-0'
+            />
           </div>
         </div>
 
@@ -403,6 +429,7 @@ export default function FlashcardEditor({
             index={index}
             onUpdate={updateCard}
             onDelete={removeCard}
+            onDuplicate={duplicateCard}
             canDelete={visibleCards.length > 1}
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
@@ -414,7 +441,7 @@ export default function FlashcardEditor({
         {/* Add card */}
         <button
           onClick={addCard}
-          className='w-full flex items-center justify-center gap-2 py-5 rounded-xl border-2 border-dashed border-border text-sm text-muted-foreground hover:border-primary/50 hover:text-primary hover:bg-[var(--pl-bg)] transition-colors cursor-pointer mt-2'
+          className='w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-[var(--pl-border)] text-sm text-muted-foreground hover:border-[var(--pl-accent)] hover:text-[var(--pl-accent)] hover:bg-[var(--pl-bg)] transition-colors cursor-pointer mt-2'
         >
           <Plus className='w-4 h-4' />
           Add Card
@@ -426,6 +453,27 @@ export default function FlashcardEditor({
         onClose={() => setIsImportModalOpen(false)}
         onInsert={handleImport}
       />
+
+      <AlertDialog open={showLeaveConfirm} onOpenChange={setShowLeaveConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t('flashcard.editor.leaveConfirmTitle')}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('flashcard.editor.leaveConfirmDescription')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleConfirmLeave}>
+              {t('flashcard.editor.leaveConfirmLeave')}
+            </AlertDialogCancel>
+            <AlertDialogAction>
+              {t('flashcard.editor.leaveConfirmCancel')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

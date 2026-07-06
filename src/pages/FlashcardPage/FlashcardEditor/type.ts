@@ -19,6 +19,7 @@ export interface FlashcardItemProps {
     value?: string | number,
   ) => void;
   onDelete: (id: number | string) => void;
+  onDuplicate: (id: number | string) => void;
   canDelete: boolean;
 }
 
@@ -31,6 +32,7 @@ export interface FlashcardItemWrapperProps {
     value?: string | number,
   ) => void;
   onDelete: (id: number | string) => void;
+  onDuplicate: (id: number | string) => void;
   canDelete: boolean;
   onDragStart: (id: number | string) => void;
   onDragOver: (e: React.DragEvent, id: number | string) => void;

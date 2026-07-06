@@ -139,7 +139,7 @@ export default function SetListPage() {
     try {
       const payload: CreateSetPayload = {
         ...data,
-        privacy: data.privacy === 'Public' ? 'PUBLIC' : 'PRIVATE',
+        privacy: 'PUBLIC',
       };
       await createSetMutation.mutateAsync(payload);
       setIsCreateModalOpen(false);
@@ -164,7 +164,7 @@ export default function SetListPage() {
     try {
       const payload: UpdateSetPayload = {
         ...data,
-        privacy: data.privacy === 'Public' ? 'PUBLIC' : 'PRIVATE',
+        privacy: selectedSet.privacy ?? 'PUBLIC',
       };
       await updateSetMutation.mutateAsync({ id: selectedSet.id, payload });
       setIsUpdateModalOpen(false);

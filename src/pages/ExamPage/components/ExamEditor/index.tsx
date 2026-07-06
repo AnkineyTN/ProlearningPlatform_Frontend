@@ -1,17 +1,36 @@
-import { ArrowLeft, Plus, Save, Clock, Hash } from 'lucide-react';
+import {
+  ArrowLeft,
+  Plus,
+  Save,
+  Clock,
+  Hash,
+  CheckSquare,
+  ToggleLeft,
+  AlignLeft,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { apiErrorMessage } from '@/lib/apiError';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
 import QuestionItem from './QuestionItem';
-import type { ExamQuestion } from '../../types';
+import type { ExamQuestion, QuestionType } from '../../types';
 import {
   useCreateExam,
   useUpdateExam,
@@ -31,6 +50,20 @@ export type QuestionErrors = {
   questionText?: boolean;
   noCorrectAnswer?: boolean;
   emptyAnswers?: Set<string>;
+};
+
+const typeIcon = (type: QuestionType) => {
+  if (type === 'MULTIPLE_CHOICE')
+    return (
+      <CheckSquare className='w-3.5 h-3.5 text-[var(--pl-text-faint)] flex-shrink-0' />
+    );
+  if (type === 'TRUE_FALSE')
+    return (
+      <ToggleLeft className='w-3.5 h-3.5 text-[var(--pl-text-faint)] flex-shrink-0' />
+    );
+  return (
+    <AlignLeft className='w-3.5 h-3.5 text-[var(--pl-text-faint)] flex-shrink-0' />
+  );
 };
 
 const emptyQuestion = (): ExamQuestion => ({
@@ -53,6 +86,7 @@ export default function ExamEditor() {
   const location = useLocation();
   const navigate = useNavigate();
   const isUpdateMode = !!examId;
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
   const {
     title: locationTitle,
@@ -68,6 +102,9 @@ export default function ExamEditor() {
   const [timeLimit, setTimeLimit] = useState(60);
   const [questions, setQuestions] = useState<ExamQuestion[]>([emptyQuestion()]);
   const [draggedQuestionId, setDraggedQuestionId] = useState<
+    string | number | null
+  >(null);
+  const [selectedQuestionId, setSelectedQuestionId] = useState<
     string | number | null
   >(null);
   const [titleError, setTitleError] = useState(false);
@@ -172,6 +209,32 @@ export default function ExamEditor() {
       updates.answers.some((a) => a.isCorrect)
     )
       clearQuestionError(id, 'noCorrectAnswer');
+  };
+
+  const handleAddQuestion = () => {
+    const newQuestion = emptyQuestion();
+    setQuestions((prev) => [...prev, newQuestion]);
+    setSelectedQuestionId(newQuestion.id);
+  };
+
+  const duplicateQuestion = (id: string | number) => {
+    setQuestions((prev) => {
+      const sourceIndex = prev.findIndex((q) => q.id === id);
+      if (sourceIndex === -1) return prev;
+      const duplicate: ExamQuestion = {
+        ...prev[sourceIndex],
+        id: crypto.randomUUID(),
+        answers: prev[sourceIndex].answers.map((a) => ({
+          ...a,
+          id: crypto.randomUUID(),
+        })),
+        _action: 'CREATE',
+      };
+      const next = [...prev];
+      next.splice(sourceIndex + 1, 0, duplicate);
+      setSelectedQuestionId(duplicate.id);
+      return next;
+    });
   };
 
   const handleDeleteQuestion = (id: string | number) => {
@@ -336,6 +399,10 @@ export default function ExamEditor() {
   };
 
   const visibleQuestions = questions.filter((q) => q._action !== 'DELETE');
+  const selectedQuestion =
+    visibleQuestions.find((q) => q.id === selectedQuestionId) ??
+    visibleQuestions[0] ??
+    null;
   const isSaving =
     createExamMutation.isPending ||
     updateExamMutation.isPending ||
@@ -361,13 +428,17 @@ export default function ExamEditor() {
       {/* Sticky header */}
       <div className='sticky top-0 z-10 bg-[var(--pl-bg)] border-b border-border'>
         <div className='max-w-4xl mx-auto px-6 py-4 flex items-center gap-4'>
-          <button
-            onClick={() => navigate(`/sets/${setId}/exams`)}
-            className='flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors'
+          <Button
+            onClick={() =>
+              isUpdateMode
+                ? navigate(`/sets/${setId}/exams`)
+                : setShowLeaveConfirm(true)
+            }
+            variant='ghost'
           >
             <ArrowLeft className='w-4 h-4' />
             {t('exam.back')}
-          </button>
+          </Button>
           <div className='flex-1 min-w-0'>
             <h1 className='font-[family-name:var(--font-display)] text-xl font-medium tracking-tight truncate'>
               {isUpdateMode
@@ -392,18 +463,14 @@ export default function ExamEditor() {
 
       <div className='max-w-4xl mx-auto px-6 py-8 space-y-6'>
         {/* Exam metadata */}
-        <div className='bg-[var(--pl-bg-elev)] border border-border rounded-xl p-6 space-y-5'>
-          <p className='text-xs uppercase tracking-widest text-muted-foreground/60'>
-            {t('exam.editor.examInfo')}
-          </p>
-
-          <div>
+        <div className='rounded-2xl border border-[var(--pl-border)] bg-[var(--pl-bg)] overflow-hidden'>
+          <div className='p-6 border-b border-[var(--pl-border)] space-y-2'>
             <Label
               htmlFor='exam-title'
-              className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block'
+              className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)] uppercase'
             >
               {t('exam.editor.titleLabel')}{' '}
-              <span className='text-destructive'>*</span>
+              <span className='text-[var(--pl-danger)]'>*</span>
             </Label>
             <Input
               id='exam-title'
@@ -413,19 +480,19 @@ export default function ExamEditor() {
                 if (e.target.value.trim()) setTitleError(false);
               }}
               placeholder={t('exam.editor.titlePlaceholder')}
-              className={`text-base bg-[var(--pl-bg)] ${titleError ? 'border-destructive focus-visible:ring-destructive' : 'border-border'}`}
+              className={`h-auto border-0 bg-transparent dark:bg-transparent p-0 shadow-none font-[family-name:var(--font-display)] text-2xl font-medium focus-visible:ring-0 ${titleError ? 'text-[var(--pl-danger)]' : ''}`}
             />
             {titleError && (
-              <p className='text-destructive text-xs mt-1'>
+              <p className='text-[var(--pl-danger-text)] text-xs mt-1'>
                 {t('exam.editor.titleRequired')}
               </p>
             )}
           </div>
 
-          <div>
+          <div className='p-6 border-b border-[var(--pl-border)] space-y-2'>
             <Label
               htmlFor='exam-desc'
-              className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 block'
+              className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)] uppercase'
             >
               {t('exam.editor.descriptionLabel')}
             </Label>
@@ -434,15 +501,15 @@ export default function ExamEditor() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder={t('exam.editor.descriptionPlaceholder')}
-              className='min-h-[80px] resize-none bg-[var(--pl-bg)] border-border'
+              className='min-h-[48px] resize-none border-0 bg-transparent dark:bg-transparent p-0 shadow-none text-sm leading-relaxed text-[var(--pl-text-muted)] focus-visible:ring-0'
             />
           </div>
 
-          <div className='grid grid-cols-2 gap-4'>
+          <div className='p-6 grid grid-cols-2 gap-4'>
             <div>
               <Label
                 htmlFor='exam-time'
-                className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 flex items-center gap-1.5'
+                className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)] mb-2 flex items-center gap-1.5 uppercase'
               >
                 <Clock className='w-3 h-3' />
                 {t('exam.editor.timeLimitMinutes')}
@@ -454,15 +521,15 @@ export default function ExamEditor() {
                   min='1'
                   value={timeLimit}
                   onChange={(e) => setTimeLimit(Number(e.target.value))}
-                  className='bg-[var(--pl-bg)] border-border'
+                  className='bg-[var(--pl-bg-elev)] border-[var(--pl-border)]'
                 />
-                <span className='text-sm text-muted-foreground flex-shrink-0'>
+                <span className='text-sm text-[var(--pl-text-muted)] flex-shrink-0'>
                   min
                 </span>
               </div>
             </div>
             <div>
-              <Label className='text-xs uppercase tracking-widest text-muted-foreground/60 mb-2 flex items-center gap-1.5'>
+              <Label className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)] mb-2 flex items-center gap-1.5 uppercase'>
                 <Hash className='w-3 h-3' />
                 {t('exam.editor.totalScore')}
               </Label>
@@ -470,9 +537,9 @@ export default function ExamEditor() {
                 <Input
                   value={calculateTotalScore()}
                   readOnly
-                  className='bg-secondary border-border text-muted-foreground'
+                  className='bg-[var(--pl-bg-elev)] border-[var(--pl-border)] text-[var(--pl-text-muted)]'
                 />
-                <span className='text-sm text-muted-foreground flex-shrink-0'>
+                <span className='text-sm text-[var(--pl-text-muted)] flex-shrink-0'>
                   pts
                 </span>
               </div>
@@ -482,32 +549,19 @@ export default function ExamEditor() {
 
         {/* Questions */}
         <div>
-          <div className='flex items-center justify-between mb-4'>
-            <div className='flex items-center gap-2'>
-              <p className='text-xs uppercase tracking-widest text-muted-foreground/60'>
-                {t('exam.editor.questionsHeading', {
-                  count: visibleQuestions.length,
-                })}
-              </p>
-            </div>
-            <Button
-              onClick={() => setQuestions([...questions, emptyQuestion()])}
-              variant='outline'
-              size='sm'
-              className='gap-2 text-xs'
-            >
-              <Plus className='w-3.5 h-3.5' />
-              {t('exam.editor.addQuestion')}
-            </Button>
-          </div>
+          <p className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)] uppercase mb-4'>
+            {t('exam.editor.questionsHeading', {
+              count: visibleQuestions.length,
+            })}
+          </p>
 
           {visibleQuestions.length === 0 ? (
-            <div className='text-center py-16 bg-[var(--pl-bg)] border-2 border-dashed border-border rounded-xl'>
-              <p className='text-muted-foreground text-sm mb-4'>
+            <div className='text-center py-16 bg-[var(--pl-bg)] border-2 border-dashed border-[var(--pl-border)] rounded-2xl'>
+              <p className='text-[var(--pl-text-muted)] text-sm mb-4'>
                 {t('exam.editor.noQuestionsYet')}
               </p>
               <Button
-                onClick={() => setQuestions([emptyQuestion()])}
+                onClick={handleAddQuestion}
                 variant='outline'
                 size='sm'
                 className='gap-2'
@@ -517,36 +571,107 @@ export default function ExamEditor() {
               </Button>
             </div>
           ) : (
-            visibleQuestions.map((question, index) => (
-              <QuestionItem
-                key={question.id}
-                question={question}
-                index={index}
-                errors={questionErrors.get(question.id)}
-                onClearError={(field, answerId) =>
-                  clearQuestionError(question.id, field, answerId)
-                }
-                onUpdate={handleUpdateQuestion}
-                onDelete={handleDeleteQuestion}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-              />
-            ))
-          )}
+            <div className='flex items-start gap-5'>
+              {/* Question list */}
+              <div className='w-64 flex-shrink-0 rounded-2xl border border-[var(--pl-border)] bg-[var(--pl-bg)] overflow-hidden'>
+                <div className='p-2.5 space-y-1'>
+                  {visibleQuestions.map((question, index) => {
+                    const isSelected = question.id === selectedQuestion?.id;
+                    const errs = questionErrors.get(question.id);
+                    const hasError = !!errs && Object.keys(errs).length > 0;
+                    return (
+                      <div
+                        key={question.id}
+                        draggable
+                        onDragStart={() => handleDragStart(question.id)}
+                        onDragEnd={handleDragEnd}
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(e, question.id)}
+                        onClick={() => setSelectedQuestionId(question.id)}
+                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border cursor-pointer transition-colors ${
+                          isSelected
+                            ? 'border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft-2)]'
+                            : hasError
+                              ? 'border-[var(--pl-danger-border)] hover:bg-[var(--pl-bg-hover)]'
+                              : 'border-transparent hover:bg-[var(--pl-bg-hover)]'
+                        }`}
+                      >
+                        <span
+                          className={`font-[family-name:var(--font-mono-pl)] text-xs font-semibold flex-shrink-0 ${
+                            isSelected
+                              ? 'text-[var(--pl-accent-strong)]'
+                              : 'text-[var(--pl-text-faint)]'
+                          }`}
+                        >
+                          {String(index + 1).padStart(2, '0')}
+                        </span>
+                        <span className='flex-1 min-w-0 text-sm truncate'>
+                          {question.questionText ||
+                            t('exam.editor.questionPlaceholder')}
+                        </span>
+                        {typeIcon(question.type)}
+                      </div>
+                    );
+                  })}
+                </div>
+                <button
+                  onClick={handleAddQuestion}
+                  className='w-full flex items-center justify-center gap-2 py-3 border-t border-dashed border-[var(--pl-border)] text-xs text-[var(--pl-text-muted)] hover:text-[var(--pl-accent)] hover:bg-[var(--pl-bg-hover)] transition-colors cursor-pointer'
+                >
+                  <Plus className='w-3.5 h-3.5' />
+                  {t('exam.editor.quickAdd')}
+                </button>
+              </div>
 
-          {visibleQuestions.length > 0 && (
-            <button
-              onClick={() => setQuestions([...questions, emptyQuestion()])}
-              className='w-full flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed border-border text-sm text-muted-foreground hover:border-primary/50 hover:text-primary hover:bg-[var(--pl-bg)] transition-colors cursor-pointer mt-2'
-            >
-              <Plus className='w-4 h-4' />
-              {t('exam.editor.addQuestion')}
-            </button>
+              {/* Selected question detail */}
+              <div className='flex-1 min-w-0'>
+                {selectedQuestion && (
+                  <QuestionItem
+                    key={selectedQuestion.id}
+                    question={selectedQuestion}
+                    index={visibleQuestions.findIndex(
+                      (q) => q.id === selectedQuestion.id,
+                    )}
+                    errors={questionErrors.get(selectedQuestion.id)}
+                    onClearError={(field, answerId) =>
+                      clearQuestionError(selectedQuestion.id, field, answerId)
+                    }
+                    onUpdate={handleUpdateQuestion}
+                    onDelete={handleDeleteQuestion}
+                    onDuplicate={duplicateQuestion}
+                  />
+                )}
+              </div>
+            </div>
           )}
         </div>
       </div>
+
+      <AlertDialog open={showLeaveConfirm} onOpenChange={setShowLeaveConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t('exam.editor.leaveConfirmTitle')}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('exam.editor.leaveConfirmDescription')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => {
+                setShowLeaveConfirm(false);
+                navigate(`/sets/${setId}/exams`);
+              }}
+            >
+              {t('exam.editor.leaveConfirmLeave')}
+            </AlertDialogCancel>
+            <AlertDialogAction>
+              {t('exam.editor.leaveConfirmCancel')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

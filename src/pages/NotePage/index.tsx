@@ -375,6 +375,7 @@ export const NotePage = () => {
       <NoteHeader
         title={title}
         onTitleChange={setTitle}
+        onSaveTitle={handleSave}
         noteId={numericNoteId}
         setId={setId}
         userRole={noteDetail?.userRole ?? 'OWNER'}

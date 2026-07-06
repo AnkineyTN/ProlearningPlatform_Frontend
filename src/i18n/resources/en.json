@@ -882,15 +882,23 @@
       "answerRequired": "Answer text is required",
       "answersHintMcq": "(Select correct answer(s))",
       "answersLabel": "Answers",
+      "correctAnswerLabel": "Correct Answer",
       "createExam": "Create Exam",
       "descriptionLabel": "Description (Optional)",
       "descriptionPlaceholder": "Enter exam description",
+      "duplicateQuestion": "Duplicate question",
       "editExam": "Edit Exam",
       "examInfo": "Exam Information",
       "essayGradingNote": "Essay questions will be graded by AI in the future.",
+      "optionsInstructionMcq": "Options · Mark the correct one(s)",
+      "quickAdd": "Add question",
       "failedCreate": "Failed to create exam",
       "failedSave": "Failed to save exam. Please try again.",
       "fixBeforeSave": "Please fix the highlighted fields before saving",
+      "leaveConfirmTitle": "Exam not created yet",
+      "leaveConfirmDescription": "This exam hasn't been created yet. Are you sure you want to leave? Everything you entered will be lost.",
+      "leaveConfirmCancel": "Keep editing",
+      "leaveConfirmLeave": "Leave without creating",
       "loading": "Loading exam...",
       "minOneQuestion": "Exam must have at least one question",
       "noQuestionsYet": "No questions yet",
@@ -1609,15 +1617,15 @@
     "unknownError": "Unknown error",
     "notes": {
       "error": "Error loading notes. Please try again.",
-      "empty": "No notes found — create your first note!"
+      "empty": "No notes found!"
     },
     "flashcards": {
       "error": "Error loading flashcards: {{message}}",
-      "empty": "No flashcards found"
+      "empty": "No flashcards found!"
     },
     "exams": {
       "error": "Failed to load exams. Please try again.",
-      "empty": "No exams found"
+      "empty": "No exams found!"
     }
   },
   "set": {
@@ -2074,6 +2082,12 @@
       "notImageError": "Please select an image file",
       "imageSizeError": "Image size must be less than 5MB",
       "uploadImageError": "Failed to upload image. Please try again."
+    },
+    "editor": {
+      "leaveConfirmTitle": "Flashcard not created yet",
+      "leaveConfirmDescription": "This flashcard set hasn't been created yet. Are you sure you want to leave? Everything you entered will be lost.",
+      "leaveConfirmCancel": "Keep editing",
+      "leaveConfirmLeave": "Leave without creating"
     }
   }
 }

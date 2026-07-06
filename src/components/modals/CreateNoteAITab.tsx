@@ -32,7 +32,7 @@ const CreateNoteAITab = ({
   const [topic, setTopic] = useState('');
   const [description, setDescription] = useState('');
   const [referenceLinksText, setReferenceLinksText] = useState('');
-  const [privacy, setPrivacy] = useState<AIPrivacy>('PRIVATE');
+  const [privacy, setPrivacy] = useState<AIPrivacy>('PUBLIC');
   const [language, setLanguage] = useState(() =>
     mapI18nToAiApiLanguage(i18n.language),
   );
