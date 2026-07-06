@@ -8,6 +8,7 @@ import ExamHomeView from './components/ExamHomeView';
 import ExamTaking from './components/ExamTaking';
 import type { Exam, ExamSubmission } from './types';
 import { useExamDetail } from '@/hooks/useExams';
+import { useBackTo } from '@/hooks/useBackTo';
 import { useSessionTracker } from '@/hooks/useSessionTracker';
 import { apiQuizDetailToExam } from './utils/examMapper';
 import {
@@ -27,6 +28,7 @@ type Props = {
 export default function ExamPage({ setId, examId }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const backTo = useBackTo();
   const [viewMode, setViewMode] = useState<ViewMode>('home');
   const [activeAttempt, setActiveAttempt] = useState<ExamAttemptSummary | null>(
     null,
@@ -110,7 +112,7 @@ export default function ExamPage({ setId, examId }: Props) {
       setActiveAttempt(null);
       setViewMode('home');
       navigate(`/sets/${setId}/exams/${examId}/attempts/${attemptId}`, {
-        state: { result: mapped },
+        state: { result: mapped, backTo },
       });
     } catch (error) {
       toast.error(apiErrorMessage(error, t('exam.page.submitError')));
@@ -161,7 +163,7 @@ export default function ExamPage({ setId, examId }: Props) {
               {t('exam.page.goToEditor')}
             </button>
             <button
-              onClick={() => navigate(`/sets/${setId}/exams`)}
+              onClick={() => navigate(backTo ?? `/sets/${setId}/exams`)}
               className='text-muted-foreground hover:text-foreground text-sm'
             >
               {t('exam.page.backToList')}
@@ -180,7 +182,7 @@ export default function ExamPage({ setId, examId }: Props) {
         examId={Number(examId)}
         onStartExam={handleStartExam}
         onEditExam={handleEditExam}
-        onBack={() => navigate(`/sets/${setId}/exams`)}
+        onBack={() => navigate(backTo ?? `/sets/${setId}/exams`)}
         isStarting={isStartingAttempt}
         userRole={userRole}
         isFavorited={data?.data?.isFavorited}

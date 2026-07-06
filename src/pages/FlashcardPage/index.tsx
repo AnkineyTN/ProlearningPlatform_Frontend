@@ -72,6 +72,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
   const generateExamMutation = useGenerateExamFromFlashcard();
   const navigate = useNavigate();
   const location = useLocation();
+  const goTo = (path: string) => navigate(path, { state: location.state });
 
   // Fix #5: Persist sessionId to sessionStorage so results page survives a refresh
   const SESSION_STORAGE_KEY = `flashcard-session-${setId}-${flashcardId}`;
@@ -175,7 +176,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       setCurrentCardIndex(currentCardIndex + 1);
       setIsFlipped(false);
     } else {
-      navigate(`/sets/${setId}/flashcards/${flashcardId}/results`);
+      goTo(`/sets/${setId}/flashcards/${flashcardId}/results`);
     }
   };
 
@@ -201,7 +202,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         // best-effort – navigate home regardless
       }
     }
-    navigate(`/sets/${setId}/flashcards/${flashcardId}`);
+    goTo(`/sets/${setId}/flashcards/${flashcardId}`);
   };
 
   const handleShuffle = () => {
@@ -257,7 +258,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       setCurrentCardIndex(0);
       setIsFlipped(false);
       setCardReviews([]);
-      navigate(`/sets/${setId}/flashcards/${flashcardId}/study`);
+      goTo(`/sets/${setId}/flashcards/${flashcardId}/study`);
     } catch (error) {
       console.error('Failed to start session:', error);
       toast.error(apiErrorMessage(error, t('flashcard.page.startSessionError')));
@@ -288,7 +289,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         setCurrentCardIndex(0);
         setIsFlipped(false);
         setShowContinueDialog(false);
-        navigate(`/sets/${setId}/flashcards/${flashcardId}/study`);
+        goTo(`/sets/${setId}/flashcards/${flashcardId}/study`);
       } catch (error) {
         console.error('Failed to continue session:', error);
         toast.error(
@@ -335,7 +336,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       setUnsyncedReviews([]);
 
       if (response.data.data.status === 'COMPLETED') {
-        navigate(`/sets/${setId}/flashcards/${flashcardId}/results`);
+        goTo(`/sets/${setId}/flashcards/${flashcardId}/results`);
         return true;
       }
     } catch (error) {
@@ -383,7 +384,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     setStudiedCards(new Set());
     setCurrentCardIndex(0);
     setIsFlipped(false);
-    navigate(`/sets/${setId}/flashcards/${flashcardId}/study`);
+    goTo(`/sets/${setId}/flashcards/${flashcardId}/study`);
   };
 
   // Sync viewMode state with pathname so UI components still read viewMode
@@ -491,7 +492,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         flashcardId: Number(flashcardId),
       });
       const examId = response.data.data.id;
-      navigate(`/sets/${setId}/exams/${examId}`);
+      goTo(`/sets/${setId}/exams/${examId}`);
     } catch (error) {
       console.error('Failed to generate exam:', error);
       toast.error(apiErrorMessage(error, t('flashcard.page.generateExamError')));
@@ -526,7 +527,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           onCardClick={handleCardClick}
           onStudy={startStudying}
           onMatching={() =>
-            navigate(`/sets/${setId}/flashcards/${flashcardId}/matching`)
+            goTo(`/sets/${setId}/flashcards/${flashcardId}/matching`)
           }
           onPracticeWithExam={handlePracticeWithExam}
           isPracticeWithExamLoading={generateExamMutation.isPending}
@@ -570,13 +571,13 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           studiedCards={studiedCards.size}
           totalCards={flashcards.length}
           flashcards={activeCards}
-          onHome={() => navigate(`/sets/${setId}/flashcards/${flashcardId}`)}
+          onHome={() => goTo(`/sets/${setId}/flashcards/${flashcardId}`)}
           onContinue={() =>
-            navigate(`/sets/${setId}/flashcards/${flashcardId}/study`)
+            goTo(`/sets/${setId}/flashcards/${flashcardId}/study`)
           }
           onPracticeWithExam={handlePracticeWithExam}
           onMatching={() =>
-            navigate(`/sets/${setId}/flashcards/${flashcardId}/matching`)
+            goTo(`/sets/${setId}/flashcards/${flashcardId}/matching`)
           }
           onReset={resetFlashcards}
           sessionResult={sessionResult?.data}
@@ -592,7 +593,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           privacy={privacy}
           flashcards={flashcards}
           flashcardTitle={title}
-          onBack={() => navigate(`/sets/${setId}/flashcards/${flashcardId}`)}
+          onBack={() => goTo(`/sets/${setId}/flashcards/${flashcardId}`)}
         />
       )}
     </div>

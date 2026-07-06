@@ -16,6 +16,7 @@ export default function ResultsSummaryCard({
   const { t } = useTranslation();
 
   const pct = Math.max(0, Math.min(100, result.percentage));
+  const pctLabel = Number.isInteger(pct) ? String(pct) : pct.toFixed(1);
   const isPerfect = pct === 100;
 
   const heroTitle = result.passed
@@ -29,8 +30,8 @@ export default function ResultsSummaryCard({
   const heroSubtitle = result.passed
     ? isPerfect
       ? t('exam.results.heroSubtitlePerfect')
-      : t('exam.results.heroSubtitlePassed', { pct: pct.toFixed(1) })
-    : t('exam.results.heroSubtitleFailed', { pct: pct.toFixed(1) });
+      : t('exam.results.heroSubtitlePassed', { pct: pctLabel })
+    : t('exam.results.heroSubtitleFailed', { pct: pctLabel });
 
   const ringColor = result.passed ? 'var(--pl-accent)' : 'var(--pl-danger)';
   const ringGlow = result.passed
@@ -105,14 +106,9 @@ export default function ResultsSummaryCard({
               <span className='text-[11px] font-[family-name:var(--font-mono-pl)] tracking-[0.2em] text-muted-foreground mb-1'>
                 {t('exam.results.score').toUpperCase()}
               </span>
-              <span className='font-[family-name:var(--font-display)] text-6xl font-medium leading-none'>
-                {Math.round(pct)}
+              <span className='font-[family-name:var(--font-display)] text-7xl font-medium leading-none mb-2 ms-3'>
+                {pctLabel}
                 <span className='text-2xl text-muted-foreground'>%</span>
-              </span>
-              <span className='text-xs text-muted-foreground mt-2'>
-                {result.passed
-                  ? t('exam.results.passed')
-                  : t('exam.results.keepPracticing')}
               </span>
             </div>
           </div>
@@ -139,7 +135,7 @@ export default function ResultsSummaryCard({
             {t('exam.results.score').toUpperCase()}
           </p>
           <p className='font-[family-name:var(--font-display)] text-3xl font-medium mb-1'>
-            {pct.toFixed(1)}
+            {pctLabel}
             <span className='text-base text-muted-foreground'>%</span>
           </p>
           <p className='text-xs text-muted-foreground'>

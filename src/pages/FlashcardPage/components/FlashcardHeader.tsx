@@ -6,6 +6,7 @@ import { ShareDialog } from '@/components/collaboration/ShareDialog';
 import FavoriteButton from '@/components/favorite/FavoriteButton';
 import type { CollabRole } from '@/services/types/collaboration.types';
 import { useAuth } from '@/hooks/useAuth';
+import { useBackTo } from '@/hooks/useBackTo';
 
 interface FlashcardHeaderProps {
   setId: number;
@@ -30,8 +31,10 @@ export default function FlashcardHeader({
   const currentUserId = useAuth().user?.id;
   const [shareOpen, setShareOpen] = useState(false);
 
+  const backTo = useBackTo();
+
   const handleClick = () => {
-    navigate(`/sets/${setId}/flashcards`);
+    navigate(backTo ?? `/sets/${setId}/flashcards`);
   };
 
   return (

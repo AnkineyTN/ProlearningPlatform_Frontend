@@ -38,6 +38,7 @@ import {
 } from '@/components/ui/sheet';
 import { useAcceptInvite, useDeclineInvite } from '@/hooks/useCollaboration';
 import {
+  HIDDEN_NOTIFICATION_TYPES,
   type NotificationTab,
   useMarkAllNotificationsRead,
   useMarkNotificationRead,
@@ -579,7 +580,10 @@ export default function NotificationDrawer({
   const markAllRead = useMarkAllNotificationsRead();
 
   const allItems = useMemo(
-    () => listQuery.data?.pages.flatMap((p) => p.data.notifications) ?? [],
+    () =>
+      (listQuery.data?.pages.flatMap((p) => p.data.notifications) ?? []).filter(
+        (n) => !HIDDEN_NOTIFICATION_TYPES.has(n.type),
+      ),
     [listQuery.data?.pages],
   );
 

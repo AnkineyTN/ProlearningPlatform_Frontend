@@ -139,7 +139,7 @@ const SocialExplorePage = () => {
       </div>
 
       {/* Body */}
-      <div className='px-6 md:px-10 py-8 max-w-[1400px] mx-auto'>
+      <div className='py-8 max-w-[1400px] mx-auto'>
         <div className='grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 items-start'>
           {/* Main feed */}
           <div className='min-w-0'>

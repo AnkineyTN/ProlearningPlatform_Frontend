@@ -2,6 +2,7 @@ import { Brain, ClipboardList, History, Home, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
+import { useBackTo } from '@/hooks/useBackTo';
 
 interface ResultsActionsProps {
   setId: number;
@@ -21,13 +22,14 @@ export default function ResultsActions({
   onOpenRetry,
 }: ResultsActionsProps) {
   const navigate = useNavigate();
+  const backTo = useBackTo();
   const { t } = useTranslation();
 
   return (
     <div className='flex gap-3 justify-center flex-wrap pt-2 pb-8'>
       <Button
         variant='outline'
-        onClick={() => navigate(`/sets/${setId}/exams`)}
+        onClick={() => navigate(backTo ?? `/sets/${setId}/exams`)}
         className='gap-2 text-muted-foreground'
       >
         <Home className='w-4 h-4' />

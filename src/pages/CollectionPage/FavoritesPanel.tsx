@@ -42,7 +42,11 @@ export default function FavoritesPanel({ type, emptyLabel }: Props) {
             duration: item.duration,
             isFavorited: item.isFavorited,
           }}
-          onAccess={() => navigate(ROUTE_FOR[type](item.setId, item.id))}
+          onAccess={() =>
+            navigate(ROUTE_FOR[type](item.setId, item.id), {
+              state: { backTo: '/collection' },
+            })
+          }
         />
       ))}
     </div>

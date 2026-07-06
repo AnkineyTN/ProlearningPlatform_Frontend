@@ -16,6 +16,9 @@ import type {
 
 const PAGE_SIZE = 20;
 
+// Temporarily hidden from the notification list and unread badge.
+export const HIDDEN_NOTIFICATION_TYPES = new Set(["CARD_DUE_REMINDER"]);
+
 function optimisticMarkReadInList(
   data: any,
   id: number | string,
@@ -70,8 +73,12 @@ export function useUnreadNotificationCount() {
   return useQuery({
     queryKey: ["notifications", "unreadCount"],
     queryFn: async () => {
-      const res = await notificationAPI.getUnreadCount();
-      return res.data.data.unreadCount;
+      // Count client-side so HIDDEN_NOTIFICATION_TYPES stay out of the badge;
+      // the server count endpoint has no type filter.
+      const res = await notificationAPI.getUnreadNotifications(0, 200);
+      return res.data.data.notifications.filter(
+        (n) => !HIDDEN_NOTIFICATION_TYPES.has(n.type),
+      ).length;
     },
     enabled: !!token,
     refetchInterval: 60_000,

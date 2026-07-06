@@ -146,7 +146,9 @@ const TrendingPanel = ({ period }: { period: TrendingPeriod }) => {
   const openResource = (item: TrendingResource) => {
     if (item.setId == null) return;
     socialAPI.postViewLog(item.type, item.id).catch(() => {});
-    navigate(`/sets/${item.setId}/${RESOURCE_PATH[item.type]}/${item.id}`);
+    navigate(`/sets/${item.setId}/${RESOURCE_PATH[item.type]}/${item.id}`, {
+      state: { backTo: '/social' },
+    });
   };
 
   return (

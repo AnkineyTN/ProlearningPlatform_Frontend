@@ -31,13 +31,13 @@ interface QuestionReviewItemProps {
 
 const CARD_CLASS = {
   correct: 'border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft-2)]',
-  wrong:   'border-[var(--pl-danger-border)] bg-[var(--pl-danger-soft)]',
+  wrong: 'border-[var(--pl-danger-border)] bg-[var(--pl-danger-soft)]',
   pending: 'border-[var(--pl-warning-border)] bg-[var(--pl-warning-soft)]',
 } as const;
 
 const ICON_CLASS = {
   correct: 'bg-[var(--pl-accent)] text-[var(--pl-accent-fg)]',
-  wrong:   'bg-[var(--pl-danger)] text-white',
+  wrong: 'bg-[var(--pl-danger)] text-white',
   pending: 'bg-[var(--pl-warning)] text-white',
 } as const;
 
@@ -52,16 +52,22 @@ const QuestionReviewItem = forwardRef<HTMLDivElement, QuestionReviewItemProps>(
     const correct = helpers.isAnswerCorrect(question.id);
     const score = helpers.getQuestionScore(question.id);
 
-    const status = correct === true ? 'correct' : correct === false ? 'wrong' : 'pending';
+    const status =
+      correct === true ? 'correct' : correct === false ? 'wrong' : 'pending';
 
     return (
       <div
         ref={ref}
         className={`rounded-2xl border transition-all duration-200 ${CARD_CLASS[status]}`}
       >
-        <Collapsible open={forceOpen ? true : isOpen} onOpenChange={onOpenChange}>
+        <Collapsible
+          open={forceOpen ? true : isOpen}
+          onOpenChange={onOpenChange}
+        >
           <div className='flex items-center gap-3 p-4'>
-            <div className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center ${ICON_CLASS[status]}`}>
+            <div
+              className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center ${ICON_CLASS[status]}`}
+            >
               {correct === true ? (
                 <CheckCircle className='w-4 h-4' />
               ) : correct === false ? (
@@ -96,7 +102,9 @@ const QuestionReviewItem = forwardRef<HTMLDivElement, QuestionReviewItemProps>(
             </div>
 
             <div className='flex items-center gap-2 flex-shrink-0'>
-              <span className={`text-sm font-bold whitespace-nowrap ${correct === true ? 'text-[var(--pl-accent-strong)]' : ''}`}>
+              <span
+                className={`text-sm font-bold whitespace-nowrap ${correct === true ? 'text-[var(--pl-accent-strong)]' : ''}`}
+              >
                 {score}/{question.score}{' '}
                 <span className='font-normal text-muted-foreground text-xs'>
                   {t('exam.common.points')}
@@ -134,7 +142,7 @@ const QuestionReviewItem = forwardRef<HTMLDivElement, QuestionReviewItemProps>(
                       ? 'border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft)]'
                       : isSelected
                         ? 'border-[var(--pl-danger-border)] bg-[var(--pl-danger-soft)]'
-                        : 'border-border bg-[var(--pl-bg-elev)]';
+                        : 'border-border bg-[var(--pl-bg)]';
 
                     const textClass = isCorrectAnswer
                       ? 'font-semibold text-[var(--pl-accent-strong)]'
@@ -190,7 +198,9 @@ const QuestionReviewItem = forwardRef<HTMLDivElement, QuestionReviewItemProps>(
                     <p className='text-[11px] font-[family-name:var(--font-mono-pl)] tracking-[0.15em] text-muted-foreground mb-1'>
                       {t('exam.results.expectedAnswer').toUpperCase()}
                     </p>
-                    <p className='whitespace-pre-wrap'>{graded.expectedAnswer}</p>
+                    <p className='whitespace-pre-wrap'>
+                      {graded.expectedAnswer}
+                    </p>
                   </div>
                 )}
 

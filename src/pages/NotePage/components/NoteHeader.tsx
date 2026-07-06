@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
+import { useBackTo } from '@/hooks/useBackTo';
 import { cn } from '@/lib/utils';
 import { OnlineUsersAvatars } from '@/pages/NotePage/components/OnlineUsersAvatars';
 import { useNoteFileUpload } from '@/pages/NotePage/hooks/useNoteFileUpload';
@@ -89,6 +90,7 @@ export const NoteHeader = ({
   isFavorited = false,
 }: NoteHeaderProps) => {
   const navigate = useNavigate();
+  const backTo = useBackTo();
   const { t } = useTranslation();
   const { setId: setIdParam } = useParams<{ setId: string }>();
   const _setId = setId || (setIdParam ? Number(setIdParam) : 0);
@@ -123,7 +125,7 @@ export const NoteHeader = ({
         <div className='flex items-center gap-3 px-6 py-3'>
           <button
             type='button'
-            onClick={() => navigate(-1)}
+            onClick={() => (backTo ? navigate(backTo) : navigate(-1))}
             className='flex items-center gap-1.5 text-sm text-[var(--pl-text-muted)] hover:text-[var(--pl-text)] transition-colors cursor-pointer'
           >
             <ArrowLeft className='w-4 h-4' />

@@ -22,6 +22,7 @@ import NotificationBell from '@/components/notifications/NotificationBell';
 import ModeToggle from '@/components/theme/mode-toggle';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { useBackTo } from '@/hooks/useBackTo';
 
 import AttemptHistoryDialog from './ExamResults/AttemptHistoryDialog';
 
@@ -65,6 +66,7 @@ export default function ExamHomeView({
 }: ExamHomeViewProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const backTo = useBackTo();
   const currentUserId = useAuth().user?.id;
   const [shareOpen, setShareOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -277,7 +279,9 @@ export default function ExamHomeView({
         setId={setId}
         examId={examId}
         onSelectAttempt={(attemptId) =>
-          navigate(`/sets/${setId}/exams/${examId}/attempts/${attemptId}`)
+          navigate(`/sets/${setId}/exams/${examId}/attempts/${attemptId}`, {
+            state: { backTo },
+          })
         }
       />
     </div>

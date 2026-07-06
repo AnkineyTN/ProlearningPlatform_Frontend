@@ -77,10 +77,12 @@ const SectionBlock = ({
 
   const openItem = (item: SocialNote) => {
     trackView(item.id);
-    if (type === 'NOTE') navigate(`/sets/${item.setId}/notes/${item.id}`);
+    const state = { backTo: '/social' };
+    if (type === 'NOTE')
+      navigate(`/sets/${item.setId}/notes/${item.id}`, { state });
     else if (type === 'FLASHCARD')
-      navigate(`/sets/${item.setId}/flashcards/${item.id}`);
-    else navigate(`/sets/${item.setId}/exams/${item.id}`);
+      navigate(`/sets/${item.setId}/flashcards/${item.id}`, { state });
+    else navigate(`/sets/${item.setId}/exams/${item.id}`, { state });
   };
 
   const visible = infiniteScroll ? items : items.slice(0, PAGE_SIZE);

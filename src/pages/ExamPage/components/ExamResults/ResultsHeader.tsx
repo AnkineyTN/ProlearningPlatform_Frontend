@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
+import { useBackTo } from '@/hooks/useBackTo';
 
 interface ResultsHeaderProps {
   setId: number;
@@ -11,6 +12,7 @@ interface ResultsHeaderProps {
 
 export default function ResultsHeader({ setId, examId }: ResultsHeaderProps) {
   const navigate = useNavigate();
+  const backTo = useBackTo();
   const { t } = useTranslation();
 
   return (
@@ -19,7 +21,7 @@ export default function ResultsHeader({ setId, examId }: ResultsHeaderProps) {
         variant='ghost'
         size='sm'
         className='gap-2 text-muted-foreground hover:text-foreground'
-        onClick={() => navigate(`/sets/${setId}/exams`)}
+        onClick={() => navigate(backTo ?? `/sets/${setId}/exams`)}
       >
         <ArrowLeft className='w-4 h-4' />
         Back to Set
@@ -29,7 +31,9 @@ export default function ResultsHeader({ setId, examId }: ResultsHeaderProps) {
         <Button
           variant='outline'
           size='sm'
-          onClick={() => navigate(`/sets/${setId}/exams/${examId}`)}
+          onClick={() =>
+            navigate(`/sets/${setId}/exams/${examId}`, { state: { backTo } })
+          }
         >
           {t('exam.results.viewExam')}
         </Button>
