@@ -129,7 +129,7 @@ export const NoteHeader = ({
             className='flex items-center gap-1.5 text-sm text-[var(--pl-text-muted)] hover:text-[var(--pl-text)] transition-colors cursor-pointer'
           >
             <ArrowLeft className='w-4 h-4' />
-            Back
+            {t('note.header.back')}
           </button>
 
           <span className='text-border select-none'>·</span>
@@ -144,7 +144,7 @@ export const NoteHeader = ({
                 e.currentTarget.blur();
               }
             }}
-            placeholder='Untitled Note'
+            placeholder={t('note.header.untitled')}
             className={cn(
               'flex-1 min-w-0 max-w-2xl bg-transparent shadow-none px-2 h-auto py-1 font-[family-name:var(--font-display)] text-2xl font-medium tracking-tight focus-visible:ring-0',
               title.length >= TITLE_MAX_LENGTH
@@ -171,7 +171,7 @@ export const NoteHeader = ({
               onClick={() => setShareOpen(true)}
             >
               <Share2 className='w-4 h-4' />
-              Share
+              {t('note.header.share')}
             </Button>
 
             {userRole !== 'VIEWER' && (
@@ -189,7 +189,7 @@ export const NoteHeader = ({
                     ) : (
                       <Layers className='w-4 h-4' />
                     )}
-                    Generate Flashcard
+                    {t('note.header.generateFlashcard')}
                   </Button>
                 )}
 
@@ -201,26 +201,26 @@ export const NoteHeader = ({
                       className='gap-2 text-[var(--pl-text-muted)] hover:text-[var(--pl-text)]'
                     >
                       <FileDown className='w-4 h-4' />
-                      Export
+                      {t('note.header.export')}
                       <ChevronDown className='w-3 h-3 opacity-60' />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align='end' className='w-44'>
                     <DropdownMenuItem onClick={() => onExport('md')}>
                       <FileText className='w-4 h-4 mr-2 text-[var(--pl-accent)]' />
-                      Markdown (.md)
+                      {t('note.header.exportMarkdown')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => onExport('txt')}>
                       <FileText className='w-4 h-4 mr-2 text-[var(--pl-text-muted)]' />
-                      Plain text (.txt)
+                      {t('note.header.exportTxt')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => onExport('html')}>
                       <FileCode className='w-4 h-4 mr-2 text-[var(--pl-warning-text)]' />
-                      HTML (.html)
+                      {t('note.header.exportHtml')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => onExport('pdf')}>
                       <Printer className='w-4 h-4 mr-2 text-[var(--pl-danger-text)]' />
-                      PDF (.pdf)
+                      {t('note.header.exportPdf')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -248,7 +248,7 @@ export const NoteHeader = ({
                         ) : (
                           <Upload className='w-4 h-4' />
                         )}
-                        Upload
+                        {t('note.header.upload')}
                       </span>
                     </Button>
                   </label>
@@ -266,7 +266,7 @@ export const NoteHeader = ({
                     )}
                   >
                     <FileText className='w-4 h-4' />
-                    Files
+                    {t('note.header.files')}
                     <span className='font-[family-name:var(--font-mono-pl)] text-xs opacity-70'>
                       ({attachedFileCount})
                     </span>
@@ -283,7 +283,7 @@ export const NoteHeader = ({
                     )}
                   >
                     <Sparkles className='w-4 h-4' />
-                    AI
+                    {t('note.header.ai')}
                     <span className='font-[family-name:var(--font-mono-pl)] text-xs opacity-70'>
                       ({aiSummaryCount})
                     </span>

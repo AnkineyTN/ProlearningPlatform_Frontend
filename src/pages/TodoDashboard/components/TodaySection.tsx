@@ -14,7 +14,10 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ResourceMentionInput, type MentionResourceType } from './SetMentionInput';
+import {
+  ResourceMentionInput,
+  type MentionResourceType,
+} from './SetMentionInput';
 import { todayIso } from '../utils/dateHelpers';
 import { Button } from '@/components/ui/button';
 import {
@@ -147,7 +150,7 @@ const TodaySection = ({
   return (
     <div className='grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-5 mb-7'>
       {/* LEFT: Today */}
-      <div className='rounded-[16px] p-6 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)]'>
+      <div className='rounded-[16px] p-6 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] overflow-hidden'>
         <div className='flex items-start justify-between mb-4'>
           <div>
             <div className='text-[10.5px] tracking-[0.18em] uppercase mb-2 text-[var(--pl-accent-strong)]'>

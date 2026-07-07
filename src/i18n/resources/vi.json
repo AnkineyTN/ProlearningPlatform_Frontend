@@ -2382,6 +2382,20 @@
     }
   },
   "note": {
+    "header": {
+      "back": "Quay lại",
+      "untitled": "Ghi chú chưa đặt tên",
+      "share": "Chia sẻ",
+      "generateFlashcard": "Tạo Flashcard",
+      "export": "Xuất",
+      "exportMarkdown": "Markdown (.md)",
+      "exportTxt": "Văn bản thuần (.txt)",
+      "exportHtml": "HTML (.html)",
+      "exportPdf": "PDF (.pdf)",
+      "upload": "Tải lên",
+      "files": "Tệp",
+      "ai": "AI"
+    },
     "fileUpload": {
       "errorEmptyFile": "Tải lên thất bại: tệp rỗng (0 bytes).",
       "errorBackend": "Tải lên thất bại: {{message}}",

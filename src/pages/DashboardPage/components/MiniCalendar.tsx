@@ -2,7 +2,11 @@ import { useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { useHeatmap } from '@/hooks/useActivityLog';
 import { Panel, PanelHead } from './Panel';
 
@@ -92,6 +96,7 @@ export function MiniCalendar() {
                   hasActivity
                     ? 'text-[var(--pl-text)]'
                     : 'text-[var(--pl-text-faint)]',
+                  isToday && 'text-accent',
                 )}
               >
                 {d}
@@ -106,7 +111,9 @@ export function MiniCalendar() {
             return (
               <Tooltip key={d}>
                 <TooltipTrigger asChild>{cell}</TooltipTrigger>
-                <TooltipContent>{formatStudyTime(minutes)} studied</TooltipContent>
+                <TooltipContent>
+                  {formatStudyTime(minutes)} studied
+                </TooltipContent>
               </Tooltip>
             );
           })}
