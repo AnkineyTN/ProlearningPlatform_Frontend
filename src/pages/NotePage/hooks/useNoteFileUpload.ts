@@ -115,14 +115,21 @@ export function useNoteFileUpload({
           ? file.name.split('.').pop() || ''
           : '';
 
+        convertToVectorDBMutation.mutate({
+          setId,
+          payload: {
+            note_id: noteId,
+            asset_id: result.assetId,
+            file_name: file.name,
+            file_url: result.url,
+          },
+        });
+
         await saveImageMutation.mutateAsync({
           setId,
           data: {
             noteId,
             assetId: result.assetId,
-            publicId: result.publicId,
-            extension: ext,
-            fileName: file.name,
           },
         });
 
@@ -141,14 +148,21 @@ export function useNoteFileUpload({
           result.extension ||
           (file.name.includes('.') ? file.name.split('.').pop() || '' : '');
 
+        convertToVectorDBMutation.mutate({
+          setId,
+          payload: {
+            note_id: noteId,
+            asset_id: result.assetId,
+            file_name: result.fileName,
+            file_url: result.url,
+          },
+        });
+
         await saveDocumentMutation.mutateAsync({
           setId,
           data: {
             noteId,
             assetId: result.assetId,
-            publicId: result.publicId,
-            extension: ext,
-            fileName: result.fileName,
           },
         });
 
@@ -159,17 +173,6 @@ export function useNoteFileUpload({
           extension: ext,
           publicId: result.publicId,
           kind: 'doc',
-        });
-
-        convertToVectorDBMutation.mutate({
-          setId,
-          payload: {
-            noteDocsId: result.assetId,
-            noteId,
-            fileName: result.fileName,
-            fileUrl: result.url,
-            extension: ext,
-          },
         });
       }
 

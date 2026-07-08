@@ -71,7 +71,7 @@ const EducationSelection = ({
             <button
               key={level.id}
               onClick={() => onEducationSelect(level.id)}
-              className={`w-full p-5 rounded-2xl border transition-all text-left ${optionCardClass(
+              className={`w-full p-5 rounded-2xl border transition-all text-left cursor-pointer ${optionCardClass(
                 isSelected,
               )}`}
             >

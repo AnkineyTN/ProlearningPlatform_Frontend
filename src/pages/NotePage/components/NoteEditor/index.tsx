@@ -29,6 +29,7 @@ interface NoteEditorProps {
   onConnStatusChange?: (status: ConnectionStatus) => void;
   currentUserId?: number;
   currentUserName?: string;
+  currentUserAvatar?: string | null;
   /** Timestamp of the last successful auto-save / manual save */
   lastSavedAt?: Date | null;
 }
@@ -45,6 +46,7 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(
       onConnStatusChange,
       currentUserId = 0,
       currentUserName = 'User',
+      currentUserAvatar = null,
       lastSavedAt = null,
     },
     ref,
@@ -53,7 +55,8 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(
     const setId = setIdParam ? Number(setIdParam) : 0;
 
     const [collabReady, setCollabReady] = useState<CollabReady | null>(null);
-    const [connStatus, setConnStatus] = useState<ConnectionStatus>('connecting');
+    const [connStatus, setConnStatus] =
+      useState<ConnectionStatus>('connecting');
 
     const editable = userRole === 'OWNER' || userRole === 'EDITOR';
     const userColor = generateUserColor(currentUserId);
@@ -106,6 +109,9 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(
             users.push({
               name: String(state.user.name),
               color: String(state.user.color),
+              avatarUrl: state.user.avatarUrl
+                ? String(state.user.avatarUrl)
+                : undefined,
             });
           }
         });
@@ -150,6 +156,7 @@ export const NoteEditor = forwardRef<NoteEditorHandle, NoteEditorProps>(
             collab={collabReady}
             userName={currentUserName}
             userColor={userColor}
+            userAvatarUrl={currentUserAvatar ?? undefined}
             editable={editable}
             noteId={noteId}
             setId={setId}

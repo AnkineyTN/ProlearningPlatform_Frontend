@@ -35,7 +35,7 @@ const LanguageSelection = ({
             <button
               key={lang.id}
               onClick={() => onLanguageSelect(lang.id)}
-              className={`w-full flex items-center justify-between p-5 rounded-2xl border transition-all ${optionCardClass(
+              className={`w-full flex items-center justify-between p-5 rounded-2xl border transition-all cursor-pointer ${optionCardClass(
                 isSelected,
               )}`}
             >

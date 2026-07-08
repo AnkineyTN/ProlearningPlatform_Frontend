@@ -21,6 +21,7 @@ interface NoteEditorInnerProps {
   collab: CollabReady;
   userName: string;
   userColor: string;
+  userAvatarUrl?: string;
   editable: boolean;
   noteId: number;
   setId: number;
@@ -36,6 +37,7 @@ export default function NoteEditorInner({
   collab,
   userName,
   userColor,
+  userAvatarUrl,
   editable,
   noteId,
   setId,
@@ -54,7 +56,7 @@ export default function NoteEditorInner({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       provider: collab.provider as any,
       fragment: collab.yjsDoc.getXmlFragment('document-store'),
-      user: { name: userName, color: userColor },
+      user: { name: userName, color: userColor, avatarUrl: userAvatarUrl },
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any);
@@ -153,6 +155,28 @@ export default function NoteEditorInner({
     container.addEventListener('keydown', onKeyDown);
     return () => container.removeEventListener('keydown', onKeyDown);
   }, [insertCodeBlockAtCursor]);
+
+  // Safety net: BlockNote binds Mod-Z/Mod-Y to undo/redo internally, but if
+  // that binding doesn't fire for any reason, fall back to calling the
+  // editor's undo/redo API directly. Skipped when another handler already
+  // consumed the key (`defaultPrevented`) to avoid double-undoing.
+  useEffect(() => {
+    const container = editorContainerRef.current;
+    if (!container || !editorInstance || !editable) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || !(e.ctrlKey || e.metaKey)) return;
+      const key = e.key.toLowerCase();
+      if (key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        editorInstance.undo();
+      } else if ((key === 'z' && e.shiftKey) || key === 'y') {
+        e.preventDefault();
+        editorInstance.redo();
+      }
+    };
+    container.addEventListener('keydown', onKeyDown);
+    return () => container.removeEventListener('keydown', onKeyDown);
+  }, [editorInstance, editable]);
 
   const selection = useTextSelection(editorContainerRef);
   const { explain, isPending } = useAiExplain({

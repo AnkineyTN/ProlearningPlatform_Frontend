@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import { Loader2, Search, UserPlus } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import type { UserSearchResult } from '@/services/types/collaboration.types';
@@ -73,6 +73,9 @@ const InviteSearchDropdown = forwardRef<
               className={itemCls}
             >
               <Avatar className='size-7'>
+                {u.avatarUrl && (
+                  <AvatarImage src={u.avatarUrl} alt={u.firstName} />
+                )}
                 <AvatarFallback className='text-xs'>
                   {u.firstName[0]}
                 </AvatarFallback>

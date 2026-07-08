@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { setAPI } from "@/services/endpoints/sets";
+import { getApiError } from "@/lib/apiError";
 import {
   type CreateSetPayload,
   type SetQueryParams,
@@ -21,6 +22,11 @@ export const useSet = (setId: number) => {
       return res.data.data;
     },
     enabled: Number.isFinite(setId) && setId > 0,
+    retry: (failureCount, error) => {
+      const status = getApiError(error).status;
+      if (status === 401 || status === 403 || status === 404) return false;
+      return failureCount < 2;
+    },
   });
 };
 

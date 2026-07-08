@@ -55,7 +55,7 @@ const SourceSelection = ({
             <button
               key={source.id}
               onClick={() => onSourceSelect(source.id)}
-              className={`p-6 rounded-2xl border transition-all ${optionCardClass(
+              className={`p-6 cursor-pointer rounded-2xl border transition-all ${optionCardClass(
                 isSelected,
               )}`}
             >

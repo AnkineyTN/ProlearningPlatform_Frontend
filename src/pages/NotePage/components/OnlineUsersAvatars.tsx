@@ -1,7 +1,7 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface OnlineUsersAvatarsProps {
-  users: { name: string; color: string }[];
+  users: { name: string; color: string; avatarUrl?: string }[];
 }
 
 export function OnlineUsersAvatars({ users }: OnlineUsersAvatarsProps) {
@@ -16,6 +16,7 @@ export function OnlineUsersAvatars({ users }: OnlineUsersAvatarsProps) {
             className='size-6 border-2 ring-2 ring-[var(--pl-bg)]'
             style={{ borderColor: u.color }}
           >
+            {u.avatarUrl && <AvatarImage src={u.avatarUrl} alt={u.name} />}
             <AvatarFallback
               className='text-[10px] font-medium'
               style={{ backgroundColor: u.color, color: '#fff' }}

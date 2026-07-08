@@ -413,6 +413,7 @@ export const NotePage = () => {
                     ? `${currentUser.firstName} ${currentUser.lastName}`
                     : 'User'
                 }
+                currentUserAvatar={currentUser?.avatarUrl}
                 onOnlineUsersChange={setOnlineUsers}
                 lastSavedAt={lastSavedAt}
               />

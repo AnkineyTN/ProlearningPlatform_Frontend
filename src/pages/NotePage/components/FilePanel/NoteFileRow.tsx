@@ -22,6 +22,14 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
   useDeleteNoteDoc,
   useDeleteNoteImg,
   useSummarizeFile,
@@ -204,20 +212,26 @@ export function NoteFileRow({
     [isCommentMode, comments, activeCommentId, persistComment],
   );
 
-  const handleSummarize = async () => {
+  const summaryLimitOptions = [
+    { value: 100, label: t('note.summarize.short') },
+    { value: 300, label: t('note.summarize.medium') },
+    { value: 600, label: t('note.summarize.long') },
+  ];
+
+  const handleSummarize = async (limit: number) => {
     try {
       const response = await summarizeFileMutation.mutateAsync({
         setId,
         data: {
           language: mapI18nToAiApiLanguage(i18n.language),
-          limit: 0,
+          limit,
           file_url: fileUrl,
         },
       });
       onFileSummarize(response.data.data.summary, fileName);
-      toast.success('File summarized successfully');
+      toast.success(t('note.summarize.success'));
     } catch (error) {
-      toast.error(apiErrorMessage(error, 'Failed to summarize file'));
+      toast.error(apiErrorMessage(error, t('note.summarize.error')));
       console.error(error);
     }
   };
@@ -347,19 +361,36 @@ export function NoteFileRow({
               </div>
             )}
 
-            <Button
-              onClick={handleSummarize}
-              disabled={summarizeFileMutation.isPending}
-              className='w-full gap-2'
-              size='sm'
-            >
-              {summarizeFileMutation.isPending ? (
-                <LoaderCircle className='w-4 h-4 animate-spin' />
-              ) : (
-                <Sparkles className='w-4 h-4' />
-              )}
-              Summarize File with AI
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  disabled={summarizeFileMutation.isPending}
+                  className='w-full gap-2'
+                  size='sm'
+                >
+                  {summarizeFileMutation.isPending ? (
+                    <LoaderCircle className='w-4 h-4 animate-spin' />
+                  ) : (
+                    <Sparkles className='w-4 h-4' />
+                  )}
+                  {t('note.summarize.button')}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='center' className='w-56'>
+                <DropdownMenuLabel>
+                  {t('note.summarize.limitLabel')}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {summaryLimitOptions.map((opt) => (
+                  <DropdownMenuItem
+                    key={opt.value}
+                    onClick={() => handleSummarize(opt.value)}
+                  >
+                    {opt.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </Card>
         </div>
       </CollapsibleContent>

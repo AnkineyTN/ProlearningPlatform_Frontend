@@ -88,6 +88,28 @@ export default function NoteEditorFallback({
     [editorInstance],
   );
 
+  // Safety net: BlockNote binds Mod-Z/Mod-Y to undo/redo internally, but if
+  // that binding doesn't fire for any reason, fall back to calling the
+  // editor's undo/redo API directly. Skipped when another handler already
+  // consumed the key (`defaultPrevented`) to avoid double-undoing.
+  useEffect(() => {
+    const container = editorContainerRef.current;
+    if (!container || !editorInstance || !editable) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || !(e.ctrlKey || e.metaKey)) return;
+      const key = e.key.toLowerCase();
+      if (key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        editorInstance.undo();
+      } else if ((key === 'z' && e.shiftKey) || key === 'y') {
+        e.preventDefault();
+        editorInstance.redo();
+      }
+    };
+    container.addEventListener('keydown', onKeyDown);
+    return () => container.removeEventListener('keydown', onKeyDown);
+  }, [editorInstance, editable]);
+
   const selection = useTextSelection(editorContainerRef);
   const { explain, isPending } = useAiExplain({
     setId,

@@ -181,11 +181,10 @@ export type SummarizeFileResponse = {
 };
 
 export type ConvertToVectorDBRequest = {
-  noteDocsId: number;
-  fileName: string;
-  fileUrl: string;
-  extension: string;
-  noteId: number;
+  note_id: number;
+  asset_id: number;
+  file_name: string;
+  file_url: string;
 };
 
 export type ConvertToVectorDBResponse = {
@@ -230,17 +229,17 @@ export type ApiResponseNoteDetail = {
 export type SaveImgInNoteRequest = {
   noteId: number;
   assetId: number;
-  publicId: string;
-  extension: string;
-  fileName?: string;
 };
 
 export type SaveDocInNoteRequest = {
   noteId: number;
   assetId: number;
-  publicId: string;
-  extension: string;
-  fileName?: string;
+};
+
+export type SaveNoteFileResponse = {
+  status: number;
+  message: string;
+  data: Record<string, unknown>;
 };
 
 export type DeleteNoteImgRequest = {

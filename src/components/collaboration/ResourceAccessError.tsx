@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { getApiError } from '@/lib/apiError';
 import { cn } from '@/lib/utils';
 
-type ResourceKind = 'note' | 'flashcard' | 'exam';
+type ResourceKind = 'note' | 'flashcard' | 'exam' | 'set';
 
 interface ResourceAccessErrorProps {
   resource: ResourceKind;

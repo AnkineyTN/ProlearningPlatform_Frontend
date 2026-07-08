@@ -22,6 +22,7 @@ import type {
   ApiResponseNoteDetail,
   SaveImgInNoteRequest,
   SaveDocInNoteRequest,
+  SaveNoteFileResponse,
   DeleteNoteImgRequest,
   ResponseDataVoid,
   NoteFileRegionCommentDto,
@@ -123,13 +124,13 @@ export const noteAPI = {
   saveImageInNote: (
     setId: number,
     data: SaveImgInNoteRequest,
-  ): Promise<AxiosResponse<ResponseDataVoid>> =>
+  ): Promise<AxiosResponse<SaveNoteFileResponse>> =>
     api.post(`/sets/${setId}/notes/save-img`, data),
 
   saveDocumentInNote: (
     setId: number,
     data: SaveDocInNoteRequest,
-  ): Promise<AxiosResponse<ResponseDataVoid>> =>
+  ): Promise<AxiosResponse<SaveNoteFileResponse>> =>
     api.post(`/sets/${setId}/notes/save-doc`, data),
 
   deleteImgInNote: (

@@ -15,6 +15,7 @@ export interface CollabReady {
 export interface OnlineUser {
   name: string;
   color: string;
+  avatarUrl?: string;
 }
 
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected';

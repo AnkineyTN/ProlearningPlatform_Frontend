@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import CreateNewModal from '@/components/modals/CreateNewModal';
 import UploadNoteModal from '@/components/modals/UploadNoteModal';
+import { ResourceAccessError } from '@/components/collaboration/ResourceAccessError';
+import { useSet } from '@/hooks/useSets';
 
 import FlashcardListPage from './components/FlashcardListPage';
 import HeaderSetDetails from './components/HeaderSetDetails';
@@ -42,11 +44,35 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
   );
 
   const handlers = useSetSeriesHandlers({ setId, activeTab, setActiveTab });
+  const {
+    isLoading: isSetLoading,
+    isError: isSetError,
+    error: setError,
+    refetch: refetchSet,
+  } = useSet(Number(setId));
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
     navigate(`/sets/${setId}/${TAB_SLUGS[tab] ?? tab.toLowerCase()}`);
   };
+
+  if (isSetLoading) {
+    return (
+      <div className='min-h-screen flex items-center justify-center bg-[var(--pl-bg)]'>
+        <div className='w-8 h-8 border-2 border-[var(--pl-accent)] border-t-transparent rounded-full animate-spin' />
+      </div>
+    );
+  }
+
+  if (isSetError) {
+    return (
+      <ResourceAccessError
+        resource='set'
+        error={setError}
+        onRetry={() => void refetchSet()}
+      />
+    );
+  }
 
   return (
     <div className='min-h-screen bg-[var(--pl-bg)] transition-[background] duration-300 pb-10'>

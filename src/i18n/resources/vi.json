@@ -2415,13 +2415,23 @@
     },
     "aiExplain": {
       "rateLimited": "Bạn đã đạt giới hạn {{limit}} lượt giải thích AI mỗi phút. Vui lòng chờ một chút rồi thử lại."
+    },
+    "summarize": {
+      "button": "Tóm tắt tệp bằng AI",
+      "limitLabel": "Độ dài phản hồi tối đa",
+      "short": "Ngắn (~100 từ)",
+      "medium": "Trung bình (~300 từ)",
+      "long": "Dài (~600 từ)",
+      "success": "Tóm tắt tệp thành công",
+      "error": "Tóm tắt tệp thất bại"
     }
   },
   "resourceAccess": {
     "type": {
       "note": "ghi chú",
       "flashcard": "bộ thẻ học",
-      "exam": "đề thi"
+      "exam": "đề thi",
+      "set": "bộ học tập"
     },
     "accessDenied": {
       "title": "Bạn không còn quyền truy cập {{resource}} này",

@@ -2008,13 +2008,23 @@
     },
     "aiExplain": {
       "rateLimited": "You've reached the AI Explain limit of {{limit}} requests per minute. Please wait a moment and try again."
+    },
+    "summarize": {
+      "button": "Summarize File with AI",
+      "limitLabel": "Max response length",
+      "short": "Short (~100 words)",
+      "medium": "Medium (~300 words)",
+      "long": "Long (~600 words)",
+      "success": "File summarized successfully",
+      "error": "Failed to summarize file"
     }
   },
   "resourceAccess": {
     "type": {
       "note": "note",
       "flashcard": "flashcard set",
-      "exam": "exam"
+      "exam": "exam",
+      "set": "set"
     },
     "accessDenied": {
       "title": "You no longer have access to this {{resource}}",

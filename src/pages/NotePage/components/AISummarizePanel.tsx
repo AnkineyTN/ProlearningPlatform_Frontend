@@ -195,8 +195,20 @@ export const AISummarizePanel = ({
   onSaveSummary,
   onClosePanel,
 }: AISummarizePanelProps) => {
-  const handleCopyResponse = (text: string) => {
-    navigator.clipboard.writeText(text);
+  const handleCopyResponse = async (html: string) => {
+    const plainText = new DOMParser().parseFromString(html, 'text/html').body
+      .textContent ?? '';
+
+    try {
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/plain': new Blob([plainText], { type: 'text/plain' }),
+          'text/html': new Blob([html], { type: 'text/html' }),
+        }),
+      ]);
+    } catch {
+      await navigator.clipboard.writeText(plainText);
+    }
     toast.success('Copied to clipboard');
   };
 

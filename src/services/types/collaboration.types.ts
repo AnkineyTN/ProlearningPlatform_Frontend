@@ -15,6 +15,7 @@ export type UserSearchResult = {
   firstName: string;
   lastName: string;
   email: string;
+  avatarUrl?: string | null;
 };
 
 export type InviteTarget =
