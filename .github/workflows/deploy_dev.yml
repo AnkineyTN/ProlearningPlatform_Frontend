@@ -44,6 +44,7 @@ jobs:
             ${{ secrets.REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}:dev
           build-args: |
             VITE_API_URL=${{ secrets.VITE_API_URL_DEV }}
+            VITE_COLLAB_WS_URL=${{ secrets.VITE_COLLAB_WS_URL }}
 
       - name: Deploy to Dev Server
         uses: appleboy/ssh-action@v1.0.3
