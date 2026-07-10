@@ -1,0 +1,10 @@
+\subsubsection{Collaboration Context}
+\label{subsubsec:collaboration-context}
+
+Collaboration Context xử lý các chức năng cộng tác trên tài nguyên học tập, đặc biệt là ghi chú thời gian thực. Context này kết hợp WebSocket/STOMP cho sự kiện realtime và REST nội bộ để lưu snapshot cộng tác.
+
+\begin{itemize}
+    \item \textbf{Realtime events:} Tham gia phiên ghi chú, cập nhật nội dung, cập nhật con trỏ và danh sách người dùng đang hoạt động.
+    \item \textbf{Presence tracking:} Backend theo dõi phiên đang hoạt động bằng cấu trúc dữ liệu trong bộ nhớ để hạn chế ghi database cho dữ liệu ngắn hạn.
+    \item \textbf{State persistence:} Snapshot Yjs được lưu vào PostgreSQL dưới dạng byte array nhằm phục hồi trạng thái cộng tác khi mở lại note.
+\end{itemize}

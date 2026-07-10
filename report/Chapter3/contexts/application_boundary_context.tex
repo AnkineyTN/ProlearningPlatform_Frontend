@@ -1,0 +1,10 @@
+\subsubsection{Application Boundary Context}
+\label{subsubsec:application-boundary-context}
+
+Application Boundary Context là nơi tiếp nhận request vào backend. Thành phần này bao gồm controller, DTO, mapper, validation, exception handler và các cơ chế chuẩn hóa response. Đây là lớp giúp cô lập giao thức HTTP/WebSocket khỏi logic nghiệp vụ bên trong.
+
+\begin{itemize}
+    \item \textbf{Controller layer:} Định nghĩa endpoint, nhận request, kiểm tra annotation bảo mật và chuyển dữ liệu xuống service.
+    \item \textbf{DTO and mapper:} Chuẩn hóa dữ liệu vào/ra, hạn chế việc entity nội bộ bị lộ trực tiếp ra client.
+    \item \textbf{Validation and error handling:} Kiểm tra dữ liệu đầu vào và trả về response lỗi nhất quán cho client.
+\end{itemize}

@@ -1,0 +1,10 @@
+\subsubsection{Payment \& Subscription Context}
+\label{subsubsec:payment-subscription-context}
+
+Payment \& Subscription Context quản lý thanh toán, đối soát webhook và cập nhật gói tài khoản. Đây là context có yêu cầu cao về tính đúng đắn vì liên quan trực tiếp đến trạng thái tài khoản và giao dịch tài chính.
+
+\begin{itemize}
+    \item \textbf{Payment link:} Tạo link thanh toán PayOS, hủy order cũ còn pending và lưu trạng thái order.
+    \item \textbf{Webhook verification:} Kiểm tra chữ ký HMAC-SHA256 trước khi xử lý webhook~\cite{payoswebhook}.
+    \item \textbf{Subscription update:} Khi giao dịch thành công, hệ thống lưu transaction, nâng cấp account type và gửi thông báo/email.
+\end{itemize}

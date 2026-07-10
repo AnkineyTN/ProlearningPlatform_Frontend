@@ -1,0 +1,31 @@
+\subsection{Support Components}
+\label{subsec:support-components}
+
+Support components là các cơ chế dùng chung giúp hệ thống nhất quán, dễ bảo trì và hạn chế lặp logic giữa các bounded context.
+
+\subsubsection{Validation, Mapping \& Response Standardization}
+\label{subsubsec:validation-mapping-response}
+
+\begin{itemize}
+    \item \textbf{DTO validation:} Request DTO giới hạn dữ liệu đầu vào ở boundary của API, giúp service chỉ xử lý dữ liệu đã được kiểm tra cơ bản.
+    \item \textbf{Mapper layer:} Mapper chuyển đổi giữa entity và response DTO, tránh việc lộ cấu trúc persistence ra client.
+    \item \textbf{Response format:} \texttt{ApiResponse} và \texttt{ResponseUtil} chuẩn hóa thông điệp, dữ liệu và pagination metadata.
+\end{itemize}
+
+\subsubsection{Security Helper \& Permission Service}
+\label{subsubsec:security-permission-helper}
+
+\begin{itemize}
+    \item \textbf{Authentication context:} \texttt{AuthenticationContext} cung cấp user hiện tại cho service mà không cần truyền userId qua nhiều tầng.
+    \item \textbf{Resource permission:} Permission service kiểm tra quyền với note, flashcard, exam và các tài nguyên dùng chung.
+    \item \textbf{Method security:} Annotation như \texttt{@PreAuthorize} kết hợp với Spring Security để bảo vệ endpoint nhạy cảm~\cite{springsecurityjwt}.
+\end{itemize}
+
+\subsubsection{Caching, Scheduling \& Error Handling}
+\label{subsubsec:caching-scheduling-error-handling}
+
+\begin{itemize}
+    \item \textbf{Caching:} Cache được dùng cho dữ liệu đọc nhiều và thay đổi ít, ví dụ chi tiết tài nguyên học tập.
+    \item \textbf{Scheduling:} Scheduler xử lý notification, cleanup asset, cleanup invite và các công việc định kỳ.
+    \item \textbf{Exception handling:} Custom exception như \texttt{ResourceNotFoundException}, \texttt{BadRequestException} và \texttt{AccessDeniedException} giúp phân loại lỗi rõ ràng.
+\end{itemize}

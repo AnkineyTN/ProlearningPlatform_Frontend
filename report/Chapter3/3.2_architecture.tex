@@ -1,0 +1,36 @@
+\section{Tổ chức kiến trúc bên trong hệ thống}
+\label{sec:internal-architecture}
+
+\subsection{Nguyên tắc phân rã thành phần}
+\label{subsec:component-decomposition-principles}
+
+Các thành phần bên trong ProLearning Platform được tổ chức theo hướng phân lớp kết hợp bounded context. Cách tiếp cận này giúp hệ thống vừa giữ được luồng xử lý rõ ràng theo chiều dọc, vừa tách được các nhóm nghiệp vụ có tốc độ thay đổi khác nhau. Về mặt kỹ thuật, Spring Boot cung cấp nền tảng để tổ chức controller, service, repository, scheduler và cấu hình hạ tầng trong cùng một ứng dụng máy chủ~\cite{springbootdocs}. Về mặt dữ liệu, Spring Data JPA và PostgreSQL hỗ trợ mô hình entity/repository cho các quan hệ phức tạp giữa người dùng, học liệu, quyền truy cập và lịch sử học tập~\cite{springdatajpa,postgresqlabout}.
+
+Kiến trúc bên trong hệ thống được mô tả qua ba hướng phân rã:
+
+\begin{itemize}
+    \item \textbf{Phân rã theo lớp kỹ thuật:} Client, application boundary, service nghiệp vụ, persistence, cache/state, background job và external integration.
+    \item \textbf{Phân rã theo miền nghiệp vụ:} Identity, workspace, collaboration, AI learning, review/progress, todo/calendar, pomodoro, notification, payment/subscription, admin/moderation.
+    \item \textbf{Phân rã theo tính chất xử lý:} Request/response đồng bộ, xử lý thời gian thực bằng WebSocket/STOMP, xử lý nền bằng scheduler/message queue và tích hợp API bên ngoài.
+\end{itemize}
+
+Các context sau trình bày vai trò của từng nhóm thành phần trong hệ thống.
+
+\input{Chapter3/contexts/client_context}
+\input{Chapter3/contexts/application_boundary_context}
+\input{Chapter3/contexts/security_context}
+\input{Chapter3/contexts/learning_workspace_context}
+\input{Chapter3/contexts/collaboration_context}
+\input{Chapter3/contexts/ai_learning_context}
+\input{Chapter3/contexts/ai_service_context}
+\input{Chapter3/contexts/review_progress_context}
+\input{Chapter3/contexts/todo_calendar_context}
+\input{Chapter3/contexts/pomodoro_context}
+\input{Chapter3/contexts/notification_context}
+\input{Chapter3/contexts/messaging_email_context}
+\input{Chapter3/contexts/payment_subscription_context}
+\input{Chapter3/contexts/admin_moderation_context}
+\input{Chapter3/contexts/persistence_context}
+\input{Chapter3/contexts/cache_state_context}
+\input{Chapter3/contexts/background_job_context}
+\input{Chapter3/contexts/external_integration_context}

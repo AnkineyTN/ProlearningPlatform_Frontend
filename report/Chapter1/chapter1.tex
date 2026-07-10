@@ -1,0 +1,167 @@
+\chapter{Giới thiệu}
+\label{Chapter1}
+
+
+\section{Bối cảnh và đặt vấn đề}
+
+Trong những năm gần đây, sự phát triển của công nghệ thông tin, Internet và các nền tảng học tập số đã làm thay đổi đáng kể cách người học tiếp cận tri thức. Người học có thể dễ dàng sử dụng kho học liệu mở, khóa học trực tuyến, công cụ ghi chú, ứng dụng quản lý thời gian và các hệ thống trí tuệ nhân tạo để hỗ trợ quá trình tự học. Xu hướng này thúc đẩy mô hình học tập suốt đời (Lifelong Learning), trong đó người học chủ động lựa chọn tài liệu, xây dựng lộ trình và học tập linh hoạt theo nhu cầu cá nhân.
+
+Tuy nhiên, việc sử dụng đồng thời nhiều công cụ cũng tạo ra sự phân tán trong quá trình học tập. Tài liệu có thể được lưu trên Google Drive hoặc OneDrive, ghi chú được quản lý bằng Notion hoặc OneNote, Flashcard được tạo trên Quizlet, thời gian học được theo dõi bằng ứng dụng Pomodoro, còn việc giải thích hoặc tóm tắt kiến thức lại được thực hiện bằng các công cụ như ChatGPT hoặc NotebookLM. Việc liên tục chuyển đổi giữa nhiều nền tảng làm tăng chi phí quản lý thông tin, khiến dữ liệu học tập khó liên kết và làm cho quá trình học trở nên rời rạc.
+
+Bên cạnh đó, người học còn gặp khó khăn trong việc ghi nhớ, ôn tập và tự đánh giá mức độ hiểu biết. Nhiều nghiên cứu cho thấy học tập chủ động thông qua trả lời câu hỏi, tự kiểm tra hoặc luyện tập thường mang lại hiệu quả ghi nhớ tốt hơn so với việc đọc lại tài liệu một cách thụ động \cite{roediger2006testenhanced,dunlosky2013effectivelearning}. Tuy vậy, để áp dụng các phương pháp này, người học cần tự xây dựng nội dung ôn tập, duy trì thói quen học đều đặn và thường xuyên xác định các phần kiến thức còn yếu. Đây là thách thức lớn, đặc biệt khi các hoạt động học tập không được kết nối trong cùng một quy trình.
+
+Sự phát triển của các mô hình ngôn ngữ lớn (Large Language Models -- LLM) mở ra cơ hội xây dựng các hệ thống hỗ trợ học tập thông minh. Các hệ thống này có thể tóm tắt tài liệu, giải thích khái niệm, sinh nội dung học tập, hỗ trợ luyện tập và cá nhân hóa trải nghiệm người dùng. Tuy nhiên, khảo sát các nền tảng hiện có cho thấy phần lớn giải pháp chỉ tập trung vào một nhóm nhu cầu riêng lẻ: Notion mạnh về ghi chú, Quizlet hỗ trợ Flashcard, NotebookLM khai thác tài liệu bằng AI, trong khi các công cụ Pomodoro hoặc Todo hỗ trợ quản lý thời gian và công việc. Các nền tảng này chưa hỗ trợ đầy đủ toàn bộ quy trình học tập trên một môi trường thống nhất.
+
+Từ những vấn đề trên, nhóm nhận thấy cần có một giải pháp hỗ trợ người học quản lý toàn bộ quá trình học tập trên cùng một nền tảng tích hợp. Xuất phát từ nhu cầu thực tế đó, nhóm thực hiện đề tài \textbf{``Hệ thống thông minh hỗ trợ học tập''} với mục tiêu xây dựng một nền tảng cho phép người dùng quản lý tài nguyên học tập, ghi chú kiến thức, tạo nội dung học tập bằng trí tuệ nhân tạo, ôn tập, đánh giá và theo dõi tiến trình trên nhiều nền tảng khác nhau. Hệ thống hướng tới việc giảm thao tác thủ công, nâng cao hiệu quả tự học và hỗ trợ người dùng xây dựng thói quen học tập bền vững.
+
+
+\section{Mục tiêu đề tài}
+
+Trên cơ sở các vấn đề đã phân tích, đề tài hướng tới xây dựng một hệ thống học tập thông minh có khả năng kết nối các hoạt động học tập rời rạc thành một quy trình thống nhất. Phần này trình bày mục tiêu tổng quát, mục tiêu chức năng, mục tiêu kỹ thuật, nhóm người dùng hướng đến và các lợi ích kỳ vọng của hệ thống.
+
+\subsection{Mục tiêu tổng quát}
+
+Đề tài hướng tới xây dựng một hệ thống hỗ trợ học tập thông minh, cho phép người dùng quản lý tài liệu, ghi chú, Flashcard, bài kiểm tra, mục tiêu học tập và tiến trình học tập trên một nền tảng thống nhất. Hệ thống ứng dụng trí tuệ nhân tạo để hỗ trợ tạo nội dung học tập, tóm tắt và khai thác tài liệu, tự động hóa một số tác vụ chuẩn bị nội dung ôn tập và nâng cao hiệu quả tự học.
+
+Thông qua việc liên kết các hoạt động học tập vốn thường được thực hiện rời rạc, hệ thống giúp người dùng giảm thời gian quản lý công cụ, tăng khả năng tổ chức tri thức cá nhân, chủ động luyện tập và theo dõi mức độ tiến bộ của bản thân. Bên cạnh việc đáp ứng nhu cầu học tập hiện tại, đề tài cũng hướng tới xây dựng nền tảng có khả năng mở rộng, tạo cơ sở cho việc tích hợp thêm các giải pháp trí tuệ nhân tạo và cá nhân hóa học tập trong tương lai.
+
+\subsection{Mục tiêu chức năng}
+
+Về mặt chức năng, hệ thống cần hỗ trợ người học trong các hoạt động chính của quá trình tự học, từ tổ chức tài nguyên, ghi chú kiến thức, tạo nội dung ôn tập, luyện tập, đánh giá kết quả đến theo dõi tiến trình học tập. Các chức năng chính gồm:
+\begin{itemize}
+    \item Cung cấp không gian học tập tập trung để quản lý tài nguyên, ghi chú và nội dung học tập theo từng chủ đề hoặc môn học.
+    \item Hỗ trợ tạo, lưu trữ, chia sẻ và khai thác ghi chú từ nhiều nguồn dữ liệu học tập.
+    \item Ứng dụng trí tuệ nhân tạo để tóm tắt tài liệu, giải thích khái niệm, sinh Flashcard, sinh câu hỏi kiểm tra và tạo tài nguyên học tập.
+    \item Hỗ trợ ôn tập và ghi nhớ kiến thức thông qua Flashcard, bài kiểm tra và các hình thức học tập chủ động.
+    \item Ghi nhận kết quả học tập, theo dõi tiến trình và hỗ trợ người dùng nhận biết mức độ tiến bộ của bản thân.
+    \item Cho phép học tập linh hoạt trên nhiều nền tảng, đồng thời bảo đảm dữ liệu được quản lý và đồng bộ thống nhất.
+\end{itemize}
+
+\subsection{Mục tiêu kỹ thuật}
+
+Về mặt kỹ thuật, đề tài hướng tới xây dựng một hệ thống có kiến trúc rõ ràng, dễ mở rộng, dễ bảo trì và phù hợp với yêu cầu thực tế của một ứng dụng học tập hiện đại. Hệ thống được thiết kế theo mô hình Client--Server kết hợp định hướng dịch vụ, trong đó giao diện người dùng, nghiệp vụ, dữ liệu và trí tuệ nhân tạo được phân tách theo trách nhiệm riêng.
+
+Các nghiệp vụ cốt lõi được xử lý tập trung tại Backend Service nhằm bảo đảm tính nhất quán dữ liệu, trong khi Web và Mobile đóng vai trò lớp giao diện phục vụ tương tác với người dùng. Các chức năng trí tuệ nhân tạo được triển khai dưới dạng AI Service độc lập, giúp hệ thống dễ tích hợp, thay đổi hoặc mở rộng mô hình AI trong tương lai. Bên cạnh đó, hệ thống cũng hướng tới khả năng tích hợp với cơ sở dữ liệu, cache, hàng đợi tác vụ và dịch vụ thông báo để đáp ứng yêu cầu về hiệu năng, tính sẵn sàng và khả năng vận hành thực tế.
+
+\subsection{Đối tượng sử dụng}
+
+Đối tượng sử dụng chính của hệ thống là học sinh, sinh viên và những người có nhu cầu tự học trong nhiều lĩnh vực khác nhau. Với học sinh và sinh viên, hệ thống hỗ trợ quản lý tài liệu, tổ chức kiến thức và ôn tập phục vụ môn học hoặc kỳ thi. Với người tự học hoặc người đi làm, hệ thống hỗ trợ xây dựng kho tri thức cá nhân, quản lý quá trình học tập và phát triển kỹ năng chuyên môn. Ngoài ra, hệ thống cũng có thể được sử dụng trong nhóm học tập hoặc cộng đồng học tập thông qua các chức năng chia sẻ và cộng tác nội dung.
+
+\subsection{Lợi ích mang lại}
+
+Việc xây dựng hệ thống thông minh hỗ trợ học tập mang lại các lợi ích chính sau:
+\begin{itemize}
+    \item Giảm sự phân tán tài nguyên bằng cách tập trung hoạt động quản lý kiến thức, ghi chú, ôn tập và đánh giá trên cùng một nền tảng.
+    \item Giảm khối lượng công việc thủ công nhờ ứng dụng trí tuệ nhân tạo trong quá trình chuẩn bị và tổ chức nội dung học tập.
+    \item Hỗ trợ người học chuyển từ phương pháp học thụ động sang học tập chủ động thông qua ôn tập, kiểm tra và đánh giá thường xuyên.
+    \item Giúp người dùng theo dõi tiến trình, nhận biết sự tiến bộ và duy trì động lực học tập trong dài hạn.
+    \item Tạo nền tảng cho việc nghiên cứu và phát triển các hệ thống học tập cá nhân hóa trong tương lai.
+\end{itemize}
+
+
+\section{Phạm vi đề tài}
+\subsection{Phạm vi nghiên cứu}
+
+Đề tài tập trung nghiên cứu và xây dựng một hệ thống hỗ trợ học tập thông minh cho nhiều giai đoạn của quá trình học tập, từ tiếp nhận kiến thức, tổ chức thông tin, ôn tập đến đánh giá kết quả. Trọng tâm của đề tài không nằm ở việc phát triển một mô hình trí tuệ nhân tạo mới, mà là ứng dụng các công nghệ AI hiện có để giải quyết các bài toán thực tế trong hoạt động học tập.
+
+Các hướng nghiên cứu chính của đề tài bao gồm quản lý tri thức cá nhân, học tập chủ động bằng Flashcard và bài kiểm tra, ứng dụng trí tuệ nhân tạo trong giáo dục, theo dõi tiến trình học tập, xây dựng hệ thống đa nền tảng, hỗ trợ cộng tác và tự động hóa quá trình tạo nội dung học tập từ nhiều nguồn dữ liệu.
+
+\subsection{Phạm vi chức năng}
+
+Trong phạm vi đồ án, hệ thống tập trung triển khai các nhóm chức năng chính sau. Phần này chỉ trình bày ở mức tổng quát; yêu cầu chi tiết và Use Case được trình bày trong chương phân tích và thiết kế hệ thống.
+
+\subsubsection{Quản lý người dùng}
+
+Hệ thống hỗ trợ đăng ký, đăng nhập, quản lý hồ sơ cá nhân, xác thực và phân quyền người dùng. Nhóm chức năng này là nền tảng cho việc kiểm soát truy cập và cá nhân hóa dữ liệu học tập.
+
+\subsubsection{Quản lý không gian học tập}
+
+Hệ thống cho phép người dùng tổ chức nội dung học tập theo từng Set tương ứng với môn học hoặc chủ đề kiến thức. Mỗi Set liên kết các tài nguyên như ghi chú, Flashcard, bài kiểm tra, tài liệu học tập và dữ liệu theo dõi tiến trình.
+
+\subsubsection{Hệ thống Note}
+
+Hệ thống Note hỗ trợ tạo, chỉnh sửa, quản lý, chia sẻ và cộng tác trên ghi chú học tập. Ngoài ghi chú thủ công, hệ thống còn hỗ trợ khai thác nội dung từ nhiều nguồn dữ liệu để phục vụ quá trình xây dựng tri thức cá nhân.
+
+\subsubsection{Hệ thống Flashcard}
+
+Hệ thống Flashcard hỗ trợ tạo, quản lý và học Flashcard, bao gồm cả Flashcard do người dùng tạo thủ công và Flashcard được sinh bằng AI. Chức năng này hướng tới việc hỗ trợ ghi nhớ kiến thức thông qua học tập chủ động.
+
+\subsubsection{Hệ thống Exam}
+
+Hệ thống Exam hỗ trợ tạo và thực hiện bài kiểm tra trực tuyến, lưu kết quả làm bài, thống kê kết quả học tập và phân tích hiệu suất. Thông qua các bài kiểm tra, hệ thống giúp người dùng đánh giá mức độ hiểu bài và xác định nội dung cần ôn tập thêm.
+
+\subsubsection{Hệ thống Goal và Todo}
+
+Hệ thống Goal và Todo hỗ trợ thiết lập mục tiêu học tập, quản lý công việc, theo dõi mức độ hoàn thành và tổ chức kế hoạch học tập cá nhân. Nhóm chức năng này giúp người dùng duy trì động lực và kỷ luật trong quá trình học tập.
+
+\subsubsection{Hệ thống Pomodoro}
+
+Hệ thống Pomodoro hỗ trợ quản lý thời gian học tập thông qua việc thiết lập phiên học, theo dõi thời gian học, thời gian nghỉ và lịch sử học tập.
+
+\subsubsection{Hệ thống Notification}
+
+Hệ thống Notification hỗ trợ gửi các thông báo liên quan đến hoạt động học tập, nhắc nhở ôn tập, tiến độ mục tiêu và các hoạt động cộng tác trên nội dung học tập.
+
+\subsubsection{Hệ thống theo dõi học tập}
+
+Hệ thống lưu trữ và phân tích dữ liệu học tập nhằm hỗ trợ theo dõi tiến trình, thống kê hoạt động, đánh giá hiệu suất và tạo cơ sở cho việc cá nhân hóa trải nghiệm học tập.
+
+\subsubsection{Hệ thống AI hỗ trợ học tập}
+
+Hệ thống tích hợp các chức năng trí tuệ nhân tạo nhằm hỗ trợ tóm tắt nội dung, giải thích khái niệm, sinh ghi chú, sinh Flashcard, sinh bài kiểm tra và tạo tài nguyên học tập từ nhiều nguồn dữ liệu như PDF, DOCX, PPT/PPTX, nội dung website, video YouTube và ghi chú đã có trong hệ thống.
+
+\subsection{Phạm vi kỹ thuật}
+
+Về mặt kỹ thuật, hệ thống được xây dựng theo mô hình Client--Server kết hợp với một dịch vụ AI độc lập. Kiến trúc tổng thể bao gồm ứng dụng Web, ứng dụng Mobile, Backend Service, AI Service và hệ quản trị cơ sở dữ liệu.
+
+Ứng dụng Web được phát triển bằng React và TypeScript, ứng dụng Mobile được phát triển bằng React Native, Backend Service được phát triển bằng Java Spring Boot, còn AI Service được phát triển bằng Python FastAPI và tích hợp với các mô hình ngôn ngữ lớn. Dữ liệu bền vững được lưu trữ chủ yếu trên PostgreSQL; Redis được sử dụng cho cache và trạng thái ngắn hạn; RabbitMQ hỗ trợ xử lý các tác vụ bất đồng bộ như gửi email hoặc thông báo nền.
+
+\subsection{Giới hạn của đề tài}
+
+Do giới hạn về thời gian, nguồn lực và phạm vi của đồ án tốt nghiệp, hệ thống vẫn còn một số giới hạn. Thứ nhất, chất lượng đầu ra của các chức năng AI phụ thuộc vào chất lượng dữ liệu đầu vào và khả năng của mô hình được sử dụng. Thứ hai, hệ thống tập trung vào các loại tài liệu học tập phổ biến như văn bản, PDF, bài trình chiếu và nội dung website; các dạng học liệu phức tạp hơn như mô phỏng tương tác hoặc thực tế ảo chưa nằm trong phạm vi nghiên cứu. Thứ ba, hệ thống được tối ưu chủ yếu cho học sinh, sinh viên và người tự học; các nhu cầu đặc thù của doanh nghiệp hoặc tổ chức đào tạo quy mô lớn chưa được xem xét đầy đủ.
+
+
+\section{Phương pháp thực hiện}
+
+Để thực hiện đề tài, nhóm áp dụng phương pháp phát triển phần mềm theo hướng lặp và tăng trưởng (Iterative and Incremental Development), kết hợp với quy trình Agile Scrum. Cách tiếp cận này phù hợp với đặc thù của hệ thống học tập thông minh, trong đó yêu cầu chức năng, giao diện người dùng và các khả năng AI cần được điều chỉnh qua nhiều vòng phản hồi.
+
+Trong quá trình thực hiện, nhóm tổ chức công việc theo Product Backlog, phân rã yêu cầu thành các hạng mục có thể triển khai theo từng Sprint. Mỗi Sprint gồm các hoạt động chính như lập kế hoạch, triển khai, tích hợp, kiểm thử, đánh giá kết quả và điều chỉnh backlog cho vòng lặp tiếp theo.
+
+Quá trình thực hiện đề tài được chia thành các giai đoạn chính như sau:
+
+\subsection{Khảo sát và phân tích yêu cầu}
+
+Nhóm khảo sát các hệ thống học tập hiện có, nghiên cứu nhu cầu người học và xác định các vấn đề cần giải quyết. Kết quả khảo sát được dùng để xây dựng yêu cầu chức năng, yêu cầu phi chức năng và phạm vi triển khai.
+
+\subsection{Thiết kế hệ thống}
+
+Nhóm thiết kế kiến trúc hệ thống, kiến trúc cơ sở dữ liệu, giao diện người dùng và các API phục vụ giao tiếp giữa các thành phần.
+
+\subsection{Triển khai hệ thống}
+
+Nhóm phát triển song song các thành phần Frontend Web, Frontend Mobile, Backend Service và AI Service theo từng Sprint nhằm rút ngắn thời gian phát triển và tăng khả năng phối hợp giữa các thành viên.
+
+\subsection{Kiểm thử và hoàn thiện}
+
+Sau mỗi giai đoạn triển khai, nhóm kiểm thử chức năng để phát hiện và xử lý lỗi phát sinh. Các phản hồi thu được trong quá trình kiểm thử và Sprint Review được sử dụng để cải thiện chất lượng sản phẩm trước khi hoàn thiện hệ thống.
+
+\section{Cấu trúc báo cáo}
+
+Báo cáo được tổ chức thành năm chương như sau:
+
+\textbf{Chương 1 -- Giới thiệu:} Trình bày bối cảnh hình thành đề tài,
+mục tiêu nghiên cứu, phạm vi thực hiện và cấu trúc tổng thể của báo cáo.
+
+\textbf{Chương 2 -- Các công trình liên quan:} Khảo sát và phân tích các
+hệ thống hỗ trợ học tập hiện có, từ đó xác định các vấn đề còn tồn tại
+và các yêu cầu đặt ra đối với hệ thống đề xuất.
+
+\textbf{Chương 3 -- Phân tích, thiết kế và triển khai hệ thống:} Trình
+bày quá trình phân tích yêu cầu, thiết kế kiến trúc, thiết kế cơ sở dữ
+liệu, thiết kế giao diện và triển khai các thành phần của hệ thống.
+
+\textbf{Chương 4 -- Quá trình thực hiện dự án:} Trình bày quy trình quản
+lý dự án, phương pháp làm việc nhóm, phân công nhiệm vụ, theo dõi tiến
+độ và các khó khăn gặp phải trong quá trình thực hiện đề tài.
+
+\textbf{Chương 5 -- Kết luận và hướng phát triển:} Trình bày sản phẩm đạt được, các chức năng đã triển khai và kết quả triển khai thực nghiệm của hệ thống. Đồng thời tổng kết những kết quả đạt được, đánh giá mức độ hoàn thành mục tiêu đề tài, các bài học kinh nghiệm, những hạn chế còn tồn tại và định hướng phát triển trong tương lai.

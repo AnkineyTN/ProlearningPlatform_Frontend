@@ -1,0 +1,29 @@
+\subsection{Các vấn đề cần xử lý và giải pháp}
+\label{subsec:implementation-issues-solutions}
+
+Trong quá trình cài đặt, hệ thống cần xử lý nhiều vấn đề phát sinh từ việc phối hợp giữa request đồng bộ, tác vụ bất đồng bộ, dữ liệu realtime và external API. Các vấn đề chính và hướng giải quyết được tóm tắt trong Bảng~\ref{tab:implementation-issues-solutions}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Các vấn đề triển khai và giải pháp xử lý}
+    \label{tab:implementation-issues-solutions}
+    \begin{tabular}{|L{0.3\textwidth}|L{0.58\textwidth}|}
+        \hline
+        \textbf{Vấn đề} & \textbf{Giải pháp} \\
+        \hline
+        Request backend phải phản hồi nhanh nhưng nhiều flow có bước gửi email, push hoặc gọi dịch vụ ngoài. & Tách phần bắt buộc trong transaction chính khỏi phần có thể chạy async; dùng scheduler/dispatcher cho reminder, email và push notification. \\
+        \hline
+        Client không được phép ghi trực tiếp trạng thái nghiệp vụ quan trọng như payment, subscription hoặc lịch ôn tập. & Backend giữ vai trò source of truth; mọi cập nhật trạng thái quan trọng đi qua service nghiệp vụ và kiểm tra quyền. \\
+        \hline
+        External API có thể timeout, trả lỗi hoặc gửi webhook trùng lặp. & Bọc tích hợp sau adapter, lưu trạng thái trung gian, kiểm tra chữ ký webhook và xử lý idempotent theo order code/transaction id. \\
+        \hline
+        Realtime collaboration tạo nhiều sự kiện ngắn hạn, nếu lưu toàn bộ vào database sẽ gây tải lớn. & Lưu presence/cursor trong bộ nhớ, chỉ lưu snapshot Yjs hoặc trạng thái cần khôi phục vào PostgreSQL. \\
+        \hline
+        Token tích hợp ngoài và OAuth state có vòng đời khác nhau. & Dùng Redis TTL cho state ngắn hạn; lưu credential cần thiết trong bảng settings và kiểm soát refresh/revoke tại service tích hợp. \\
+        \hline
+        Notification đến từ nhiều nguồn nên dễ trùng logic tạo/gửi. & Chuẩn hóa qua \texttt{CreateNotificationDto}, dispatcher và FCM service; inbox lưu trong PostgreSQL, push delivery chạy bất đồng bộ. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Nhìn chung, giải pháp cốt lõi là giữ backend làm điểm kiểm soát nghiệp vụ, tách adapter cho tích hợp ngoài, phân loại dữ liệu theo vòng đời và hạn chế đưa logic quan trọng xuống client. Cách tiếp cận này giúp hệ thống dễ mở rộng khi thêm flow mới hoặc thay đổi nhà cung cấp dịch vụ.

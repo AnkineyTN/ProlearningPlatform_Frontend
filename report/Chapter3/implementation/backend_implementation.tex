@@ -1,0 +1,28 @@
+\subsection{Cài đặt backend}
+\label{subsec:backend-implementation}
+
+Backend của ProLearning Platform được triển khai bằng Spring Boot và đóng vai trò điểm điều phối chính của hệ thống. Backend chịu trách nhiệm nhận request từ client, xác thực người dùng, kiểm tra quyền truy cập tài nguyên, thực thi nghiệp vụ, lưu dữ liệu vào PostgreSQL và gọi các dịch vụ hạ tầng hoặc dịch vụ ngoài khi cần. Cách tổ chức này giúp client không truy cập trực tiếp vào database hoặc external API, đồng thời giữ toàn bộ luật nghiệp vụ ở một lớp kiểm soát tập trung~\cite{springbootdocs}.
+
+Về cấu trúc mã nguồn, backend được chia theo các nhóm package chính:
+
+\begin{itemize}
+    \item \textbf{Controller layer:} Nhận HTTP request, validate dữ liệu đầu vào ở mức API và chuyển tiếp sang service tương ứng.
+    \item \textbf{Service layer:} Cài đặt workflow nghiệp vụ như quản lý học liệu, flashcard, note, todo, notification, payment và subscription. Đây là lớp chịu trách nhiệm kiểm tra quyền, gọi repository, gọi adapter tích hợp và quyết định transaction boundary.
+    \item \textbf{Repository layer:} Đóng gói truy vấn dữ liệu tới PostgreSQL thông qua các repository. Các truy vấn đặc thù, ví dụ lấy card đến hạn hoặc lọc notification theo người dùng, được đặt tại repository để service không phụ thuộc vào chi tiết truy vấn.
+    \item \textbf{DTO/Mapper layer:} Tách dữ liệu trao đổi qua API khỏi entity nội bộ. Mapper chuyển đổi giữa request/response DTO và entity nhằm tránh lộ cấu trúc database ra client.
+    \item \textbf{Configuration/Infrastructure layer:} Cấu hình security, WebSocket, Redis, RabbitMQ, Firebase, Cloudinary, Google Calendar, PayOS, scheduler và async executor.
+\end{itemize}
+
+Luồng xử lý request đồng bộ trong backend thường đi qua các bước sau:
+
+\begin{enumerate}
+    \item Client gửi request kèm JWT hoặc dữ liệu xác thực phù hợp.
+    \item Security filter/interceptor xác thực token và đưa thông tin người dùng vào security context hoặc session context.
+    \item Controller nhận DTO, kiểm tra định dạng cơ bản và gọi service nghiệp vụ.
+    \item Service kiểm tra quyền truy cập tài nguyên, thực hiện transaction, gọi repository và gọi adapter tích hợp nếu cần.
+    \item Mapper tạo response DTO để trả kết quả nhất quán cho client.
+\end{enumerate}
+
+Các tác vụ không cần hoàn tất ngay trong request chính được chuyển sang cơ chế bất đồng bộ hoặc scheduler. Ví dụ, gửi email, gửi push notification, reminder định kỳ, cleanup dữ liệu cũ và một số bước xử lý tích hợp có thể chạy ngoài luồng request để giảm độ trễ phản hồi. Với các flow realtime như cộng tác ghi chú, backend dùng WebSocket/STOMP để truyền sự kiện theo topic thay vì bắt client polling liên tục~\cite{springwebsocketstomp}.
+
+Đối với external API, backend không gọi trực tiếp từ controller mà bọc sau các service/adapter riêng. Cách này được áp dụng cho AI Service, Firebase Cloud Messaging, Google Calendar, Cloudinary, PayOS và SMTP provider. Nhờ đó, khi thay đổi nhà cung cấp hoặc thay đổi định dạng request/response, phạm vi sửa đổi chủ yếu nằm trong adapter thay vì lan sang các bounded context khác.

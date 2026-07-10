@@ -1,0 +1,10 @@
+\subsubsection{Security \& Identity Context}
+\label{subsubsec:security-context}
+
+Security \& Identity Context phụ trách định danh người dùng và bảo vệ tài nguyên. Context này bao gồm đăng ký, đăng nhập, Google login, xác minh email, quên mật khẩu, JWT, refresh token, thu hồi token và kiểm soát tài khoản bị khóa.
+
+\begin{itemize}
+    \item \textbf{Authentication:} Sử dụng Spring Security, JWT và refresh token để phục vụ API stateless~\cite{springsecurityjwt}.
+    \item \textbf{Trạng thái ngắn hạn:} Redis lưu các dữ liệu có thời gian sống giới hạn như OTP, token blacklist hoặc OAuth state~\cite{redisoverview}.
+    \item \textbf{Authorization:} Hệ thống kết hợp phân quyền cấp tài khoản và phân quyền cấp tài nguyên dùng chung như note, flashcard hoặc exam.
+\end{itemize}

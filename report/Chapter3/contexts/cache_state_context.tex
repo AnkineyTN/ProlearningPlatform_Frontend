@@ -1,0 +1,10 @@
+\subsubsection{Cache \& Short-lived State Layer}
+\label{subsubsec:cache-state-context}
+
+Cache \& Short-lived State Layer lưu các dữ liệu có vòng đời ngắn hoặc cần truy xuất nhanh. Redis được dùng cho nhóm dữ liệu này vì hỗ trợ key-value access và TTL phù hợp với cache/state tạm thời~\cite{redisoverview}.
+
+\begin{itemize}
+    \item \textbf{Security state:} OTP, token blacklist và OAuth state.
+    \item \textbf{Application cache:} Cache chi tiết tài nguyên hoặc dữ liệu truy xuất thường xuyên.
+    \item \textbf{Temporary workflow:} Lưu trạng thái tạm trong các flow cần xác nhận hoặc callback.
+\end{itemize}

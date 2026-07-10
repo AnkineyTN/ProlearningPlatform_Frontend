@@ -1,0 +1,10 @@
+\subsubsection{Background Job Context}
+\label{subsubsec:background-job-context}
+
+Background Job Context bao gồm scheduler và các tác vụ nền. Context này xử lý những công việc không nên đặt trong request chính vì có thể tốn thời gian và cần chạy định kỳ.
+
+\begin{itemize}
+    \item \textbf{Notification jobs:} Gửi due card reminder, todo/goal reminder và weekly summary theo lịch.
+    \item \textbf{Cleanup jobs:} Dọn notification cũ, asset pending/deleted và invite record hết hạn.
+    \item \textbf{Async processing:} Một số tác vụ như gửi push hoặc sinh nội dung AI được tách khỏi transaction chính để giảm độ trễ và tăng khả năng chịu lỗi.
+\end{itemize}

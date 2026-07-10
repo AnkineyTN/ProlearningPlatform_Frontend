@@ -1,0 +1,29 @@
+\section{Chi tiết các thành phần bên trong hệ thống}
+\label{sec:component-details}
+\begingroup
+\sloppy
+
+Phần này mô tả chi tiết các thành phần chính của ProLearning Platform theo ba nhóm: \textit{core components}, \textit{support components} và \textit{infrastructure/integration components}. Việc tách nhóm giúp làm rõ thành phần nào trực tiếp tạo ra giá trị học tập cho người dùng, thành phần nào hỗ trợ vận hành nội bộ và thành phần nào phụ trách kết nối hạ tầng hoặc dịch vụ ngoài.
+
+Cách phân nhóm được sử dụng trong báo cáo như sau:
+
+\begin{itemize}
+    \item \textbf{Core components:} Bao gồm client, identity, workspace học tập, AI learning, collaboration, review/progress, todo/calendar, pomodoro, notification và payment. Đây là các thành phần trực tiếp tham gia vào trải nghiệm học tập và quản lý tài khoản.
+    \item \textbf{Support components:} Bao gồm validation, chuẩn hóa DTO, mapper, xử lý lỗi, phân quyền tài nguyên, cache, scheduler và logging. Đây là các cơ chế dùng chung giúp giảm trùng lặp và tăng tính nhất quán.
+    \item \textbf{Infrastructure/integration components:} Bao gồm PostgreSQL, Redis, RabbitMQ, Cloudinary, Firebase Cloud Messaging, Google Calendar, PayOS và SMTP provider. Đây là các thành phần cung cấp năng lực lưu trữ, nhắn tin, đồng bộ và tích hợp ngoài.
+\end{itemize}
+
+Hình~\ref{fig:prolearning-architecture-detail-components} mô tả mối quan hệ giữa các nhóm thành phần trên trong kiến trúc hệ thống.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth,height=0.72\textheight,keepaspectratio]{images/chapter3/ProLearning_Arch-Detail_Components.drawio.png}
+    \caption{Chi tiết các thành phần của hệ thống ProLearning Platform}
+    \label{fig:prolearning-architecture-detail-components}
+\end{figure}
+
+\input{Chapter3/components/core_components}
+\input{Chapter3/components/support_components}
+\input{Chapter3/components/infrastructure_components}
+\input{Chapter3/components/platform_technologies}
+\endgroup

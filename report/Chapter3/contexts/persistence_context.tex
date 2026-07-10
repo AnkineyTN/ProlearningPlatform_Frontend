@@ -1,0 +1,10 @@
+\subsubsection{Persistence Layer}
+\label{subsubsec:persistence-context}
+
+Persistence Layer sử dụng PostgreSQL làm cơ sở dữ liệu chính và Spring Data JPA làm lớp truy cập dữ liệu~\cite{springdatajpa,postgresqlabout}. Lớp này lưu trữ dữ liệu bền vững của toàn hệ thống.
+
+\begin{itemize}
+    \item \textbf{Domain data:} User, authority, set, note, flashcard, exam, roadmap, todo, goal, pomodoro, notification, payment, asset, onboarding và appeal.
+    \item \textbf{Relationship data:} Membership, permission, invite, attempt, review log và liên kết tài nguyên.
+    \item \textbf{Query model:} Repository layer cung cấp truy vấn theo user, set, resource, trạng thái học tập và các thống kê nghiệp vụ.
+\end{itemize}

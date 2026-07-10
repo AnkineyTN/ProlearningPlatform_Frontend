@@ -1,0 +1,26 @@
+\section{Cài đặt chi tiết}
+\label{sec:implementation-details}
+\begingroup
+\sloppy
+
+Phần này trình bày cách hiện thực ProLearning Platform từ góc nhìn triển khai. Nội dung được chia thành các phần nhỏ theo từng nhóm để dễ dàng theo dõi: backend, frontend, cơ sở dữ liệu, các flow nghiệp vụ lõi và các vấn đề kỹ thuật cần xử lý trong quá trình cài đặt.
+
+Các nhóm nội dung trong phần cài đặt gồm:
+
+\begin{itemize}
+    \item \textbf{Backend:} Cách tổ chức Spring Boot API, service layer, repository, bảo mật, scheduler, async task và tích hợp dịch vụ ngoài.
+    \item \textbf{Frontend:} Khung mục và danh sách file/module cần mô tả;
+    \item \textbf{Cơ sở dữ liệu:} Cách ánh xạ entity, tổ chức quan hệ dữ liệu, lưu trạng thái ngắn hạn và quản lý dữ liệu tích hợp.
+    \item \textbf{Core component implementation:} Các flow tiêu biểu đang có AI Service, SM-2, realtime note, notification, Google Calendar và PayOS.
+    \item \textbf{Vấn đề và giải pháp:} Các rủi ro kỹ thuật trong triển khai và hướng xử lý tương ứng.
+\end{itemize}
+
+\input{Chapter3/implementation/backend_implementation}
+\input{Chapter3/implementation/frontend_implementation}
+\input{Chapter3/implementation/mobile_implementation}
+\input{Chapter3/implementation/database_implementation}
+\input{Chapter3/implementation/core_component_implementation}
+\input{Chapter3/implementation/issues_and_solutions}
+\input{Chapter3/implementation/implementation_summary}
+
+\endgroup

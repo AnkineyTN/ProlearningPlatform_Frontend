@@ -1,0 +1,32 @@
+\subsection{Infrastructure and Integration Components}
+\label{subsec:infrastructure-components}
+
+Infrastructure and integration components cung cấp năng lực lưu trữ, cache, message queue, file storage, push notification, calendar sync và payment. Các thành phần này được bọc sau service riêng để giảm phụ thuộc trực tiếp của domain service vào API bên ngoài.
+
+\subsubsection{Data Storage}
+\label{subsubsec:data-storage-component}
+
+\begin{itemize}
+    \item \textbf{PostgreSQL:} Lưu dữ liệu bền vững như user, học liệu, quyền, attempt, review log, notification, payment và calendar setting~\cite{postgresqlabout}.
+    \item \textbf{Spring Data JPA:} Cung cấp repository abstraction, query method và custom query cho các truy vấn nghiệp vụ~\cite{springdatajpa}.
+    \item \textbf{Entity relationship:} Các quan hệ user--set--resource--permission được duy trì trong database để đảm bảo tính nhất quán.
+\end{itemize}
+
+\subsubsection{Cache, Message Queue and Background Processing}
+\label{subsubsec:cache-queue-background-component}
+
+\begin{itemize}
+    \item \textbf{Redis:} Lưu cache và trạng thái ngắn hạn như OTP, OAuth state hoặc token blacklist~\cite{redisoverview}.
+    \item \textbf{RabbitMQ:} Hỗ trợ pipeline gửi email bất đồng bộ, giảm thời gian phản hồi của request chính~\cite{rabbitmqtutorials}.
+    \item \textbf{Scheduler:} Chạy các tác vụ nhắc học, tổng kết tuần và cleanup dữ liệu định kỳ.
+\end{itemize}
+
+\subsubsection{External Services}
+\label{subsubsec:external-services-component}
+
+\begin{itemize}
+    \item \textbf{Cloudinary:} Lưu asset người dùng và hỗ trợ signed upload~\cite{cloudinaryjava}.
+    \item \textbf{Firebase Cloud Messaging:} Gửi push notification tới thiết bị đã đăng ký token~\cite{firebasefcm}.
+    \item \textbf{Google Calendar:} Đồng bộ todo dưới dạng all-day event thông qua Calendar API~\cite{googlecalendarjava}.
+    \item \textbf{PayOS:} Tạo payment link, nhận webhook và xác minh chữ ký giao dịch~\cite{payoswebhook}.
+\end{itemize}

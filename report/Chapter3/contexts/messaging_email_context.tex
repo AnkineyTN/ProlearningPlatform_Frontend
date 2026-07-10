@@ -1,0 +1,10 @@
+\subsubsection{Messaging \& Email Context}
+\label{subsubsec:messaging-email-context}
+
+Messaging \& Email Context xử lý các tác vụ gửi email không cần hoàn thành trong request chính. Hệ thống đưa email message vào RabbitMQ, sau đó consumer xử lý gửi email qua SMTP provider~\cite{rabbitmqtutorials}.
+
+\begin{itemize}
+    \item \textbf{Loại email:} Xác minh tài khoản, đặt lại mật khẩu, lời mời cộng tác và thông báo nâng cấp tài khoản.
+    \item \textbf{Bất đồng bộ hóa:} Request chính không phải chờ SMTP hoàn tất, giảm độ trễ cho người dùng.
+    \item \textbf{Khả năng mở rộng:} Consumer có thể được tách hoặc nhân rộng nếu lưu lượng email tăng.
+\end{itemize}

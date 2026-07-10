@@ -1,0 +1,528 @@
+\chapter{Yêu cầu hệ thống}
+\label{Chapter2}
+
+Chương này khảo sát một số hệ thống tiêu biểu có liên quan đến đề tài, bao gồm NotebookLM, Quizlet và Notion. Mỗi hệ thống được phân tích theo các khía cạnh: mục đích sử dụng, chức năng chính, ưu điểm, hạn chế và mức độ phù hợp đối với bài toán xây dựng một nền tảng hỗ trợ học tập tích hợp. Trên cơ sở đó, chương rút ra các vấn đề còn tồn tại và xác định những yêu cầu đặt ra đối với hệ thống đề xuất.
+
+\section{Các công trình liên quan}
+\subsection{NotebookLM}
+\subsubsection{Giới thiệu tổng quan}
+
+Sự phát triển mạnh mẽ của các mô hình ngôn ngữ lớn (Large Language Models – LLM) trong những năm gần đây đã tạo điều kiện cho việc hình thành nhiều hệ thống hỗ trợ học tập và nghiên cứu dựa trên trí tuệ nhân tạo. Trong số đó, NotebookLM là một trong những sản phẩm tiêu biểu được phát triển nhằm hỗ trợ người dùng khai thác và tương tác với các nguồn tài liệu cá nhân thông qua ngôn ngữ tự nhiên.
+
+NotebookLM là một nền tảng được phát triển bởi Google, cho phép người dùng tải lên nhiều loại dữ liệu khác nhau như tài liệu PDF, văn bản, website hoặc các nguồn nội dung trực tuyến để xây dựng một không gian tri thức riêng \cite{googleNotebookLMHelp,googleNotebookLMSources}. Sau khi dữ liệu được cung cấp, hệ thống sử dụng các mô hình trí tuệ nhân tạo để phân tích nội dung và hỗ trợ người dùng khai thác thông tin thông qua các câu hỏi bằng ngôn ngữ tự nhiên.
+
+Khác với các chatbot tổng quát hoạt động dựa trên tập dữ liệu huấn luyện có sẵn, NotebookLM tập trung vào việc trả lời dựa trên các nguồn dữ liệu mà người dùng cung cấp. Điều này giúp nâng cao tính liên quan của câu trả lời và giảm thiểu các thông tin không phù hợp với ngữ cảnh nghiên cứu hoặc học tập của người dùng.
+
+Trong lĩnh vực giáo dục, NotebookLM được xem như một trợ lý học tập hỗ trợ người dùng đọc hiểu tài liệu, tổng hợp thông tin và khai thác tri thức từ nhiều nguồn dữ liệu khác nhau.
+
+\subsubsection{Các chức năng chính}
+
+NotebookLM cung cấp nhiều chức năng hỗ trợ quá trình nghiên cứu và học tập.
+
+Trước hết, hệ thống cho phép người dùng tải lên các nguồn tài liệu khác nhau và xây dựng một không gian làm việc tập trung. Sau khi dữ liệu được xử lý, người dùng có thể tương tác với nội dung thông qua các câu hỏi tự nhiên giống như đang trao đổi với một trợ lý cá nhân.
+
+Ngoài chức năng hỏi đáp dựa trên tài liệu, hệ thống còn hỗ trợ:
+\begin{itemize}
+    \item Tóm tắt tài liệu học tập.
+    \item Trích xuất các ý chính từ nội dung dài.
+    \item Giải thích các khái niệm hoặc thuật ngữ chuyên môn.
+    \item Tạo danh sách câu hỏi liên quan đến nội dung tài liệu.
+    \item Hỗ trợ nghiên cứu và tổng hợp thông tin.
+    \item Hỗ trợ ghi chú dựa trên nguồn dữ liệu đầu vào.
+\end{itemize}
+
+Các chức năng trên giúp người dùng giảm đáng kể thời gian đọc và xử lý tài liệu, đặc biệt trong các trường hợp phải làm việc với lượng lớn thông tin.
+
+\subsubsection{Ưu điểm}
+
+Một trong những ưu điểm lớn nhất của NotebookLM là khả năng khai thác thông tin dựa trên dữ liệu thực tế của người dùng.
+
+Thay vì sử dụng hoàn toàn kiến thức được huấn luyện trước, hệ thống tập trung vào việc phân tích các nguồn dữ liệu được cung cấp. Điều này giúp tăng tính liên quan của kết quả và hỗ trợ tốt hơn cho các hoạt động nghiên cứu chuyên sâu.
+
+Khả năng tóm tắt tài liệu cũng là một ưu điểm đáng chú ý. Đối với các tài liệu học thuật hoặc tài liệu kỹ thuật có độ dài lớn, việc nhanh chóng nắm bắt các nội dung quan trọng giúp người dùng tiết kiệm đáng kể thời gian nghiên cứu.
+
+Bên cạnh đó, khả năng giải thích khái niệm và trả lời câu hỏi theo ngữ cảnh giúp NotebookLM trở thành một công cụ hữu ích đối với sinh viên và người học trong quá trình tìm hiểu kiến thức mới.
+
+Một ưu điểm khác là khả năng truy xuất nguồn tham khảo. Người dùng có thể dễ dàng xác định vị trí xuất hiện của thông tin trong tài liệu gốc, từ đó tăng độ tin cậy và khả năng kiểm chứng của nội dung được cung cấp.
+
+\subsubsection{Hạn chế}
+
+Mặc dù mang lại nhiều lợi ích trong việc hỗ trợ khai thác tài liệu, NotebookLM vẫn tồn tại một số hạn chế nhất định khi được xem xét dưới góc độ của một hệ thống hỗ trợ học tập toàn diện.
+
+Trước hết, hệ thống chủ yếu tập trung vào giai đoạn tiếp nhận và xử lý thông tin. Sau khi người dùng đã hiểu nội dung tài liệu, NotebookLM chưa cung cấp nhiều công cụ chuyên biệt để hỗ trợ các hoạt động học tập tiếp theo như luyện tập, đánh giá kiến thức hoặc theo dõi tiến trình học tập.
+
+Bên cạnh đó, hệ thống chưa tập trung vào việc xây dựng cơ chế ghi nhớ dài hạn. Mặc dù có thể tạo ra các câu hỏi hoặc bản tóm tắt từ nội dung tài liệu, NotebookLM không cung cấp các công cụ học tập chuyên sâu như Flashcard hoặc các hình thức ôn tập có tính hệ thống.
+
+Một hạn chế khác là khả năng theo dõi tiến trình học tập còn tương đối hạn chế. Hệ thống chưa hỗ trợ việc ghi nhận kết quả học tập, phân tích mức độ hiểu bài hoặc đánh giá sự tiến bộ của người dùng theo thời gian.
+
+Ngoài ra, NotebookLM chưa được thiết kế như một hệ sinh thái học tập hoàn chỉnh. Các hoạt động quản lý mục tiêu, quản lý thời gian học tập hoặc đánh giá hiệu quả học tập chưa phải là trọng tâm của nền tảng này.
+
+\subsubsection{Nhận xét}
+
+NotebookLM là một giải pháp mạnh trong việc hỗ trợ người dùng khai thác và nghiên cứu tài liệu bằng trí tuệ nhân tạo. Các chức năng hỏi đáp theo ngữ cảnh, tóm tắt nội dung và giải thích khái niệm giúp người học tiếp cận tri thức nhanh hơn và hiệu quả hơn.
+
+Tuy nhiên, hệ thống chủ yếu hỗ trợ giai đoạn tiếp nhận kiến thức và nghiên cứu tài liệu. Các hoạt động như ghi nhớ, luyện tập, đánh giá kết quả học tập hoặc theo dõi tiến trình học tập chưa được hỗ trợ một cách toàn diện. Do đó, người dùng vẫn cần kết hợp với các công cụ khác để xây dựng một quy trình học tập hoàn chỉnh.
+
+\subsection{Quizlet}
+\subsubsection{Giới thiệu tổng quan}
+
+Trong lĩnh vực hỗ trợ ghi nhớ và ôn tập kiến thức, Quizlet là một trong những nền tảng học tập trực tuyến phổ biến và được sử dụng rộng rãi nhất hiện nay. Được phát triển từ năm 2005, Quizlet ban đầu được xây dựng nhằm hỗ trợ học sinh ghi nhớ từ vựng ngoại ngữ thông qua hình thức Flashcard điện tử. Trải qua nhiều năm phát triển, hệ thống đã mở rộng phạm vi ứng dụng sang nhiều lĩnh vực khác nhau như khoa học tự nhiên, kỹ thuật, y học, kinh tế và các chương trình đào tạo chuyên môn.
+
+Khác với các nền tảng tập trung vào việc quản lý tài liệu hoặc ghi chú, Quizlet được thiết kế xoay quanh hoạt động ôn tập và củng cố kiến thức. Triết lý cốt lõi của hệ thống là giúp người học ghi nhớ thông tin hiệu quả hơn thông qua việc chủ động truy xuất kiến thức thay vì chỉ đọc lại tài liệu một cách thụ động.
+
+Hiện nay, Quizlet cung cấp cả phiên bản Web và Mobile, cho phép người dùng học tập linh hoạt trên nhiều thiết bị khác nhau. Với cộng đồng người dùng lớn và số lượng bộ Flashcard phong phú, Quizlet đã trở thành một trong những công cụ học tập quen thuộc đối với học sinh, sinh viên và người tự học trên toàn thế giới.
+
+\subsubsection{Các chức năng chính}
+
+Chức năng trung tâm của Quizlet là hệ thống Flashcard điện tử.
+
+Người dùng có thể tạo các bộ Flashcard bao gồm hai mặt thông tin, trong đó một mặt thường chứa câu hỏi hoặc khái niệm cần ghi nhớ, mặt còn lại chứa câu trả lời hoặc nội dung giải thích tương ứng \cite{quizletFlashcards}.
+
+Bên cạnh chức năng Flashcard cơ bản, Quizlet còn cung cấp nhiều hình thức học tập khác nhau nhằm tăng cường khả năng ghi nhớ và giảm sự nhàm chán trong quá trình ôn tập.
+
+Các chức năng tiêu biểu của hệ thống bao gồm:
+\begin{itemize}
+    \item Tạo và quản lý bộ Flashcard.
+    \item Học Flashcard theo hình thức lật thẻ.
+    \item Chế độ kiểm tra kiến thức.
+    \item Chế độ ghép cặp nội dung.
+    \item Chế độ viết lại đáp án.
+    \item Chế độ trắc nghiệm.
+    \item Theo dõi tiến độ học tập.
+    \item Chia sẻ Flashcard với cộng đồng.
+    \item Tìm kiếm và sử dụng các bộ Flashcard công khai.
+\end{itemize}
+
+Trong những năm gần đây, Quizlet cũng bắt đầu tích hợp các tính năng trí tuệ nhân tạo nhằm hỗ trợ người dùng tự động tạo Flashcard từ văn bản đầu vào hoặc nội dung học tập có sẵn \cite{quizletAIFlashcardGenerator}. Điều này giúp giảm đáng kể thời gian chuẩn bị nội dung học tập và nâng cao trải nghiệm người dùng.
+
+\subsubsection{Ưu điểm}
+
+Ưu điểm nổi bật nhất của Quizlet nằm ở khả năng hỗ trợ ghi nhớ kiến thức.
+
+Nhiều nghiên cứu trong lĩnh vực giáo dục cho thấy rằng việc chủ động truy xuất thông tin từ trí nhớ (Active Recall) mang lại hiệu quả học tập cao hơn so với việc chỉ đọc lại tài liệu \cite{roediger2006testenhanced,dunlosky2013effectivelearning}. Flashcard là một trong những phương pháp phổ biến nhất để áp dụng nguyên lý này vào thực tế.
+
+Thông qua việc liên tục đặt câu hỏi và yêu cầu người học nhớ lại thông tin, Quizlet giúp tăng cường khả năng ghi nhớ và củng cố kiến thức trong dài hạn.
+
+Một ưu điểm khác là tính đơn giản trong quá trình sử dụng. Người dùng có thể nhanh chóng tạo hoặc sử dụng các bộ Flashcard mà không cần nhiều kiến thức kỹ thuật. Giao diện trực quan và dễ sử dụng giúp hệ thống tiếp cận được nhiều nhóm người dùng khác nhau.
+
+Quizlet cũng sở hữu một cộng đồng người dùng lớn với số lượng bộ Flashcard phong phú. Điều này cho phép người dùng tìm kiếm và tái sử dụng nội dung học tập đã được xây dựng bởi những người dùng khác, giúp tiết kiệm thời gian và công sức chuẩn bị tài liệu.
+
+Ngoài ra, việc hỗ trợ đa nền tảng giúp người dùng có thể học tập mọi lúc, mọi nơi và duy trì tính liên tục trong quá trình ôn tập.
+
+\subsubsection{Hạn chế}
+
+Mặc dù rất hiệu quả trong việc hỗ trợ ghi nhớ kiến thức, Quizlet vẫn tồn tại một số hạn chế khi được xem xét như một hệ thống hỗ trợ học tập toàn diện.
+
+Thứ nhất, hệ thống chủ yếu tập trung vào giai đoạn ôn tập sau khi kiến thức đã được tiếp nhận. Quizlet chưa cung cấp nhiều công cụ hỗ trợ cho việc nghiên cứu tài liệu hoặc xây dựng tri thức ban đầu. Người dùng thường phải sử dụng các nền tảng khác để đọc tài liệu, ghi chú và tổ chức kiến thức trước khi chuyển sang giai đoạn tạo Flashcard.
+
+Thứ hai, khả năng quản lý tri thức còn tương đối hạn chế. Các bộ Flashcard thường được tổ chức theo chủ đề hoặc môn học, tuy nhiên hệ thống chưa hỗ trợ mạnh việc xây dựng mạng lưới kiến thức hoặc liên kết giữa các nội dung học tập khác nhau.
+
+Thứ ba, mặc dù hệ thống có hỗ trợ các hình thức kiểm tra, việc đánh giá kiến thức vẫn chủ yếu xoay quanh nội dung của Flashcard. Khả năng phân tích kết quả học tập hoặc xác định những vùng kiến thức còn yếu của người dùng chưa thực sự chuyên sâu.
+
+Thứ tư, Quizlet chưa tập trung vào việc xây dựng lộ trình học tập hoặc hỗ trợ người dùng quản lý mục tiêu học tập dài hạn. Người học vẫn cần sử dụng thêm các công cụ khác để theo dõi tiến trình học tập hoặc xây dựng kế hoạch học tập cá nhân.
+
+Cuối cùng, mặc dù đã tích hợp một số chức năng AI, vai trò của trí tuệ nhân tạo trong Quizlet vẫn chủ yếu hỗ trợ tạo nội dung học tập thay vì tham gia vào toàn bộ quá trình học tập của người dùng.
+
+\subsubsection{Nhận xét}
+
+Quizlet là một giải pháp hiệu quả cho bài toán ghi nhớ và ôn tập kiến thức. Việc áp dụng Flashcard kết hợp với các hình thức học tập tương tác giúp nâng cao khả năng ghi nhớ và thúc đẩy quá trình học tập chủ động.
+
+Tuy nhiên, hệ thống chủ yếu tập trung vào giai đoạn củng cố kiến thức thay vì toàn bộ quá trình học tập. Các hoạt động nghiên cứu tài liệu, quản lý tri thức, đánh giá tiến trình học tập và hỗ trợ xây dựng kế hoạch học tập vẫn cần được thực hiện thông qua các nền tảng khác.
+
+Do đó, mặc dù Quizlet giải quyết tốt bài toán ghi nhớ kiến thức, người dùng vẫn cần kết hợp với nhiều công cụ khác để xây dựng một môi trường học tập hoàn chỉnh.
+
+\subsection{Notion}
+\subsubsection{Giới thiệu tổng quan}
+
+Trong những năm gần đây, cùng với sự gia tăng về khối lượng thông tin và tài nguyên số, nhu cầu quản lý tri thức cá nhân (Personal Knowledge Management – PKM) ngày càng trở nên quan trọng đối với học sinh, sinh viên và người lao động tri thức. Trong số các nền tảng hỗ trợ quản lý tri thức hiện nay, Notion là một trong những giải pháp phổ biến và có ảnh hưởng lớn nhất.
+
+Notion được phát triển với mục tiêu xây dựng một không gian làm việc thống nhất, cho phép người dùng ghi chú, quản lý tài liệu, theo dõi công việc và tổ chức thông tin trên cùng một nền tảng \cite{notionProduct}. Khác với các công cụ ghi chú truyền thống chỉ tập trung vào việc lưu trữ văn bản, Notion cung cấp nhiều thành phần dữ liệu linh hoạt như cơ sở dữ liệu (Database), bảng biểu (Table), Kanban Board, Calendar, Checklist và nhiều dạng nội dung khác nhằm hỗ trợ người dùng xây dựng hệ thống quản lý thông tin theo nhu cầu riêng.
+
+Nhờ khả năng tùy biến cao, Notion nhanh chóng trở thành công cụ được sử dụng rộng rãi trong học tập, nghiên cứu, quản lý dự án và quản lý tri thức cá nhân. Đặc biệt, nhiều người học lựa chọn Notion như một “bộ não thứ hai” (Second Brain) để lưu trữ, tổ chức và liên kết các kiến thức thu thập được trong quá trình học tập.
+
+Trong lĩnh vực giáo dục, Notion thường được sử dụng để quản lý tài liệu học tập, xây dựng hệ thống ghi chú, theo dõi tiến độ học tập và lập kế hoạch học tập cá nhân.
+
+\subsubsection{Các chức năng chính}
+
+Notion cung cấp một tập hợp chức năng đa dạng phục vụ việc tổ chức và quản lý thông tin.
+
+Trước hết, hệ thống cho phép người dùng tạo và quản lý các trang nội dung (Pages). Mỗi trang có thể chứa văn bản, hình ảnh, liên kết, bảng dữ liệu hoặc các thành phần nội dung khác nhau.
+
+Bên cạnh đó, Notion còn hỗ trợ các chức năng nổi bật như:
+\begin{itemize}
+    \item Tạo và quản lý ghi chú.
+    \item Xây dựng cơ sở dữ liệu tùy chỉnh.
+    \item Quản lý công việc và nhiệm vụ.
+    \item Tạo lịch học tập hoặc lịch làm việc.
+    \item Tạo hệ thống wiki cá nhân.
+    \item Liên kết giữa các nội dung khác nhau.
+    \item Chia sẻ và cộng tác theo nhóm.
+    \item Đồng bộ dữ liệu trên nhiều thiết bị.
+\end{itemize}
+
+Trong các phiên bản gần đây, Notion cũng đã tích hợp Notion AI nhằm hỗ trợ người dùng thực hiện một số tác vụ xử lý nội dung \cite{notionAI} như:
+\begin{itemize}
+    \item Tóm tắt văn bản.
+    \item Viết nội dung tự động.
+    \item Gợi ý ý tưởng.
+    \item Hỗ trợ chỉnh sửa nội dung.
+    \item Trả lời câu hỏi dựa trên dữ liệu của người dùng.
+\end{itemize}
+
+Sự kết hợp giữa quản lý tri thức và trí tuệ nhân tạo giúp Notion trở thành một nền tảng linh hoạt trong nhiều lĩnh vực khác nhau.
+
+\subsubsection{Ưu điểm}
+Ưu điểm lớn nhất của Notion là khả năng tổ chức và quản lý thông tin.
+
+Không giống các ứng dụng ghi chú truyền thống, Notion cho phép người dùng xây dựng cấu trúc dữ liệu phù hợp với nhu cầu cá nhân. Người dùng có thể tạo các không gian làm việc riêng cho từng mục đích như học tập, nghiên cứu, quản lý dự án hoặc quản lý công việc cá nhân.
+
+Khả năng liên kết giữa các trang và cơ sở dữ liệu giúp hình thành mạng lưới tri thức có tính liên kết cao thay vì các ghi chú rời rạc. Điều này đặc biệt hữu ích đối với các hoạt động học tập dài hạn hoặc nghiên cứu chuyên sâu.
+
+Một ưu điểm khác là khả năng tùy biến linh hoạt. Người dùng có thể xây dựng nhiều mô hình quản lý tri thức khác nhau mà không bị giới hạn bởi một cấu trúc cố định.
+
+Notion cũng hỗ trợ cộng tác hiệu quả thông qua các chức năng chia sẻ và chỉnh sửa theo thời gian thực. Điều này tạo điều kiện thuận lợi cho các nhóm học tập hoặc các nhóm nghiên cứu làm việc cùng nhau trên cùng một không gian dữ liệu.
+
+Ngoài ra, việc hỗ trợ trên nhiều nền tảng giúp người dùng dễ dàng truy cập và quản lý dữ liệu ở bất kỳ đâu.
+
+\subsubsection{Hạn chế}
+
+Mặc dù là một công cụ mạnh trong quản lý tri thức, Notion vẫn tồn tại một số hạn chế khi được xem xét dưới góc độ của một hệ thống hỗ trợ học tập toàn diện.
+
+Thứ nhất, Notion chủ yếu tập trung vào việc lưu trữ và tổ chức thông tin. Hệ thống chưa cung cấp nhiều công cụ chuyên biệt cho các hoạt động học tập như ôn tập kiến thức, kiểm tra năng lực hoặc đánh giá tiến trình học tập.
+
+Thứ hai, người dùng thường phải tự xây dựng phương pháp học tập của riêng mình. Notion cung cấp môi trường lưu trữ và quản lý kiến thức nhưng không hướng dẫn hoặc hỗ trợ trực tiếp cách khai thác kiến thức một cách hiệu quả.
+
+Thứ ba, khả năng ghi nhớ và ôn tập kiến thức chưa phải là trọng tâm của nền tảng. Mặc dù người dùng có thể tự xây dựng các hệ thống Flashcard hoặc quy trình học tập trong Notion, việc này đòi hỏi nhiều công sức thiết lập và bảo trì.
+
+Thứ tư, Notion chưa hỗ trợ mạnh việc đánh giá kiến thức hoặc phân tích dữ liệu học tập. Hệ thống không cung cấp các cơ chế chuyên biệt để xác định mức độ hiểu bài, theo dõi kết quả học tập hoặc phát hiện các vùng kiến thức còn yếu của người dùng.
+
+Ngoài ra, mặc dù đã tích hợp Notion AI, các chức năng AI hiện nay chủ yếu hỗ trợ xử lý nội dung và nâng cao năng suất làm việc, thay vì tham gia sâu vào quá trình học tập hoặc hỗ trợ cá nhân hóa việc học.
+
+\subsubsection{Nhận xét}
+
+Notion là một nền tảng quản lý tri thức mạnh mẽ với khả năng tổ chức thông tin linh hoạt và khả năng tùy biến cao. Hệ thống đặc biệt phù hợp với những người dùng cần xây dựng kho tri thức cá nhân hoặc quản lý lượng lớn thông tin trong thời gian dài.
+
+Tuy nhiên, Notion không được thiết kế như một hệ thống học tập chuyên biệt. Các hoạt động ôn tập, đánh giá kiến thức, theo dõi tiến trình học tập và hỗ trợ học tập bằng trí tuệ nhân tạo vẫn chưa được triển khai ở mức độ sâu.
+
+Do đó, mặc dù đóng vai trò quan trọng trong việc quản lý tri thức cá nhân, Notion thường cần được kết hợp với các công cụ khác để hình thành một môi trường học tập hoàn chỉnh.
+
+
+\section{So sánh tổng hợp các hệ thống liên quan}
+
+Từ phần phân tích trên, có thể tổng hợp đặc điểm của các hệ thống NotebookLM, Quizlet và Notion theo một số tiêu chí chính như Bảng~\ref{tab:related-systems-comparison}.
+
+\begin{table}[ht]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\caption{So sánh tổng hợp các hệ thống liên quan}
+\label{tab:related-systems-comparison}
+\begin{tabular}{|L{2.4cm}|L{3.2cm}|L{3.7cm}|L{3.9cm}|}
+\hline
+\textbf{Hệ thống} & \textbf{Trọng tâm hỗ trợ} & \textbf{Ưu điểm chính} & \textbf{Hạn chế so với hệ thống đề xuất} \\
+\hline
+NotebookLM & Khai thác và tương tác với tài liệu bằng trí tuệ nhân tạo & Hỗ trợ hỏi đáp theo ngữ cảnh, tóm tắt tài liệu, giải thích khái niệm và truy xuất nguồn tham khảo & Chưa tập trung vào ghi nhớ dài hạn, luyện tập, đánh giá kiến thức, quản lý mục tiêu và theo dõi tiến trình học tập \\
+\hline
+Quizlet & Ôn tập và ghi nhớ kiến thức thông qua Flashcard & Hỗ trợ học tập chủ động, nhiều chế độ luyện tập, cộng đồng Flashcard lớn và khả năng học tập đa nền tảng & Chưa hỗ trợ mạnh việc quản lý tài liệu, ghi chú, tổ chức tri thức, khai thác tài liệu và cá nhân hóa toàn bộ quy trình học tập \\
+\hline
+Notion & Quản lý tri thức cá nhân, ghi chú và tổ chức thông tin & Linh hoạt trong tổ chức dữ liệu, hỗ trợ cơ sở dữ liệu, quản lý công việc, chia sẻ và cộng tác & Chưa phải hệ thống học tập chuyên biệt; còn hạn chế về Flashcard, kiểm tra kiến thức, phân tích kết quả học tập và đề xuất ôn tập \\
+\hline
+Hệ thống đề xuất & Nền tảng học tập tích hợp từ quản lý tài nguyên đến ôn tập, đánh giá và theo dõi tiến trình & Kết hợp quản lý tài liệu, ghi chú, AI, Flashcard, bài kiểm tra, mục tiêu học tập, theo dõi tiến trình và đa nền tảng & Cần được thiết kế và triển khai đồng bộ để đảm bảo tính liên kết giữa các chức năng, chất lượng nội dung AI và trải nghiệm người dùng \\
+\hline
+\end{tabular}
+\end{table}
+
+Bảng so sánh cho thấy mỗi hệ thống hiện có đều giải quyết tốt một nhóm nhu cầu nhất định, nhưng chưa bao phủ toàn bộ quá trình học tập. Đây là cơ sở để đề tài hướng tới một nền tảng tích hợp, trong đó các hoạt động tiếp nhận kiến thức, tổ chức tri thức, ôn tập, đánh giá và theo dõi tiến trình được kết nối trong cùng một quy trình.
+
+\section{Những vấn đề còn tồn tại}
+
+Qua quá trình khảo sát và phân tích các nền tảng NotebookLM, Quizlet và Notion, có thể nhận thấy rằng mỗi hệ thống đều giải quyết hiệu quả một nhóm vấn đề cụ thể trong hoạt động học tập.
+
+NotebookLM hỗ trợ người dùng khai thác và tương tác với tài liệu bằng trí tuệ nhân tạo. Quizlet tập trung vào việc ghi nhớ kiến thức thông qua Flashcard và các hình thức học tập chủ động. Trong khi đó, Notion cung cấp môi trường quản lý tri thức và tổ chức thông tin linh hoạt.
+
+Mặc dù các nền tảng trên đều đạt được thành công trong phạm vi bài toán mà chúng hướng tới, quá trình khảo sát cho thấy vẫn còn tồn tại một số vấn đề chưa được giải quyết triệt để khi xét dưới góc độ của một hệ thống hỗ trợ học tập toàn diện.
+
+\subsection{Sự phân mảnh của các công cụ học tập}
+
+Một trong những khó khăn phổ biến nhất đối với người học hiện nay là sự phân tán của tài nguyên và công cụ học tập.
+
+Trong thực tế, để hoàn thành một quá trình học tập tương đối đầy đủ, người dùng thường phải sử dụng nhiều hệ thống khác nhau cho từng mục đích riêng biệt.
+
+Ví dụ:
+\begin{itemize}
+    \item Sử dụng Google Drive hoặc OneDrive để lưu trữ tài liệu.
+    \item Sử dụng Notion để ghi chú và tổ chức kiến thức.
+    \item Sử dụng NotebookLM để tìm hiểu nội dung tài liệu.
+    \item Sử dụng Quizlet để tạo Flashcard và ôn tập.
+    \item Sử dụng các công cụ quản lý công việc để theo dõi mục tiêu học tập.
+    \item Sử dụng các ứng dụng Pomodoro để quản lý thời gian học.
+\end{itemize}
+
+Mặc dù mỗi công cụ đều thực hiện tốt chức năng của mình, việc phải liên tục chuyển đổi giữa nhiều nền tảng khiến quá trình học tập trở nên rời rạc và làm tăng chi phí quản lý thông tin.
+
+Người học không chỉ phải ghi nhớ kiến thức mà còn phải dành thời gian để tổ chức dữ liệu, đồng bộ nội dung và quản lý quy trình học tập giữa các hệ thống khác nhau.
+
+Điều này đặc biệt ảnh hưởng đến những người học đang phải học tập và làm việc đồng thời, khi quỹ thời gian dành cho việc học vốn đã bị hạn chế.
+
+\subsection{Thiếu sự liên kết giữa các giai đoạn học tập}
+
+Hoạt động học tập không chỉ bao gồm việc đọc tài liệu hoặc ghi nhớ kiến thức. Một quá trình học tập hiệu quả thường trải qua nhiều giai đoạn liên tiếp như:
+\begin{itemize}
+    \item Tiếp nhận kiến thức.
+    \item Tổ chức và ghi chú nội dung.
+    \item Chuyển đổi kiến thức thành tài nguyên học tập.
+    \item Ôn tập và ghi nhớ.
+    \item Kiểm tra mức độ hiểu bài.
+    \item Phân tích kết quả học tập.
+    \item Xác định các nội dung cần cải thiện.
+    \item Tiếp tục ôn tập và củng cố kiến thức.
+\end{itemize}
+
+Qua khảo sát các hệ thống hiện có có thể nhận thấy rằng phần lớn các nền tảng chỉ tập trung mạnh vào một hoặc một số giai đoạn nhất định trong quy trình trên.
+
+Ví dụ, NotebookLM hỗ trợ tốt việc tiếp nhận và khai thác tài liệu nhưng chưa tập trung vào các hoạt động đánh giá kiến thức. Quizlet hỗ trợ tốt việc ghi nhớ kiến thức nhưng chưa hỗ trợ mạnh cho việc tổ chức tài liệu hoặc quản lý tri thức. Notion hỗ trợ quản lý tri thức hiệu quả nhưng chưa cung cấp nhiều công cụ chuyên biệt cho hoạt động ôn tập và đánh giá.
+
+Việc thiếu sự liên kết giữa các giai đoạn học tập khiến người dùng phải tự xây dựng quy trình học tập của riêng mình bằng cách kết hợp nhiều công cụ khác nhau.
+
+\subsection{Hạn chế trong việc theo dõi tiến trình học tập}
+
+Một vấn đề khác được ghi nhận là khả năng theo dõi và đánh giá tiến trình học tập vẫn còn tương đối hạn chế trên nhiều nền tảng hiện nay.
+
+Phần lớn các hệ thống tập trung vào việc cung cấp công cụ học tập nhưng chưa chú trọng đến việc xây dựng hồ sơ học tập dài hạn cho người dùng.
+
+Trong quá trình học tập, người dùng thường có nhu cầu trả lời các câu hỏi như:
+\begin{itemize}
+    \item Mình đã học được bao nhiêu nội dung?
+    \item Những chủ đề nào còn yếu?
+    \item Khả năng ghi nhớ hiện tại đang ở mức nào?
+    \item Mức độ tiến bộ của bản thân trong thời gian qua ra sao?
+    \item Nội dung nào cần được ôn tập thêm?
+\end{itemize}
+
+Tuy nhiên, việc trả lời các câu hỏi trên thường đòi hỏi phải tổng hợp dữ liệu từ nhiều nguồn khác nhau hoặc dựa vào đánh giá chủ quan của người học.
+
+Việc thiếu các công cụ theo dõi tiến trình học tập một cách hệ thống có thể khiến người học khó nhận biết được sự tiến bộ của bản thân và khó xây dựng kế hoạch học tập phù hợp.
+
+\subsection{Hạn chế trong việc cá nhân hóa trải nghiệm học tập}
+
+Mỗi người học có nền tảng kiến thức, mục tiêu học tập và tốc độ tiếp thu khác nhau.
+
+Tuy nhiên, nhiều hệ thống hiện nay vẫn áp dụng cách tiếp cận tương đối giống nhau đối với tất cả người dùng.
+
+Trong thực tế, hai người học cùng sử dụng một bộ tài liệu có thể gặp những khó khăn hoàn toàn khác nhau. Một người có thể cần tập trung vào việc hiểu khái niệm, trong khi người còn lại cần ôn tập để ghi nhớ kiến thức hoặc chuẩn bị cho kỳ kiểm tra.
+
+Việc thiếu dữ liệu theo dõi học tập và cơ chế phân tích hiệu suất học tập khiến các hệ thống khó đưa ra các đề xuất phù hợp với từng người dùng.
+
+Điều này làm giảm khả năng cá nhân hóa trải nghiệm học tập và khiến người học phải tự xác định các bước tiếp theo trong quá trình học tập.
+
+\subsection{Khó khăn trong việc duy trì động lực học tập}
+
+Bên cạnh các vấn đề về kiến thức, việc duy trì động lực học tập trong thời gian dài cũng là một thách thức đối với nhiều người học.
+
+Nhiều người bắt đầu học tập với quyết tâm cao nhưng dần mất động lực sau một khoảng thời gian nhất định.
+
+Một số nguyên nhân phổ biến bao gồm:
+\begin{itemize}
+    \item Thiếu mục tiêu học tập rõ ràng.
+    \item Không theo dõi được tiến trình học tập.
+    \item Không nhận thấy sự tiến bộ của bản thân.
+    \item Không có cơ chế nhắc nhở hoặc hỗ trợ duy trì thói quen học tập.
+\end{itemize}
+
+Mặc dù hiện nay đã có nhiều công cụ hỗ trợ quản lý công việc hoặc quản lý thời gian, các công cụ này thường hoạt động độc lập với các nền tảng học tập và chưa được tích hợp chặt chẽ vào quá trình học tập của người dùng.
+
+\subsection{Vai trò của trí tuệ nhân tạo vẫn chưa được khai thác toàn diện}
+
+Sự phát triển của các mô hình ngôn ngữ lớn đã mở ra nhiều cơ hội mới trong lĩnh vực giáo dục.
+
+Tuy nhiên, trong nhiều hệ thống hiện nay, trí tuệ nhân tạo chủ yếu được sử dụng cho các tác vụ như:
+\begin{itemize}
+    \item Trả lời câu hỏi.
+    \item Tóm tắt tài liệu.
+    \item Hỗ trợ viết nội dung.
+    \item Giải thích khái niệm.
+\end{itemize}
+
+Mặc dù các chức năng trên mang lại nhiều lợi ích, AI vẫn chưa được khai thác đầy đủ trong việc hỗ trợ toàn bộ quá trình học tập.
+
+Các hướng ứng dụng tiềm năng như:
+\begin{itemize}
+    \item Sinh nội dung học tập từ nhiều nguồn dữ liệu.
+    \item Hỗ trợ xây dựng tài nguyên ôn tập.
+    \item Hỗ trợ đánh giá kiến thức.
+    \item Hỗ trợ theo dõi tiến trình học tập.
+    \item Hỗ trợ đề xuất hoạt động học tập phù hợp.
+\end{itemize}
+
+Do đó, việc khai thác trí tuệ nhân tạo trong toàn bộ quy trình học tập vẫn còn nhiều dư địa để nghiên cứu và phát triển.
+
+Từ những phân tích trên có thể thấy rằng mặc dù đã tồn tại nhiều công cụ học tập hiệu quả, vẫn còn khoảng trống đáng kể trong việc xây dựng một nền tảng có khả năng kết nối các hoạt động học tập khác nhau thành một quy trình thống nhất và tận dụng hiệu quả các thành tựu của trí tuệ nhân tạo để hỗ trợ người học.
+
+\section{Yêu cầu đặt ra đối với hệ thống đề xuất}
+
+Từ kết quả khảo sát và phân tích các hệ thống NotebookLM, Quizlet và Notion, có thể nhận thấy rằng mỗi nền tảng đều giải quyết hiệu quả một hoặc một số khía cạnh của hoạt động học tập. Tuy nhiên, các vấn đề liên quan đến sự phân mảnh của công cụ học tập, thiếu sự liên kết giữa các giai đoạn học tập, hạn chế trong theo dõi tiến trình học tập và khả năng cá nhân hóa vẫn chưa được giải quyết một cách toàn diện.
+
+Xuất phát từ những vấn đề còn tồn tại đã được phân tích ở mục trước, hệ thống được đề xuất trong đề tài cần đáp ứng một số yêu cầu quan trọng nhằm hỗ trợ người dùng trong toàn bộ quá trình học tập.
+
+\subsection{Hỗ trợ quản lý và tổ chức tài nguyên học tập}
+
+Hệ thống cần cung cấp một môi trường tập trung cho phép người dùng quản lý các tài nguyên học tập trên cùng một nền tảng.
+
+Người dùng cần có khả năng lưu trữ, tổ chức và truy cập các nguồn dữ liệu học tập khác nhau một cách thuận tiện mà không phải phụ thuộc vào nhiều công cụ độc lập.
+
+Các loại dữ liệu được hỗ trợ cần bao gồm:
+\begin{itemize}
+    \item Ghi chú học tập.
+    \item Tài liệu PDF.
+    \item Tài liệu DOCX.
+    \item Tài liệu trình chiếu.
+    \item Nội dung website.
+    \item Video học tập trực tuyến.
+    \item Các tài nguyên học tập được sinh bởi hệ thống.
+\end{itemize}
+
+Việc tập trung hóa dữ liệu học tập giúp giảm sự phân tán của thông tin và tạo điều kiện thuận lợi cho các hoạt động học tập tiếp theo.
+
+\subsection{Hỗ trợ xây dựng và quản lý tri thức cá nhân}
+
+Hệ thống không chỉ đóng vai trò lưu trữ dữ liệu mà còn cần hỗ trợ người dùng trong việc xây dựng và phát triển kho tri thức cá nhân.
+
+Người dùng cần có khả năng:
+\begin{itemize}
+    \item Tạo ghi chú.
+    \item Chỉnh sửa ghi chú.
+    \item Tổ chức kiến thức theo chủ đề.
+    \item Liên kết các nội dung học tập với nhau.
+    \item Quản lý quá trình phát triển kiến thức theo thời gian.
+\end{itemize}
+
+Yêu cầu này giúp đảm bảo rằng kiến thức được lưu trữ không tồn tại dưới dạng các tài liệu rời rạc mà được tổ chức thành một hệ thống thông tin có cấu trúc.
+
+\subsection{Hỗ trợ tạo nội dung học tập bằng trí tuệ nhân tạo}
+
+Một trong những yêu cầu quan trọng của hệ thống là tận dụng trí tuệ nhân tạo để giảm khối lượng công việc thủ công cho người dùng.
+
+Hệ thống cần có khả năng hỗ trợ:
+\begin{itemize}
+    \item Tóm tắt nội dung học tập.
+    \item Giải thích các khái niệm.
+    \item Sinh ghi chú từ tài liệu.
+    \item Sinh Flashcard.
+    \item Sinh bài kiểm tra.
+    \item Hỗ trợ xây dựng các tài nguyên học tập khác từ nguồn dữ liệu đầu vào.
+\end{itemize}
+
+Việc ứng dụng AI giúp người dùng tiết kiệm thời gian chuẩn bị nội dung và tập trung nhiều hơn vào hoạt động học tập.
+
+\subsection{Hỗ trợ học tập chủ động}
+
+Hệ thống cần cung cấp các công cụ hỗ trợ học tập chủ động nhằm nâng cao khả năng ghi nhớ và tiếp thu kiến thức của người dùng.
+
+Các hoạt động học tập cần được hỗ trợ bao gồm:
+\begin{itemize}
+    \item Ôn tập bằng Flashcard.
+    \item Tự kiểm tra kiến thức.
+    \item Luyện tập thông qua các bài đánh giá.
+    \item Tương tác với nội dung học tập.
+\end{itemize}
+
+Mục tiêu của yêu cầu này là chuyển người học từ vai trò tiếp nhận thông tin một cách thụ động sang tham gia chủ động vào quá trình học tập.
+
+\subsection{Hỗ trợ đánh giá kiến thức}
+
+Hệ thống cần cung cấp cơ chế đánh giá nhằm giúp người dùng xác định mức độ hiểu biết của bản thân đối với các nội dung đã học.
+
+Các chức năng đánh giá cần hỗ trợ:
+\begin{itemize}
+    \item Tạo bài kiểm tra.
+    \item Thực hiện bài kiểm tra trực tuyến.
+    \item Chấm điểm tự động.
+    \item Lưu trữ kết quả học tập.
+    \item Thống kê hiệu suất học tập.
+\end{itemize}
+
+Thông qua các hoạt động đánh giá, người dùng có thể nhận biết các nội dung còn yếu và có kế hoạch ôn tập phù hợp.
+
+\subsection{Hỗ trợ theo dõi tiến trình học tập}
+
+Một hệ thống hỗ trợ học tập hiện đại cần có khả năng ghi nhận và phân tích các hoạt động học tập của người dùng.
+
+Dữ liệu theo dõi cần bao gồm:
+\begin{itemize}
+    \item Quá trình học Flashcard.
+    \item Kết quả bài kiểm tra.
+    \item Thời gian học tập.
+    \item Tiến độ hoàn thành mục tiêu.
+    \item Lịch sử học tập.
+\end{itemize}
+
+Các dữ liệu này đóng vai trò quan trọng trong việc phản ánh sự tiến bộ của người học và hỗ trợ đưa ra các quyết định học tập phù hợp.
+
+\subsection{Hỗ trợ cá nhân hóa trải nghiệm học tập}
+
+Do mỗi người dùng có nền tảng kiến thức và mục tiêu học tập khác nhau, hệ thống cần hỗ trợ cá nhân hóa trải nghiệm học tập dựa trên dữ liệu thực tế.
+
+Việc cá nhân hóa có thể được thực hiện thông qua:
+\begin{itemize}
+    \item Phân tích kết quả học tập.
+    \item Theo dõi lịch sử học tập.
+    \item Xác định các nội dung cần được ôn tập.
+    \item Đề xuất các hoạt động học tập phù hợp.
+\end{itemize}
+
+Yêu cầu này giúp hệ thống thích nghi tốt hơn với nhu cầu của từng người dùng thay vì áp dụng một phương pháp chung cho tất cả đối tượng.
+
+\subsection{Hỗ trợ quản lý mục tiêu và duy trì động lực học tập}
+
+Bên cạnh các chức năng học tập cốt lõi, hệ thống cần hỗ trợ người dùng xây dựng và duy trì thói quen học tập trong dài hạn.
+
+Các chức năng cần được xem xét bao gồm:
+\begin{itemize}
+    \item Quản lý mục tiêu học tập.
+    \item Quản lý công việc học tập.
+    \item Quản lý thời gian học tập.
+    \item Nhắc nhở học tập.
+    \item Theo dõi mức độ hoàn thành kế hoạch.
+\end{itemize}
+
+Thông qua các công cụ này, hệ thống có thể góp phần hỗ trợ người dùng duy trì động lực học tập và nâng cao tính kỷ luật cá nhân.
+
+\subsection{Hỗ trợ cộng tác và chia sẻ tri thức}
+
+Trong môi trường học tập hiện đại, việc học tập theo nhóm và chia sẻ kiến thức ngày càng trở nên phổ biến.
+
+Do đó, hệ thống cần hỗ trợ:
+\begin{itemize}
+    \item Chia sẻ nội dung học tập.
+    \item Cộng tác trên ghi chú.
+    \item Làm việc nhóm trên cùng một nguồn dữ liệu.
+    \item Trao đổi và cập nhật thông tin giữa các thành viên.
+\end{itemize}
+
+Yêu cầu này giúp mở rộng khả năng ứng dụng của hệ thống trong các hoạt động học tập cộng đồng hoặc học tập nhóm.
+
+\subsection{Hỗ trợ đa nền tảng}
+
+Người dùng ngày nay thường sử dụng nhiều thiết bị khác nhau trong quá trình học tập.
+
+Do đó, hệ thống cần hỗ trợ:
+\begin{itemize}
+    \item Truy cập từ trình duyệt Web.
+    \item Truy cập từ thiết bị di động.
+    \item Đồng bộ dữ liệu giữa các nền tảng.
+    \item Đảm bảo tính nhất quán của dữ liệu và trải nghiệm người dùng.
+\end{itemize}
+
+Yêu cầu này giúp tăng khả năng tiếp cận và tính linh hoạt của hệ thống trong thực tế.
+
+\section{Kết luận chương}
+
+Chương này đã trình bày và phân tích ba nền tảng tiêu biểu trong lĩnh vực hỗ trợ học tập và quản lý tri thức gồm NotebookLM, Quizlet và Notion. Mỗi hệ thống đều sở hữu những ưu điểm riêng và giải quyết hiệu quả một nhóm vấn đề cụ thể liên quan đến học tập, nghiên cứu hoặc quản lý tri thức cá nhân.
+
+Tuy nhiên, kết quả khảo sát cho thấy vẫn tồn tại nhiều vấn đề chưa được giải quyết một cách toàn diện như sự phân mảnh của công cụ học tập, thiếu sự liên kết giữa các giai đoạn học tập, hạn chế trong theo dõi tiến trình học tập, khả năng cá nhân hóa còn hạn chế và việc khai thác trí tuệ nhân tạo chưa thực sự bao phủ toàn bộ quá trình học tập.
+
+Từ những vấn đề đó, chương đã xác định các yêu cầu quan trọng đối với hệ thống đề xuất nhằm xây dựng một nền tảng học tập tích hợp có khả năng hỗ trợ người dùng trong nhiều giai đoạn khác nhau của quá trình học tập.
+
+Các yêu cầu được xác định trong chương này sẽ là cơ sở cho việc phân tích yêu cầu, thiết kế kiến trúc và triển khai hệ thống được trình bày trong chương tiếp theo.
+
+

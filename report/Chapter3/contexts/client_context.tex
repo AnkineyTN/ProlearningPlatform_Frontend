@@ -1,0 +1,10 @@
+\subsubsection{Client Context}
+\label{subsubsec:client-context}
+
+Client Context bao gồm Web Client và Mobile Client, đóng vai trò lớp tương tác trực tiếp với người dùng. Context này được thiết kế theo nguyên tắc client chỉ xử lý giao diện, trạng thái hiển thị và thao tác nhập liệu; các kiểm tra nghiệp vụ quan trọng vẫn được thực hiện ở backend.
+
+\begin{itemize}
+    \item \textbf{Web Client:} Phục vụ các thao tác có độ phức tạp cao như quản lý set, ghi chú, flashcard, exam, roadmap, chia sẻ tài nguyên và thanh toán.
+    \item \textbf{Mobile Client:} Tối ưu cho các phiên học ngắn, truy cập nhanh học liệu, nhắc nhở học tập và push notification.
+    \item \textbf{Giao tiếp với backend:} REST API được dùng cho thao tác request/response; WebSocket/STOMP được dùng cho ghi chú thời gian thực và các sự kiện cần broadcast~\cite{springwebsocketstomp}.
+\end{itemize}

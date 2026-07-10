@@ -1,0 +1,66 @@
+\chapter{Kết luận và hướng phát triển}
+\label{Chapter5}
+
+\section{Triển khai thực nghiệm}
+
+\subsection{Nền tảng triển khai}
+Sản phẩm đã được triển khai hoàn thiện và người dùng có thể trực tiếp trải nghiệm hệ thống thông qua các kênh:
+\begin{itemize}
+    \item \textbf{Trang Web:} Hệ thống được hosting trực tuyến tại địa chỉ: \url{https://prolearning.io.vn/}
+    \item \textbf{App Mobile:} Do giới hạn về chi phí phát hành, bản thử nghiệm hiện đang được phân phối cho người dùng thông qua file \texttt{.apk}.
+\end{itemize}
+
+\subsection{Mô hình tài chính}
+Hiện tại, nền tảng được cung cấp hoàn toàn miễn phí cho cộng đồng sinh viên nhằm thu thập phản hồi và tối ưu hóa hệ thống. Các chi phí liên quan đến duy trì máy chủ và gọi API từ mô hình AI đều do nhóm tự chi trả.
+
+
+\section{Đánh giá kết quả đề tài}
+Nhìn chung, đề tài đã hoàn thành xuất sắc các mục tiêu ban đầu đề ra. Nhóm đã thiết kế và xây dựng thành công \textbf{Pro Learning Platform} -- một trợ lý học tập toàn diện đa nền tảng (Web và Mobile), giải quyết triệt để các khó khăn của người học hiện nay thông qua các điểm nổi bật sau:
+\begin{itemize}
+    \item Tích hợp toàn bộ công cụ học tập (Ghi chú, Flashcard, Bài kiểm tra, Sơ đồ tư duy) và quản lý thời gian (To-do list, Pomodoro) vào một không gian duy nhất.
+    \item Ứng dụng thành công công nghệ AI để tự động hóa quá trình học: tóm tắt tài liệu, sinh thẻ ghi nhớ, tạo bài kiểm tra, nhắc nhở ôn luyện và phân tích năng lực người học.
+    \item Xây dựng lộ trình học tập cá nhân hóa dựa trên dữ liệu phân tích năng lực và tần suất sai sót của người dùng.
+    \item Bước đầu hình thành môi trường học tập cộng đồng thông qua các tính năng chia sẻ tài nguyên.
+\end{itemize}
+
+
+\section{Kiến thức và kinh nghiệm đạt được}
+Trong suốt 11 tháng triển khai và phát triển dự án, các thành viên trong nhóm đã tích lũy được nhiều kiến thức và kỹ năng quý giá.
+
+\subsection{Về mặt kỹ thuật}
+\begin{itemize}
+    \item \textbf{Quản lý dự án và Thiết kế:} Sử dụng thành thạo Jira để quản lý dự án theo mô hình Agile/Scrum và Figma để thiết kế giao diện UI/UX.
+    \item \textbf{Phát triển Frontend:} Nắm vững và áp dụng thành công React, TypeScript, Redux, Tanstack Query cho nền tảng Web và React Native cho nền tảng Mobile.
+    \item \textbf{Thiết kế và kiến trúc Backend:} Xây dựng kiến trúc hệ thống bền vững với Java Spring Framework, sử dụng Redis để Caching và tích hợp Message Queue để xử lý các tác vụ bất đồng bộ.
+    \item \textbf{Tích hợp AI:} Sử dụng Python và thư viện LangChain để kết nối và tương tác với các API của mô hình ngôn ngữ lớn (LLM API).
+    \item \textbf{Cơ sở dữ liệu:} Có kinh nghiệm thiết kế ERD, vận hành PostgreSQL và sử dụng Cloudinary để lưu trữ tài nguyên đa phương tiện.
+    \item \textbf{DevOps \& Testing:} Thiết lập CI/CD thông qua GitHub Actions để tự động hóa quy trình triển khai.
+\end{itemize}
+
+\subsection{Về kỹ năng mềm}
+\begin{itemize}
+    \item \textbf{Làm việc nhóm:} Phối hợp nhịp nhàng giữa 4 thành viên với các vai trò đa dạng (Frontend, Backend, AI, DevOps, UI/UX, Tester); họp rà soát lỗi và phản hồi nhanh khi có yêu cầu thay đổi.
+    \item \textbf{Kỹ năng lên kế hoạch:} Quản lý thời gian hiệu quả thông qua các Sprint 2 tuần, đảm bảo luôn có sản phẩm bàn giao đúng hạn.
+    \item \textbf{Triển khai và vận hành:} Trải nghiệm thực tế quy trình đưa sản phẩm từ bản vẽ ý tưởng lên môi trường Production.
+\end{itemize}
+
+
+\section{Những vấn đề còn tồn đọng}
+Mặc dù hệ thống đã hoạt động ổn định và đáp ứng các yêu cầu cơ bản, vẫn còn một số giới hạn và thách thức chưa được giải quyết triệt để:
+\begin{itemize}
+    \item \textbf{Giới hạn xử lý tài liệu lớn:} Quá trình AI đọc và trích xuất dữ liệu từ các file lớn (hàng trăm trang PDF) đôi khi tốn nhiều thời gian hoặc xảy ra lỗi timeout do giới hạn hạ tầng server hiện tại.
+    \item \textbf{Chi phí vận hành AI:} Phụ thuộc vào API của mô hình AI bên ngoài đòi hỏi chi phí duy trì khá lớn, đặc biệt khi lượng người dùng tăng đột biến.
+    \item \textbf{Độ chính xác của AI:} Chức năng tạo Flashcard và Bài kiểm tra bằng AI đôi khi sinh ra đáp án nhiễu, chưa thực sự logic với ngữ cảnh tài liệu chuyên ngành sâu.
+    \item \textbf{Đồng bộ hóa Offline:} Ứng dụng Mobile hiện yêu cầu kết nối Internet liên tục cho các tính năng AI; hỗ trợ học offline chưa được tối ưu hoàn toàn.
+\end{itemize}
+
+
+\section{Hướng phát triển trong tương lai}
+Để hoàn thiện và nâng tầm Pro Learning Platform, nhóm đề xuất một số định hướng phát triển trong tương lai:
+\begin{itemize}
+    \item \textbf{Phát triển Extension trình duyệt:} Xây dựng Chrome/Edge Extension để người dùng có thể quét, tóm tắt và lưu trữ kiến thức trực tiếp từ các trang web vào hệ thống.
+    \item \textbf{Tích hợp Gamification:} Bổ sung hệ thống điểm thưởng, huy hiệu (badges) và bảng xếp hạng (Leaderboard) để kích thích hứng thú và tăng tính cạnh tranh tích cực giữa người học.
+    \item \textbf{Phòng học nhóm ảo:} Phát triển tính năng Group Study Room cho phép nhiều người dùng cùng ghi chú trên một không gian chung theo thời gian thực.
+    \item \textbf{Liên kết với hệ thống nhà trường (LMS):} Xây dựng API kết nối với các hệ thống quản lý đào tạo như Moodle hoặc Canvas, giúp sinh viên đồng bộ bài tập và tài liệu tự động.
+    \item \textbf{Tối ưu hóa Local AI Model:} Nghiên cứu việc fine-tune các mô hình AI mã nguồn mở cỡ nhỏ (như Llama 3) để chạy trực tiếp trên server nội bộ, giảm chi phí và tăng bảo mật dữ liệu.
+\end{itemize}
