@@ -1,27 +1,8 @@
 \subsection{Cài đặt cơ sở dữ liệu và lưu trữ trạng thái}
 \label{subsec:database-implementation}
 
-Cơ sở dữ liệu chính của hệ thống là PostgreSQL, được dùng để lưu các dữ liệu bền vững như tài khoản, học liệu, note, flashcard, exam, todo, notification, subscription và payment order~\cite{postgresqlabout}. Redis được dùng cho dữ liệu ngắn hạn như OAuth state, cache hoặc trạng thái có TTL; RabbitMQ hỗ trợ message delivery bất đồng bộ trong các tác vụ nền~\cite{redisoverview,rabbitmqtutorials}.
+PostgreSQL là nguồn dữ liệu chính của hệ thống, dùng để lưu tài khoản, học liệu, note, flashcard, exam, todo, notification, subscription, payment order và các dữ liệu cần truy vết lâu dài~\cite{postgresqlabout}. Redis được dùng cho dữ liệu ngắn hạn như OAuth state, cache, token blacklist hoặc giá trị có TTL; RabbitMQ hỗ trợ các tác vụ bất đồng bộ như email, reminder và một số bước xử lý nền~\cite{redisoverview,rabbitmqtutorials}.
 
-Thiết kế dữ liệu được tổ chức theo các nguyên tắc sau:
+Thiết kế dữ liệu được tổ chức theo bounded context. Nhóm identity/subscription lưu người dùng, vai trò và quyền lợi gói; nhóm learning workspace lưu note, folder, file, flashcard, exam và roadmap; nhóm progress lưu review log, attempt, session và phân tích kiến thức; nhóm todo/calendar lưu nhiệm vụ và mã event đồng bộ; nhóm notification/payment lưu inbox, trạng thái gửi push, order và transaction. Các tài nguyên đều gắn với chủ sở hữu hoặc workspace để service có thể kiểm tra quyền trước khi đọc/ghi.
 
-\begin{itemize}
-    \item \textbf{Entity theo bounded context:} Các nhóm entity như user, note, flashcard, knowledge, todo, notification, payment và pomodoro phản ánh các miền nghiệp vụ chính của hệ thống.
-    \item \textbf{Khóa ngoại và quyền sở hữu:} Những tài nguyên thuộc người dùng hoặc workspace đều cần trường liên kết chủ sở hữu để service có thể kiểm tra quyền trước khi đọc/ghi.
-    \item \textbf{Trạng thái nghiệp vụ rõ ràng:} Các flow có vòng đời dài như flashcard review, payment order, notification và subscription dùng enum/status field để tránh suy diễn trạng thái từ dữ liệu rời rạc.
-    \item \textbf{Dữ liệu tích hợp ngoài:} Các token, external event id, payment order code và push token được lưu tách theo ngữ cảnh để dễ thu hồi, cập nhật hoặc xóa khi tích hợp lỗi.
-    \item \textbf{Dữ liệu realtime:} Presence và cursor chỉ cần lưu trong bộ nhớ ứng dụng; snapshot Yjs được lưu bền vững trong bảng note để khôi phục nội dung khi người dùng mở lại tài liệu.
-\end{itemize}
-
-Một số nhóm bảng tiêu biểu gồm:
-
-\begin{itemize}
-    \item \textbf{Identity và subscription:} Lưu thông tin người dùng, vai trò, loại tài khoản, trạng thái PRO và các thiết lập cá nhân.
-    \item \textbf{Learning workspace:} Lưu note, folder, file, flashcard set, card item, exam, roadmap và dữ liệu phân tích kiến thức.
-    \item \textbf{Review/progress:} Lưu lịch ôn tập, số lần lặp, ease factor, session học và tiến độ theo từng người dùng.
-    \item \textbf{Todo/calendar:} Lưu todo, deadline, priority, trạng thái hoàn thành và mã event tương ứng trên Google Calendar.
-    \item \textbf{Notification:} Lưu inbox notification, trạng thái đã đọc, trạng thái gửi push và metadata liên quan.
-    \item \textbf{Payment:} Lưu payment order, transaction, order code, trạng thái thanh toán và thời điểm kích hoạt subscription.
-\end{itemize}
-
-Các vấn đề cần chú ý khi cài đặt database gồm tính nhất quán giao dịch, khả năng truy vấn theo người dùng, cleanup dữ liệu hết hạn và bảo vệ dữ liệu nhạy cảm. Với các flow có external API, backend cần lưu đủ metadata để retry hoặc đối soát nhưng không để client tự quyết định trạng thái cuối cùng của giao dịch.
+Những flow có vòng đời dài như payment, subscription, flashcard review và notification dùng trường trạng thái rõ ràng thay vì suy diễn từ nhiều bản ghi rời rạc. Với dữ liệu tích hợp ngoài, backend lưu đủ metadata như event id, order code, token hoặc trạng thái đồng bộ để có thể retry, đối soát hoặc thu hồi khi cần. Dữ liệu realtime ngắn hạn như presence/cursor không ghi liên tục vào database; chỉ snapshot hoặc trạng thái cần khôi phục mới được lưu bền vững.
