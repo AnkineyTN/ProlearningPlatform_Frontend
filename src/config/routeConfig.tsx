@@ -41,6 +41,7 @@ import CalendarCallbackPage from '@/pages/CalendarCallbackPage';
 import UpgradePage from '@/pages/UpgradePage';
 import PaymentSuccessPage from '@/pages/PaymentSuccessPage';
 import PaymentCancelPage from '@/pages/PaymentCancelPage';
+import NotFoundPage from '@/pages/NotFoundPage';
 import type { RouteObject } from 'react-router-dom';
 
 function LandingPageWrapper() {
@@ -339,7 +340,7 @@ export const routeConfig: RouteObject[] = [
         element: <UpgradePage />,
       },
       {
-        path: 'payment/success',
+        path: 'payment/result',
         element: <PaymentSuccessPage />,
       },
       {
@@ -357,5 +358,11 @@ export const routeConfig: RouteObject[] = [
         element: <TextEditorWrapper />,
       },
     ],
+  },
+  // Catch-all: any unmatched path renders a friendly 404 instead of the
+  // default React Router "Unexpected Application Error!" screen.
+  {
+    path: '*',
+    element: <NotFoundPage />,
   },
 ];

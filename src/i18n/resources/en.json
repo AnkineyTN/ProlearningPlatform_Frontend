@@ -2113,5 +2113,17 @@
       "leaveConfirmCancel": "Keep editing",
       "leaveConfirmLeave": "Leave without creating"
     }
+  },
+  "notFoundPage": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or may have been moved.",
+    "backToDashboard": "Back to dashboard",
+    "backToHome": "Back to home"
+  },
+  "errorPage": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again or go back to the homepage.",
+    "reload": "Reload page",
+    "backToHome": "Back to home"
   }
 }

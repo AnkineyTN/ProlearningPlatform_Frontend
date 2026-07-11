@@ -11,7 +11,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import { authQueryKey } from '@/hooks/useAuth';
-import { useGetPaymentStatus } from '@/hooks/usePayment';
+import {
+  useCancelPayment,
+  useGetPaymentStatus,
+} from '@/hooks/usePayment';
 import { useQueryClient } from '@tanstack/react-query';
 
 type ResultState = 'loading' | 'paid' | 'pending' | 'failed' | 'error';
@@ -23,6 +26,14 @@ export default function PaymentSuccessPage() {
 
   const orderCodeParam = searchParams.get('orderCode');
   const orderCode = orderCodeParam ? Number(orderCodeParam) : null;
+  const statusParam = searchParams.get('status');
+  const cancelParam = searchParams.get('cancel');
+  // PayOS sends the user back to returnUrl (this page) even when they
+  // cancelled/backed out without paying — not just to cancelUrl.
+  const isCancelledReturn =
+    cancelParam === 'true' ||
+    statusParam === 'CANCELLED' ||
+    statusParam === 'EXPIRED';
 
   const qc = useQueryClient();
   const [resultState, setResultState] = useState<ResultState>(
@@ -31,14 +42,43 @@ export default function PaymentSuccessPage() {
   const pollCountRef = useRef(0);
   const [pollCount, setPollCount] = useState(0);
 
-  const { data, isError } = useGetPaymentStatus({
+  const { data, isError, refetch } = useGetPaymentStatus({
     orderCode,
-    enabled: resultState === 'loading',
+    enabled: resultState === 'loading' && !isCancelledReturn,
     pollCount,
   });
+  const cancelPayment = useCancelPayment();
 
   useEffect(() => {
-    if (!data) return;
+    if (!orderCode || !isCancelledReturn) return;
+
+    let ignore = false;
+    cancelPayment.mutate(orderCode, {
+      onSuccess: () => {
+        if (!ignore) setResultState('failed');
+      },
+      onError: async () => {
+        // Cancel only fails if the order is no longer PENDING — check
+        // whether it was actually paid before assuming it failed.
+        const { data: statusData } = await refetch();
+        if (ignore) return;
+        if (statusData?.status === 'PAID') {
+          qc.invalidateQueries({ queryKey: authQueryKey });
+          setResultState('paid');
+        } else {
+          setResultState('failed');
+        }
+      },
+    });
+
+    return () => {
+      ignore = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderCode, isCancelledReturn]);
+
+  useEffect(() => {
+    if (!data || isCancelledReturn) return;
 
     if (data.status === 'PAID') {
       qc.invalidateQueries({ queryKey: authQueryKey });
@@ -56,11 +96,11 @@ export default function PaymentSuccessPage() {
         setResultState('pending');
       }
     }
-  }, [data, qc]);
+  }, [data, qc, isCancelledReturn]);
 
   useEffect(() => {
-    if (isError) setResultState('error');
-  }, [isError]);
+    if (isError && !isCancelledReturn) setResultState('error');
+  }, [isError, isCancelledReturn]);
 
   const handleRetryPoll = () => {
     pollCountRef.current = 0;
