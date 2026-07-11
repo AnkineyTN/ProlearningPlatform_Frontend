@@ -14,6 +14,7 @@ import PomodoroFloatingWidget from '@/pages/Pomodoro/components/PomodoroFloating
 import SoundLayer from '@/pages/Pomodoro/components/SoundLayer.tsx';
 import { authAPI } from '@/services/endpoints/auth.ts';
 import AiRateLimitDialog from '@/components/AiRateLimitDialog';
+import RouteErrorBoundary from '@/pages/RouteErrorBoundary';
 
 import { routeConfig } from './config/routeConfig.tsx';
 
@@ -41,6 +42,7 @@ function RootLayout() {
 const router = createBrowserRouter([
   {
     element: <RootLayout />,
+    errorElement: <RouteErrorBoundary />,
     children: routeConfig,
   },
 ]);

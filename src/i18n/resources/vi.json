@@ -2520,5 +2520,17 @@
       "leaveConfirmCancel": "Tiếp tục chỉnh sửa",
       "leaveConfirmLeave": "Rời đi, không tạo"
     }
+  },
+  "notFoundPage": {
+    "title": "Không tìm thấy trang",
+    "description": "Trang bạn đang tìm không tồn tại hoặc đã được chuyển đi.",
+    "backToDashboard": "Về trang tổng quan",
+    "backToHome": "Về trang chủ"
+  },
+  "errorPage": {
+    "title": "Đã xảy ra lỗi",
+    "description": "Có lỗi không mong muốn xảy ra. Vui lòng thử lại hoặc quay về trang chủ.",
+    "reload": "Tải lại trang",
+    "backToHome": "Về trang chủ"
   }
 }
