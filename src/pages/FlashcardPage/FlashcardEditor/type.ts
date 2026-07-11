@@ -21,6 +21,8 @@ export interface FlashcardItemProps {
   onDelete: (id: number | string) => void;
   onDuplicate: (id: number | string) => void;
   canDelete: boolean;
+  isTermInvalid?: boolean;
+  isDefinitionInvalid?: boolean;
 }
 
 export interface FlashcardItemWrapperProps {

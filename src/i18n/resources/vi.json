@@ -903,6 +903,8 @@
       "noNotes": "Không có ghi chú nào",
       "webUrlsPlaceholder": "https://example.com/article",
       "webUrlsHint": "Mỗi URL trên một dòng (https://…)",
+      "webUrlsHintMax": "Tối đa {{count}} liên kết",
+      "addLink": "Thêm liên kết",
       "note": {
         "topicLabel": "Chủ đề",
         "topicPlaceholder": "VD: Cách mạng Pháp, Cây tìm kiếm nhị phân…",
@@ -2518,7 +2520,8 @@
       "leaveConfirmTitle": "Flashcard chưa được tạo",
       "leaveConfirmDescription": "Bộ flashcard này chưa được tạo. Bạn có chắc muốn rời đi? Mọi thông tin đã nhập sẽ bị mất.",
       "leaveConfirmCancel": "Tiếp tục chỉnh sửa",
-      "leaveConfirmLeave": "Rời đi, không tạo"
+      "leaveConfirmLeave": "Rời đi, không tạo",
+      "emptyCardError": "Vui lòng nhập đầy đủ Term và Definition cho mỗi thẻ."
     }
   },
   "notFoundPage": {

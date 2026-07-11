@@ -84,6 +84,7 @@ export default function FlashcardEditor({
   ]);
   const [draggedCardId, setDraggedCardId] = useState<string | null>(null);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [showValidation, setShowValidation] = useState(false);
 
   useEffect(() => {
     if (isUpdateMode && flashcardData?.data) {
@@ -230,13 +231,25 @@ export default function FlashcardEditor({
       toast.error('Please enter a title');
       return;
     }
-    const validCards = cards.filter(
-      (c) => c.term.trim() && c.definition.trim(),
-    );
-    if (validCards.length === 0) {
+    const activeCards = cards.filter((c) => c._action !== 'DELETE');
+    if (activeCards.length === 0) {
       toast.error('Please add at least one card with both term and definition');
       return;
     }
+    const hasEmptyCard = activeCards.some(
+      (c) => !c.term.trim() || !c.definition.trim(),
+    );
+    if (hasEmptyCard) {
+      setShowValidation(true);
+      toast.error(
+        t('flashcard.editor.emptyCardError', {
+          defaultValue:
+            'Please fill in both term and definition for every card.',
+        }),
+      );
+      return;
+    }
+    setShowValidation(false);
 
     try {
       if (isUpdateMode) {
@@ -288,18 +301,11 @@ export default function FlashcardEditor({
             title,
             description,
             privacy: privacy as 'PUBLIC' | 'PRIVATE',
-            cards: cards
-              .filter(
-                (c) =>
-                  c._action !== 'DELETE' &&
-                  c.term.trim() &&
-                  c.definition.trim(),
-              )
-              .map((card) => ({
-                frontCard: card.term,
-                backCard: card.definition,
-                imageAssetId: card.assetId as number | undefined,
-              })) as any,
+            cards: activeCards.map((card) => ({
+              frontCard: card.term,
+              backCard: card.definition,
+              imageAssetId: card.assetId as number | undefined,
+            })) as any,
           },
         });
         navigate(`/sets/${setId}/flashcards/${res.data.data.id}`);
@@ -435,6 +441,8 @@ export default function FlashcardEditor({
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
             isDragging={draggedCardId === card.id}
+            isTermInvalid={showValidation && !card.term.trim()}
+            isDefinitionInvalid={showValidation && !card.definition.trim()}
           />
         ))}
 

@@ -13,6 +13,7 @@ import { apiErrorMessage } from '@/lib/apiError';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
 import { useUploadImageFile } from '@/hooks/useImageUpload';
 
 import type { FlashcardItemProps } from './type';
@@ -24,6 +25,8 @@ export default function FlashcardItemComponent({
   onDelete,
   onDuplicate,
   canDelete,
+  isTermInvalid,
+  isDefinitionInvalid,
 }: FlashcardItemProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadImageMutation = useUploadImageFile();
@@ -80,8 +83,17 @@ export default function FlashcardItemComponent({
           value={card.term}
           onChange={(e) => onUpdate(card.id, 'term', e.target.value)}
           placeholder='Term'
-          className='w-full px-3! py-1! min-h-[24px] resize-none border-0 bg-[var(--pl-bg)] p-0 shadow-none text-sm leading-relaxed focus-visible:ring-0'
+          className={cn(
+            'w-full px-3! py-1! min-h-[24px] resize-none border-0 bg-[var(--pl-bg)] p-0 shadow-none text-sm leading-relaxed focus-visible:ring-0',
+            isTermInvalid &&
+              'rounded-md border! border-[var(--pl-danger-border)]! bg-[var(--pl-danger-soft)]!',
+          )}
         />
+        {isTermInvalid && (
+          <p className='text-xs text-[var(--pl-danger-text)]'>
+            Term is required
+          </p>
+        )}
 
         <Input
           ref={fileInputRef}
@@ -117,8 +129,17 @@ export default function FlashcardItemComponent({
             value={card.definition}
             onChange={(e) => onUpdate(card.id, 'definition', e.target.value)}
             placeholder='Definition'
-            className='w-full px-3! py-1! min-h-[24px] resize-none bg-[var(--pl-bg)] border-0 p-0 shadow-none text-sm leading-relaxed text-[var(--pl-text-muted)] focus-visible:ring-0'
+            className={cn(
+              'w-full px-3! py-1! min-h-[24px] resize-none bg-[var(--pl-bg)] border-0 p-0 shadow-none text-sm leading-relaxed text-[var(--pl-text-muted)] focus-visible:ring-0',
+              isDefinitionInvalid &&
+                'rounded-md border! border-[var(--pl-danger-border)]! bg-[var(--pl-danger-soft)]!',
+            )}
           />
+          {isDefinitionInvalid && (
+            <p className='text-xs text-[var(--pl-danger-text)]'>
+              Definition is required
+            </p>
+          )}
         </div>
 
         <div className='flex items-center gap-1 flex-shrink-0'>
