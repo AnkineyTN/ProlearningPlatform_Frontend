@@ -2,7 +2,7 @@
 \label{Chapter1}
 
 
-\section{Bối cảnh và đặt vấn đề}
+\section{Bối cảnh thực hiện đề tài}
 
 Trong những năm gần đây, sự phát triển của công nghệ thông tin, Internet và các nền tảng học tập số đã làm thay đổi đáng kể cách người học tiếp cận tri thức. Người học có thể dễ dàng sử dụng kho học liệu mở, khóa học trực tuyến, công cụ ghi chú, ứng dụng quản lý thời gian và các hệ thống trí tuệ nhân tạo để hỗ trợ quá trình tự học. Xu hướng này thúc đẩy mô hình học tập suốt đời (Lifelong Learning), trong đó người học chủ động lựa chọn tài liệu, xây dựng lộ trình và học tập linh hoạt theo nhu cầu cá nhân.
 
@@ -12,7 +12,7 @@ Bên cạnh đó, người học còn gặp khó khăn trong việc ghi nhớ, �
 
 Sự phát triển của các mô hình ngôn ngữ lớn (Large Language Models -- LLM) mở ra cơ hội xây dựng các hệ thống hỗ trợ học tập thông minh. Các hệ thống này có thể tóm tắt tài liệu, giải thích khái niệm, sinh nội dung học tập, hỗ trợ luyện tập và cá nhân hóa trải nghiệm người dùng. Tuy nhiên, khảo sát các nền tảng hiện có cho thấy phần lớn giải pháp chỉ tập trung vào một nhóm nhu cầu riêng lẻ: Notion mạnh về ghi chú, Quizlet hỗ trợ Flashcard, NotebookLM khai thác tài liệu bằng AI, trong khi các công cụ Pomodoro hoặc Todo hỗ trợ quản lý thời gian và công việc. Các nền tảng này chưa hỗ trợ đầy đủ toàn bộ quy trình học tập trên một môi trường thống nhất.
 
-Từ những vấn đề trên, nhóm nhận thấy cần có một giải pháp hỗ trợ người học quản lý toàn bộ quá trình học tập trên cùng một nền tảng tích hợp. Xuất phát từ nhu cầu thực tế đó, nhóm thực hiện đề tài \textbf{``Hệ thống thông minh hỗ trợ học tập''} với mục tiêu xây dựng một nền tảng cho phép người dùng quản lý tài nguyên học tập, ghi chú kiến thức, tạo nội dung học tập bằng trí tuệ nhân tạo, ôn tập, đánh giá và theo dõi tiến trình trên nhiều nền tảng khác nhau. Hệ thống hướng tới việc giảm thao tác thủ công, nâng cao hiệu quả tự học và hỗ trợ người dùng xây dựng thói quen học tập bền vững.
+Từ những vấn đề trên, nhóm nhận thấy nhu cầu về việc hỗ trợ người học quản lý toàn bộ quá trình học tập trên cùng một nền tảng tích hợp. Xuất phát từ nhu cầu thực tế đó, nhóm thực hiện đề tài \textbf{``Hệ thống thông minh hỗ trợ học tập''} với mục tiêu xây dựng một nền tảng cho phép người dùng quản lý tài nguyên học tập, ghi chú kiến thức, tạo nội dung học tập bằng trí tuệ nhân tạo, ôn tập, đánh giá và theo dõi tiến trình trên nhiều nền tảng khác nhau. Hệ thống hướng tới việc giảm thao tác thủ công, nâng cao hiệu quả tự học và hỗ trợ người dùng xây dựng thói quen học tập bền vững.
 
 
 \section{Mục tiêu đề tài}
@@ -31,7 +31,7 @@ Về mặt chức năng, hệ thống cần hỗ trợ người học trong các
 \begin{itemize}
     \item Cung cấp không gian học tập tập trung để quản lý tài nguyên, ghi chú và nội dung học tập theo từng chủ đề hoặc môn học.
     \item Hỗ trợ tạo, lưu trữ, chia sẻ và khai thác ghi chú từ nhiều nguồn dữ liệu học tập.
-    \item Ứng dụng trí tuệ nhân tạo để tóm tắt tài liệu, giải thích khái niệm, sinh Flashcard, sinh câu hỏi kiểm tra và tạo tài nguyên học tập.
+    \item Ứng dụng LLM để tóm tắt tài liệu, giải thích khái niệm, sinh Flashcard, sinh câu hỏi kiểm tra và tạo tài nguyên học tập.
     \item Hỗ trợ ôn tập và ghi nhớ kiến thức thông qua Flashcard, bài kiểm tra và các hình thức học tập chủ động.
     \item Ghi nhận kết quả học tập, theo dõi tiến trình và hỗ trợ người dùng nhận biết mức độ tiến bộ của bản thân.
     \item Cho phép học tập linh hoạt trên nhiều nền tảng, đồng thời bảo đảm dữ liệu được quản lý và đồng bộ thống nhất.
@@ -47,7 +47,7 @@ Các nghiệp vụ cốt lõi được xử lý tập trung tại Backend Servic
 
 Đối tượng sử dụng chính của hệ thống là học sinh, sinh viên và những người có nhu cầu tự học trong nhiều lĩnh vực khác nhau. Với học sinh và sinh viên, hệ thống hỗ trợ quản lý tài liệu, tổ chức kiến thức và ôn tập phục vụ môn học hoặc kỳ thi. Với người tự học hoặc người đi làm, hệ thống hỗ trợ xây dựng kho tri thức cá nhân, quản lý quá trình học tập và phát triển kỹ năng chuyên môn. Ngoài ra, hệ thống cũng có thể được sử dụng trong nhóm học tập hoặc cộng đồng học tập thông qua các chức năng chia sẻ và cộng tác nội dung.
 
-\subsection{Lợi ích mang lại}
+\subsection{Đóng góp của đề tài}
 
 Việc xây dựng hệ thống thông minh hỗ trợ học tập mang lại các lợi ích chính sau:
 \begin{itemize}
@@ -62,7 +62,7 @@ Việc xây dựng hệ thống thông minh hỗ trợ học tập mang lại c�
 \section{Phạm vi đề tài}
 \subsection{Phạm vi nghiên cứu}
 
-Đề tài tập trung nghiên cứu và xây dựng một hệ thống hỗ trợ học tập thông minh cho nhiều giai đoạn của quá trình học tập, từ tiếp nhận kiến thức, tổ chức thông tin, ôn tập đến đánh giá kết quả. Trọng tâm của đề tài không nằm ở việc phát triển một mô hình trí tuệ nhân tạo mới, mà là ứng dụng các công nghệ AI hiện có để giải quyết các bài toán thực tế trong hoạt động học tập.
+Đề tài tập trung nghiên cứu và xây dựng một hệ thống hỗ trợ học tập thông minh cho nhiều giai đoạn của quá trình học tập, từ tiếp nhận kiến thức, tổ chức thông tin, ôn tập đến đánh giá kết quả. Trọng tâm của đề tài không nằm ở việc phát triển một mô hình trí tuệ nhân tạo mới, mà là nghiên cứu ứng dụng các mô hình ngôn ngữ lớn (LLM) tiên tiến của Google, kết hợp với khung phát triển ứng dụng AI dạng chuỗi (LangChain) và kiến trúc tác vụ AI đa luồng dạng đồ thị (LangGraph) nhằm giải quyết các bài toán thực tế trong hoạt động học tập cá nhân hóa.
 
 Các hướng nghiên cứu chính của đề tài bao gồm quản lý tri thức cá nhân, học tập chủ động bằng Flashcard và bài kiểm tra, ứng dụng trí tuệ nhân tạo trong giáo dục, theo dõi tiến trình học tập, xây dựng hệ thống đa nền tảng, hỗ trợ cộng tác và tự động hóa quá trình tạo nội dung học tập từ nhiều nguồn dữ liệu.
 
@@ -114,36 +114,25 @@ Hệ thống tích hợp các chức năng trí tuệ nhân tạo nhằm hỗ tr
 
 Về mặt kỹ thuật, hệ thống được xây dựng theo mô hình Client--Server kết hợp với một dịch vụ AI độc lập. Kiến trúc tổng thể bao gồm ứng dụng Web, ứng dụng Mobile, Backend Service, AI Service và hệ quản trị cơ sở dữ liệu.
 
-Ứng dụng Web được phát triển bằng React và TypeScript, ứng dụng Mobile được phát triển bằng React Native, Backend Service được phát triển bằng Java Spring Boot, còn AI Service được phát triển bằng Python FastAPI và tích hợp với các mô hình ngôn ngữ lớn. Dữ liệu bền vững được lưu trữ chủ yếu trên PostgreSQL; Redis được sử dụng cho cache và trạng thái ngắn hạn; RabbitMQ hỗ trợ xử lý các tác vụ bất đồng bộ như gửi email hoặc thông báo nền.
+Ứng dụng Web được phát triển bằng React và TypeScript, ứng dụng Mobile được phát triển bằng React Native, Backend Service được phát triển bằng Java Spring Boot, còn AI Service được phát triển bằng Python FastAPI và ứng dụng bộ công cụ LangChain và mô hình trạng thái đa luồng LangGraph để xây dựng các quy trình xử lý dữ liệu thông minh, kết nối trực tiếp với các mô hình ngôn ngữ lớn (LLM) tiên tiến. Dữ liệu bền vững được lưu trữ chủ yếu trên PostgreSQL; Redis được sử dụng cho cache và trạng thái ngắn hạn; RabbitMQ hỗ trợ xử lý các tác vụ bất đồng bộ như gửi email hoặc thông báo nền.
 
 \subsection{Giới hạn của đề tài}
 
-Do giới hạn về thời gian, nguồn lực và phạm vi của đồ án tốt nghiệp, hệ thống vẫn còn một số giới hạn. Thứ nhất, chất lượng đầu ra của các chức năng AI phụ thuộc vào chất lượng dữ liệu đầu vào và khả năng của mô hình được sử dụng. Thứ hai, hệ thống tập trung vào các loại tài liệu học tập phổ biến như văn bản, PDF, bài trình chiếu và nội dung website; các dạng học liệu phức tạp hơn như mô phỏng tương tác hoặc thực tế ảo chưa nằm trong phạm vi nghiên cứu. Thứ ba, hệ thống được tối ưu chủ yếu cho học sinh, sinh viên và người tự học; các nhu cầu đặc thù của doanh nghiệp hoặc tổ chức đào tạo quy mô lớn chưa được xem xét đầy đủ.
+Sau khoảng thời gian hơn 6 tháng phát triển, hệ thống vẫn còn một số giới hạn. Thứ nhất, chất lượng đầu ra của các chức năng AI phụ thuộc vào chất lượng dữ liệu đầu vào và khả năng của mô hình được sử dụng. Thứ hai, hệ thống tập trung vào các loại tài liệu học tập phổ biến như văn bản, PDF, bài trình chiếu và nội dung website; các dạng học liệu phức tạp hơn như mô phỏng tương tác hoặc thực tế ảo chưa nằm trong phạm vi nghiên cứu. Thứ ba, hệ thống được tối ưu chủ yếu cho học sinh, sinh viên và người tự học; các nhu cầu đặc thù của doanh nghiệp hoặc tổ chức đào tạo quy mô lớn chưa được xem xét đầy đủ.
 
 
 \section{Phương pháp thực hiện}
 
-Để thực hiện đề tài, nhóm áp dụng phương pháp phát triển phần mềm theo hướng lặp và tăng trưởng (Iterative and Incremental Development), kết hợp với quy trình Agile Scrum. Cách tiếp cận này phù hợp với đặc thù của hệ thống học tập thông minh, trong đó yêu cầu chức năng, giao diện người dùng và các khả năng AI cần được điều chỉnh qua nhiều vòng phản hồi.
-
-Trong quá trình thực hiện, nhóm tổ chức công việc theo Product Backlog, phân rã yêu cầu thành các hạng mục có thể triển khai theo từng Sprint. Mỗi Sprint gồm các hoạt động chính như lập kế hoạch, triển khai, tích hợp, kiểm thử, đánh giá kết quả và điều chỉnh backlog cho vòng lặp tiếp theo.
+Để thực hiện đề tài, nhóm áp dụng phương pháp phát triển phần mềm theo quy trình Agile Scrum. Cách tiếp cận này giúp tổ chức công việc theo Product Backlog và triển khai linh hoạt theo từng Sprint để liên tục điều chỉnh và phát triển các chức năng. 
 
 Quá trình thực hiện đề tài được chia thành các giai đoạn chính như sau:
 
-\subsection{Khảo sát và phân tích yêu cầu}
-
-Nhóm khảo sát các hệ thống học tập hiện có, nghiên cứu nhu cầu người học và xác định các vấn đề cần giải quyết. Kết quả khảo sát được dùng để xây dựng yêu cầu chức năng, yêu cầu phi chức năng và phạm vi triển khai.
-
-\subsection{Thiết kế hệ thống}
-
-Nhóm thiết kế kiến trúc hệ thống, kiến trúc cơ sở dữ liệu, giao diện người dùng và các API phục vụ giao tiếp giữa các thành phần.
-
-\subsection{Triển khai hệ thống}
-
-Nhóm phát triển song song các thành phần Frontend Web, Frontend Mobile, Backend Service và AI Service theo từng Sprint nhằm rút ngắn thời gian phát triển và tăng khả năng phối hợp giữa các thành viên.
-
-\subsection{Kiểm thử và hoàn thiện}
-
-Sau mỗi giai đoạn triển khai, nhóm kiểm thử chức năng để phát hiện và xử lý lỗi phát sinh. Các phản hồi thu được trong quá trình kiểm thử và Sprint Review được sử dụng để cải thiện chất lượng sản phẩm trước khi hoàn thiện hệ thống.
+\begin{itemize}
+    \item \textbf{Khảo sát và phân tích yêu cầu:} Khảo sát các hệ thống học tập hiện có và nghiên cứu nhu cầu người học để xác định phạm vi triển khai, xây dựng các yêu cầu chức năng và phi chức năng.
+    \item \textbf{Thiết kế hệ thống:} Thiết kế kiến trúc tổng thể, cơ sở dữ liệu, giao diện người dùng và các hệ thống API phục vụ giao tiếp giữa các thành phần.
+    \item \textbf{Triển khai hệ thống:} Phát triển song song các thành phần Frontend Web, Frontend Mobile, Backend Service và AI Service theo từng Sprint nhằm rút ngắn thời gian và tăng khả năng phối hợp.
+    \item \textbf{Kiểm thử và hoàn thiện:} Tiến hành kiểm thử chức năng sau mỗi giai đoạn để xử lý lỗi phát sinh, đồng thời tận dụng phản hồi từ Sprint Review để cải tiến và hoàn thiện sản phẩm.
+\end{itemize}
 
 \section{Cấu trúc báo cáo}
 
