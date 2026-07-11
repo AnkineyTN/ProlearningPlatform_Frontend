@@ -1,28 +1,16 @@
 \subsection{Cài đặt các core component tiêu biểu}
 \label{subsec:core-component-implementation}
 
-Phần này trình bày một số flow quan trọng của các core feature. Các flow được chọn vì có tác động trực tiếp đến trải nghiệm học tập hoặc vận hành tài khoản, đồng thời thể hiện cách backend phối hợp giữa domain service, persistence, realtime processing, scheduler và dịch vụ bên ngoài.
-
-Các flow được phân tích gồm điều phối AI Service, thuật toán SM-2 cho flashcard review, cộng tác realtime trên ghi chú, notification pipeline, đồng bộ Google Calendar và thanh toán PayOS.
-
+Phần này tóm tắt các flow quan trọng nhất của hệ thống: điều phối AI Service, ôn tập flashcard theo SM-2, cộng tác realtime trên ghi chú, notification pipeline, đồng bộ Google Calendar và thanh toán PayOS. Các flow này được chọn vì thể hiện rõ cách backend phối hợp giữa domain service, persistence, scheduler, realtime channel và dịch vụ ngoài.
 
 \subsubsection{Điều phối AI Service cho học liệu thông minh}
 \label{subsubsec:ai-service-orchestration}
 
-AI Service được tách khỏi backend chính nhằm cô lập phần sinh nội dung và phân tích ngôn ngữ khỏi phần quản lý tài khoản, quyền truy cập và lưu trữ học liệu. Trong backend, các lớp \texttt{AIFlashcardServiceImpl}, \texttt{AIExamServiceImpl}, \texttt{AINoteServiceImpl}, \texttt{AIKnowledgeServiceImpl} và \texttt{AIRoadmapServiceImpl} đóng vai trò adapter gọi AI Service thông qua \texttt{RestHttpClientUtil}. Cách tách này phù hợp với nguyên tắc phân tách trách nhiệm trong kiến trúc service-based: AI Service tập trung xử lý nội dung, còn Spring Boot API kiểm soát workflow nghiệp vụ và dữ liệu hệ thống~\cite{springbootdocs}.
-
-Cơ chế điều phối AI có các đặc điểm chính:
-
-\begin{itemize}
-    \item \textbf{Đa dạng nguồn đầu vào:} Flashcard và exam có thể được sinh từ file, note, URL web hoặc dữ liệu học tập đã có.
-    \item \textbf{Chuẩn hóa giao tiếp:} File được gửi dưới dạng multipart request; note, web content và dữ liệu phân tích được gửi dưới dạng JSON request.
-    \item \textbf{Backend giữ quyền kiểm soát:} Backend parse response từ AI Service, kiểm tra quyền với tài nguyên liên quan và chỉ lưu dữ liệu sau khi đã qua service nghiệp vụ.
-    \item \textbf{Cá nhân hóa học tập:} Knowledge analysis tổng hợp độ chính xác theo topic trước khi gọi AI để phân tích điểm mạnh/yếu; roadmap generation sử dụng hồ sơ kiến thức của người dùng làm ngữ cảnh đầu vào.
-\end{itemize}
+AI Service được tách khỏi backend chính để cô lập phần sinh nội dung và phân tích ngôn ngữ. Backend nhận yêu cầu tạo flashcard, exam, giải thích note, phân tích kiến thức hoặc sinh roadmap; sau đó kiểm tra quyền, chuẩn hóa dữ liệu đầu vào, gọi AI Service qua adapter và chỉ lưu kết quả sau khi đã kiểm tra định dạng. Nhờ vậy, client không gọi trực tiếp AI Service và các học liệu được sinh ra vẫn nằm trong workflow quản lý học liệu của backend.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth,height=0.72\textheight,keepaspectratio]{images/chapter3/ProLearning_Arch-Detail_AI_Flow.drawio.png}
+    \includegraphics[width=1.5\textwidth,height=0.95\textheight,keepaspectratio]{images/chapter3/ProLearning_Arch-Detail_AI_Flow.drawio.png}
     \caption{Luồng điều phối AI Service}
     \label{fig:prolearning-architecture-detail_ai_flow}
 \end{figure}
@@ -30,32 +18,11 @@ Cơ chế điều phối AI có các đặc điểm chính:
 \subsubsection{Thuật toán SM-2 cho flashcard review}
 \label{subsubsec:sm2-flashcard-review}
 
-Flashcard review là cơ chế quyết định lịch ôn tập cá nhân của người dùng. Mỗi \texttt{CardItem} lưu các trường \texttt{cardStatus}, \texttt{nextReviewAt}, \texttt{intervalDays}, \texttt{easeFactor} và \texttt{repetitions}. Các trường này cho phép hệ thống chọn card đến hạn, cập nhật độ khó tương đối và lên lịch lần ôn tiếp theo. Thuật toán được cài đặt dựa trên biến thể SM-2, một thuật toán spaced repetition phổ biến trong các hệ thống học lặp lại ngắt quãng~\cite{supermemo_sm2}.
-
-Cách hệ thống tạo hàng đợi ôn tập được tóm tắt như sau:
-
-\begin{enumerate}
-    \item \texttt{CardItemServiceImpl.getCardsForReview} kiểm tra flashcard thuộc đúng set và đúng người dùng hiện tại.
-    \item Repository lấy các card đã đến hạn bằng điều kiện \texttt{nextReviewAt <= now}, sắp xếp theo \texttt{intervalDays ASC} để ưu tiên card có chu kỳ ngắn hơn.
-    \item Nếu số card đến hạn chưa đủ giới hạn, hệ thống bổ sung card mới có \texttt{repetitions = 0}.
-    \item Nếu không có card đến hạn, \texttt{FlashcardStudySessionServiceImpl} chuyển sang chế độ \texttt{REVIEW} để người dùng vẫn có thể ôn tự do.
-\end{enumerate}
-
-Khi người dùng sync kết quả học, \texttt{FlashcardReviewServiceImpl.calculateSpacedRepetition} cập nhật lịch ôn theo input nhị phân:
-
-\begin{itemize}
-    \item \textbf{Nếu người dùng nắm card:} \texttt{quality = 5}; interval lần lượt là 1 ngày, 6 ngày, sau đó nhân với \texttt{easeFactor}.
-    \item \textbf{Nếu người dùng không nắm card:} \texttt{quality = 1}; \texttt{repetitions} được reset về 0, \texttt{intervalDays} về 1 và trạng thái card chuyển thành \texttt{UNKNOWN}.
-    \item \textbf{Ease factor:} Được cập nhật theo công thức SM-2 và bị chặn dưới ở mức 1.3 để tránh card khó bị lặp quá dày đặc.
-\end{itemize}
-
-\[
-EF' = EF + \left(0.1 - (5-q) \times (0.08 + (5-q) \times 0.02)\right)
-\]
+Flashcard review được cài đặt dựa trên biến thể SM-2 để lên lịch ôn tập cá nhân~\cite{supermemo_sm2}. Mỗi thẻ lưu trạng thái như \texttt{nextReviewAt}, \texttt{intervalDays}, \texttt{easeFactor} và \texttt{repetitions}; backend dùng các trường này để lấy thẻ đến hạn, ưu tiên thẻ có chu kỳ ngắn và bổ sung thẻ mới khi cần. Sau mỗi lượt học, service cập nhật lại lịch ôn, độ dễ và trạng thái nắm/không nắm thẻ để phục vụ các phiên review tiếp theo.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth,height=0.72\textheight,keepaspectratio]{images/chapter3/ProLearning_Arch-Detail_SM2.drawio.png}
+    \includegraphics[width=1.5\textwidth,height=0.95\textheight,keepaspectratio]{images/chapter3/ProLearning_Arch-Detail_SM2.drawio.png}
     \caption{Luồng học và ôn tập flashcard theo SM-2}
     \label{fig:prolearning-architecture-detail_sm2}
 \end{figure}
@@ -63,21 +30,11 @@ EF' = EF + \left(0.1 - (5-q) \times (0.08 + (5-q) \times 0.02)\right)
 \subsubsection{Cộng tác thời gian thực trên ghi chú}
 \label{subsubsec:realtime-collaboration}
 
-Tính năng cộng tác ghi chú được triển khai bằng WebSocket/STOMP kết hợp với cơ chế lưu snapshot Yjs. WebSocket/STOMP phù hợp với mô hình publish/subscribe, trong đó nhiều client có thể cùng subscribe vào một topic và nhận sự kiện realtime từ backend~\cite{springwebsocketstomp}.
-
-Flow cộng tác được tổ chức thành ba lớp:
-
-\begin{itemize}
-    \item \textbf{Authentication layer:} \texttt{JwtChannelInterceptor} kiểm tra JWT trong STOMP \texttt{CONNECT} và lưu \texttt{userId}, \texttt{username} vào session attributes.
-    \item \textbf{Realtime layer:} \texttt{NoteWebSocketController} xử lý join, content update, cursor update và disconnect event; \texttt{RealTimeNoteSessionService} lưu active sessions bằng \texttt{ConcurrentHashMap}.
-    \item \textbf{Persistence layer:} \texttt{CollabServiceImpl} đọc/ghi \texttt{yjs\_state} vào bảng note thông qua endpoint nội bộ có \texttt{X-Service-Key}.
-\end{itemize}
-
-Thiết kế này tách dữ liệu ngắn hạn và dữ liệu bền vững: presence/cursor được giữ trong bộ nhớ để giảm ghi database, còn Yjs snapshot được lưu vào PostgreSQL để phục hồi trạng thái khi mở lại note.
+Cộng tác ghi chú sử dụng WebSocket/STOMP để truyền sự kiện theo topic và Yjs để hợp nhất chỉnh sửa đồng thời~\cite{springwebsocketstomp}. Backend kiểm tra quyền tham gia note, quản lý kênh realtime, nhận snapshot cần lưu bền vững và lưu lại trạng thái có thể khôi phục trong PostgreSQL. Presence và cursor chỉ giữ ngắn hạn để giảm tải ghi database, còn nội dung chính của note được lưu theo snapshot.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth,height=0.72\textheight,keepaspectratio]{images/chapter3/ProLearning_Arch-Detail_Realtime_Collab.drawio.png}
+    \includegraphics[width=1\textwidth,height=0.8\textheight,keepaspectratio]{images/chapter3/ProLearning_Arch-Detail_Realtime_Collab.drawio.png}
     \caption{Luồng cộng tác thời gian thực trên ghi chú}
     \label{fig:prolearning-architecture-detail_realtime_collab}
 \end{figure}
@@ -85,20 +42,11 @@ Thiết kế này tách dữ liệu ngắn hạn và dữ liệu bền vững: p
 \subsubsection{Pipeline thông báo đa nguồn và gửi push bất đồng bộ}
 \label{subsubsec:notification-pipeline}
 
-Notification subsystem được thiết kế theo pipeline gồm nguồn phát sinh thông báo, dispatcher, persistence và push delivery. Firebase Cloud Messaging được dùng cho push notification tới thiết bị người dùng~\cite{firebasefcm}; PostgreSQL lưu inbox notification để người dùng vẫn có thể xem lại thông báo trong ứng dụng.
-
-Các bước xử lý chính gồm:
-
-\begin{enumerate}
-    \item \texttt{NotificationScheduler} kích hoạt các job theo cron, ví dụ due card reminder, todo/goal reminder, weekly summary và cleanup.
-    \item Các service như \texttt{DueCardReminderServiceImpl}, \texttt{TodoReminderServiceImpl} và \texttt{GoalReminderServiceImpl} đọc preference, lọc người dùng phù hợp và tạo \texttt{CreateNotificationDto}.
-    \item \texttt{NotificationDispatcherImpl} lưu notification bằng \texttt{NotificationServiceImpl}; nếu \texttt{sendPush = true}, dispatcher gọi FCM service bất đồng bộ.
-    \item \texttt{FCMServiceImpl} lấy device token, gửi message tới Firebase, cập nhật \texttt{pushSent} và xóa token không hợp lệ.
-\end{enumerate}
+Notification pipeline nhận sự kiện từ nhiều nguồn như flashcard đến hạn, todo/goal sắp hết hạn, weekly summary hoặc thay đổi subscription. Backend chuẩn hóa thông báo, lưu inbox vào PostgreSQL và gửi push qua Firebase Cloud Messaging khi người dùng có thiết bị đã đăng ký~\cite{firebasefcm}. Các bước gửi push/email có thể chạy bất đồng bộ để không làm chậm request chính.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth,height=0.72\textheight,keepaspectratio]{images/chapter3/ProLearning_Arch-Detail_Noti_Pipeline.drawio.png}
+    \includegraphics[width=1\textwidth,height=0.95\textheight,keepaspectratio]{images/chapter3/ProLearning_Arch-Detail_Noti_Pipeline.drawio.png}
     \caption{Luồng xử lý notification pipeline}
     \label{fig:prolearning-architecture-detail_noti_pipeline}
 \end{figure}
@@ -106,20 +54,11 @@ Các bước xử lý chính gồm:
 \subsubsection{Đồng bộ Todo với Google Calendar}
 \label{subsubsec:google-calendar-sync}
 
-Google Calendar integration được triển khai trong \texttt{CalendarServiceImpl}. Hệ thống dùng OAuth flow để xin quyền ghi event vào calendar của người dùng, sau đó dùng Google Calendar API để tạo/cập nhật/xóa event tương ứng với todo có ngày đến hạn~\cite{googlecalendarjava}.
-
-Cơ chế bảo vệ và đồng bộ được tóm tắt như sau:
-
-\begin{itemize}
-    \item \textbf{OAuth state:} Khi tạo authorization URL, backend sinh \texttt{state}, lưu \texttt{calendar\_state:<state> -> userId} trong Redis với TTL 600 giây để xác thực callback~\cite{redisoverview}.
-    \item \textbf{Credential storage:} Sau callback hợp lệ, backend lưu \texttt{accessToken}, \texttt{refreshToken}, \texttt{tokenExpiresAt} và \texttt{calendarSyncEnabled} trong \texttt{user\_calendar\_settings}.
-    \item \textbf{Todo synchronization:} \texttt{TodoServiceImpl} gọi \texttt{createEvent}, \texttt{updateEvent} hoặc \texttt{deleteEvent} sau khi tạo, cập nhật, toggle hoặc xóa todo.
-    \item \textbf{Event representation:} Todo được biểu diễn bằng all-day event; màu event phản ánh priority và summary phản ánh trạng thái hoàn thành.
-\end{itemize}
+Đồng bộ Google Calendar được triển khai thông qua service tích hợp riêng. Backend tạo OAuth authorization URL, lưu \texttt{state} ngắn hạn trong Redis, nhận callback để lưu credential hợp lệ và dùng Google Calendar API để tạo, cập nhật hoặc xóa event tương ứng với todo có ngày đến hạn~\cite{redisoverview,googlecalendarjava}. Trạng thái đồng bộ và mã event được lưu lại để backend có thể đối soát khi todo thay đổi.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth,height=0.72\textheight,keepaspectratio]{images/chapter3/ProLearning_Arch-Detail_GgCalendar.drawio.png}
+    \includegraphics[width=1\textwidth,height=0.95\textheight,keepaspectratio]{images/chapter3/ProLearning_Arch-Detail_GgCalendar.drawio.png}
     \caption{Luồng đồng bộ Todo với Google Calendar}
     \label{fig:prolearning-architecture-detail_ggcalendar}
 \end{figure}
@@ -127,21 +66,11 @@ Cơ chế bảo vệ và đồng bộ được tóm tắt như sau:
 \subsubsection{Thanh toán PayOS và kích hoạt tài khoản PRO}
 \label{subsubsec:payos-pro-upgrade}
 
-Payment flow được thiết kế theo hướng kiểm tra chữ ký và xử lý idempotent. PayOS webhook được xác minh trước khi backend cập nhật trạng thái giao dịch, phù hợp với yêu cầu bảo vệ endpoint webhook khỏi payload giả mạo~\cite{payoswebhook}.
-
-Các bước chính của payment flow gồm:
-
-\begin{enumerate}
-    \item \texttt{PayOSServiceImpl.createPaymentLink} hủy các order \texttt{PENDING} cũ của user, tạo \texttt{orderCode}, đặt thời hạn 15 phút và ký request tạo link bằng HMAC-SHA256.
-    \item Backend gọi PayOS API để tạo payment link và lưu \texttt{PaymentOrder} với trạng thái ban đầu.
-    \item \texttt{PayOSWebhookController} nhận webhook tại \texttt{/webhook/payos}, tái tạo raw data, ký lại bằng \texttt{checksumKey} và so sánh với chữ ký trong payload.
-    \item Nếu giao dịch thành công, \texttt{PayOSServiceImpl} đánh dấu order là \texttt{PAID}, lưu \texttt{PaymentTransaction} và gọi \texttt{SubscriptionServiceImpl.activatePro}.
-    \item \texttt{SubscriptionServiceImpl} đổi \texttt{accountType} sang \texttt{PRO}, gửi notification và email xác nhận nâng cấp.
-\end{enumerate}
+Luồng thanh toán được cài đặt theo hướng backend tạo payment link, lưu order ở trạng thái chờ và chỉ kích hoạt PRO sau khi nhận webhook hợp lệ từ PayOS. Webhook được xác minh chữ ký, đối chiếu order code và xử lý theo hướng idempotent để tránh cập nhật trùng hoặc payload giả mạo~\cite{payoswebhook}. Sau khi giao dịch thành công, backend lưu transaction, cập nhật subscription và phát sinh notification/email xác nhận.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth,height=0.72\textheight,keepaspectratio]{images/chapter3/ProLearning_Arch-Detail_Payment_Gateway.drawio.png}
+    \includegraphics[width=1\textwidth,height=0.95\textheight,keepaspectratio]{images/chapter3/ProLearning_Arch-Detail_Payment_Gateway.drawio.png}
     \caption{Luồng thanh toán PayOS và nâng cấp tài khoản PRO}
     \label{fig:prolearning-architecture-detail_payment_gateway}
 \end{figure}

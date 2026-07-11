@@ -1,29 +1,120 @@
-\section{Chi tiết các thành phần bên trong hệ thống}
-\label{sec:component-details}
+\section{Thiết kế thành phần ứng dụng}
+\label{sec:application-component-design}
 \begingroup
 \sloppy
 
-Phần này mô tả chi tiết các thành phần chính của ProLearning Platform theo ba nhóm: \textit{core components}, \textit{support components} và \textit{infrastructure/integration components}. Việc tách nhóm giúp làm rõ thành phần nào trực tiếp tạo ra giá trị học tập cho người dùng, thành phần nào hỗ trợ vận hành nội bộ và thành phần nào phụ trách kết nối hạ tầng hoặc dịch vụ ngoài.
+Sau khi xác định tổ chức tổng thể ở Mục~\ref{sec:system-component-organization}, phần này mô tả chi tiết hơn các thành phần của ProLearning Platform ở mức ứng dụng. Mục này tập trung vào vai trò của các nhóm thành phần trong một hệ thống hoàn chỉnh: lớp giao diện, lớp ứng dụng phía máy chủ, lớp dữ liệu--hạ tầng và các dịch vụ tích hợp ngoài.
 
-Cách phân nhóm được sử dụng trong báo cáo như sau:
+\subsection{Lớp giao diện người dùng}
+\label{subsec:client-application-design}
 
-\begin{itemize}
-    \item \textbf{Core components:} Bao gồm client, identity, workspace học tập, AI learning, collaboration, review/progress, todo/calendar, pomodoro, notification và payment. Đây là các thành phần trực tiếp tham gia vào trải nghiệm học tập và quản lý tài khoản.
-    \item \textbf{Support components:} Bao gồm validation, chuẩn hóa DTO, mapper, xử lý lỗi, phân quyền tài nguyên, cache, scheduler và logging. Đây là các cơ chế dùng chung giúp giảm trùng lặp và tăng tính nhất quán.
-    \item \textbf{Infrastructure/integration components:} Bao gồm PostgreSQL, Redis, RabbitMQ, Cloudinary, Firebase Cloud Messaging, Google Calendar, PayOS và SMTP provider. Đây là các thành phần cung cấp năng lực lưu trữ, nhắn tin, đồng bộ và tích hợp ngoài.
-\end{itemize}
+Lớp giao diện là điểm tiếp xúc trực tiếp với người dùng cuối. Hệ thống có hai loại client chính: web client phục vụ các thao tác cần không gian hiển thị rộng và mobile client phục vụ các phiên học ngắn trên thiết bị cá nhân. Cả hai client cùng sử dụng API của backend, không truy cập trực tiếp cơ sở dữ liệu hoặc dịch vụ ngoài. Nhờ vậy, các luật nghiệp vụ như phân quyền, kiểm tra trạng thái subscription, xác thực thanh toán hoặc lưu tiến độ học tập luôn được xử lý nhất quán tại máy chủ.
 
-Hình~\ref{fig:prolearning-architecture-detail-components} mô tả mối quan hệ giữa các nhóm thành phần trên trong kiến trúc hệ thống.
-
-\begin{figure}[htbp]
+\begin{table}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth,height=0.72\textheight,keepaspectratio]{images/chapter3/ProLearning_Arch-Detail_Components.drawio.png}
-    \caption{Chi tiết các thành phần của hệ thống ProLearning Platform}
-    \label{fig:prolearning-architecture-detail-components}
-\end{figure}
+    \small
+    \caption{Thiết kế lớp giao diện người dùng}
+    \label{tab:client-application-design}
+    \renewcommand{\arraystretch}{1.15}
+    \begin{tabular}{|p{0.24\textwidth}|p{0.31\textwidth}|p{0.33\textwidth}|}
+        \hline
+        \textbf{Thành phần} & \textbf{Vai trò} & \textbf{Phạm vi xử lý} \\
+        \hline
+        Web Client & Giao diện chính cho quản lý học liệu và thao tác học tập có nhiều nội dung. & Quản lý set, note, flashcard, exam, roadmap, todo/goal, notification, cộng tác ghi chú và thanh toán. \\
+        \hline
+        Mobile Client & Giao diện học tập nhanh trên thiết bị cá nhân. & Ôn flashcard, xem học liệu, theo dõi nhiệm vụ, nhận nhắc học và push notification qua Firebase Cloud Messaging~\cite{firebasefcm}. \\
+        \hline
+        Realtime Channel & Kênh giao tiếp cho chức năng cần cập nhật tức thời. & Dùng WebSocket/STOMP cho cộng tác ghi chú, trạng thái người dùng đang hoạt động và một số sự kiện realtime~\cite{springwebsocketstomp}. \\
+        \hline
+    \end{tabular}
+\end{table}
 
-\input{Chapter3/components/core_components}
-\input{Chapter3/components/support_components}
-\input{Chapter3/components/infrastructure_components}
-\input{Chapter3/components/platform_technologies}
+Về nguyên tắc thiết kế, client chỉ giữ trạng thái phục vụ hiển thị như form, bộ lọc, dữ liệu đang xem hoặc phiên đăng nhập cục bộ. Khi người dùng thực hiện thao tác nghiệp vụ, client gửi request đến backend để kiểm tra quyền và cập nhật dữ liệu chính. Điều này giảm rủi ro sai lệch giữa web và mobile, đồng thời giúp hệ thống dễ mở rộng thêm loại client khác trong tương lai.
+
+\subsection{Lớp ứng dụng phía máy chủ}
+\label{subsec:backend-application-design}
+
+Backend là thành phần trung tâm của hệ thống, được xây dựng theo hướng API tập trung bằng Spring Boot. Thành phần này nhận request từ client, xác thực người dùng, kiểm tra quyền trên tài nguyên, điều phối các service nghiệp vụ và gọi tới lớp dữ liệu hoặc dịch vụ tích hợp khi cần~\cite{springbootdocs,springsecurityjwt}. Thay vì mô tả chi tiết từng controller/service, Bảng~\ref{tab:backend-application-design} nhóm backend theo các miền chức năng chính.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Thiết kế các nhóm chức năng backend}
+    \label{tab:backend-application-design}
+    \renewcommand{\arraystretch}{1.15}
+    \begin{tabular}{|p{0.24\textwidth}|p{0.31\textwidth}|p{0.33\textwidth}|}
+        \hline
+        \textbf{Nhóm chức năng} & \textbf{Trách nhiệm chính} & \textbf{Dữ liệu/luồng tiêu biểu} \\
+        \hline
+        Identity and Access & Quản lý tài khoản, xác thực và phân quyền. & Đăng ký, đăng nhập, JWT/refresh token, Google OAuth, xác minh email, đặt lại mật khẩu và kiểm tra quyền truy cập tài nguyên. \\
+        \hline
+        Learning Workspace & Quản lý học liệu và hoạt động học tập cốt lõi. & Set, folder, note, flashcard, exam, roadmap, file đính kèm, quyền chia sẻ và dữ liệu cộng tác. \\
+        \hline
+        AI Learning & Điều phối các chức năng học tập thông minh. & Sinh flashcard/exam/roadmap, giải thích ghi chú, tóm tắt nội dung và phân tích điểm mạnh--điểm yếu. \\
+        \hline
+        Planning and Progress & Theo dõi kế hoạch và tiến độ học. & Todo, goal, Pomodoro, lịch ôn flashcard, review log, attempt và knowledge analysis. \\
+        \hline
+        Notification and Subscription & Duy trì tương tác và quản lý gói dịch vụ. & Tạo notification, gửi email/push, tạo payment link, nhận webhook, lưu transaction và kích hoạt quyền lợi Pro~\cite{payoswebhook}. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Trong mỗi nhóm chức năng, backend vẫn tuân theo cấu trúc nhiều lớp quen thuộc: controller nhận request và chuẩn hóa response; service thực hiện nghiệp vụ; repository truy cập dữ liệu quan hệ qua Spring Data JPA; adapter/service tích hợp che giấu chi tiết của hệ thống ngoài~\cite{springdatajpa}. Cách tổ chức này giúp mã nguồn dễ bảo trì nhưng vẫn giữ ranh giới rõ ràng giữa xử lý giao diện, nghiệp vụ, lưu trữ và tích hợp.
+
+\subsection{Lớp dữ liệu và hạ tầng}
+\label{subsec:data-infrastructure-design}
+
+Lớp dữ liệu và hạ tầng cung cấp năng lực lưu trữ, cache, xử lý nền và vận hành cho toàn bộ ứng dụng. Thiết kế phân loại dữ liệu theo vòng đời sử dụng: dữ liệu nghiệp vụ bền vững được lưu ở PostgreSQL; dữ liệu tạm thời hoặc cần truy xuất nhanh được lưu ở Redis; tác vụ không cần phản hồi tức thời được đẩy qua RabbitMQ hoặc scheduler. Bảng~\ref{tab:data-infrastructure-design} tóm tắt vai trò của các thành phần chính.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Thiết kế lớp dữ liệu và hạ tầng}
+    \label{tab:data-infrastructure-design}
+    \renewcommand{\arraystretch}{1.15}
+    \begin{tabular}{|p{0.24\textwidth}|p{0.31\textwidth}|p{0.33\textwidth}|}
+        \hline
+        \textbf{Thành phần} & \textbf{Vai trò} & \textbf{Cách sử dụng trong hệ thống} \\
+        \hline
+        PostgreSQL & Nguồn dữ liệu chính và bền vững. & Lưu user, học liệu, quyền chia sẻ, attempt, review log, notification, transaction, subscription và calendar setting~\cite{postgresqlabout}. \\
+        \hline
+        Redis & Cache và trạng thái ngắn hạn. & Lưu OTP, OAuth state, token blacklist, cache dữ liệu đọc nhiều và trạng thái tạm trong các luồng xác nhận/callback~\cite{redisoverview}. \\
+        \hline
+        RabbitMQ and Scheduler & Xử lý tác vụ nền và bất đồng bộ. & Gửi email, thông báo nền, cleanup dữ liệu, nhắc học định kỳ và các tác vụ có thể retry khi dịch vụ phụ trợ lỗi~\cite{rabbitmqtutorials}. \\
+        \hline
+        File and Asset Storage & Lưu trữ tài nguyên do người dùng tải lên. & Backend kiểm soát upload, lưu metadata trong database và lưu nội dung file/asset trên Cloudinary~\cite{cloudinaryjava}. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Trong thiết kế này, PostgreSQL là nguồn dữ liệu đáng tin cậy cho các quyết định nghiệp vụ. Redis chỉ giữ dữ liệu có thời gian sống ngắn nên không thay thế database quan hệ. RabbitMQ và scheduler giúp tách các tác vụ nền khỏi request chính, từ đó giảm độ trễ khi người dùng thao tác và tăng khả năng phục hồi khi một dịch vụ phụ trợ phản hồi chậm hoặc tạm thời không khả dụng.
+
+\subsection{Tích hợp dịch vụ ngoài}
+\label{subsec:external-service-design}
+
+Các dịch vụ ngoài được sử dụng để bổ sung năng lực mà hệ thống không cần tự triển khai hoàn toàn, chẳng hạn lưu trữ asset, gửi push notification, đồng bộ lịch và xử lý thanh toán. Tuy nhiên, backend vẫn là điểm kiểm soát trung tâm: client không gọi trực tiếp các API nhạy cảm, còn trạng thái nghiệp vụ quan trọng luôn được lưu lại trong database để có thể truy vết và khôi phục.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Thiết kế tích hợp dịch vụ ngoài}
+    \label{tab:external-service-design}
+    \renewcommand{\arraystretch}{1.15}
+    \begin{tabular}{|p{0.24\textwidth}|p{0.31\textwidth}|p{0.33\textwidth}|}
+        \hline
+        \textbf{Dịch vụ} & \textbf{Năng lực cung cấp} & \textbf{Nguyên tắc tích hợp} \\
+        \hline
+        Cloudinary & Lưu trữ và phân phối file/asset. & Backend cấp quyền upload, kiểm tra metadata và liên kết file với học liệu tương ứng~\cite{cloudinaryjava}. \\
+        \hline
+        Firebase Cloud Messaging & Gửi push notification tới thiết bị. & Mobile đăng ký FCM token; backend lưu token và gửi push khi có nhắc học, todo đến hạn hoặc cập nhật quan trọng~\cite{firebasefcm}. \\
+        \hline
+        Google Calendar & Đồng bộ kế hoạch học với lịch cá nhân. & Backend dùng OAuth token để tạo/cập nhật sự kiện và lưu trạng thái đồng bộ với todo hoặc goal~\cite{googlecalendarjava}. \\
+        \hline
+        PayOS & Xử lý thanh toán và nâng cấp gói. & Backend tạo payment link, xác minh webhook, cập nhật transaction và kích hoạt Pro sau khi giao dịch hợp lệ~\cite{payoswebhook}. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Nhìn chung, thiết kế thành phần của ProLearning Platform ưu tiên phân tách trách nhiệm theo ranh giới ứng dụng thay vì dồn logic vào một lớp duy nhất. Frontend tập trung vào trải nghiệm và trạng thái hiển thị; backend kiểm soát nghiệp vụ và bảo mật; hạ tầng đảm bảo lưu trữ, cache và xử lý nền; dịch vụ ngoài được đặt sau adapter để giảm phụ thuộc trực tiếp. Cấu trúc này phù hợp với một hệ thống học tập có nhiều loại dữ liệu, nhiều kênh sử dụng và nhiều luồng tích hợp cần đảm bảo tính nhất quán.
+
 \endgroup

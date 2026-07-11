@@ -1,12 +1,6 @@
 \subsection{Tổng kết cài đặt hệ thống}
 \label{subsec:implementation-summary}
 
-Các phần cài đặt cho thấy hệ thống tuân theo một số nguyên tắc nhất quán:
+Qua các phần cài đặt, hệ thống được hiện thực theo một số nguyên tắc nhất quán: backend là điểm kiểm soát nghiệp vụ và bảo mật; web/mobile tập trung vào trải nghiệm và gọi API; PostgreSQL lưu dữ liệu bền vững; Redis và bộ nhớ ứng dụng lưu trạng thái ngắn hạn; RabbitMQ, scheduler và async executor xử lý tác vụ nền; các dịch vụ như AI Service, FCM, Google Calendar, Cloudinary và PayOS được đặt sau adapter/service riêng.
 
-\begin{itemize}
-    \item \textbf{Backend là điểm kiểm soát nghiệp vụ:} Client và dịch vụ ngoài không ghi trực tiếp vào dữ liệu lõi.
-    \item \textbf{Adapter hóa tích hợp:} AI Service, FCM, Google Calendar, Cloudinary và PayOS đều được bọc sau service riêng.
-    \item \textbf{Phân tách đồng bộ/bất đồng bộ:} Request chính xử lý phần bắt buộc; push notification, email, reminder và một số tác vụ AI được chuyển sang async/scheduler.
-    \item \textbf{Phân loại lưu trữ theo vòng đời dữ liệu:} PostgreSQL lưu dữ liệu bền vững; Redis và bộ nhớ ứng dụng lưu trạng thái ngắn hạn; RabbitMQ hỗ trợ message delivery bất đồng bộ~\cite{postgresqlabout,redisoverview,rabbitmqtutorials}.
-    \item \textbf{Tách file theo chủ đề:} Nội dung cài đặt được chia thành các file nhỏ để nhóm backend, frontend và database có thể cập nhật độc lập.
-\end{itemize}
+Cách triển khai này giúp cùng một nghiệp vụ có thể dùng lại cho nhiều loại client, hạn chế trùng lặp logic ở giao diện và giúp hệ thống dễ mở rộng khi bổ sung tính năng học tập mới hoặc thay đổi nhà cung cấp dịch vụ tích hợp.
