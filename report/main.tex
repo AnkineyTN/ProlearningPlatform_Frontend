@@ -33,7 +33,8 @@
 
 % Chèn hình, các hình trong luận văn được để trong thư mục Images/
 \usepackage{graphicx}
-\graphicspath{ {Images/} }
+\usepackage{grffile} % Hỗ trợ tên file có dấu cách và ký tự đặc biệt
+\graphicspath{ {images/} {images/use-case-diagram/} }
 
 % Chèn và định dạng mã nguồn
 \usepackage{listings}
