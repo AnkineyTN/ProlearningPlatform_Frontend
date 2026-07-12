@@ -354,9 +354,7 @@ Các hướng ứng dụng tiềm năng vẫn chưa được khai thác đồng 
     \item Đề xuất hoạt động học tập cá nhân hóa dựa trên lịch sử và kết quả học tập.
 \end{itemize}
 
-Do đó, việc khai thác trí tuệ nhân tạo trong toàn bộ quy trình học tập vẫn còn nhiều dư địa để nghiên cứu và phát triển.
-
-Thực tế, nhu cầu sử dụng đồng thời nhiều công cụ học tập đã được ghi nhận qua nhiều khảo sát thực tiễn. Theo khảo sát toàn cầu của Digital Education Council (2024) với 3.839 sinh viên từ 16 quốc gia, có đến \textbf{86\%} sinh viên sử dụng công cụ AI trong học tập và mỗi sinh viên trung bình sử dụng \textbf{2,1 công cụ AI khác nhau} \cite{dec2024aisurvey}. Trong số đó, ChatGPT là công cụ phổ biến nhất (66\%), chủ yếu được dùng để tìm kiếm thông tin (69\%), tóm tắt tài liệu (33\%) và tạo nháp nội dung (24\%). Ngoài ra, Quizlet hiện phục vụ hơn \textbf{60 triệu người học} trên toàn thế giới với hơn 900 triệu bộ thẻ học, trong đó cứ 3 học sinh trung học Mỹ thì có 2 người sử dụng nền tảng này \cite{quizletStats}. Những con số này cho thấy sinh viên đang thực sự phụ thuộc vào nhiều nền tảng riêng lẻ cho các nhu cầu học tập khác nhau, từ tra cứu thông tin, tóm tắt tài liệu đến ôn tập kiến thức -- thay vì được hỗ trợ trong một môi trường học tập tích hợp duy nhất.
+Do đó, việc ứng dụng LLM một cách toàn diện vào quy trình học tập vẫn là hướng phát triển còn nhiều tiềm năng.
 
 \section{Yêu cầu đặt ra đối với hệ thống đề xuất}
 
@@ -456,60 +454,15 @@ Xuất phát từ những vấn đề còn tồn tại đã được phân tích
 \end{figure}
 
 
-\subsection{Hỗ trợ quản lý và tổ chức tài nguyên học tập}
+Dựa trên kết quả phân tích, hệ thống đề xuất cần đáp ứng các nhóm yêu cầu sau:
 
-Hệ thống cần cung cấp môi trường tập trung để người dùng lưu trữ, tổ chức và truy cập các tài nguyên học tập trên cùng một nền tảng, bao gồm: ghi chú, tài liệu PDF, DOCX, bài trình chiếu, nội dung website, video học tập và các tài nguyên do hệ thống sinh ra.
+\textbf{Quản lý tài nguyên và tri thức:} Hệ thống cần cung cấp môi trường tập trung để người dùng lưu trữ, tổ chức và truy cập các tài nguyên học tập (ghi chú, PDF, DOCX, bài trình chiếu, nội dung website, video) trên cùng một nền tảng. Người dùng có thể tạo, chỉnh sửa và liên kết các ghi chú thành kho tri thức cá nhân có cấu trúc.
 
-\subsection{Hỗ trợ xây dựng và quản lý tri thức cá nhân}
+\textbf{Hỗ trợ học tập bằng LLM và học chủ động:} Hệ thống ứng dụng mô hình ngôn ngữ lớn (LLM) để tóm tắt tài liệu, giải thích khái niệm, sinh ghi chú, Flashcard và bài kiểm tra từ nội dung đầu vào. Người học được hỗ trợ ôn tập qua Flashcard, tự kiểm tra và luyện tập qua các bài đánh giá để chuyển từ tiếp nhận thụ động sang học tập có chủ đích.
 
-Hệ thống cần hỗ trợ người dùng xây dựng kho tri thức cá nhân có cấu trúc thông qua các chức năng:
-\begin{itemize}
-    \item Tạo và chỉnh sửa ghi chú.
-    \item Tổ chức kiến thức theo chủ đề.
-    \item Liên kết các nội dung học tập với nhau.
-    \item Quản lý quá trình phát triển kiến thức theo thời gian.
-\end{itemize}
+\textbf{Đánh giá, theo dõi và cá nhân hóa:} Hệ thống cần cung cấp cơ chế tạo và thực hiện bài kiểm tra trực tuyến, chấm điểm tự động và lưu trữ kết quả. Dữ liệu học tập (tiến độ Flashcard, kết quả kiểm tra, thời gian học) được ghi nhận để theo dõi sự tiến bộ và đề xuất nội dung ôn tập phù hợp với từng người dùng.
 
-\subsection{Hỗ trợ tạo nội dung học tập bằng mô hình ngôn ngữ lớn}
-
-Hệ thống cần ứng dụng mô hình ngôn ngữ lớn (LLM) để tự động hóa việc tạo nội dung học tập, bao gồm:
-\begin{itemize}
-    \item Tóm tắt và giải thích nội dung tài liệu.
-    \item Sinh ghi chú, Flashcard và bài kiểm tra từ tài liệu đầu vào.
-    \item Hỗ trợ xây dựng các tài nguyên học tập bổ sung theo yêu cầu.
-\end{itemize}
-
-\subsection{Hỗ trợ học tập chủ động}
-
-Hệ thống cần cung cấp công cụ giúp người học chuyển từ tiếp nhận thụ động sang luyện tập có chủ đích, bao gồm: ôn tập bằng Flashcard, tự kiểm tra kiến thức và luyện tập qua các bài đánh giá.
-
-\subsection{Hỗ trợ đánh giá kiến thức}
-
-Hệ thống cần cung cấp cơ chế đánh giá để người dùng xác định mức độ hiểu bài, bao gồm:
-\begin{itemize}
-    \item Tạo và thực hiện bài kiểm tra trực tuyến với chấm điểm tự động.
-    \item Lưu trữ kết quả và thống kê hiệu suất học tập.
-\end{itemize}
-
-\subsection{Hỗ trợ theo dõi tiến trình học tập}
-
-Hệ thống cần ghi nhận và phân tích dữ liệu hoạt động học tập của người dùng, bao gồm: quá trình học Flashcard, kết quả bài kiểm tra, thời gian học tập, tiến độ hoàn thành mục tiêu và lịch sử học tập.
-
-\subsection{Hỗ trợ cá nhân hóa trải nghiệm học tập}
-
-Hệ thống cần thích nghi với nhu cầu của từng người dùng thông qua phân tích kết quả và lịch sử học tập, từ đó xác định nội dung cần ôn tập và đề xuất các hoạt động học tập phù hợp.
-
-\subsection{Hỗ trợ quản lý mục tiêu và duy trì động lực học tập}
-
-Hệ thống cần hỗ trợ người dùng xây dựng và duy trì thói quen học tập dài hạn, bao gồm: quản lý mục tiêu và công việc học tập, quản lý thời gian (Pomodoro), nhắc nhở học tập và theo dõi mức độ hoàn thành kế hoạch.
-
-\subsection{Hỗ trợ cộng tác và chia sẻ tri thức}
-
-Hệ thống cần hỗ trợ học tập nhóm thông qua các chức năng chia sẻ nội dung, cộng tác trên ghi chú và làm việc cùng nhau trên một nguồn dữ liệu chung.
-
-\subsection{Hỗ trợ đa nền tảng}
-
-Hệ thống cần đảm bảo người dùng có thể truy cập và đồng bộ dữ liệu nhất quán trên cả nền tảng Web và thiết bị di động.
+\textbf{Quản lý mục tiêu, cộng tác và đa nền tảng:} Hệ thống hỗ trợ người dùng duy trì thói quen học tập qua quản lý mục tiêu, công việc, thời gian (Pomodoro) và nhắc nhở. Các chức năng chia sẻ nội dung và cộng tác nhóm giúp mở rộng khả năng học tập cộng đồng. Toàn bộ hệ thống hoạt động đồng bộ trên cả nền tảng Web và thiết bị di động.
 
 \section{Kết luận chương}
 
