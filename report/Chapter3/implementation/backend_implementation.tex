@@ -1,7 +1,7 @@
 \subsection{Cài đặt backend}
 \label{subsec:backend-implementation}
 
-Backend của ProLearning Platform được triển khai bằng Spring Boot và đóng vai trò điểm điều phối chính của hệ thống. Thành phần này nhận request từ web/mobile, xác thực người dùng, kiểm tra quyền truy cập tài nguyên, thực hiện nghiệp vụ, lưu dữ liệu vào PostgreSQL và gọi các dịch vụ hạ tầng hoặc dịch vụ ngoài khi cần~\cite{springbootdocs,springsecurityjwt,springdatajpa}.
+Backend của ProLearning Platform được triển khai bằng Spring Boot và đóng vai trò điểm điều phối chính của hệ thống. Trong phạm vi hiện tại, hệ thống sử dụng một backend server chính để nhận request từ web/mobile, xác thực người dùng, kiểm tra quyền truy cập tài nguyên, thực hiện nghiệp vụ, lưu dữ liệu vào PostgreSQL và gọi các dịch vụ hạ tầng hoặc dịch vụ ngoài khi cần~\cite{springbootdocs,springsecurityjwt,springdatajpa}. Nếu số lượng người dùng tăng, backend có thể được mở rộng theo chiều ngang bằng cách chạy thêm các instance cùng loại; khi đó các trạng thái dùng chung như dữ liệu nghiệp vụ, cache, hàng đợi và token ngắn hạn vẫn được quản lý thông qua PostgreSQL, Redis và RabbitMQ thay vì phụ thuộc vào bộ nhớ cục bộ của từng instance.
 
 \begin{figure}[htbp]
     \centering
@@ -11,6 +11,35 @@ Backend của ProLearning Platform được triển khai bằng Spring Boot và 
 \end{figure}
 
 Về cấu trúc, backend được chia thành các lớp quen thuộc: controller nhận request và trả response; service cài đặt workflow nghiệp vụ; repository truy cập dữ liệu; DTO/mapper tách dữ liệu API khỏi entity; configuration/infrastructure cấu hình security, scheduler, Redis, RabbitMQ, WebSocket và các service tích hợp. Cách chia này giúp mỗi thay đổi thường chỉ ảnh hưởng tới một lớp hoặc một bounded context cụ thể.
+
+Bảng~\ref{tab:backend-layer-summary} tóm tắt các thành phần backend chính theo trách nhiệm và vấn đề mà mỗi thành phần giải quyết.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Tóm tắt tổ chức các lớp và thành phần backend}
+    \label{tab:backend-layer-summary}
+    \renewcommand{\arraystretch}{1.15}
+    \begin{tabular}{|L{0.22\textwidth}|L{0.34\textwidth}|L{0.32\textwidth}|}
+        \hline
+        \textbf{Lớp/thành phần} & \textbf{Trách nhiệm chính} & \textbf{Vấn đề giải quyết} \\
+        \hline
+        Security filter & Xác thực JWT, khôi phục thông tin người dùng và chặn request không hợp lệ trước khi vào controller. & Tập trung kiểm soát truy cập, tránh lặp logic xác thực trong từng API. \\
+        \hline
+        Controller và DTO & Nhận request, kiểm tra dữ liệu đầu vào cơ bản, ánh xạ request/response theo hợp đồng API. & Tách định dạng API khỏi entity nội bộ và chuẩn hóa phản hồi cho client. \\
+        \hline
+        Service nghiệp vụ & Cài đặt workflow chính, kiểm tra quyền trên tài nguyên, điều phối repository và adapter. & Giữ luật nghiệp vụ ở một nơi, bảo đảm transaction và tính nhất quán dữ liệu. \\
+        \hline
+        Repository & Truy vấn và cập nhật dữ liệu quan hệ thông qua Spring Data JPA. & Cô lập chi tiết truy cập PostgreSQL khỏi logic nghiệp vụ. \\
+        \hline
+        Mapper & Chuyển đổi giữa entity, DTO và các mô hình dữ liệu trung gian. & Giảm phụ thuộc giữa tầng API, tầng nghiệp vụ và tầng lưu trữ. \\
+        \hline
+        Adapter tích hợp & Bao gói lời gọi AI Service, FCM, Google Calendar, Cloudinary và PayOS. & Cô lập API bên ngoài, giúp dễ thay thế, retry và xử lý lỗi tích hợp. \\
+        \hline
+        Scheduler/Async & Thực thi các tác vụ nền như gửi thông báo, email, reminder, cleanup và đồng bộ phụ trợ. & Giảm thời gian phản hồi request chính và hỗ trợ xử lý lại khi dịch vụ phụ trợ chậm hoặc lỗi. \\
+        \hline
+    \end{tabular}
+\end{table}
 
 Luồng request đồng bộ thường bắt đầu từ JWT/security filter, đi qua controller, sau đó vào service để kiểm tra quyền và thực hiện transaction. Những thao tác không cần hoàn tất ngay trong request chính như gửi email, gửi push notification, cleanup dữ liệu, reminder định kỳ hoặc một số bước tích hợp được chuyển sang scheduler/async để giảm thời gian phản hồi. Với luồng realtime như cộng tác ghi chú, backend dùng WebSocket/STOMP để publish sự kiện theo topic thay vì yêu cầu client polling liên tục~\cite{springwebsocketstomp}.
 

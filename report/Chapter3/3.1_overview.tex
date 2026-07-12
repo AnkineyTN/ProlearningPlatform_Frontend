@@ -4,14 +4,14 @@
 \subsection{Mô hình kiến trúc hệ thống}
 \label{subsec:system-architecture-model}
 
-ProLearning Platform được đề xuất theo mô hình Kiến trúc phân tầng tách biệt với dịch vụ AI chuyên biệt. Thành phần trung tâm là Spring Boot API, chịu trách nhiệm xác thực người dùng, kiểm soát quyền truy cập, điều phối nghiệp vụ và kết nối với các dịch vụ hạ tầng. Cách tổ chức này phù hợp với hệ thống học tập có nhiều miền dữ liệu cần được quản lý nhất quán như người dùng, học liệu, tiến độ học tập, thông báo và thanh toán~\cite{springbootdocs,springsecurityjwt,springdatajpa}.
+ProLearning Platform được đề xuất theo mô hình Kiến trúc phân tầng tách biệt với dịch vụ AI chuyên biệt. Thành phần trung tâm là một Spring Boot API server, chịu trách nhiệm xác thực người dùng, kiểm soát quyền truy cập, điều phối nghiệp vụ và kết nối với các dịch vụ hạ tầng. Ở phạm vi hiện tại, hệ thống được triển khai với một server backend chính; khi số lượng người dùng tăng, kiến trúc này có thể mở rộng bằng cách bổ sung thêm các instance backend phía sau load balancer, trong khi trạng thái dùng chung vẫn được đặt tại PostgreSQL, Redis, RabbitMQ hoặc các dịch vụ hạ tầng tương ứng. Cách tổ chức này phù hợp với hệ thống học tập có nhiều miền dữ liệu cần được quản lý nhất quán như người dùng, học liệu, tiến độ học tập, thông báo và thanh toán~\cite{springbootdocs,springsecurityjwt,springdatajpa}.
 
 Kiến trúc tổng quan của hệ thống gồm các nhóm thành phần chính sau:
 
 \begin{itemize}
     \item \textbf{Client layer:} Bao gồm Web Client và Mobile Client, cùng sử dụng REST API và chỉ dùng WebSocket/STOMP cho các chức năng cần tương tác thời gian thực~\cite{springwebsocketstomp}.
 
-    \item \textbf{Application layer:} Spring Boot API là lớp xử lý nghiệp vụ chính, bao gồm controller, service, repository, mapper, scheduler, security filter và các adapter tích hợp. Mọi thao tác ghi dữ liệu lõi đều đi qua lớp này để đảm bảo kiểm tra quyền và xử lý lỗi thống nhất.
+    \item \textbf{Application layer:} Spring Boot API là lớp xử lý nghiệp vụ chính, hiện được triển khai dưới dạng một backend server. Thành phần này bao gồm controller, service, repository, mapper, scheduler, security filter và các adapter tích hợp. Mọi thao tác ghi dữ liệu lõi đều đi qua lớp này để đảm bảo kiểm tra quyền và xử lý lỗi thống nhất.
 
     \item \textbf{Domain contexts:} Backend được chia thành các bounded context như định danh, learning workspace, collaboration, AI learning, review/progress, notification, payment/subscription và admin/moderation nhằm làm rõ trách nhiệm từng nhóm chức năng.
 

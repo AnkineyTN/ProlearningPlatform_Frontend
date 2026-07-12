@@ -3,7 +3,7 @@
 \begingroup
 \sloppy
 
-Phần này trình bày cách ProLearning Platform được cài đặt từ thiết kế ở các mục trước. Nội dung vẫn được chia theo các nhóm triển khai chính gồm backend, frontend, mobile, core component, cơ sở dữ liệu, vấn đề phát sinh và tổng kết. Mục tiêu của phần này không phải mô tả chi tiết toàn bộ mã nguồn, mà tóm tắt cách các thành phần được hiện thực để người đọc hình dung được luồng xử lý và trách nhiệm của từng lớp trong hệ thống.
+Phần này trình bày cách ProLearning Platform được cài đặt từ thiết kế ở các mục trước. Nội dung được sắp xếp theo luồng từ phía người dùng vào hệ thống: client web/mobile, backend API, các core component, cơ sở dữ liệu, vấn đề phát sinh và tổng kết. Mục tiêu của phần này không phải mô tả chi tiết toàn bộ mã nguồn, mà tóm tắt cách các thành phần được hiện thực để người đọc hình dung được luồng xử lý và trách nhiệm của từng lớp trong hệ thống.
 
 Về tổng thể, client web/mobile gửi yêu cầu tới backend API; backend xác thực người dùng, kiểm tra quyền, gọi service nghiệp vụ, cập nhật dữ liệu chính trong PostgreSQL và kích hoạt các tác vụ phụ như gửi thông báo, đồng bộ lịch, gọi AI Service hoặc xử lý thanh toán khi cần. Các tích hợp ngoài được đặt sau adapter/service riêng để giảm phụ thuộc trực tiếp và giữ backend làm điểm kiểm soát nghiệp vụ trung tâm.
 
@@ -19,9 +19,9 @@ $\rightarrow$ Service nghiệp vụ $\rightarrow$ PostgreSQL/Redis $\rightarrow$
 
 Các mục dưới đây lần lượt mô tả phần cài đặt của từng nhóm thành phần ở mức đủ để thấy cách hệ thống vận hành.
 
-\input{Chapter3/implementation/backend_implementation}
 \input{Chapter3/implementation/frontend_implementation}
 % \input{Chapter3/implementation/mobile_implementation}
+\input{Chapter3/implementation/backend_implementation}
 \input{Chapter3/implementation/core_component_implementation}
 \input{Chapter3/implementation/database_implementation}
 \input{Chapter3/implementation/issues_and_solutions}
