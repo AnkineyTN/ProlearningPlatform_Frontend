@@ -238,66 +238,47 @@ Dưới đây là các tính năng chính của hệ thống:
 
 
 \subsection{Đánh giá chức năng hệ thống}
+\label{subsec:user-survey}
 
-Bên cạnh việc kiểm thử theo từng luồng chức năng trong quá trình phát triển, nhóm tổng hợp các chức năng chính của hệ thống để đánh giá mức độ hoàn thiện sau khi triển khai. Bảng~\ref{tab:function-evaluation-1} và Bảng~\ref{tab:function-evaluation-2} là mẫu đánh giá chức năng của hệ thống ProLearning Platform.
+Để tránh việc tự đánh giá thiếu cơ sở, mức độ hoàn thiện của hệ thống được xác định dựa trên hai nguồn dữ liệu độc lập: (1) kết quả kiểm thử chức năng nội bộ theo từng nhóm chức năng, do nhóm phát triển thực hiện (kế hoạch và phạm vi chi tiết tại Mục~\ref{sec:testing}); và (2) khảo sát trải nghiệm thực tế từ 22 người dùng thử nghiệm bên ngoài nhóm, thu thập qua Google Form và đánh giá trên thang điểm 1--5. Bảng~\ref{tab:function-evaluation-1} tổng hợp kết quả theo từng nhóm chức năng chính, đối chiếu cả hai nguồn.
 
 \begin{table}[H]
 \centering
-\caption{Bảng đánh giá chức năng hệ thống}
+\caption{Đánh giá chức năng hệ thống theo nhóm, đối chiếu kiểm thử nội bộ và khảo sát người dùng}
 \label{tab:function-evaluation-1}
 \small
-\begin{tabular}{|L{0.20\textwidth}|L{0.62\textwidth}|C{0.11\textwidth}|}
+\begin{tabular}{|L{0.17\textwidth}|L{0.32\textwidth}|L{0.18\textwidth}|L{0.25\textwidth}|}
 \hline
-\textbf{Tính năng} & \textbf{Mô tả} & \textbf{Mức đánh giá} \\
+\textbf{Nhóm chức năng} & \textbf{Mô tả} & \textbf{Kiểm thử nội bộ} & \textbf{Khảo sát người dùng (n $\leq$ 22)} \\
 \hline
-Xác thực người dùng & Hệ thống hỗ trợ đăng ký, đăng nhập, xác thực bằng JWT và duy trì phiên làm việc để người dùng truy cập các chức năng học tập cá nhân. & \textit{Tốt} \\
+Xác thực và phân quyền & Đăng ký, đăng nhập, JWT, kiểm soát quyền truy cập theo vai trò và quyền sở hữu tài nguyên. & 138/138 TC đạt & Chưa khảo sát riêng \\
 \hline
-Kiểm soát truy cập và phân quyền & Hệ thống giới hạn quyền truy cập dữ liệu theo người dùng, vai trò và quyền sở hữu tài nguyên như note, flashcard set, todo hoặc subscription. & \textit{Tốt} \\
+Workspace học tập (Note, Set, Flashcard, Exam) & Tổ chức học liệu, ghi chú kết hợp tài liệu và AI, tạo/ôn Flashcard, tạo bài kiểm tra. & 180/180 TC đạt & Sets: 4.38/5 (n=21); Review Bundles: 4.35/5 (n=17) \\
 \hline
-Quản lý học liệu và workspace & Người dùng có thể tổ chức học liệu theo không gian học tập, quản lý note, file, flashcard, exam và các tài nguyên liên quan. & \textit{Tốt} \\
+AI learning (tóm tắt, sinh nội dung, phân tích, roadmap) & Sinh Flashcard/Exam bằng AI, phân tích năng lực, đề xuất lộ trình học tập cá nhân hóa. & 150/150 TC đạt & AI Study Path: 4.05/5 (n=20); mức phù hợp lộ trình: 3.95/5 (n=19) \\
 \hline
-Ghi chú thông minh kết hợp tài liệu & Hệ thống cho phép ghi chú kết hợp tài liệu, hỗ trợ tải file và sử dụng AI để giải thích, tóm tắt hoặc trích xuất nội dung học tập. & \textit{Tốt} \\
+Cộng tác thời gian thực trên ghi chú & Đồng bộ nội dung, cursor và presence nhiều người dùng qua WebSocket/STOMP và Yjs. & 30/30 TC đạt & Chưa khảo sát riêng \\
 \hline
-Cộng tác thời gian thực trên ghi chú & Nhiều người dùng có thể cùng chỉnh sửa ghi chú, đồng bộ nội dung, cursor và presence thông qua WebSocket/STOMP và Yjs. & \textit{Tốt} \\
+Công cụ hỗ trợ học tập (Todo/Goal, Calendar, Pomodoro) & Quản lý công việc, mục tiêu, đồng bộ Google Calendar, bộ đếm tập trung. & 90/90 TC đạt & To-do/Goals: 4.60/5 (n=20); Pomodoro: 4.57/5 (n=21) \\
 \hline
-Tạo flashcard thủ công hoặc bằng AI & Người dùng có thể tạo flashcard thủ công hoặc yêu cầu AI sinh flashcard từ tài liệu, note, URL hoặc nội dung học tập có sẵn. & \textit{Tốt} \\
+Thông báo và lịch trình nền & Thông báo trong ứng dụng, push notification, tác vụ nền theo lịch. & 50/50 TC đạt & Chưa khảo sát riêng \\
 \hline
-Ôn tập flashcard theo lịch cá nhân & Hệ thống hỗ trợ chọn card đến hạn, cập nhật trạng thái ghi nhớ và lên lịch ôn tập tiếp theo dựa trên thuật toán spaced repetition. & \textit{Tốt} \\
+Thanh toán và nâng cấp PRO & Tạo link thanh toán PayOS, xác minh webhook, kích hoạt tài khoản PRO. & Kiểm thử tích hợp thủ công (Mục~\ref{subsec:integration-testing}) & Sẵn sàng nâng cấp PRO: 3.68/5 (n=22) \\
 \hline
-Tạo bài kiểm tra thủ công hoặc bằng AI & Hệ thống cho phép tạo exam thủ công hoặc dùng AI để sinh câu hỏi trắc nghiệm, đúng/sai, điền đáp án và giải thích câu trả lời. & \textit{Tốt} \\
+Quản trị, kiểm duyệt nội dung \& đồng bộ web/mobile & Quản trị, xử lý báo cáo nội dung; đồng bộ dữ liệu học tập, tài khoản và thông báo giữa web và mobile. & Kiểm thử thủ công trong quá trình phát triển, chưa đưa vào bộ đếm TC tổng hợp & Chưa khảo sát riêng \\
 \hline
 \end{tabular}
 \end{table}
 
-\begin{table}[H]
-\centering
-\caption{Bảng đánh giá chức năng hệ thống (tiếp)}
-\label{tab:function-evaluation-2}
-\small
-\begin{tabular}{|L{0.20\textwidth}|L{0.62\textwidth}|C{0.11\textwidth}|}
-\hline
-\textbf{Tính năng} & \textbf{Mô tả} & \textbf{Mức đánh giá} \\
-\hline
-Phân tích năng lực người học & Hệ thống tổng hợp kết quả học flashcard và exam để phân tích điểm mạnh, điểm yếu, mức độ nắm kiến thức và đề xuất hướng cải thiện. & \textit{Tốt} \\
-\hline
-Xây dựng lộ trình học tập & Dựa trên mục tiêu và dữ liệu học tập của người dùng, hệ thống sử dụng AI để đề xuất roadmap học tập phù hợp. & \textit{Tốt} \\
-\hline
-Quản lý todo và đồng bộ lịch & Người dùng có thể tạo todo, gán deadline, đặt độ ưu tiên và đồng bộ công việc với Google Calendar khi đã kết nối tài khoản. & \textit{Tốt} \\
-\hline
-Pomodoro và quản lý thời gian học & Hệ thống cung cấp bộ đếm Pomodoro để hỗ trợ người dùng tập trung, theo dõi phiên học và hình thành thói quen học tập. & \textit{Tốt} \\
-\hline
-Thông báo và nhắc nhở học tập & Hệ thống gửi notification trong ứng dụng và push notification cho các sự kiện như card đến hạn, todo, goal hoặc tổng kết học tập. & \textit{Tốt} \\
-\hline
-Thanh toán và nâng cấp tài khoản PRO & Hệ thống hỗ trợ tạo link thanh toán PayOS, xác minh webhook và kích hoạt tài khoản PRO sau khi giao dịch thành công. & \textit{Tốt} \\
-\hline
-Quản trị và kiểm duyệt nội dung & Admin có thể theo dõi, xử lý báo cáo, kiểm duyệt nội dung hoặc thực hiện các tác vụ quản trị cần thiết để vận hành hệ thống. & \textit{Tốt} \\
-\hline
-Đồng bộ dữ liệu giữa web và mobile & Dữ liệu học tập, tài khoản, thông báo và tiến độ của người dùng được đồng bộ thông qua backend để đảm bảo trải nghiệm nhất quán trên web và mobile. & \textit{Tốt} \\
-\hline
-\end{tabular}
-\end{table}
+Ngoài đánh giá theo từng nhóm chức năng, khảo sát còn ghi nhận cảm nhận tổng thể về hệ thống: mức độ dễ sử dụng đạt 4.14/5, giao diện (UI/UX) rõ ràng đạt 4.00/5, tốc độ phản hồi đạt 4.23/5, và mức sẵn sàng giới thiệu app cho người khác đạt 4.27/5 (n=22 cho cả bốn tiêu chí).
+
+Về lỗi phát sinh, 11/22 người dùng (50\%) ghi nhận gặp lỗi nhỏ không ảnh hưởng nhiều đến trải nghiệm, 11/22 (50\%) không gặp lỗi nào. Về mức độ sử dụng, Sets và To-do/Goals là hai nhóm chức năng được dùng nhiều nhất (17/22 người, 77\%), kế đến là AI Study Path và Pomodoro Timer (14/22, 64\%); Review Bundles có tỷ lệ sử dụng thấp nhất (8/22, 36\%), phù hợp với việc đây là tính năng phụ thuộc vào Flashcard/Exam đã có sẵn.
+
+Các điểm được người dùng đánh giá cao gồm khả năng tổng hợp nhiều công cụ học tập (ghi chú, flashcard, lộ trình AI) vào cùng một nền tảng thay vì phải chuyển đổi giữa nhiều ứng dụng, tính năng Flashcard hỗ trợ ghi nhớ hiệu quả, và Roadmap giúp định hướng lộ trình học rõ ràng, tránh lan man. Ở chiều ngược lại, khảo sát cũng chỉ ra một số hạn chế cụ thể: điểm phù hợp của lộ trình AI gợi ý (3.95/5) và mức sẵn sàng nâng cấp PRO (3.68/5) là hai tiêu chí thấp nhất, một số người dùng nhận xét Review Bundles khó hình dung cách dùng nếu chưa từng ôn Flashcard, giao diện tiếng Việt ở một vài mục còn lẫn tiếng Anh, cỡ chữ hơi nhỏ, và tính năng cộng đồng/mạng xã hội học tập vẫn còn phát sinh lỗi khi thao tác. Người dùng cũng đề xuất bổ sung chatbot hỏi đáp trực tiếp trong ứng dụng và không gian học nhóm thời gian thực qua liên kết chia sẻ — hai đề xuất này đã được nhóm ghi nhận vào định hướng phát triển tại Mục~\ref{sec:future-work}.
+
 % ============================================================
 \section{Kiểm thử}
+\label{sec:testing}
 % ============================================================
 
 Phần này trình bày kế hoạch và kết quả kiểm thử của hệ thống ProLearning Platform.
@@ -359,6 +340,7 @@ Nhóm áp dụng kết hợp nhiều hình thức kiểm thử nhằm bao phủ 
 \end{itemize}
 
 \subsection{Kiểm thử tích hợp với dịch vụ ngoài}
+\label{subsec:integration-testing}
 
 Các chức năng phụ thuộc dịch vụ ngoài cần được kiểm thử riêng vì có thể phát sinh lỗi do timeout, sai cấu hình, token hết hạn hoặc dữ liệu trả về không hợp lệ. Các trường hợp kiểm thử chính như sau:
 
