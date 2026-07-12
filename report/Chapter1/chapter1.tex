@@ -14,16 +14,15 @@ Sự phát triển của các mô hình ngôn ngữ lớn (Large Language Models
 
 Từ những vấn đề trên, nhóm nhận thấy nhu cầu về việc hỗ trợ người học quản lý toàn bộ quá trình học tập trên cùng một nền tảng tích hợp. Xuất phát từ nhu cầu thực tế đó, nhóm thực hiện đề tài \textbf{``Hệ thống thông minh hỗ trợ học tập''} với mục tiêu xây dựng một nền tảng cho phép người dùng quản lý tài nguyên học tập, ghi chú kiến thức, tạo nội dung học tập bằng trí tuệ nhân tạo, ôn tập, đánh giá và theo dõi tiến trình trên nhiều nền tảng khác nhau. Hệ thống hướng tới việc giảm thao tác thủ công, nâng cao hiệu quả tự học và hỗ trợ người dùng xây dựng thói quen học tập bền vững.
 
-
 \section{Mục tiêu đề tài}
 
-Trên cơ sở các vấn đề đã phân tích, đề tài hướng tới xây dựng một hệ thống học tập thông minh có khả năng kết nối các hoạt động học tập rời rạc thành một quy trình thống nhất. Phần này trình bày mục tiêu tổng quát, mục tiêu chức năng, mục tiêu kỹ thuật, nhóm người dùng hướng đến và các lợi ích kỳ vọng của hệ thống.
+Trên cơ sở các vấn đề đã phân tích, đề tài tập trung xây dựng một hệ thống học tập thông minh có khả năng kết nối các hoạt động học tập rời rạc thành một quy trình thống nhất. Phần này trình bày mục tiêu tổng quát, mục tiêu chức năng, mục tiêu kỹ thuật, nhóm người dùng hướng đến và các lợi ích kỳ vọng của hệ thống.
 
 \subsection{Mục tiêu tổng quát}
 
-Đề tài hướng tới xây dựng một hệ thống hỗ trợ học tập thông minh, cho phép người dùng quản lý tài liệu, ghi chú, Flashcard, bài kiểm tra, mục tiêu học tập và tiến trình học tập trên một nền tảng thống nhất. Hệ thống ứng dụng trí tuệ nhân tạo để hỗ trợ tạo nội dung học tập, tóm tắt và khai thác tài liệu, tự động hóa một số tác vụ chuẩn bị nội dung ôn tập và nâng cao hiệu quả tự học.
+Mục tiêu của đề tài là xây dựng một hệ thống hỗ trợ học tập thông minh, cho phép người dùng quản lý tài liệu, ghi chú, Flashcard, bài kiểm tra, mục tiêu học tập và tiến trình học tập trên một nền tảng thống nhất. Hệ thống ứng dụng trí tuệ nhân tạo để hỗ trợ tạo nội dung học tập, tóm tắt và khai thác tài liệu, tự động hóa một số tác vụ chuẩn bị nội dung ôn tập và nâng cao hiệu quả tự học.
 
-Thông qua việc liên kết các hoạt động học tập vốn thường được thực hiện rời rạc, hệ thống giúp người dùng giảm thời gian quản lý công cụ, tăng khả năng tổ chức tri thức cá nhân, chủ động luyện tập và theo dõi mức độ tiến bộ của bản thân. Bên cạnh việc đáp ứng nhu cầu học tập hiện tại, đề tài cũng hướng tới xây dựng nền tảng có khả năng mở rộng, tạo cơ sở cho việc tích hợp thêm các giải pháp trí tuệ nhân tạo và cá nhân hóa học tập trong tương lai.
+Thông qua việc liên kết các hoạt động học tập vốn thường được thực hiện rời rạc, hệ thống giúp người dùng giảm thời gian quản lý công cụ, tăng khả năng tổ chức tri thức cá nhân, chủ động luyện tập và theo dõi mức độ tiến bộ của bản thân. Bên cạnh việc đáp ứng nhu cầu học tập hiện tại, đề tài cũng đặt mục tiêu xây dựng nền tảng có khả năng mở rộng, tạo cơ sở cho việc tích hợp thêm các giải pháp trí tuệ nhân tạo và cá nhân hóa học tập trong tương lai.
 
 \subsection{Mục tiêu chức năng}
 
@@ -39,7 +38,7 @@ Về mặt chức năng, hệ thống cần hỗ trợ người học trong các
 
 \subsection{Mục tiêu kỹ thuật}
 
-Về mặt kỹ thuật, đề tài hướng tới xây dựng một hệ thống có kiến trúc rõ ràng, dễ mở rộng, dễ bảo trì và phù hợp với yêu cầu thực tế của một ứng dụng học tập hiện đại. Hệ thống được thiết kế theo mô hình Client--Server kết hợp định hướng dịch vụ, trong đó giao diện người dùng, nghiệp vụ, dữ liệu và trí tuệ nhân tạo được phân tách theo trách nhiệm riêng.
+Về mặt kỹ thuật, hệ thống được thiết kế với kiến trúc rõ ràng, dễ mở rộng, dễ bảo trì và phù hợp với yêu cầu thực tế của một ứng dụng học tập hiện đại. Hệ thống được thiết kế theo mô hình Client--Server kết hợp định hướng dịch vụ, trong đó giao diện người dùng, nghiệp vụ, dữ liệu và trí tuệ nhân tạo được phân tách theo trách nhiệm riêng.
 
 Các nghiệp vụ cốt lõi được xử lý tập trung tại Backend Service nhằm bảo đảm tính nhất quán dữ liệu, trong khi Web và Mobile đóng vai trò lớp giao diện phục vụ tương tác với người dùng. Các chức năng trí tuệ nhân tạo được triển khai dưới dạng AI Service độc lập, giúp hệ thống dễ tích hợp, thay đổi hoặc mở rộng mô hình AI trong tương lai. Bên cạnh đó, hệ thống cũng hướng tới khả năng tích hợp với cơ sở dữ liệu, cache, hàng đợi tác vụ và dịch vụ thông báo để đáp ứng yêu cầu về hiệu năng, tính sẵn sàng và khả năng vận hành thực tế.
 
@@ -49,13 +48,13 @@ Các nghiệp vụ cốt lõi được xử lý tập trung tại Backend Servic
 
 \subsection{Đóng góp của đề tài}
 
-Việc xây dựng hệ thống thông minh hỗ trợ học tập mang lại các lợi ích chính sau:
+Đề tài có các đóng góp chính sau:
 \begin{itemize}
-    \item Giảm sự phân tán tài nguyên bằng cách tập trung hoạt động quản lý kiến thức, ghi chú, ôn tập và đánh giá trên cùng một nền tảng.
-    \item Giảm khối lượng công việc thủ công nhờ ứng dụng trí tuệ nhân tạo trong quá trình chuẩn bị và tổ chức nội dung học tập.
-    \item Hỗ trợ người học chuyển từ phương pháp học thụ động sang học tập chủ động thông qua ôn tập, kiểm tra và đánh giá thường xuyên.
-    \item Giúp người dùng theo dõi tiến trình, nhận biết sự tiến bộ và duy trì động lực học tập trong dài hạn.
-    \item Tạo nền tảng cho việc nghiên cứu và phát triển các hệ thống học tập cá nhân hóa trong tương lai.
+    \item Đề xuất và xây dựng một nền tảng học tập tích hợp, giúp giảm sự phân tán tài nguyên bằng cách tập trung các hoạt động quản lý kiến thức, ghi chú, ôn tập và đánh giá trên cùng một môi trường duy nhất.
+    \item Ứng dụng mô hình ngôn ngữ lớn (LLM) vào quy trình học tập, tự động hóa các tác vụ chuẩn bị và tổ chức nội dung, giảm đáng kể khối lượng công việc thủ công cho người học.
+    \item Cung cấp cơ chế hỗ trợ học tập chủ động thông qua Flashcard, bài kiểm tra và đánh giá định kỳ, giúp người học chuyển dần từ tiếp thu thụ động sang luyện tập có chủ đích.
+    \item Xây dựng hệ thống theo dõi tiến trình học tập, giúp người dùng nhận biết sự tiến bộ và duy trì động lực trong dài hạn.
+    \item Tạo nền tảng kỹ thuật có khả năng mở rộng, phục vụ cho các hướng nghiên cứu và phát triển tiếp theo về hệ thống học tập cá nhân hóa.
 \end{itemize}
 
 

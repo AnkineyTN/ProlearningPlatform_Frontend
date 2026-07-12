@@ -214,10 +214,10 @@ Từ phần phân tích trên, có thể tổng hợp đặc điểm của các 
 \begin{table}[ht]
 \centering
 \small
-\setlength{\tabcolsep}{3pt}
+\setlength{\tabcolsep}{5pt}
 \caption{So sánh tổng hợp các hệ thống liên quan}
 \label{tab:related-systems-comparison}
-\begin{tabular}{|L{2.4cm}|L{3.2cm}|L{3.7cm}|L{3.9cm}|}
+\begin{tabular}{|L{2.8cm}|L{3.8cm}|L{4.3cm}|L{4.5cm}|}
 \hline
 \textbf{Hệ thống} & \textbf{Trọng tâm hỗ trợ} & \textbf{Ưu điểm chính} & \textbf{Hạn chế so với hệ thống đề xuất} \\
 \hline
@@ -345,175 +345,171 @@ Tuy nhiên, trong nhiều hệ thống hiện nay, trí tuệ nhân tạo chủ 
 
 Mặc dù các chức năng trên mang lại nhiều lợi ích, AI vẫn chưa được khai thác đầy đủ trong việc hỗ trợ toàn bộ quá trình học tập.
 
-Các hướng ứng dụng tiềm năng như:
+Các hướng ứng dụng tiềm năng vẫn chưa được khai thác đồng bộ trên một nền tảng duy nhất bao gồm:
 \begin{itemize}
-    \item Sinh nội dung học tập từ nhiều nguồn dữ liệu.
-    \item Hỗ trợ xây dựng tài nguyên ôn tập.
-    \item Hỗ trợ đánh giá kiến thức.
-    \item Hỗ trợ theo dõi tiến trình học tập.
-    \item Hỗ trợ đề xuất hoạt động học tập phù hợp.
+    \item Tích hợp sinh Flashcard và bài kiểm tra trực tiếp từ tài liệu người dùng vào trong cùng một quy trình học tập.
+    \item Hỗ trợ xây dựng tài nguyên ôn tập liên kết với ghi chú và mục tiêu học tập cá nhân.
+    \item Hỗ trợ đánh giá kiến thức và phân tích kết quả học tập.
+    \item Hỗ trợ theo dõi tiến trình học tập dựa trên dữ liệu thực tế của người dùng.
+    \item Đề xuất hoạt động học tập cá nhân hóa dựa trên lịch sử và kết quả học tập.
 \end{itemize}
 
 Do đó, việc khai thác trí tuệ nhân tạo trong toàn bộ quy trình học tập vẫn còn nhiều dư địa để nghiên cứu và phát triển.
 
-Từ những phân tích trên có thể thấy rằng mặc dù đã tồn tại nhiều công cụ học tập hiệu quả, vẫn còn khoảng trống đáng kể trong việc xây dựng một nền tảng có khả năng kết nối các hoạt động học tập khác nhau thành một quy trình thống nhất và tận dụng hiệu quả các thành tựu của trí tuệ nhân tạo để hỗ trợ người học.
+Thực tế, nhu cầu sử dụng đồng thời nhiều công cụ học tập đã được ghi nhận qua nhiều khảo sát thực tiễn. Theo khảo sát toàn cầu của Digital Education Council (2024) với 3.839 sinh viên từ 16 quốc gia, có đến \textbf{86\%} sinh viên sử dụng công cụ AI trong học tập và mỗi sinh viên trung bình sử dụng \textbf{2,1 công cụ AI khác nhau} \cite{dec2024aisurvey}. Trong số đó, ChatGPT là công cụ phổ biến nhất (66\%), chủ yếu được dùng để tìm kiếm thông tin (69\%), tóm tắt tài liệu (33\%) và tạo nháp nội dung (24\%). Ngoài ra, Quizlet hiện phục vụ hơn \textbf{60 triệu người học} trên toàn thế giới với hơn 900 triệu bộ thẻ học, trong đó cứ 3 học sinh trung học Mỹ thì có 2 người sử dụng nền tảng này \cite{quizletStats}. Những con số này cho thấy sinh viên đang thực sự phụ thuộc vào nhiều nền tảng riêng lẻ cho các nhu cầu học tập khác nhau, từ tra cứu thông tin, tóm tắt tài liệu đến ôn tập kiến thức -- thay vì được hỗ trợ trong một môi trường học tập tích hợp duy nhất.
 
 \section{Yêu cầu đặt ra đối với hệ thống đề xuất}
 
 Từ kết quả khảo sát và phân tích các hệ thống NotebookLM, Quizlet và Notion, có thể nhận thấy rằng mỗi nền tảng đều giải quyết hiệu quả một hoặc một số khía cạnh của hoạt động học tập. Tuy nhiên, các vấn đề liên quan đến sự phân mảnh của công cụ học tập, thiếu sự liên kết giữa các giai đoạn học tập, hạn chế trong theo dõi tiến trình học tập và khả năng cá nhân hóa vẫn chưa được giải quyết một cách toàn diện.
 
-Xuất phát từ những vấn đề còn tồn tại đã được phân tích ở mục trước, hệ thống được đề xuất trong đề tài cần đáp ứng một số yêu cầu quan trọng nhằm hỗ trợ người dùng trong toàn bộ quá trình học tập.
+Xuất phát từ những vấn đề còn tồn tại đã được phân tích ở mục trước, hệ thống được đề xuất trong đề tài cần đáp ứng một số yêu cầu quan trọng nhằm hỗ trợ người dùng trong toàn bộ quá trình học tập. Các Use Case Diagram dưới đây cung cấp cái nhìn tổng quan về các chức năng hệ thống theo từng nhóm nghiệp vụ.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{uc-auth.jpg}
+  \caption{Use Case: Đăng ký và Đăng nhập}
+  \label{fig:uc-auth}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{uc-profile.jpg}
+  \caption{Use Case: Quản lý hồ sơ người dùng}
+  \label{fig:uc-profile}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{uc-admin.jpg}
+  \caption{Use Case: Quản trị hệ thống}
+  \label{fig:uc-admin}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{uc-set.jpg}
+  \caption{Use Case: Quản lý không gian học tập (Set)}
+  \label{fig:uc-set}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{uc-note.jpg}
+  \caption{Use Case: Ghi chú kiến thức}
+  \label{fig:uc-note}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{uc-flashcard.jpg}
+  \caption{Use Case: Học tập với Flashcard}
+  \label{fig:uc-flashcard}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{uc-exam.jpg}
+  \caption{Use Case: Kiểm tra và đánh giá kiến thức}
+  \label{fig:uc-exam}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{uc-todo-goal.jpg}
+  \caption{Use Case: Quản lý mục tiêu và công việc học tập}
+  \label{fig:uc-todo-goal}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{uc-pomodoro.jpg}
+  \caption{Use Case: Quản lý thời gian học tập (Pomodoro)}
+  \label{fig:uc-pomodoro}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{uc-analytics.jpg}
+  \caption{Use Case: Theo dõi và phân tích tiến trình học tập}
+  \label{fig:uc-analytics}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{uc-roadmap.jpg}
+  \caption{Use Case: Lộ trình học tập}
+  \label{fig:uc-roadmap}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{uc-community.jpg}
+  \caption{Use Case: Cộng đồng và khám phá tài nguyên}
+  \label{fig:uc-community}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{uc-notification.jpg}
+  \caption{Use Case: Thông báo}
+  \label{fig:uc-notification}
+\end{figure}
+
 
 \subsection{Hỗ trợ quản lý và tổ chức tài nguyên học tập}
 
-Hệ thống cần cung cấp một môi trường tập trung cho phép người dùng quản lý các tài nguyên học tập trên cùng một nền tảng.
-
-Người dùng cần có khả năng lưu trữ, tổ chức và truy cập các nguồn dữ liệu học tập khác nhau một cách thuận tiện mà không phải phụ thuộc vào nhiều công cụ độc lập.
-
-Các loại dữ liệu được hỗ trợ cần bao gồm:
-\begin{itemize}
-    \item Ghi chú học tập.
-    \item Tài liệu PDF.
-    \item Tài liệu DOCX.
-    \item Tài liệu trình chiếu.
-    \item Nội dung website.
-    \item Video học tập trực tuyến.
-    \item Các tài nguyên học tập được sinh bởi hệ thống.
-\end{itemize}
-
-Việc tập trung hóa dữ liệu học tập giúp giảm sự phân tán của thông tin và tạo điều kiện thuận lợi cho các hoạt động học tập tiếp theo.
+Hệ thống cần cung cấp môi trường tập trung để người dùng lưu trữ, tổ chức và truy cập các tài nguyên học tập trên cùng một nền tảng, bao gồm: ghi chú, tài liệu PDF, DOCX, bài trình chiếu, nội dung website, video học tập và các tài nguyên do hệ thống sinh ra.
 
 \subsection{Hỗ trợ xây dựng và quản lý tri thức cá nhân}
 
-Hệ thống không chỉ đóng vai trò lưu trữ dữ liệu mà còn cần hỗ trợ người dùng trong việc xây dựng và phát triển kho tri thức cá nhân.
-
-Người dùng cần có khả năng:
+Hệ thống cần hỗ trợ người dùng xây dựng kho tri thức cá nhân có cấu trúc thông qua các chức năng:
 \begin{itemize}
-    \item Tạo ghi chú.
-    \item Chỉnh sửa ghi chú.
+    \item Tạo và chỉnh sửa ghi chú.
     \item Tổ chức kiến thức theo chủ đề.
     \item Liên kết các nội dung học tập với nhau.
     \item Quản lý quá trình phát triển kiến thức theo thời gian.
 \end{itemize}
 
-Yêu cầu này giúp đảm bảo rằng kiến thức được lưu trữ không tồn tại dưới dạng các tài liệu rời rạc mà được tổ chức thành một hệ thống thông tin có cấu trúc.
+\subsection{Hỗ trợ tạo nội dung học tập bằng mô hình ngôn ngữ lớn}
 
-\subsection{Hỗ trợ tạo nội dung học tập bằng trí tuệ nhân tạo}
-
-Một trong những yêu cầu quan trọng của hệ thống là tận dụng trí tuệ nhân tạo để giảm khối lượng công việc thủ công cho người dùng.
-
-Hệ thống cần có khả năng hỗ trợ:
+Hệ thống cần ứng dụng mô hình ngôn ngữ lớn (LLM) để tự động hóa việc tạo nội dung học tập, bao gồm:
 \begin{itemize}
-    \item Tóm tắt nội dung học tập.
-    \item Giải thích các khái niệm.
-    \item Sinh ghi chú từ tài liệu.
-    \item Sinh Flashcard.
-    \item Sinh bài kiểm tra.
-    \item Hỗ trợ xây dựng các tài nguyên học tập khác từ nguồn dữ liệu đầu vào.
+    \item Tóm tắt và giải thích nội dung tài liệu.
+    \item Sinh ghi chú, Flashcard và bài kiểm tra từ tài liệu đầu vào.
+    \item Hỗ trợ xây dựng các tài nguyên học tập bổ sung theo yêu cầu.
 \end{itemize}
-
-Việc ứng dụng AI giúp người dùng tiết kiệm thời gian chuẩn bị nội dung và tập trung nhiều hơn vào hoạt động học tập.
 
 \subsection{Hỗ trợ học tập chủ động}
 
-Hệ thống cần cung cấp các công cụ hỗ trợ học tập chủ động nhằm nâng cao khả năng ghi nhớ và tiếp thu kiến thức của người dùng.
-
-Các hoạt động học tập cần được hỗ trợ bao gồm:
-\begin{itemize}
-    \item Ôn tập bằng Flashcard.
-    \item Tự kiểm tra kiến thức.
-    \item Luyện tập thông qua các bài đánh giá.
-    \item Tương tác với nội dung học tập.
-\end{itemize}
-
-Mục tiêu của yêu cầu này là chuyển người học từ vai trò tiếp nhận thông tin một cách thụ động sang tham gia chủ động vào quá trình học tập.
+Hệ thống cần cung cấp công cụ giúp người học chuyển từ tiếp nhận thụ động sang luyện tập có chủ đích, bao gồm: ôn tập bằng Flashcard, tự kiểm tra kiến thức và luyện tập qua các bài đánh giá.
 
 \subsection{Hỗ trợ đánh giá kiến thức}
 
-Hệ thống cần cung cấp cơ chế đánh giá nhằm giúp người dùng xác định mức độ hiểu biết của bản thân đối với các nội dung đã học.
-
-Các chức năng đánh giá cần hỗ trợ:
+Hệ thống cần cung cấp cơ chế đánh giá để người dùng xác định mức độ hiểu bài, bao gồm:
 \begin{itemize}
-    \item Tạo bài kiểm tra.
-    \item Thực hiện bài kiểm tra trực tuyến.
-    \item Chấm điểm tự động.
-    \item Lưu trữ kết quả học tập.
-    \item Thống kê hiệu suất học tập.
+    \item Tạo và thực hiện bài kiểm tra trực tuyến với chấm điểm tự động.
+    \item Lưu trữ kết quả và thống kê hiệu suất học tập.
 \end{itemize}
-
-Thông qua các hoạt động đánh giá, người dùng có thể nhận biết các nội dung còn yếu và có kế hoạch ôn tập phù hợp.
 
 \subsection{Hỗ trợ theo dõi tiến trình học tập}
 
-Một hệ thống hỗ trợ học tập hiện đại cần có khả năng ghi nhận và phân tích các hoạt động học tập của người dùng.
-
-Dữ liệu theo dõi cần bao gồm:
-\begin{itemize}
-    \item Quá trình học Flashcard.
-    \item Kết quả bài kiểm tra.
-    \item Thời gian học tập.
-    \item Tiến độ hoàn thành mục tiêu.
-    \item Lịch sử học tập.
-\end{itemize}
-
-Các dữ liệu này đóng vai trò quan trọng trong việc phản ánh sự tiến bộ của người học và hỗ trợ đưa ra các quyết định học tập phù hợp.
+Hệ thống cần ghi nhận và phân tích dữ liệu hoạt động học tập của người dùng, bao gồm: quá trình học Flashcard, kết quả bài kiểm tra, thời gian học tập, tiến độ hoàn thành mục tiêu và lịch sử học tập.
 
 \subsection{Hỗ trợ cá nhân hóa trải nghiệm học tập}
 
-Do mỗi người dùng có nền tảng kiến thức và mục tiêu học tập khác nhau, hệ thống cần hỗ trợ cá nhân hóa trải nghiệm học tập dựa trên dữ liệu thực tế.
-
-Việc cá nhân hóa có thể được thực hiện thông qua:
-\begin{itemize}
-    \item Phân tích kết quả học tập.
-    \item Theo dõi lịch sử học tập.
-    \item Xác định các nội dung cần được ôn tập.
-    \item Đề xuất các hoạt động học tập phù hợp.
-\end{itemize}
-
-Yêu cầu này giúp hệ thống thích nghi tốt hơn với nhu cầu của từng người dùng thay vì áp dụng một phương pháp chung cho tất cả đối tượng.
+Hệ thống cần thích nghi với nhu cầu của từng người dùng thông qua phân tích kết quả và lịch sử học tập, từ đó xác định nội dung cần ôn tập và đề xuất các hoạt động học tập phù hợp.
 
 \subsection{Hỗ trợ quản lý mục tiêu và duy trì động lực học tập}
 
-Bên cạnh các chức năng học tập cốt lõi, hệ thống cần hỗ trợ người dùng xây dựng và duy trì thói quen học tập trong dài hạn.
-
-Các chức năng cần được xem xét bao gồm:
-\begin{itemize}
-    \item Quản lý mục tiêu học tập.
-    \item Quản lý công việc học tập.
-    \item Quản lý thời gian học tập.
-    \item Nhắc nhở học tập.
-    \item Theo dõi mức độ hoàn thành kế hoạch.
-\end{itemize}
-
-Thông qua các công cụ này, hệ thống có thể góp phần hỗ trợ người dùng duy trì động lực học tập và nâng cao tính kỷ luật cá nhân.
+Hệ thống cần hỗ trợ người dùng xây dựng và duy trì thói quen học tập dài hạn, bao gồm: quản lý mục tiêu và công việc học tập, quản lý thời gian (Pomodoro), nhắc nhở học tập và theo dõi mức độ hoàn thành kế hoạch.
 
 \subsection{Hỗ trợ cộng tác và chia sẻ tri thức}
 
-Trong môi trường học tập hiện đại, việc học tập theo nhóm và chia sẻ kiến thức ngày càng trở nên phổ biến.
-
-Do đó, hệ thống cần hỗ trợ:
-\begin{itemize}
-    \item Chia sẻ nội dung học tập.
-    \item Cộng tác trên ghi chú.
-    \item Làm việc nhóm trên cùng một nguồn dữ liệu.
-    \item Trao đổi và cập nhật thông tin giữa các thành viên.
-\end{itemize}
-
-Yêu cầu này giúp mở rộng khả năng ứng dụng của hệ thống trong các hoạt động học tập cộng đồng hoặc học tập nhóm.
+Hệ thống cần hỗ trợ học tập nhóm thông qua các chức năng chia sẻ nội dung, cộng tác trên ghi chú và làm việc cùng nhau trên một nguồn dữ liệu chung.
 
 \subsection{Hỗ trợ đa nền tảng}
 
-Người dùng ngày nay thường sử dụng nhiều thiết bị khác nhau trong quá trình học tập.
-
-Do đó, hệ thống cần hỗ trợ:
-\begin{itemize}
-    \item Truy cập từ trình duyệt Web.
-    \item Truy cập từ thiết bị di động.
-    \item Đồng bộ dữ liệu giữa các nền tảng.
-    \item Đảm bảo tính nhất quán của dữ liệu và trải nghiệm người dùng.
-\end{itemize}
-
-Yêu cầu này giúp tăng khả năng tiếp cận và tính linh hoạt của hệ thống trong thực tế.
+Hệ thống cần đảm bảo người dùng có thể truy cập và đồng bộ dữ liệu nhất quán trên cả nền tảng Web và thiết bị di động.
 
 \section{Kết luận chương}
 
