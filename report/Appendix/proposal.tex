@@ -1,4 +1,135 @@
 \chapter*{Đề cương chi tiết}
-\label{thanks}
 
-Bản \href{https://www.overleaf.com/read/jwrxbcrmkgfh}{đề cương} đã thực hiện và nộp cho giáo vụ trước đó \textit{(phải có chữ ký của giảng viên hướng dẫn)}.
+\begin{center}
+    {\LARGE \bfseries Xây dựng hệ thống thông minh hỗ trợ học tập\par}
+
+    \vspace{0.3cm}
+    {\large \itshape Building an Intelligent Learning Support System\par}
+\end{center}
+
+\section*{1. Thông tin chung}
+
+\textbf{Người hướng dẫn:}
+\begin{itemize}
+    \item TS. Nguyễn Thị Minh Tuyền (Khoa Công nghệ Thông tin)
+\end{itemize}
+
+\textbf{Nhóm sinh viên thực hiện:}
+\begin{enumerate}
+    \item Trịnh Nguyên Lương (MSSV: 22120198)
+    \item Hoàng Lê Nam (MSSV: 22120217)
+    \item Trần Thảo Ngân (MSSV: 22120225)
+    \item Nguyễn Thanh Nhã (MSSV: 22120243)
+\end{enumerate}
+
+\textbf{Loại đề tài:} Ứng dụng
+
+\textbf{Thời gian thực hiện:} 10/2025 -- 07/2026
+
+\section*{2. Nội dung thực hiện}
+
+\subsection*{2.1 Giới thiệu về đề tài}
+
+Trong những năm gần đây, cùng với sự phát triển của công nghệ thông tin và Internet, các nền tảng học tập trực tuyến ngày càng trở nên phổ biến và đóng vai trò quan trọng trong việc hỗ trợ quá trình tự học của người học. Nhiều công cụ và hệ thống học tập đã được phát triển nhằm giúp người học tiếp cận tài liệu nhanh chóng, quản lý kiến thức và nâng cao hiệu quả học tập. Tuy nhiên, sự phong phú của các nguồn tài nguyên trên Internet cũng đặt ra nhiều thách thức trong việc tổ chức và khai thác thông tin một cách hiệu quả.
+
+Hiện nay, tài nguyên học tập thường được phân tán trên nhiều nền tảng khác nhau, khiến người học gặp khó khăn trong việc tổng hợp và quản lý kiến thức. Bên cạnh đó, việc xây dựng lộ trình học tập phù hợp, duy trì động lực học tập và ghi nhớ kiến thức trong thời gian dài vẫn là những vấn đề phổ biến. Mặc dù các công nghệ trí tuệ nhân tạo (AI) đang phát triển mạnh mẽ, việc ứng dụng AI để hỗ trợ cá nhân hóa quá trình học tập và tối ưu hiệu quả ghi nhớ vẫn chưa được khai thác đầy đủ trong nhiều hệ thống học tập hiện nay.
+
+Nhằm giải quyết những vấn đề trên, nhóm đề xuất xây dựng một hệ thống học tập tích hợp ứng dụng trí tuệ nhân tạo nhằm hỗ trợ người học quản lý tài liệu, tổ chức kiến thức và hỗ trợ quá trình tự học. Hệ thống hướng tới việc cá nhân hóa quá trình học tập và hỗ trợ ôn tập kiến thức thông qua các công cụ học tập hiện đại. Ngoài ra, nhóm tham khảo một số nền tảng như NotebookLM để định hướng phát triển, hướng tới xây dựng một hệ thống hỗ trợ học tập tích hợp và thuận tiện hơn cho người học.
+
+\subsection*{2.2 Mục tiêu đề tài}
+
+Mục tiêu của đề tài là xây dựng một hệ thống học tập tích hợp ứng dụng trí tuệ nhân tạo nhằm hỗ trợ người học quản lý tài liệu, tổ chức kiến thức và nâng cao hiệu quả tự học.
+
+Thực hiện đề tài này, nhóm mong muốn mang lại các giá trị thực tế sau:
+\begin{itemize}
+    \item Cung cấp nền tảng học tập tích hợp, hỗ trợ tổ chức và quản lý tài nguyên học tập.
+    \item Ứng dụng AI giúp tiết kiệm thời gian thông qua tóm tắt, luyện tập và ôn tập.
+    \item Cá nhân hóa lộ trình học tập, nâng cao hiệu quả và động lực học.
+    \item Xây dựng cộng đồng học tập trực tuyến, thúc đẩy chia sẻ và hỗ trợ lẫn nhau.
+\end{itemize}
+
+Thông qua ứng dụng này, người học có thể cải thiện hiệu quả học tập, giảm thiểu tối đa thời gian tìm kiếm và tổ chức tài nguyên, kết nối cộng đồng và tăng động lực học tập.
+
+\subsection*{2.3 Phạm vi của đề tài}
+
+Hệ thống bao gồm các thực thể chính:
+\begin{itemize}
+    \item \textbf{Người học:} Đối tượng trung tâm sử dụng hệ thống để ghi chép, học tập và củng cố kiến thức.
+    \item \textbf{Tài liệu học tập:} Bao gồm nhiều dạng nội dung như ghi chú (Notes), thẻ ghi nhớ (Flashcards), bài kiểm tra (Tests), sơ đồ tư duy (Mindmaps).
+    \item \textbf{Mô hình AI (Agent/LLM):} Đóng vai trò trợ lý thông minh hỗ trợ phân tích tài liệu, tóm tắt nội dung và đề xuất phương pháp học tập.
+\end{itemize}
+
+Hệ thống cung cấp các nhóm chức năng chính:
+\begin{itemize}
+    \item \textbf{Note:} Cho phép người dùng ghi chú thủ công khi đọc tài liệu (PDF, DOCX, \ldots) và sử dụng AI để giải thích hoặc tóm tắt nội dung.
+    \item \textbf{Flashcards:} Tạo bộ thẻ ghi nhớ thủ công hoặc tự động từ ghi chú và tài liệu với các options cho người dùng custom khi tạo, đồng thời cũng đề xuất cho người dùng ôn luyện.
+    \item \textbf{Test:} Tạo bài kiểm tra từ ghi chú và tài liệu với nhiều dạng câu hỏi cùng với khả năng phân tích kết quả bài làm để xác định lỗ hổng kiến thức.
+    \item Đề xuất lộ trình học từ tài liệu có sẵn.
+\end{itemize}
+
+Hệ thống được triển khai trên hai nền tảng là Web và Mobile. Thiết kế này giúp người dùng có thể học tập linh hoạt và tiện lợi trên nhiều thiết bị.
+
+Đề tài áp dụng phương pháp tiếp cận kết hợp giữa phân tích các hệ thống hiện có và phát triển phần mềm theo quy trình hiện đại, nhằm đảm bảo tính khoa học và khả năng ứng dụng thực tiễn.
+
+Dự án sử dụng mô hình Agile/Scrum với các Sprint khoảng 2 tuần để phát triển và cải tiến hệ thống.
+
+\textbf{Công nghệ sử dụng:}
+\begin{itemize}
+    \item \textbf{Frontend:} React (Web) và React Native (Mobile)
+    \item \textbf{Backend:} Java Spring Framework xử lý nghiệp vụ và quản lý dữ liệu
+    \item \textbf{AI Service:} Python FastAPI kết hợp LangChain để kết nối các mô hình ngôn ngữ lớn (LLM)
+\end{itemize}
+
+\subsection*{2.4 Kế hoạch thực hiện}
+
+\newcolumntype{Q}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\textbf{1. Version 1: Chức năng học tập chính (Note, Flashcard và Test)}
+
+\begin{singlespace}
+\begin{longtable}{|Q{2.3cm}|Q{3.6cm}|Q{8.6cm}|}
+\hline
+\textbf{Giai đoạn} & \textbf{Sprint (2 tuần)} & \textbf{Nội dung thực hiện} \\
+\hline
+\endhead
+07/12/25 -- 18/12/25 & Sprint 01: Chuẩn bị đề tài và phân tích yêu cầu & Phân tích yêu cầu hệ thống, xây dựng Use Case, thiết kế giao diện Figma cho Mobile và Web \\
+\hline
+21/12/25 -- 31/12/25 & Sprint 02: Setup & Chuẩn bị Code Base cho AI Service, Backend, Frontend (Mobile \& Web) và thiết lập DevOps \\
+\hline
+01/12/25 -- 11/12/25 & Sprint 03: Authentication và cơ bản chức năng Note & Xây dựng API đăng nhập, đăng ký và API cho chức năng Note; phát triển giao diện Dashboard, Set và Note \\
+\hline
+14/12/25 -- 25/12/25 & Sprint 04 - Hoàn thiện chức năng Note & Hoàn thiện API cho Note, thêm chức năng Explain Note và Summarize file, hỗ trợ tạo Flashcard thủ công \\
+\hline
+28/12/25 -- 08/01/26 & Sprint 05 - Hoàn thiện chức năng Flashcard & Phát triển Flashcard bằng AI, xây dựng giao diện Flashcard và chức năng Game trong Flashcard \\
+\hline
+21/02/26 -- 12/03/26 & Sprint 06 - Hoàn thiện chức năng Test & Phát triển chức năng tạo Test bằng AI và thủ công, xây dựng giao diện Test \\
+\hline
+15/03/26 -- 26/03/26 & Sprint 07 - Nâng cấp 3 chức năng Note, Flashcard và Test & Đồng bộ ghi chú Real-time giữa Mobile và Web, bổ sung options tạo Flashcard/Test bằng AI, giải thích câu sai và sinh Test ôn luyện, thêm Bookmark và Search \\
+\hline
+29/03/26 -- 09/04/26 & Sprint 08 - Share Note, Flashcard and Test & Refactor AI API, xây dựng trang Admin, xử lý quyền truy cập khi chia sẻ tài nguyên và bảng xếp hạng \\
+\hline
+12/04/26 -- 30/04/26 & Sprint 09 - Admin Role và Tạo lộ trình học dựa trên tài nguyên có sẵn & Phát triển chức năng tạo lộ trình học từ tài nguyên có sẵn và hoàn thiện trang Admin \\
+\hline
+\caption{Kế hoạch thực hiện Version 1}
+\label{tab:proposal-version1}
+\end{longtable}
+\end{singlespace}
+
+\textbf{2. Version 2: Chức năng học tập bổ trợ (Mindmap, To Do List và Pomodoro)}
+
+\begin{singlespace}
+\begin{longtable}{|Q{2.3cm}|Q{3.3cm}|Q{8.6cm}|}
+\hline
+\textbf{Giai đoạn} & \textbf{Sprint (2 tuần)} & \textbf{Nội dung thực hiện} \\
+\hline
+\endhead
+03/05/26 -- 21/05/26 & Sprint 10: Mindmap & Phát triển chức năng Mindmap, bao gồm API tạo Mindmap bằng AI và thủ công, xây dựng giao diện trang Mindmap và tích hợp API vào hệ thống \\
+\hline
+24/05/26 -- 11/06/26 & Sprint 11: Chức năng To do và Pomodoro & Phát triển chức năng To Do List và Pomodoro, xây dựng giao diện cho hai chức năng này, tích hợp API và bổ sung hệ thống Streak theo dõi quá trình học \\
+\hline
+Thời gian còn lại & Sprint 12: Kiểm thử, Fix bug và Nâng cấp chức năng & Kiểm thử toàn bộ hệ thống, sửa lỗi phát sinh và nâng cấp, tối ưu các chức năng trước khi hoàn thiện sản phẩm \\
+\hline
+\caption{Kế hoạch thực hiện Version 2}
+\label{tab:proposal-version2}
+\end{longtable}
+\end{singlespace}
