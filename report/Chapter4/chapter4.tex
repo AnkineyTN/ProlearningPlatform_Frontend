@@ -49,7 +49,6 @@ Giai đoạn đầu tiên diễn ra từ tháng 9 đến tháng 12 năm 2025, l�
 \subsection{Giai đoạn 2 -- Phát triển, hoàn thiện và kiểm thử (Tháng 2 -- 7/2026)}
 % ------------------------------------------------------------
  
-\subsubsection*{Tổng quan}
 Giai đoạn 2 là giai đoạn phát triển chính của đề tài, kéo dài từ tháng 2 đến tháng 7 năm 2026. Giai đoạn này được chia thành hai nửa với nhịp độ làm việc khác nhau.
  
 \subsubsection*{Nửa đầu giai đoạn 2 (Tháng 2 -- 3/2026)}
@@ -103,94 +102,40 @@ Trịnh Nguyên Lương & Back-end, AI, Nhóm trưởng (GĐ1 -- T3/2026) & Xây
 Về thiết kế giao diện, nhóm sử dụng Claude Design hỗ trợ tạo ra bản thiết kế ban đầu. Phía front-end web hoàn thiện và chỉnh sửa thiết kế, trong khi front-end mobile tham khảo để đảm bảo tính nhất quán về trải nghiệm người dùng.
 
 % ------------------------------------------------------------
-\subsection{Phân chia công việc}
+\subsection{Phân chia công việc và quản lý mã nguồn}
 % ------------------------------------------------------------
- 
-\subsubsection*{Chiến lược}
-Nhóm áp dụng chiến lược linh hoạt trong việc phân chia task để giảm thiểu sự phụ thuộc giữa các thành viên. Đối với các tính năng đơn giản hoặc độc lập, một thành viên có thể đảm nhiệm toàn bộ cả phần back-end lẫn front-end, giúp giảm thời gian chờ đợi và trao đổi giữa hai phía. Đối với các tính năng cốt lõi hoặc có độ phức tạp cao, hai thành viên back-end sẽ phụ trách xây dựng API, sau đó front-end tiến hành tích hợp và hiển thị.
- 
-\subsubsection*{Kênh giao tiếp}
-Nhóm sử dụng các kênh giao tiếp như sau:
-\begin{itemize}
-    \item \textbf{Zalo}: Trao đổi nội bộ hàng ngày giữa các thành viên trong nhóm.
-    \item \textbf{Messenger}: Kênh giao tiếp chính với GVHD.
-    \item \textbf{Google Meet}: Tổ chức các buổi họp trực tuyến định kỳ của nhóm.
-\end{itemize}
- 
+
+Nhóm phân chia task theo độ phức tạp để giảm phụ thuộc giữa các thành viên: tính năng đơn giản/độc lập giao trọn cho một thành viên đảm nhiệm cả back-end lẫn front-end; tính năng cốt lõi hoặc phức tạp thì hai thành viên back-end xây dựng API trước, front-end tích hợp và hiển thị sau. Với tính năng phức tạp, front-end thường thiết kế giao diện trước để back-end thiết kế API bám sát; hai thành viên back-end đảm nhận thêm vai trò tester trên cả web và mobile trước khi xác nhận hoàn thành. Giao tiếp nội bộ hàng ngày qua Zalo, với GVHD qua Messenger, họp định kỳ qua Google Meet.
+
+Mã nguồn quản lý trên GitHub với 3 repository độc lập (back-end, front-end web, front-end mobile); không ai được commit trực tiếp lên \texttt{main}. Front-end push trực tiếp lên \texttt{dev}, chỉ merge lên \texttt{main} khi đã kiểm thử đầy đủ. Back-end theo branch-based workflow: tạo nhánh tính năng từ \texttt{dev}, rebase từ \texttt{origin/dev} trước khi tạo Pull Request, hai thành viên back-end review lẫn nhau trước khi merge.
+
+Khi phát sinh lỗi, nhóm áp dụng nguyên tắc \textit{ai làm lỗi, người đó fix}: lỗi front-end web do Trần Thảo Ngân xử lý, front-end mobile do Hoàng Lê Nam, back-end do Nguyễn Thanh Nhã và Trịnh Nguyên Lương (riêng lỗi liên quan AI do Trịnh Nguyên Lương phụ trách), sự cố server/hạ tầng do Nguyễn Thanh Nhã hotfix; kết quả xử lý được thông báo lại cho cả nhóm.
+
 % ------------------------------------------------------------
-\subsection{Quản lý mã nguồn}
+\subsection{Lịch họp và theo dõi tiến độ}
 % ------------------------------------------------------------
- 
-Nhóm sử dụng GitHub để quản lý mã nguồn với cấu trúc 3 repository độc lập cho back-end, front-end web và front-end mobile. Không có thành viên nào được phép commit trực tiếp lên nhánh \texttt{main}. Quy trình cụ thể như sau:
- 
-\begin{itemize}
-    \item \textbf{Front-end (web và mobile)}: Do mỗi thành viên front-end quản lý một repository riêng, các thay đổi được push trực tiếp lên nhánh \texttt{dev}. Nhánh \texttt{main} chỉ được merge khi toàn bộ ứng dụng đã qua kiểm thử đầy đủ.
- 
-    \item \textbf{Back-end}: Áp dụng quy trình làm việc theo nhánh (branch-based workflow): thành viên tạo nhánh tính năng mới từ \texttt{dev}, thực hiện rebase từ \texttt{origin/dev} trước khi tạo Pull Request, sau đó hai thành viên back-end tiến hành review code. Khi được chấp thuận, nhánh được merge vào \texttt{dev}.
-\end{itemize}
- 
-% ------------------------------------------------------------
-\subsection{Quy trình phát triển tính năng mới}
-% ------------------------------------------------------------
- 
-Khi có yêu cầu phát triển một tính năng mới, nhóm thực hiện theo quy trình sau:
- 
-\begin{enumerate}
-    \item \textbf{Xác định ý tưởng và yêu cầu}: Thảo luận để làm rõ mục đích, phạm vi và các ràng buộc của tính năng.
-    \item \textbf{Phân tích luồng xử lý}: Xác định luồng dữ liệu, các trường hợp sử dụng (use case) và các bên liên quan.
-    \item \textbf{Thiết kế và triển khai}:
-    \begin{itemize}
-        \item Đối với tính năng \textbf{phức tạp}: Front-end thiết kế giao diện trước; back-end dựa vào đó để thiết kế API và triển khai logic nghiệp vụ; front-end sau đó tích hợp API.
-        \item Đối với tính năng \textbf{đơn giản}: Giao cho một thành viên đảm nhiệm toàn bộ từ back-end đến front-end.
-    \end{itemize}
-    \item \textbf{Kiểm thử và hoàn thiện}: Hai thành viên back-end đảm nhận việc kiểm thử (tester) trên cả web và mobile trước khi xác nhận hoàn thành.
-\end{enumerate}
- 
-% ------------------------------------------------------------
-\subsection{Xử lý sự cố}
-% ------------------------------------------------------------
- 
-Khi phát sinh lỗi hoặc sự cố hệ thống, nhóm áp dụng nguyên tắc \textit{ai làm lỗi, người đó fix}. Cụ thể:
-\begin{itemize}
-    \item Lỗi phía front-end web do thành viên Trần Thảo Ngân chịu trách nhiệm xử lý.
-    \item Lỗi phía front-end mobile do thành viên Hoàng Lê Nam xử lý.
-    \item Lỗi phía back-end do hai thành viên Nguyễn Thanh Nhã và Trịnh Nguyên lương xử lý, riêng Trịnh Nguyên Lương chịu trách nhiệm thêm những lỗi liên quan đến AI.
-    \item Sự cố server hoặc hạ tầng do thành viên Nguyễn Thanh Nhã phụ trách khắc phục (hotfix).
-    \item Sau khi xử lý xong, thành viên phụ trách thông báo kết quả lên nhóm để cả nhóm nắm tình hình.
-\end{itemize}
- 
-% ------------------------------------------------------------
-\subsection{Lịch họp nhóm}
-% ------------------------------------------------------------
- 
-Lịch họp được điều chỉnh linh hoạt theo từng giai đoạn nhằm phù hợp với tiến độ và khối lượng công việc:
- 
-\begin{itemize}
-    \item \textbf{Giai đoạn 1 (T9--12/2025)}: Họp mỗi hai tuần một lần vào tối Chủ nhật lúc 21:00, thời lượng khoảng 1--2 tiếng qua Google Meet. Nội dung tập trung vào thảo luận ý tưởng, xác định yêu cầu và thống nhất hướng đi.
- 
-    \item \textbf{Giai đoạn 2, nửa đầu (T2--3/2026)}: Họp mỗi tuần một lần vào tối Chủ nhật lúc 21:00, thời lượng khoảng 30 phút. Nội dung chủ yếu là báo cáo tiến độ cá nhân, theo dõi công việc và phân công task tiếp theo.
- 
-    \item \textbf{Giai đoạn 2, nửa sau (T4--7/2026)}: Tăng lên 2 lần mỗi tuần vào tối Chủ nhật và tối Thứ Tư lúc 21:00, với nội dung tương tự nhưng tần suất dày hơn để đẩy nhanh tiến độ và xử lý sớm các vấn đề phát sinh.
-\end{itemize}
- 
-% ------------------------------------------------------------
-\subsection{Phân chia và theo dõi nhiệm vụ}
-% ------------------------------------------------------------
- 
-\subsubsection*{Sprint và ước tính công việc}
-Nhóm áp dụng mô hình Scrum với mỗi sprint kéo dài \textbf{2 tuần}. Công việc được ước tính theo \textbf{story point}, trong đó 1 story point tương đương khoảng 4 giờ làm việc hiệu quả. Mỗi thành viên cam kết hoàn thành tối thiểu \textbf{5 story point} mỗi tuần.
- 
-Task được tạo dựa trên product backlog đã được ưu tiên hóa, kết hợp với feedback từ giáo viên hướng dẫn và kết quả kiểm thử của các sprint trước. Nhóm trưởng phụ trách điều phối và phân công task trong mỗi buổi họp.
- 
-\subsubsection*{Trạng thái ticket trên Jira}
-Mỗi ticket trên Jira được theo dõi qua các trạng thái sau:
-\begin{itemize}
-    \item \textbf{To Do}: Task đã được tạo nhưng chưa bắt đầu thực hiện.
-    \item \textbf{In Progress}: Thành viên đang triển khai.
-    \item \textbf{Done}: Tính năng đã được merge và deploy lên staging.
-\end{itemize}
- 
-Một ticket được chuyển sang trạng thái \textbf{Done} ngay khi code đã được merge thành công vào nhánh \texttt{dev}. Việc kiểm thử được tách thành một giai đoạn riêng biệt: sau khi các ticket trong sprint được merge, hai thành viên back-end đảm nhận vai trò tester, kiểm tra toàn bộ luồng chức năng và ghi nhận các lỗi phát sinh lên Trello để theo dõi và xử lý.
+
+Nhóm áp dụng mô hình Scrum, sprint 2 tuần, ước tính công việc theo story point (1 điểm $\approx$ 4 giờ làm việc hiệu quả), mỗi thành viên cam kết tối thiểu 5 điểm/tuần; task lấy từ product backlog đã ưu tiên hóa, kết hợp feedback của GVHD và kết quả kiểm thử sprint trước, nhóm trưởng điều phối trong mỗi buổi họp. Mỗi ticket Jira đi qua 3 trạng thái To Do -- In Progress -- Done (Done ngay khi merge vào \texttt{dev}); kiểm thử tách thành giai đoạn riêng sau khi merge, do hai thành viên back-end đảm nhận, lỗi phát sinh ghi nhận lên Trello.
+
+Tần suất họp tăng dần theo tiến độ dự án (Bảng~\ref{tab:meeting-schedule}).
+
+\begin{table}[H]
+\centering
+\caption{Lịch họp nhóm theo từng giai đoạn}
+\label{tab:meeting-schedule}
+\small
+\begin{tabular}{|L{0.22\textwidth}|L{0.16\textwidth}|L{0.52\textwidth}|}
+\hline
+\textbf{Giai đoạn} & \textbf{Tần suất} & \textbf{Nội dung} \\
+\hline
+Giai đoạn 1 (T9--12/2025) & 2 tuần/lần, tối CN, 1--2 giờ & Thảo luận ý tưởng, xác định yêu cầu, thống nhất hướng đi \\
+\hline
+Giai đoạn 2, nửa đầu (T2--3/2026) & 1 tuần/lần, tối CN, 30 phút & Báo cáo tiến độ cá nhân, theo dõi công việc, phân công task tiếp theo \\
+\hline
+Giai đoạn 2, nửa sau (T4--7/2026) & 2 lần/tuần, tối CN \& tối Thứ Tư & Tần suất dày hơn để đẩy nhanh tiến độ, xử lý sớm vấn đề phát sinh \\
+\hline
+\end{tabular}
+\end{table}
 
 % ============================================================
 \section{Những khó khăn gặp phải}
@@ -203,7 +148,7 @@ Trong suốt quá trình thực hiện đề tài, nhóm đã đối mặt với
 \caption{Khó khăn và giải pháp trong quá trình thực hiện đề tài}
 \label{tab:difficulties-solutions}
 \small
-\begin{tabular}{|L{0.20\textwidth}|L{0.38\textwidth}|L{0.34\textwidth}|}
+\begin{tabular}{|L{0.14\textwidth}|L{0.36\textwidth}|L{0.4\textwidth}|}
 \hline
 \textbf{Khó khăn} & \textbf{Nguyên nhân/Biểu hiện} & \textbf{Giải pháp} \\
 \hline
@@ -235,7 +180,7 @@ Dưới đây là các tính năng chính của hệ thống:
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=0.6\linewidth]{images/Feature/Web/Note_Web.png}
+        \includegraphics[width=0.9\linewidth]{images/Feature/Web/Note_Web.png}
         \caption{Giao diện Web - Ghi chép kết hợp tài liệu}
         \label{fig:note_taking}
     \end{figure}
@@ -253,7 +198,7 @@ Dưới đây là các tính năng chính của hệ thống:
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=0.6\linewidth]{images/Feature/Web/Exam_Web.png}
+        \includegraphics[width=0.9\linewidth]{images/Feature/Web/Exam_Web.png}
         \caption{Giao diện Web - Bài kiểm tra}
     \end{figure}
 
@@ -269,7 +214,7 @@ Dưới đây là các tính năng chính của hệ thống:
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=0.6\linewidth]{images/Feature/Web/Analysis_Web.png}
+        \includegraphics[width=0.9\linewidth]{images/Feature/Web/Analysis_Web.png}
         \caption{Giao diện Web - Phân tích năng lực người học}
     \end{figure}
 
