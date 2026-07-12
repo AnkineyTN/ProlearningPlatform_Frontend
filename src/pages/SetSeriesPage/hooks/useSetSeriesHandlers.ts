@@ -79,30 +79,24 @@ export function useSetSeriesHandlers({
 
   const [flashcardsSearch, setFlashcardsSearch] = useState('');
   const [flashcardsPrivacy, setFlashcardsPrivacy] =
-    usePersistedState<ListPrivacyFilter>(
-      `set-${setId}-flashcards-privacy`,
-      '',
-    );
+    usePersistedState<ListPrivacyFilter>(`set-${setId}-flashcards-privacy`, '');
   const [flashcardsMethod, setFlashcardsMethod] =
     usePersistedState<ListCreateMethodFilter>(
       `set-${setId}-flashcards-method`,
       '',
     );
-  const [flashcardsSort, setFlashcardsSort] =
-    usePersistedState<ListSortOption>(
-      `set-${setId}-flashcards-sort`,
-      'id,DESC',
-    );
+  const [flashcardsSort, setFlashcardsSort] = usePersistedState<ListSortOption>(
+    `set-${setId}-flashcards-sort`,
+    'id,DESC',
+  );
 
   const [examsSearch, setExamsSearch] = useState('');
   const [examsPrivacy, setExamsPrivacy] = usePersistedState<ListPrivacyFilter>(
     `set-${setId}-exams-privacy`,
     '',
   );
-  const [examsMethod, setExamsMethod] = usePersistedState<ListCreateMethodFilter>(
-    `set-${setId}-exams-method`,
-    '',
-  );
+  const [examsMethod, setExamsMethod] =
+    usePersistedState<ListCreateMethodFilter>(`set-${setId}-exams-method`, '');
   const [examsSort, setExamsSort] = usePersistedState<ListSortOption>(
     `set-${setId}-exams-sort`,
     'id,DESC',
@@ -123,7 +117,8 @@ export function useSetSeriesHandlers({
   const generateExamFromFilesMutation = useGenerateExamFromFiles();
   const generateExamFromNotesMutation = useGenerateExamFromNotes();
   const generateExamFromWebMutation = useGenerateExamFromWeb();
-  const generateExamFromExistingExamMutation = useGenerateExamFromExistingExam();
+  const generateExamFromExistingExamMutation =
+    useGenerateExamFromExistingExam();
 
   // --- Computed flags ---
   const isGenerating =
@@ -158,11 +153,15 @@ export function useSetSeriesHandlers({
       });
 
       const noteId = result.data?.data?.noteId;
-      setIsCreateModalOpen(false);
 
       if (noteId) {
+        setIsCreateModalOpen(false);
         toast.success(t('set.handlers.noteGenerated'));
         navigate(`/sets/${setId}/notes/${noteId}`);
+      } else {
+        toast.error(
+          result.data?.message || t('set.handlers.generateNoteError'),
+        );
       }
     } catch (error) {
       console.error('Error generating note with AI:', error);
@@ -212,15 +211,23 @@ export function useSetSeriesHandlers({
           const description =
             result.data.description ||
             (data.source === 'notes'
-              ? t('set.handlers.generatedFromNotes', { count: data.notes?.length ?? 0 })
+              ? t('set.handlers.generatedFromNotes', {
+                  count: data.notes?.length ?? 0,
+                })
               : data.source === 'files'
-                ? t('set.handlers.generatedFromFiles', { count: data.files?.length ?? 0 })
-                : t('set.handlers.generatedFromUrls', { count: data.urls?.length ?? 0 }));
+                ? t('set.handlers.generatedFromFiles', {
+                    count: data.files?.length ?? 0,
+                  })
+                : t('set.handlers.generatedFromUrls', {
+                    count: data.urls?.length ?? 0,
+                  }));
 
           navigate(`/sets/${setId}/flashcards/editor`, {
             state: {
               title:
-                data.title || result.data.title || t('set.handlers.aiFlashcardsTitle'),
+                data.title ||
+                result.data.title ||
+                t('set.handlers.aiFlashcardsTitle'),
               description,
               privacy: data.privacy,
               generatedFlashcards: flashcards,
@@ -297,12 +304,18 @@ export function useSetSeriesHandlers({
             description:
               result.data?.description ||
               (data.source === 'notes'
-                ? t('set.handlers.generatedFromNotes', { count: data.notes?.length ?? 0 })
+                ? t('set.handlers.generatedFromNotes', {
+                    count: data.notes?.length ?? 0,
+                  })
                 : data.source === 'files'
-                  ? t('set.handlers.generatedFromFiles', { count: data.files?.length ?? 0 })
+                  ? t('set.handlers.generatedFromFiles', {
+                      count: data.files?.length ?? 0,
+                    })
                   : data.source === 'existing-exam'
                     ? t('set.handlers.generatedFromExistingExam')
-                    : t('set.handlers.generatedFromUrls', { count: data.urls?.length ?? 0 })),
+                    : t('set.handlers.generatedFromUrls', {
+                        count: data.urls?.length ?? 0,
+                      })),
             privacy: data.privacy,
             duration: result.data?.duration,
             aiContent: content,
@@ -310,7 +323,9 @@ export function useSetSeriesHandlers({
         });
       } catch (error) {
         console.error('Error generating exam with AI:', error);
-        toast.error(apiErrorMessage(error, t('set.handlers.generateExamError')));
+        toast.error(
+          apiErrorMessage(error, t('set.handlers.generateExamError')),
+        );
       }
     }
   };
@@ -338,7 +353,9 @@ export function useSetSeriesHandlers({
             navigate('/sets');
             return;
           }
-          toast.error(apiErrorMessage(error, t('set.handlers.createNoteError')));
+          toast.error(
+            apiErrorMessage(error, t('set.handlers.createNoteError')),
+          );
           throw error;
         }
         break;
@@ -481,7 +498,9 @@ export function useSetSeriesHandlers({
       toast.success(t('set.handlers.flashcardDeleted'));
     } catch (error) {
       console.error('Error deleting flashcard:', error);
-      toast.error(apiErrorMessage(error, t('set.handlers.deleteFlashcardError')));
+      toast.error(
+        apiErrorMessage(error, t('set.handlers.deleteFlashcardError')),
+      );
     }
   };
 

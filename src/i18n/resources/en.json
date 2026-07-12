@@ -366,12 +366,14 @@
       "noNotes": "No notes found",
       "webUrlsPlaceholder": "https://example.com/article",
       "webUrlsHint": "Enter one URL per line (https://…)",
+      "webUrlsHintMax": "Maximum {{count}} links",
+      "addLink": "Add link",
       "note": {
         "topicLabel": "Topic",
         "topicPlaceholder": "E.g. The French Revolution, Binary search trees…",
         "topicHint": "AI will write the note and name it for you.",
         "descriptionPlaceholder": "Add context — what to cover, depth, audience, sections to include…",
-        "referenceLinksLabel": "Reference links"
+        "referenceLinksLabel": "Reference links (optional)"
       },
       "mcq": "Multiple Choice",
       "tf": "True / False",
@@ -2111,7 +2113,8 @@
       "leaveConfirmTitle": "Flashcard not created yet",
       "leaveConfirmDescription": "This flashcard set hasn't been created yet. Are you sure you want to leave? Everything you entered will be lost.",
       "leaveConfirmCancel": "Keep editing",
-      "leaveConfirmLeave": "Leave without creating"
+      "leaveConfirmLeave": "Leave without creating",
+      "emptyCardError": "Please fill in both term and definition for every card."
     }
   },
   "notFoundPage": {

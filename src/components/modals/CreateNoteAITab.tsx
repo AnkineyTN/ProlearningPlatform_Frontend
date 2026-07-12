@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Input } from '@/components/ui/input';
@@ -13,8 +13,11 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { mapI18nToAiApiLanguage } from '@/lib/utils';
 
-import AIWebUrlInput from './ai-tab/AIWebUrlInput';
+import NoteReferenceLinksInput from './ai-tab/NoteReferenceLinksInput';
 import { type AIPrivacy, type NoteAIGenerateData } from './ai-tab/types';
+import { Globe } from 'lucide-react';
+
+const TOPIC_MAX_LENGTH = 100;
 
 type Props = {
   isLoading?: boolean;
@@ -31,19 +34,10 @@ const CreateNoteAITab = ({
 
   const [topic, setTopic] = useState('');
   const [description, setDescription] = useState('');
-  const [referenceLinksText, setReferenceLinksText] = useState('');
+  const [referenceLinks, setReferenceLinks] = useState<string[]>(['']);
   const [privacy, setPrivacy] = useState<AIPrivacy>('PUBLIC');
   const [language, setLanguage] = useState(() =>
     mapI18nToAiApiLanguage(i18n.language),
-  );
-
-  const referenceLinks = useMemo(
-    () =>
-      referenceLinksText
-        .split(/\n/)
-        .map((s) => s.trim())
-        .filter(Boolean),
-    [referenceLinksText],
   );
 
   const valid = topic.trim().length > 0;
@@ -56,7 +50,7 @@ const CreateNoteAITab = ({
     onDataChange({
       topic: topic.trim(),
       description: description.trim(),
-      referenceLinks,
+      referenceLinks: referenceLinks.map((s) => s.trim()).filter(Boolean),
       language,
       privacy,
     });
@@ -65,27 +59,30 @@ const CreateNoteAITab = ({
   return (
     <div className='space-y-6'>
       <div>
-        <Label className='text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground mb-2 block'>
-          {t('modal.ai.note.topicLabel', { defaultValue: 'Topic' })}
-        </Label>
+        <div className='flex items-baseline justify-between gap-2 mb-2'>
+          <Label className='text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground'>
+            {t('modal.ai.note.topicLabel', { defaultValue: 'Topic' })}
+            <span className='text-destructive ml-1'>*</span>
+          </Label>
+          <span className='text-xs text-muted-foreground shrink-0'>
+            {t('modal.charCount', {
+              current: topic.length,
+              max: TOPIC_MAX_LENGTH,
+              defaultValue: '{{current}}/{{max}}',
+            })}
+          </span>
+        </div>
         <Input
           type='text'
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
           disabled={isLoading}
+          maxLength={TOPIC_MAX_LENGTH}
           placeholder={t('modal.ai.note.topicPlaceholder', {
             defaultValue: 'E.g. The French Revolution, Binary search trees…',
           })}
           className='h-11 px-3.5 rounded-lg bg-[var(--pl-bg-sunken)]'
         />
-        <p
-          className='text-xs text-muted-foreground italic mt-1.5'
-          style={{ fontFamily: 'var(--font-serif)' }}
-        >
-          {t('modal.ai.note.topicHint', {
-            defaultValue: 'AI will write the note and name it for you.',
-          })}
-        </p>
       </div>
 
       <div>
@@ -93,12 +90,6 @@ const CreateNoteAITab = ({
           <Label className='text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground'>
             {t('modal.description')}
           </Label>
-          <span
-            className='text-xs text-muted-foreground italic'
-            style={{ fontFamily: 'var(--font-serif)' }}
-          >
-            {t('modal.optionalLabel', { defaultValue: 'optional' })}
-          </span>
         </div>
         <Textarea
           value={description}
@@ -120,18 +111,19 @@ const CreateNoteAITab = ({
               defaultValue: 'Reference links',
             })}
           </Label>
-          <span
-            className='text-xs text-muted-foreground italic'
-            style={{ fontFamily: 'var(--font-serif)' }}
-          >
-            {t('modal.optionalLabel', { defaultValue: 'optional' })}
-          </span>
+          <p className='text-xs text-muted-foreground italic mt-1.5'>
+            <Globe className='inline w-3 h-3 mr-1' />
+            {t('modal.ai.webUrlsHintMax', {
+              defaultValue: 'Up to {{count}} links',
+              count: 3,
+            })}
+          </p>
         </div>
-        <AIWebUrlInput
-          value={referenceLinksText}
-          onChange={setReferenceLinksText}
-          urls={referenceLinks}
+        <NoteReferenceLinksInput
+          links={referenceLinks}
+          onChange={setReferenceLinks}
           disabled={isLoading}
+          maxLinks={3}
         />
       </div>
 
