@@ -1,23 +1,22 @@
 \chapter{Kết luận và hướng phát triển}
 \label{Chapter5}
 
-\section{Triển khai thực nghiệm}
+\section{Triển khai thực nghiệm và Mô hình tài chính}
 
-\subsection{Nền tảng triển khai}
-Sản phẩm đã được triển khai hoàn thiện và người dùng có thể trực tiếp trải nghiệm hệ thống thông qua các kênh:
+\textbf{Nền tảng triển khai:} Sản phẩm đã được triển khai hoàn thiện và người dùng có thể trực tiếp trải nghiệm hệ thống thông qua các kênh:
 \begin{itemize}
     \item \textbf{Trang Web:} Hệ thống được hosting trực tuyến tại địa chỉ: \url{https://prolearning.io.vn/}
     \item \textbf{App Mobile:} Do giới hạn về chi phí phát hành, bản thử nghiệm hiện đang được phân phối cho người dùng thông qua file \texttt{.apk}.
 \end{itemize}
 
-\subsection{Mô hình tài chính}
-Hiện tại, nền tảng được cung cấp hoàn toàn miễn phí cho cộng đồng sinh viên nhằm thu thập phản hồi và tối ưu hóa hệ thống. Các chi phí liên quan đến duy trì máy chủ và gọi API từ mô hình AI đều do nhóm tự chi trả.
+\vspace{0.5em} % Tạo một khoảng cách nhỏ giữa hai ý cho thoáng bài viết
 
+\textbf{Mô hình tài chính:} Hiện tại, nền tảng được cung cấp hoàn toàn miễn phí cho cộng đồng sinh viên nhằm thu thập phản hồi và tối ưu hóa hệ thống. Các chi phí liên quan đến duy trì máy chủ và gọi API từ mô hình AI đều do nhóm tự chi trả.
 
 \section{Đánh giá kết quả đề tài}
-Nhìn chung, đề tài đã hoàn thành xuất sắc các mục tiêu ban đầu đề ra. Nhóm đã thiết kế và xây dựng thành công \textbf{Pro Learning Platform} -- một trợ lý học tập toàn diện đa nền tảng (Web và Mobile), giải quyết triệt để các khó khăn của người học hiện nay thông qua các điểm nổi bật sau:
+Nhìn chung, đề tài đã hoàn thành các mục tiêu ban đầu đề ra. Nhóm đã thiết kế và xây dựng thành công \textbf{Pro Learning Platform} -- một trợ lý học tập toàn diện đa nền tảng (Web và Mobile), giải quyết triệt để các khó khăn của người học hiện nay thông qua các điểm nổi bật sau:
 \begin{itemize}
-    \item Tích hợp toàn bộ công cụ học tập (Ghi chú, Flashcard, Bài kiểm tra, Sơ đồ tư duy) và quản lý thời gian (To-do list, Pomodoro) vào một không gian duy nhất.
+    \item Tích hợp toàn bộ công cụ học tập (Ghi chú, Flashcard, Bài kiểm tra) và quản lý thời gian (To-do list, Pomodoro) vào một không gian duy nhất.
     \item Ứng dụng thành công công nghệ AI để tự động hóa quá trình học: tóm tắt tài liệu, sinh thẻ ghi nhớ, tạo bài kiểm tra, nhắc nhở ôn luyện và phân tích năng lực người học.
     \item Xây dựng lộ trình học tập cá nhân hóa dựa trên dữ liệu phân tích năng lực và tần suất sai sót của người dùng.
     \item Bước đầu hình thành môi trường học tập cộng đồng thông qua các tính năng chia sẻ tài nguyên.
@@ -56,13 +55,11 @@ Mặc dù hệ thống đã hoạt động ổn định và đáp ứng các yê
 
 
 \section{Hướng phát triển trong tương lai}
-\label{sec:future-work}
 Để hoàn thiện và nâng tầm Pro Learning Platform, nhóm đề xuất một số định hướng phát triển trong tương lai:
 \begin{itemize}
     \item \textbf{Phát triển Extension trình duyệt:} Xây dựng Chrome/Edge Extension để người dùng có thể quét, tóm tắt và lưu trữ kiến thức trực tiếp từ các trang web vào hệ thống.
     \item \textbf{Tích hợp Gamification:} Bổ sung hệ thống điểm thưởng, huy hiệu (badges) và bảng xếp hạng (Leaderboard) để kích thích hứng thú và tăng tính cạnh tranh tích cực giữa người học.
     \item \textbf{Phòng học nhóm ảo:} Phát triển tính năng Group Study Room cho phép nhiều người dùng cùng ghi chú trên một không gian chung theo thời gian thực.
-    \item \textbf{Trợ lý hỏi đáp (Chatbot) tích hợp trong ứng dụng:} Bổ sung chatbot cho phép người dùng hỏi đáp và tìm kiếm thông tin trực tiếp trong app thay vì phải chuyển qua lại nhiều tab trình duyệt -- một đề xuất được nhiều người dùng thử nghiệm nhắc đến trong khảo sát trải nghiệm (Mục~\ref{subsec:user-survey}).
     \item \textbf{Liên kết với hệ thống nhà trường (LMS):} Xây dựng API kết nối với các hệ thống quản lý đào tạo như Moodle hoặc Canvas, giúp sinh viên đồng bộ bài tập và tài liệu tự động.
     \item \textbf{Tối ưu hóa Local AI Model:} Nghiên cứu việc fine-tune các mô hình AI mã nguồn mở cỡ nhỏ (như Llama 3) để chạy trực tiếp trên server nội bộ, giảm chi phí và tăng bảo mật dữ liệu.
 \end{itemize}
