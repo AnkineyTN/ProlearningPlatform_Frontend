@@ -363,17 +363,20 @@ Từ kết quả khảo sát và phân tích các hệ thống NotebookLM, Quizl
 Xuất phát từ những vấn đề còn tồn tại đã được phân tích ở mục trước, hệ thống được đề xuất trong đề tài cần đáp ứng một số yêu cầu quan trọng nhằm hỗ trợ người dùng trong toàn bộ quá trình học tập. Các Use Case Diagram dưới đây cung cấp cái nhìn tổng quan về các chức năng hệ thống theo từng nhóm nghiệp vụ.
 
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{uc-auth.jpg}
-  \caption{Use Case: Đăng ký và Đăng nhập}
-  \label{fig:uc-auth}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{uc-profile.jpg}
-  \caption{Use Case: Quản lý hồ sơ người dùng}
-  \label{fig:uc-profile}
+  \makebox[\textwidth][c]{
+    \begin{minipage}[b]{0.53\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{uc-auth.jpg}
+      \caption{Use Case: Đăng ký và Đăng nhập}
+      \label{fig:uc-auth}
+    \end{minipage}\hspace{0.02\textwidth}%
+    \begin{minipage}[b]{0.53\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{uc-profile.jpg}
+      \caption{Use Case: Quản lý hồ sơ người dùng}
+      \label{fig:uc-profile}
+    \end{minipage}
+  }
 \end{figure}
 
 \begin{figure}[H]
@@ -384,10 +387,37 @@ Xuất phát từ những vấn đề còn tồn tại đã được phân tích
 \end{figure}
 
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{uc-set.jpg}
-  \caption{Use Case: Quản lý không gian học tập (Set)}
-  \label{fig:uc-set}
+  \makebox[\textwidth][c]{
+    \begin{minipage}[b]{0.53\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{uc-set.jpg}
+      \caption{Use Case: Quản lý không gian học tập (Set)}
+      \label{fig:uc-set}
+    \end{minipage}\hspace{0.02\textwidth}%
+    \begin{minipage}[b]{0.53\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{uc-flashcard.jpg}
+      \caption{Use Case: Học tập với Flashcard}
+      \label{fig:uc-flashcard}
+    \end{minipage}
+  }
+\end{figure}
+
+\begin{figure}[H]
+  \makebox[\textwidth][c]{
+    \begin{minipage}[b]{0.53\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{uc-exam.jpg}
+      \caption{Use Case: Kiểm tra và đánh giá kiến thức}
+      \label{fig:uc-exam}
+    \end{minipage}\hspace{0.02\textwidth}%
+    \begin{minipage}[b]{0.53\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{uc-roadmap.jpg}
+      \caption{Use Case: Lộ trình học tập}
+      \label{fig:uc-roadmap}
+    \end{minipage}
+  }
 \end{figure}
 
 \begin{figure}[H]
@@ -395,20 +425,6 @@ Xuất phát từ những vấn đề còn tồn tại đã được phân tích
   \includegraphics[width=\textwidth]{uc-note.jpg}
   \caption{Use Case: Ghi chú kiến thức}
   \label{fig:uc-note}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{uc-flashcard.jpg}
-  \caption{Use Case: Học tập với Flashcard}
-  \label{fig:uc-flashcard}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{uc-exam.jpg}
-  \caption{Use Case: Kiểm tra và đánh giá kiến thức}
-  \label{fig:uc-exam}
 \end{figure}
 
 \begin{figure}[H]
@@ -430,13 +446,6 @@ Xuất phát từ những vấn đề còn tồn tại đã được phân tích
   \includegraphics[width=\textwidth]{uc-analytics.jpg}
   \caption{Use Case: Theo dõi và phân tích tiến trình học tập}
   \label{fig:uc-analytics}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{uc-roadmap.jpg}
-  \caption{Use Case: Lộ trình học tập}
-  \label{fig:uc-roadmap}
 \end{figure}
 
 \begin{figure}[H]
