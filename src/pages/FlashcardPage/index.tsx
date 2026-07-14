@@ -51,11 +51,10 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
   const [isShuffled, setIsShuffled] = useState(false);
   const [showContinueDialog, setShowContinueDialog] = useState(false);
   const [pendingSessionData, setPendingSessionData] = useState<any>(null);
+  // Reviews that failed to sync — retried on the next answer / back / unload.
   const [unsyncedReviews, setUnsyncedReviews] = useState<
     Array<{ cardId: number; known: boolean }>
   >([]);
-  // Per spec: mobile flushes the buffer at SYNC_BATCH_SIZE = 5.
-  const SYNC_BATCH_SIZE = 5;
   const [studyMode, setStudyMode] = useState<StudyMode | null>(null);
   const [reviewBannerMessage, setReviewBannerMessage] = useState<string>('');
   const { isProgressTrackingEnabled } = useFlashcardStudySettings();
@@ -102,9 +101,6 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [cardReviews, setCardReviews] = useState<
-    Array<{ cardId: number; known: boolean }>
-  >([]);
   const [sessionCards, setSessionCards] = useState<Card[]>([]);
   const startSessionMutation = useStartSession();
   const syncProgressMutation = useSyncProgress();
@@ -171,9 +167,14 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     [displayedSessionCards, displayedFlashcards],
   );
 
-  const handleNext = () => {
-    if (currentCardIndex < activeCards.length - 1) {
-      setCurrentCardIndex(currentCardIndex + 1);
+  // Accepts overrides because handleCardAnswer may realign the current index
+  // to a freshly-started session's card list within the same async call,
+  // before the component re-renders with the new state.
+  const handleNext = (cardsOverride?: Card[], indexOverride?: number) => {
+    const cards = cardsOverride ?? activeCards;
+    const index = indexOverride ?? currentCardIndex;
+    if (index < cards.length - 1) {
+      setCurrentCardIndex(index + 1);
       setIsFlipped(false);
     } else {
       goTo(`/sets/${setId}/flashcards/${flashcardId}/results`);
@@ -257,7 +258,12 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       );
       setCurrentCardIndex(0);
       setIsFlipped(false);
-      setCardReviews([]);
+      // Set viewMode synchronously alongside sessionId so useSessionResult's
+      // `enabled` flag never sees the new sessionId while viewMode is still
+      // 'results' — navigate()'s location update lands a render later than
+      // this state batch, which was firing a spurious GET .../result for the
+      // brand-new (not-yet-completed) session.
+      setViewMode('study');
       goTo(`/sets/${setId}/flashcards/${flashcardId}/study`);
     } catch (error) {
       console.error('Failed to start session:', error);
@@ -289,6 +295,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         setCurrentCardIndex(0);
         setIsFlipped(false);
         setShowContinueDialog(false);
+        setViewMode('study');
         goTo(`/sets/${setId}/flashcards/${flashcardId}/study`);
       } catch (error) {
         console.error('Failed to continue session:', error);
@@ -319,17 +326,51 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
     }
   };
 
+  // Starts (or resumes, per the backend's own idempotent behaviour) a session
+  // on demand — used when the user grades a card from the Home view, where no
+  // session has been started yet. Unlike startNewSession, this does not reset
+  // currentCardIndex or navigate, since the caller may be mid-browse.
+  const ensureSession = async (): Promise<{
+    sessionId: number;
+    cards: Card[];
+  } | null> => {
+    if (sessionId) return { sessionId, cards: sessionCards };
+
+    try {
+      const response = await startSessionMutation.mutateAsync({
+        setId: Number(setId),
+        flashcardId: Number(flashcardId),
+      });
+
+      const sessionData = response.data.data;
+      const cards = sessionData.cards ?? [];
+      setSessionId(sessionData.id);
+      setSessionCards(cards);
+      setStudyMode(sessionData.studyMode ?? null);
+      setReviewBannerMessage(
+        sessionData.studyMode === 'REVIEW' ? (sessionData.message ?? '') : '',
+      );
+      return { sessionId: sessionData.id, cards };
+    } catch (error) {
+      console.error('Failed to start session:', error);
+      toast.error(apiErrorMessage(error, t('flashcard.page.startSessionError')));
+      return null;
+    }
+  };
+
   // Fix #1: Returns true when session completes so callers can skip further navigation
   const syncProgress = async (
     reviews: Array<{ cardId: number; known: boolean }>,
+    sessionIdOverride?: number,
   ): Promise<boolean> => {
-    if (!sessionId || reviews.length === 0) return false;
+    const activeSessionId = sessionIdOverride ?? sessionId;
+    if (!activeSessionId || reviews.length === 0) return false;
 
     try {
       const response = await syncProgressMutation.mutateAsync({
         setId: Number(setId),
         flashcardId: Number(flashcardId),
-        sessionId,
+        sessionId: activeSessionId,
         data: { cardItemReviews: reviews },
       });
 
@@ -341,35 +382,50 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       }
     } catch (error) {
       console.error('Failed to sync progress:', error);
+      // Keep it queued so the next answer / back / unload retries the send.
+      setUnsyncedReviews(reviews);
     }
     return false;
   };
 
   const handleCardAnswer = async (known: boolean) => {
-    // Browsing in the home view (no active study session) — just advance,
-    // there's nothing to record progress against.
-    if (!sessionId) {
-      handleNext();
-      return;
-    }
-
     recordItem();
 
     // Fix #3: Use activeCards so the correct card ID is read after shuffle
-    const currentCard = activeCards[currentCardIndex];
-    const review = { cardId: currentCard.id, known };
+    const cardBeingAnswered = activeCards[currentCardIndex];
+    const review = { cardId: cardBeingAnswered.id, known };
 
-    const newUnsyncedReviews = [...unsyncedReviews, review];
-    setUnsyncedReviews(newUnsyncedReviews);
-    setCardReviews([...cardReviews, review]);
+    let activeSessionId = sessionId;
+    let cardsForNav = activeCards;
+    let indexForNav = currentCardIndex;
 
-    if (newUnsyncedReviews.length >= SYNC_BATCH_SIZE) {
-      // Fix #1: If session completed, syncProgress already navigated – skip handleNext
-      const completed = await syncProgress(newUnsyncedReviews);
-      if (completed) return;
+    // Grading from the Home view (browsing, no session yet) — start one now
+    // so the review is tracked exactly like it would be from the Study view.
+    if (!activeSessionId) {
+      const session = await ensureSession();
+      if (!session) {
+        // Couldn't start a session — fall back to local-only navigation.
+        handleNext();
+        return;
+      }
+      activeSessionId = session.sessionId;
+      cardsForNav = session.cards;
+      // Home's card order/subset can differ from the session's due-card
+      // list, so realign to the same card by id rather than trusting index.
+      const idx = session.cards.findIndex((c) => c.id === cardBeingAnswered.id);
+      indexForNav = idx >= 0 ? idx : 0;
+      setCurrentCardIndex(indexForNav);
+      setViewMode('study');
+      goTo(`/sets/${setId}/flashcards/${flashcardId}/study`);
     }
 
-    handleNext();
+    const completed = await syncProgress(
+      [...unsyncedReviews, review],
+      activeSessionId,
+    );
+    if (completed) return;
+
+    handleNext(cardsForNav, indexForNav);
   };
 
   useEffect(() => {
@@ -577,9 +633,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           totalCards={flashcards.length}
           flashcards={activeCards}
           onHome={() => goTo(`/sets/${setId}/flashcards/${flashcardId}`)}
-          onContinue={() =>
-            goTo(`/sets/${setId}/flashcards/${flashcardId}/study`)
-          }
+          onContinue={startNewSession}
           onPracticeWithExam={handlePracticeWithExam}
           onMatching={() =>
             goTo(`/sets/${setId}/flashcards/${flashcardId}/matching`)
