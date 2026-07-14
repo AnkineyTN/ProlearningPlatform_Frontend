@@ -1242,6 +1242,10 @@
   "googleCalendar": {
     "title": "Google Calendar",
     "sub": "Automatically create events when todos have a due date.",
+    "todoBannerTitle": "You haven't connected Google Calendar",
+    "todoBannerDesc": "Connect to automatically sync your todos to your calendar.",
+    "todoBannerConnect": "Connect now",
+    "todoBannerDismiss": "Dismiss",
     "loading": "Loading…",
     "statusConnected": "Connected",
     "statusDisconnected": "Not connected",
@@ -1258,7 +1262,13 @@
       "disconnected": "Google Calendar disconnected.",
       "disconnectFailed": "Failed to disconnect. Please try again."
     },
-    "syncedBadge": "Synced to Google Calendar"
+    "syncedBadge": "Synced to Google Calendar",
+    "disconnectConfirm": {
+      "title": "Disconnect Google Calendar?",
+      "desc": "Your todos will no longer sync automatically to Google Calendar. You can reconnect at any time.",
+      "cancel": "Cancel",
+      "confirm": "Disconnect"
+    }
   },
   "notifPrefs": {
     "group": {

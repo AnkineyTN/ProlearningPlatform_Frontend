@@ -1,8 +1,19 @@
+import { useState, useEffect, useRef } from 'react';
 import { Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { apiErrorMessage } from '@/lib/apiError';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -15,6 +26,7 @@ import {
   useToggleCalendarSync,
   useDisconnectCalendar,
 } from '@/hooks/useCalendar';
+import { useQueryClient } from '@tanstack/react-query';
 import type { GlobalNotificationPreferences } from '@/services/types/notification.types';
 import ProfileSection from './Section';
 
@@ -255,10 +267,24 @@ function NotificationPreferencesSection() {
 
 function GoogleCalendarSection() {
   const { t } = useTranslation();
+  const qc = useQueryClient();
   const { data: calendarStatus, isLoading } = useCalendarStatus();
   const connectCalendar = useConnectCalendar();
   const toggleSync = useToggleCalendarSync();
   const disconnectCalendar = useDisconnectCalendar();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const popupRef = useRef<Window | null>(null);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type === 'calendar-auth') {
+        qc.invalidateQueries({ queryKey: ['calendar', 'status'] });
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [qc]);
 
   const connected = calendarStatus?.connected ?? false;
   const syncEnabled = calendarStatus?.syncEnabled ?? false;
@@ -266,7 +292,7 @@ function GoogleCalendarSection() {
   const handleConnect = async () => {
     try {
       const authUrl = await connectCalendar.mutateAsync();
-      window.open(authUrl, 'google-calendar-auth', 'width=500,height=600');
+      popupRef.current = window.open(authUrl, 'google-calendar-auth', 'width=500,height=600');
     } catch (error) {
       toast.error(apiErrorMessage(error, t('googleCalendar.toast.connectFailed')));
     }
@@ -323,11 +349,36 @@ function GoogleCalendarSection() {
               size='sm'
               className='text-destructive border-destructive/30 hover:bg-destructive/10'
               disabled={disconnectCalendar.isPending}
-              onClick={handleDisconnect}
+              onClick={() => setConfirmOpen(true)}
             >
               {t('googleCalendar.disconnect')}
             </Button>
           </div>
+
+          <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {t('googleCalendar.disconnectConfirm.title')}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {t('googleCalendar.disconnectConfirm.desc')}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>
+                  {t('googleCalendar.disconnectConfirm.cancel')}
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  className='bg-[var(--pl-danger)] hover:bg-[var(--pl-danger)] hover:opacity-90 text-white'
+                  disabled={disconnectCalendar.isPending}
+                  onClick={handleDisconnect}
+                >
+                  {t('googleCalendar.disconnectConfirm.confirm')}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       ) : (
         <div className='flex flex-col gap-3'>

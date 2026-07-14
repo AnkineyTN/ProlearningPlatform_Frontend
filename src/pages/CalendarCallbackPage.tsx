@@ -33,6 +33,10 @@ export default function CalendarCallbackPage() {
     qc.invalidateQueries({ queryKey: ['calendar', 'status'] });
 
     if (window.opener) {
+      window.opener.postMessage(
+        { type: 'calendar-auth', connected: connected === 'true' },
+        window.location.origin,
+      );
       window.close();
     } else {
       navigate('/profile', { replace: true });

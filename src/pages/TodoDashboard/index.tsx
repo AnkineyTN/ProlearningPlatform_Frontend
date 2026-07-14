@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { CalendarX2 } from 'lucide-react';
 
 import { apiErrorMessage } from '@/lib/apiError';
 import { todoAPI } from '@/services/endpoints/todo';
+import { useCalendarStatus } from '@/hooks/useCalendar';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import GoalModal from './components/GoalModal';
@@ -20,7 +23,9 @@ import type { MentionResourceType } from './components/SetMentionInput';
 const TodoDashboard = () => {
   const { t } = useTranslation();
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const [newTask, setNewTask] = useState('');
+  const [calendarBannerDismissed, setCalendarBannerDismissed] = useState(false);
   const [newTaskRefs, setNewTaskRefs] = useState<
     Record<MentionResourceType, ResourceRef[]>
   >({
@@ -33,6 +38,10 @@ const TodoDashboard = () => {
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [detailTodo, setDetailTodo] = useState<Todo | null>(null);
   const [selectedGoalId, setSelectedGoalId] = useState<number | null>(null);
+
+  const { data: calendarStatus, isSuccess: calendarLoaded } = useCalendarStatus();
+  const showCalendarBanner =
+    calendarLoaded && !calendarStatus?.connected && !calendarBannerDismissed;
 
   const { data: todosData } = useQuery({
     queryKey: ['todos', 'all'],
@@ -168,6 +177,34 @@ const TodoDashboard = () => {
           </h1>
         </div>
       </div>
+
+      {showCalendarBanner && (
+        <div className='mb-5 flex items-start gap-3 rounded-2xl border border-[var(--pl-warning-border)] bg-[var(--pl-warning-soft)] px-4 py-3.5'>
+          <CalendarX2 className='mt-0.5 h-4 w-4 shrink-0 text-[var(--pl-warning-text)]' />
+          <div className='flex-1 min-w-0'>
+            <p className='text-[13px] font-medium text-[var(--pl-warning-text)]'>
+              {t('googleCalendar.todoBannerTitle')}
+            </p>
+            <p className='text-[12px] text-[var(--pl-warning-text)] opacity-80 mt-0.5'>
+              {t('googleCalendar.todoBannerDesc')}
+            </p>
+          </div>
+          <div className='flex items-center gap-2 shrink-0'>
+            <button
+              onClick={() => navigate('/profile?tab=preferences')}
+              className='rounded-lg bg-[var(--pl-warning)] px-3 py-1.5 text-[12px] font-medium text-white hover:opacity-90 transition-opacity'
+            >
+              {t('googleCalendar.todoBannerConnect')}
+            </button>
+            <button
+              onClick={() => setCalendarBannerDismissed(true)}
+              className='rounded-lg border border-[var(--pl-warning-border)] px-3 py-1.5 text-[12px] font-medium text-[var(--pl-warning-text)] hover:bg-[var(--pl-warning-border)] transition-colors'
+            >
+              {t('googleCalendar.todoBannerDismiss')}
+            </button>
+          </div>
+        </div>
+      )}
 
       <TodoStats
         completedCount={completedCount}

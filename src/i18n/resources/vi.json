@@ -1652,6 +1652,10 @@
   "googleCalendar": {
     "title": "Google Calendar",
     "sub": "Tự động tạo event khi todo có ngày hết hạn.",
+    "todoBannerTitle": "Bạn chưa kết nối với Google Calendar",
+    "todoBannerDesc": "Kết nối để tự động đồng bộ todo sang lịch của bạn.",
+    "todoBannerConnect": "Kết nối ngay",
+    "todoBannerDismiss": "Bỏ qua",
     "loading": "Đang tải…",
     "statusConnected": "Đã kết nối",
     "statusDisconnected": "Chưa kết nối",
@@ -1668,7 +1672,13 @@
       "disconnected": "Đã ngắt kết nối Google Calendar.",
       "disconnectFailed": "Ngắt kết nối thất bại. Vui lòng thử lại."
     },
-    "syncedBadge": "Đã đồng bộ lên Google Calendar"
+    "syncedBadge": "Đã đồng bộ lên Google Calendar",
+    "disconnectConfirm": {
+      "title": "Ngắt kết nối Google Calendar?",
+      "desc": "Các todo sẽ không còn được đồng bộ tự động lên Google Calendar. Bạn có thể kết nối lại bất cứ lúc nào.",
+      "cancel": "Huỷ",
+      "confirm": "Ngắt kết nối"
+    }
   },
   "notifPrefs": {
     "group": {
