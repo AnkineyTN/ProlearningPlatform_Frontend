@@ -3,53 +3,57 @@ import { useEffect, useRef, useState } from 'react';
 interface UseTextSelectionResult {
   selectedText: string;
   showSummarizeBtn: boolean;
-  tooltipPos: { x: number; y: number };
   tooltipRef: React.RefObject<HTMLDivElement | null>;
   hide: () => void;
 }
-
-const BUTTON_WIDTH = 130;
 
 export function useTextSelection(
   containerRef: React.RefObject<HTMLDivElement | null>,
 ): UseTextSelectionResult {
   const [selectedText, setSelectedText] = useState('');
   const [showSummarizeBtn, setShowSummarizeBtn] = useState(false);
-  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const handleMouseUp = () => {
+    const readSelection = () => {
+      rafRef.current = null;
       const selection = window.getSelection();
       const text = selection?.toString().trim() || '';
-      if (!text || !selection || selection.rangeCount === 0) {
-        setShowSummarizeBtn(false);
-        setSelectedText('');
-        return;
-      }
-      const range = selection.getRangeAt(0);
       const container = containerRef.current;
-      if (
-        !container ||
-        !container.contains(range.startContainer) ||
-        !container.contains(range.endContainer)
-      ) {
-        setShowSummarizeBtn(false);
+      const range =
+        text && selection && selection.rangeCount > 0
+          ? selection.getRangeAt(0)
+          : null;
+      const insideContainer =
+        !!container &&
+        !!range &&
+        container.contains(range.startContainer) &&
+        container.contains(range.endContainer);
+
+      if (insideContainer) {
+        setSelectedText(text);
+        setShowSummarizeBtn(true);
+      } else {
         setSelectedText('');
-        return;
+        setShowSummarizeBtn(false);
       }
-      setSelectedText(text);
-      const rect = range.getBoundingClientRect();
-      const editorRect = container.getBoundingClientRect();
-      const xRaw = rect.left - editorRect.left - BUTTON_WIDTH - 8;
-      setTooltipPos({
-        x: Math.max(6, xRaw),
-        y: rect.top - editorRect.top,
-      });
-      setShowSummarizeBtn(true);
     };
-    document.addEventListener('mouseup', handleMouseUp);
-    return () => document.removeEventListener('mouseup', handleMouseUp);
+
+    // selectionchange fires on every collapse/expand (including a plain
+    // click that clears the selection), so the button hides itself the
+    // moment there's nothing selected instead of lingering until the next
+    // outside click. rAF-throttled since it fires rapidly while dragging.
+    const handleSelectionChange = () => {
+      if (rafRef.current !== null) return;
+      rafRef.current = requestAnimationFrame(readSelection);
+    };
+
+    document.addEventListener('selectionchange', handleSelectionChange);
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
   }, [containerRef]);
 
   useEffect(() => {
@@ -69,7 +73,6 @@ export function useTextSelection(
   return {
     selectedText,
     showSummarizeBtn,
-    tooltipPos,
     tooltipRef,
     hide: () => setShowSummarizeBtn(false),
   };

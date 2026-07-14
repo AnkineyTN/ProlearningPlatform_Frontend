@@ -8,10 +8,14 @@ import {
   X,
 } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
+import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+
+const DELETE_ITEM_NAME_LIMIT = 80;
 
 interface AISummary {
   id: string;
@@ -31,6 +35,7 @@ interface AISummarizePanelProps {
 const QUERY_PREVIEW_LIMIT = 200;
 
 const SummaryQuery = ({ query }: { query: string }) => {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const isTruncatable = query.length > QUERY_PREVIEW_LIMIT;
   const displayed =
@@ -48,7 +53,9 @@ const SummaryQuery = ({ query }: { query: string }) => {
           onClick={() => setExpanded((prev) => !prev)}
           className='ml-1 not-italic text-[var(--pl-accent)] hover:underline text-xs font-[family-name:var(--font-mono-pl)]'
         >
-          {expanded ? 'Show less' : 'Read more'}
+          {expanded
+            ? t('note.aiWorkspace.showLess')
+            : t('note.aiWorkspace.readMore')}
         </button>
       ) : null}
     </p>
@@ -68,8 +75,10 @@ const SummaryCard = ({
   onCopy,
   onSave,
 }: SummaryCardProps) => {
+  const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const handleSave = async () => {
     if (!onSave) return;
@@ -81,6 +90,11 @@ const SummaryCard = ({
     }
   };
 
+  const deleteItemName =
+    summary.query.length > DELETE_ITEM_NAME_LIMIT
+      ? `${summary.query.slice(0, DELETE_ITEM_NAME_LIMIT).trimEnd()}...`
+      : summary.query;
+
   return (
     <Card className='p-4 gap-2 bg-[var(--pl-bg)] border-border shadow-none hover:border-[var(--pl-border-strong)] transition-colors'>
       <div className='flex items-center justify-between'>
@@ -90,7 +104,11 @@ const SummaryCard = ({
             variant='ghost'
             className='h-6 w-6 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-text)] shrink-0'
             onClick={() => setCollapsed((prev) => !prev)}
-            aria-label={collapsed ? 'Expand summary' : 'Collapse summary'}
+            aria-label={
+              collapsed
+                ? t('note.aiWorkspace.expandAriaLabel')
+                : t('note.aiWorkspace.collapseAriaLabel')
+            }
             aria-expanded={!collapsed}
           >
             <ChevronDown
@@ -105,16 +123,18 @@ const SummaryCard = ({
               background: 'var(--pl-accent-soft)',
             }}
           >
-            {summary.type === 'file' ? 'Summary' : 'Explain'}
+            {summary.type === 'file'
+              ? t('note.summarize.badge')
+              : t('note.aiExplain.badge')}
           </span>
           {summary.backendId != null && (
             <span
               className='flex items-center gap-1 text-[10px] tracking-[0.14em] uppercase px-1.5 py-0.5 rounded-md shrink-0'
-              title='Saved to note'
+              title={t('note.aiWorkspace.savedTitle')}
               style={{ color: 'var(--pl-text-faint)' }}
             >
               <BookMarked className='w-3 h-3' />
-              Saved
+              {t('note.aiWorkspace.saved')}
             </span>
           )}
           {collapsed ? (
@@ -134,8 +154,8 @@ const SummaryCard = ({
               className='h-6 w-6 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-accent)]'
               onClick={handleSave}
               disabled={isSaving}
-              aria-label='Save summary'
-              title='Save to note'
+              aria-label={t('note.aiWorkspace.saveAriaLabel')}
+              title={t('note.aiWorkspace.saveTitle')}
             >
               <Save
                 className={`w-3.5 h-3.5 ${isSaving ? 'animate-pulse' : ''}`}
@@ -146,8 +166,8 @@ const SummaryCard = ({
             size='sm'
             variant='ghost'
             className='h-6 w-6 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-text)]'
-            onClick={() => onRemove(summary.id)}
-            aria-label='Remove summary'
+            onClick={() => setShowDeleteDialog(true)}
+            aria-label={t('note.aiWorkspace.removeAriaLabel')}
           >
             <X className='w-4 h-4' />
           </Button>
@@ -158,7 +178,9 @@ const SummaryCard = ({
         <>
           <div className='mb-3'>
             <p className='text-[10px] tracking-[0.18em] uppercase text-[var(--pl-text-faint)] mb-1.5'>
-              {summary.type === 'file' ? 'Source' : 'Selection'}
+              {summary.type === 'file'
+                ? t('note.aiWorkspace.source')
+                : t('note.aiWorkspace.selection')}
             </p>
             <SummaryQuery query={summary.query} />
           </div>
@@ -166,14 +188,14 @@ const SummaryCard = ({
           <div>
             <div className='flex items-center justify-between mb-1.5'>
               <p className='text-[10px] tracking-[0.18em] uppercase text-[var(--pl-text-faint)]'>
-                AI Response
+                {t('note.aiWorkspace.aiResponse')}
               </p>
               <Button
                 size='sm'
                 variant='ghost'
                 className='h-6 w-6 p-0 text-[var(--pl-text-faint)] hover:text-[var(--pl-text)]'
                 onClick={() => onCopy(summary.response)}
-                aria-label='Copy response'
+                aria-label={t('note.aiWorkspace.copyAriaLabel')}
               >
                 <Copy className='w-3.5 h-3.5' />
               </Button>
@@ -185,6 +207,17 @@ const SummaryCard = ({
           </div>
         </>
       )}
+
+      <DeleteConfirmDialog
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={() => {
+          setShowDeleteDialog(false);
+          onRemove(summary.id);
+        }}
+        title={t('modal.delete')}
+        itemName={deleteItemName}
+      />
     </Card>
   );
 };
@@ -195,6 +228,7 @@ export const AISummarizePanel = ({
   onSaveSummary,
   onClosePanel,
 }: AISummarizePanelProps) => {
+  const { t } = useTranslation();
   const handleCopyResponse = async (html: string) => {
     const plainText = new DOMParser().parseFromString(html, 'text/html').body
       .textContent ?? '';
@@ -209,7 +243,7 @@ export const AISummarizePanel = ({
     } catch {
       await navigator.clipboard.writeText(plainText);
     }
-    toast.success('Copied to clipboard');
+    toast.success(t('note.aiWorkspace.copySuccess'));
   };
 
   if (summaries.length === 0) {
@@ -219,13 +253,13 @@ export const AISummarizePanel = ({
           <Sparkles className='w-6 h-6 text-[var(--pl-accent)]' />
         </div>
         <p className='text-[10px] tracking-[0.18em] uppercase text-[var(--pl-text-faint)] mb-2'>
-          AI Workspace
+          {t('note.aiWorkspace.title')}
         </p>
         <p
           className='text-lg italic text-[var(--pl-text-muted)] max-w-[260px] leading-snug'
           style={{ fontFamily: 'var(--font-serif)' }}
         >
-          Highlight text or summarize a file to surface AI insights here.
+          {t('note.aiWorkspace.emptyHint')}
         </p>
       </div>
     );
@@ -237,7 +271,7 @@ export const AISummarizePanel = ({
         <div className='flex items-baseline gap-2 min-w-0'>
           <h3 className='font-[family-name:var(--font-display)] text-base font-medium tracking-tight truncate text-[var(--pl-text)] flex items-center gap-2'>
             <Sparkles className='w-4 h-4 text-[var(--pl-accent)]' />
-            AI Workspace
+            {t('note.aiWorkspace.title')}
           </h3>
           <span className='text-[10px] tracking-[0.18em] uppercase text-[var(--pl-text-faint)] font-[family-name:var(--font-mono-pl)]'>
             {summaries.length}
@@ -250,10 +284,12 @@ export const AISummarizePanel = ({
             variant='ghost'
             className='shrink-0 gap-1 h-8 text-[var(--pl-text-muted)] hover:text-[var(--pl-text)]'
             onClick={onClosePanel}
-            aria-label='Hide AI panel'
+            aria-label={t('note.aiWorkspace.hideAriaLabel')}
           >
             <PanelRightClose className='w-4 h-4' />
-            <span className='hidden sm:inline text-xs'>Hide</span>
+            <span className='hidden sm:inline text-xs'>
+              {t('note.aiWorkspace.hide')}
+            </span>
           </Button>
         ) : null}
       </div>

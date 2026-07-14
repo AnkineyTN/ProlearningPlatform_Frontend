@@ -1746,7 +1746,8 @@
     "item": {
       "editTitle": "Chi tiết / chỉnh sửa",
       "deleteTitle": "Xóa",
-      "shortBadge": "ngắn hạn"
+      "shortBadge": "ngắn hạn",
+      "calendarSynced": "Đã đồng bộ với Google Calendar"
     },
     "priority": {
       "HIGH": "Cao",
@@ -2385,7 +2386,7 @@
       "noCreators": "Chưa có người tạo.",
       "noTopics": "Chưa có chủ đề.",
       "resources": "{{count}} tài nguyên",
-      "footer": "Tất cả nội dung ở đây được chia sẻ bởi người dùng. Sao chép một bộ sẽ giữ liên kết đến tác giả gốc.",
+      "footer": "Tất cả nội dung ở đây được chia sẻ bởi người dùng.",
       "periodAll": "Tất cả",
       "typNote": "Ghi chú",
       "typFlashcard": "Thẻ học",
@@ -2426,9 +2427,11 @@
       "beforeUnload": "Bạn có thay đổi chưa được lưu có thể bị mất."
     },
     "aiExplain": {
+      "badge": "Giải thích",
       "rateLimited": "Bạn đã đạt giới hạn {{limit}} lượt giải thích AI mỗi phút. Vui lòng chờ một chút rồi thử lại."
     },
     "summarize": {
+      "badge": "Tóm tắt",
       "button": "Tóm tắt tệp bằng AI",
       "limitLabel": "Độ dài phản hồi tối đa",
       "short": "Ngắn (~100 từ)",
@@ -2436,6 +2439,42 @@
       "long": "Dài (~600 từ)",
       "success": "Tóm tắt tệp thành công",
       "error": "Tóm tắt tệp thất bại"
+    },
+    "aiWorkspace": {
+      "title": "Không gian AI",
+      "emptyHint": "Bôi đen văn bản hoặc tóm tắt một tệp để xem thông tin AI ở đây.",
+      "hide": "Ẩn",
+      "hideAriaLabel": "Ẩn bảng AI",
+      "expandAriaLabel": "Mở rộng",
+      "collapseAriaLabel": "Thu gọn",
+      "saved": "Đã lưu",
+      "savedTitle": "Đã lưu vào ghi chú",
+      "saveAriaLabel": "Lưu nội dung",
+      "saveTitle": "Lưu vào ghi chú",
+      "removeAriaLabel": "Xóa nội dung",
+      "source": "Nguồn",
+      "selection": "Đoạn đã chọn",
+      "aiResponse": "Phản hồi AI",
+      "copyAriaLabel": "Sao chép phản hồi",
+      "copySuccess": "Đã sao chép vào bộ nhớ tạm",
+      "readMore": "Xem thêm",
+      "showLess": "Thu gọn"
+    },
+    "fileRow": {
+      "missingSetContext": "Thiếu thông tin set — không thể lưu bình luận (cần setId ở trang chi tiết ghi chú).",
+      "commentSaved": "Đã lưu bình luận",
+      "commentSaveFailed": "Lưu bình luận thất bại",
+      "commentRemoved": "Đã xóa bình luận",
+      "commentDeleteFailed": "Xóa bình luận thất bại",
+      "deleteSuccess": "Xóa tệp thành công",
+      "deleteFailed": "Xóa tệp thất bại",
+      "deleteAriaLabel": "Xóa tệp",
+      "cancelCommenting": "Hủy bình luận",
+      "addRegionComment": "Thêm bình luận vùng chọn",
+      "regionHint": "Kéo để chọn vùng · Esc để hủy",
+      "commentCount_one": "{{count}} bình luận",
+      "commentCount_other": "{{count}} bình luận",
+      "notSynced": "· chưa đồng bộ"
     }
   },
   "resourceAccess": {

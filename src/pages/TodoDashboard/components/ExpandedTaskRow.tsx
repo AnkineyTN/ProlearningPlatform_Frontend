@@ -1,8 +1,16 @@
 import { CalendarCheck, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import type { Todo, TodoPriority } from '@/services/types/todo.types';
-import { renderTitleWithRefs, LinkedResourceChips } from './SetMentionInput';
+import { useTranslation } from 'react-i18next';
 
+import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+
+import { LinkedResourceChips, renderTitleWithRefs } from './SetMentionInput';
+
+import type { Todo, TodoPriority } from '@/services/types/todo.types';
 const PRIORITY_CLASS: Record<TodoPriority, string> = {
   HIGH: 'text-[var(--pl-danger-text)] bg-[var(--pl-danger-soft)]',
   MEDIUM: 'text-[var(--pl-warning-text)] bg-[var(--pl-warning-soft)]',
@@ -22,6 +30,7 @@ const ExpandedTaskRow = ({
   onOpen,
   onDelete,
 }: ExpandedTaskRowProps) => {
+  const { t } = useTranslation();
   const isDone = todo.completed || todo.status === 'DONE';
   const accent = todo.goalColor ?? 'var(--pl-text-faint)';
 
@@ -33,7 +42,7 @@ const ExpandedTaskRow = ({
       />
       <button
         onClick={() => onToggle(todo.id)}
-        className={`w-[18px] h-[18px] rounded-full grid place-items-center flex-shrink-0 border ${
+        className={`cursor-pointer w-[18px] h-[18px] rounded-full grid place-items-center flex-shrink-0 border ${
           isDone
             ? 'bg-[var(--pl-accent)] border-[var(--pl-accent)]'
             : 'bg-transparent border-[var(--pl-border-strong)]'
@@ -62,7 +71,9 @@ const ExpandedTaskRow = ({
         </div>
         <div className='flex items-center gap-1.5 mt-0.5 flex-wrap'>
           {todo.priority !== 'LOW' && (
-            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${PRIORITY_CLASS[todo.priority]}`}>
+            <span
+              className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${PRIORITY_CLASS[todo.priority]}`}
+            >
               {todo.priority}
             </span>
           )}
@@ -78,7 +89,12 @@ const ExpandedTaskRow = ({
         </div>
       </button>
       {todo.calendarSynced && (
-        <CalendarCheck className='w-3.5 h-3.5 flex-shrink-0 text-[var(--pl-accent)]' />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <CalendarCheck className='w-3.5 h-3.5 flex-shrink-0 text-[var(--pl-accent)]' />
+          </TooltipTrigger>
+          <TooltipContent>{t('todo.item.calendarSynced')}</TooltipContent>
+        </Tooltip>
       )}
       <Button
         variant='ghost'

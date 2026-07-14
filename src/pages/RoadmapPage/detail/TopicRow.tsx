@@ -46,7 +46,9 @@ export const TopicRow = ({
   const handleStart = async () => {
     try {
       const result = await startMutation.mutateAsync(topic.id);
-      if (result.setId) {
+      if (result.contentStatus === 'FAILED') {
+        toast.error(t('roadmap.detail.toast.startError'));
+      } else if (result.setId) {
         toast.success(t('roadmap.detail.toast.starting'));
       }
     } catch (error) {

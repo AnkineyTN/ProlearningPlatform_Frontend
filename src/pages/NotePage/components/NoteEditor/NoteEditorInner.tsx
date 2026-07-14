@@ -191,8 +191,6 @@ export default function NoteEditorInner({
       {selection.showSummarizeBtn && selection.selectedText && (
         <AiExplainTooltip
           ref={selection.tooltipRef}
-          containerRef={editorContainerRef}
-          tooltipPos={selection.tooltipPos}
           isPending={isPending}
           onClick={() => void explain(selection.selectedText)}
         />

@@ -1336,7 +1336,8 @@
     "item": {
       "editTitle": "Details / edit",
       "deleteTitle": "Delete",
-      "shortBadge": "short-term"
+      "shortBadge": "short-term",
+      "calendarSynced": "Synced with Google Calendar"
     },
     "priority": {
       "HIGH": "High",
@@ -1978,7 +1979,7 @@
       "noCreators": "No creators yet.",
       "noTopics": "No topics yet.",
       "resources": "{{count}} resources",
-      "footer": "Everything here is shared by users. Forking a set keeps a link back to the original author.",
+      "footer": "Everything here is shared by users.",
       "periodAll": "All",
       "typNote": "Note",
       "typFlashcard": "Flashcard",
@@ -2019,9 +2020,11 @@
       "beforeUnload": "You have unsaved changes that may be lost."
     },
     "aiExplain": {
+      "badge": "Explain",
       "rateLimited": "You've reached the AI Explain limit of {{limit}} requests per minute. Please wait a moment and try again."
     },
     "summarize": {
+      "badge": "Summarize",
       "button": "Summarize File with AI",
       "limitLabel": "Max response length",
       "short": "Short (~100 words)",
@@ -2029,6 +2032,42 @@
       "long": "Long (~600 words)",
       "success": "File summarized successfully",
       "error": "Failed to summarize file"
+    },
+    "aiWorkspace": {
+      "title": "AI Workspace",
+      "emptyHint": "Highlight text or summarize a file to surface AI insights here.",
+      "hide": "Hide",
+      "hideAriaLabel": "Hide AI panel",
+      "expandAriaLabel": "Expand summary",
+      "collapseAriaLabel": "Collapse summary",
+      "saved": "Saved",
+      "savedTitle": "Saved to note",
+      "saveAriaLabel": "Save summary",
+      "saveTitle": "Save to note",
+      "removeAriaLabel": "Delete summary",
+      "source": "Source",
+      "selection": "Selection",
+      "aiResponse": "AI Response",
+      "copyAriaLabel": "Copy response",
+      "copySuccess": "Copied to clipboard",
+      "readMore": "Read more",
+      "showLess": "Show less"
+    },
+    "fileRow": {
+      "missingSetContext": "Missing set context — cannot save comment (need setId on note detail).",
+      "commentSaved": "Comment saved",
+      "commentSaveFailed": "Failed to save comment",
+      "commentRemoved": "Comment removed",
+      "commentDeleteFailed": "Failed to delete comment",
+      "deleteSuccess": "File deleted successfully",
+      "deleteFailed": "Failed to delete file",
+      "deleteAriaLabel": "Delete file",
+      "cancelCommenting": "Cancel commenting",
+      "addRegionComment": "Add region comment",
+      "regionHint": "Drag to select a region · Esc to cancel",
+      "commentCount_one": "{{count}} comment",
+      "commentCount_other": "{{count}} comments",
+      "notSynced": "· not synced"
     }
   },
   "resourceAccess": {

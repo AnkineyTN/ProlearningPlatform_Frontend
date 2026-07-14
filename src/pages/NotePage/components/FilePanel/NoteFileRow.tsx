@@ -7,15 +7,13 @@ import {
   Sparkles,
   Trash2,
 } from 'lucide-react';
-import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { toast } from 'sonner';
-import { apiErrorMessage } from '@/lib/apiError';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
+import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 import {
   Collapsible,
   CollapsibleContent,
@@ -34,26 +32,28 @@ import {
   useDeleteNoteImg,
   useSummarizeFile,
 } from '@/hooks/useNotes';
+import { apiErrorMessage } from '@/lib/apiError';
 import { isImageExtension, mapI18nToAiApiLanguage } from '@/lib/utils';
-import { noteAPI } from '@/services/endpoints/notes';
-import type { NoteFileRegionCommentDto } from '@/services/types/note.types';
-
+import { NoteFilePreviewContent } from '@/pages/NotePage/components/FilePanel/NoteFilePreviewContent';
 import {
   fileRegionCommentDtoToRegion,
   RegionCommentOverlay,
-} from '@/pages/NotePage/components/FilePanel/NoteFileRegionComments';
-import type {
-  NoteAttachedFile,
-  RegionComment,
-  RegionCommentSavePayload,
 } from '@/pages/NotePage/components/FilePanel/NoteFileRegionComments';
 import {
   isDocxExtension,
   isPptxExtension,
   isTxtExtension,
 } from '@/pages/NotePage/components/FilePanel/NoteFileViewers';
-import { NoteFilePreviewContent } from '@/pages/NotePage/components/FilePanel/NoteFilePreviewContent';
+import { noteAPI } from '@/services/endpoints/notes';
+import { useQueryClient } from '@tanstack/react-query';
 
+import type { NoteFileRegionCommentDto } from '@/services/types/note.types';
+
+import type {
+  NoteAttachedFile,
+  RegionComment,
+  RegionCommentSavePayload,
+} from '@/pages/NotePage/components/FilePanel/NoteFileRegionComments';
 export function NoteFileRow({
   file,
   noteId,
@@ -148,9 +148,7 @@ export function NoteFileRow({
       setIsCommentMode(false);
       setActiveCommentId(null);
       if (!setId) {
-        toast.error(
-          'Missing set context — cannot save comment (need setId on note detail).',
-        );
+        toast.error(t('note.fileRow.missingSetContext'));
         return;
       }
       setCommentSaving(true);
@@ -167,15 +165,15 @@ export function NoteFileRow({
           publicId,
         });
         invalidateFileComments();
-        toast.success('Comment saved');
+        toast.success(t('note.fileRow.commentSaved'));
       } catch (e) {
         console.error(e);
-        toast.error(apiErrorMessage(e, 'Failed to save comment'));
+        toast.error(apiErrorMessage(e, t('note.fileRow.commentSaveFailed')));
       } finally {
         setCommentSaving(false);
       }
     },
-    [fileId, invalidateFileComments, kind, noteId, publicId, setId],
+    [fileId, invalidateFileComments, kind, noteId, publicId, setId, t],
   );
 
   const deleteComment = async (id: string) => {
@@ -184,10 +182,10 @@ export function NoteFileRow({
       try {
         await noteAPI.deleteFileRegionComment(setId, noteId, serverNumeric);
         invalidateFileComments();
-        toast.success('Comment removed');
+        toast.success(t('note.fileRow.commentRemoved'));
       } catch (e) {
         console.error(e);
-        toast.error(apiErrorMessage(e, 'Failed to delete comment'));
+        toast.error(apiErrorMessage(e, t('note.fileRow.commentDeleteFailed')));
         return;
       }
     }
@@ -238,7 +236,7 @@ export function NoteFileRow({
 
   const handleDelete = async () => {
     if (!setId || !noteId) {
-      toast.error('Invalid note');
+      toast.error(t('note.fileUpload.errorInvalidNote'));
       return;
     }
     setIsDeleting(true);
@@ -255,9 +253,9 @@ export function NoteFileRow({
         });
       }
       onDeleted();
-      toast.success('File deleted successfully');
+      toast.success(t('note.fileRow.deleteSuccess'));
     } catch (error) {
-      toast.error(apiErrorMessage(error, 'Failed to delete file'));
+      toast.error(apiErrorMessage(error, t('note.fileRow.deleteFailed')));
       console.error(error);
     } finally {
       setIsDeleting(false);
@@ -300,7 +298,7 @@ export function NoteFileRow({
             setShowDeleteDialog(true);
           }}
           disabled={isDeleting}
-          aria-label='Delete file'
+          aria-label={t('note.fileRow.deleteAriaLabel')}
         >
           {isDeleting ? (
             <LoaderCircle className='w-4 h-4 animate-spin' />
@@ -312,7 +310,7 @@ export function NoteFileRow({
 
       <CollapsibleContent>
         <div className='px-3 py-2'>
-          <Card className='p-2 bg-[var(--pl-bg)] shadow-none gap-4'>
+          <Card className='p-2 bg-[var(--pl-bg)] shadow-none gap-2'>
             <NoteFilePreviewContent
               fileUrl={fileUrl}
               fileName={fileName}
@@ -345,17 +343,19 @@ export function NoteFileRow({
                   }}
                 >
                   <MessageSquarePlus className='w-4 h-4' />
-                  {isCommentMode ? 'Cancel commenting' : 'Add region comment'}
+                  {isCommentMode
+                    ? t('note.fileRow.cancelCommenting')
+                    : t('note.fileRow.addRegionComment')}
                 </Button>
                 {isCommentMode && (
                   <p className='text-xs text-[var(--pl-text-muted)] text-center animate-pulse'>
-                    Drag to select a region · Esc to cancel
+                    {t('note.fileRow.regionHint')}
                   </p>
                 )}
                 {comments.length > 0 && (
                   <p className='text-[10px] tracking-[0.14em] uppercase text-[var(--pl-text-faint)] text-center'>
-                    {comments.length} comment{comments.length !== 1 ? 's' : ''}
-                    {!setId ? ' · not synced' : ''}
+                    {t('note.fileRow.commentCount', { count: comments.length })}
+                    {!setId ? ` ${t('note.fileRow.notSynced')}` : ''}
                   </p>
                 )}
               </div>

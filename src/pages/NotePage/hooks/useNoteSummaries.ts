@@ -37,7 +37,7 @@ export function useNoteSummaries({
       backendId: e.id,
       query: e.term,
       response: e.explain,
-      type: 'text',
+      type: e.source === 'file' ? 'file' : 'text',
     }));
     setSummaries(loaded);
   }, [savedExplains]);

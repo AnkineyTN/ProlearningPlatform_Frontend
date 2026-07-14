@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ChevronDown, ChevronUp, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSet } from '@/hooks/useSets';
-import { todoAPI } from '@/services/endpoints/todo';
-import type { Todo } from '@/services/types/todo.types';
-import { todayIso } from '@/pages/TodoDashboard/utils/dateHelpers';
 
+import { useSet } from '@/hooks/useSets';
+import { todayIso } from '@/pages/TodoDashboard/utils/dateHelpers';
+import { todoAPI } from '@/services/endpoints/todo';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+import type { Todo } from '@/services/types/todo.types';
 const Ring = ({ percent, size = 52 }: { percent: number; size?: number }) => {
   const stroke = 4;
   const r = (size - stroke) / 2;
@@ -71,7 +72,7 @@ const TaskRow = ({
       />
       <button
         onClick={() => onToggle(todo.id)}
-        className={`w-[18px] h-[18px] rounded-full grid place-items-center flex-shrink-0 border transition-all ${
+        className={`w-[18px] cursor-pointer h-[18px] rounded-full grid place-items-center flex-shrink-0 border transition-all ${
           isDone
             ? 'bg-[var(--pl-accent)] border-[var(--pl-accent)]'
             : 'bg-transparent border-[var(--pl-border-strong)]'

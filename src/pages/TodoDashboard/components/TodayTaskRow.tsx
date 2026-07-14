@@ -1,8 +1,15 @@
 import { CalendarCheck, Trash2 } from 'lucide-react';
-import type { Todo } from '@/services/types/todo.types';
-import { PRIORITY_CLASS } from '../constants';
-import { renderTitleWithRefs, LinkedResourceChips } from './SetMentionInput';
+import { useTranslation } from 'react-i18next';
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { PRIORITY_CLASS } from '../constants';
+import { LinkedResourceChips, renderTitleWithRefs } from './SetMentionInput';
+
+import type { Todo } from '@/services/types/todo.types';
 const TodayTaskRow = ({
   todo,
   onToggle,
@@ -14,6 +21,7 @@ const TodayTaskRow = ({
   onOpen: (todo: Todo) => void;
   onDelete: (id: number) => void;
 }) => {
+  const { t } = useTranslation();
   const isDone = todo.completed || todo.status === 'DONE';
   const accent = todo.goalColor ?? 'var(--pl-text-faint)';
 
@@ -25,7 +33,7 @@ const TodayTaskRow = ({
       />
       <button
         onClick={() => onToggle(todo.id)}
-        className={`w-[18px] h-[18px] rounded-full grid place-items-center flex-shrink-0 transition-all border ${
+        className={`cursor-pointer w-[18px] h-[18px] rounded-full grid place-items-center flex-shrink-0 transition-all border ${
           isDone
             ? 'bg-[var(--pl-accent)] border-[var(--pl-accent)]'
             : 'bg-transparent border-[var(--pl-border-strong)]'
@@ -72,7 +80,12 @@ const TodayTaskRow = ({
         </div>
       </button>
       {todo.calendarSynced && (
-        <CalendarCheck className='w-3.5 h-3.5 flex-shrink-0 text-[var(--pl-accent)]' />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <CalendarCheck className='w-3.5 h-3.5 flex-shrink-0 text-[var(--pl-accent)]' />
+          </TooltipTrigger>
+          <TooltipContent>{t('todo.item.calendarSynced')}</TooltipContent>
+        </Tooltip>
       )}
       <button
         onClick={() => onDelete(todo.id)}

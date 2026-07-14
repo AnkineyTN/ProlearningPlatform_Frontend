@@ -55,7 +55,7 @@ Thông qua ứng dụng này, người học có thể cải thiện hiệu qu�
 Hệ thống bao gồm các thực thể chính:
 \begin{itemize}
     \item \textbf{Người học:} Đối tượng trung tâm sử dụng hệ thống để ghi chép, học tập và củng cố kiến thức.
-    \item \textbf{Tài liệu học tập:} Bao gồm nhiều dạng nội dung như ghi chú (Notes), thẻ ghi nhớ (Flashcards), bài kiểm tra (Tests).
+    \item \textbf{Tài liệu học tập:} Bao gồm nhiều dạng nội dung như ghi chú (Notes), thẻ ghi nhớ (Flashcards), bài kiểm tra (Exams).
     \item \textbf{Mô hình AI (Agent/LLM):} Đóng vai trò trợ lý thông minh hỗ trợ phân tích tài liệu, tóm tắt nội dung và đề xuất phương pháp học tập.
 \end{itemize}
 
@@ -63,7 +63,7 @@ Hệ thống cung cấp các nhóm chức năng chính:
 \begin{itemize}
     \item \textbf{Note:} Cho phép người dùng ghi chú thủ công khi đọc tài liệu (PDF, DOCX, \ldots) và sử dụng AI để giải thích hoặc tóm tắt nội dung.
     \item \textbf{Flashcards:} Tạo bộ thẻ ghi nhớ thủ công hoặc tự động từ ghi chú và tài liệu với các options cho người dùng custom khi tạo, đồng thời cũng đề xuất cho người dùng ôn luyện.
-    \item \textbf{Test:} Tạo bài kiểm tra từ ghi chú và tài liệu với nhiều dạng câu hỏi cùng với khả năng phân tích kết quả bài làm để xác định lỗ hổng kiến thức.
+    \item \textbf{Exam:} Tạo bài kiểm tra từ ghi chú và tài liệu với nhiều dạng câu hỏi cùng với khả năng phân tích kết quả bài làm để xác định lỗ hổng kiến thức.
     \item Đề xuất lộ trình học từ tài liệu có sẵn.
 \end{itemize}
 
@@ -86,7 +86,7 @@ Dự án sử dụng mô hình Agile/Scrum với các Sprint khoảng 2 tuần �
 \begingroup
 \renewcommand{\thetable}{P.\arabic{table}}
 
-\textbf{1. Version 1: Chức năng học tập chính (Note, Flashcard và Test)}
+\textbf{1. Version 1: Chức năng học tập chính (Note, Flashcard và Exam)}
 
 \begin{singlespace}
 \begin{longtable}{|Q{2.3cm}|Q{3.6cm}|Q{8.6cm}|}
@@ -94,23 +94,23 @@ Dự án sử dụng mô hình Agile/Scrum với các Sprint khoảng 2 tuần �
 \textbf{Giai đoạn} & \textbf{Sprint (2 tuần)} & \textbf{Nội dung thực hiện} \\
 \hline
 \endhead
-07/12/25 -- 18/12/25 & Sprint 01: Chuẩn bị đề tài và phân tích yêu cầu & Phân tích yêu cầu hệ thống, xây dựng Use Case, thiết kế giao diện Figma cho Mobile và Web \\
+06/10/25 -- 26/10/25 & Sprint 01: Chuẩn bị đề tài và phân tích yêu cầu & Phân tích yêu cầu hệ thống, xây dựng Use Case, thiết kế giao diện Figma cho Mobile và Web \\
 \hline
-21/12/25 -- 31/12/25 & Sprint 02: Setup & Chuẩn bị Code Base cho AI Service, Backend, Frontend (Mobile \& Web) và thiết lập DevOps \\
+27/10/25 -- 09/11/25 & Sprint 02: Setup & Chuẩn bị Code Base cho AI Service, Backend, Frontend (Mobile \& Web) và thiết lập DevOps \\
 \hline
-01/12/25 -- 11/12/25 & Sprint 03: Authentication và cơ bản chức năng Note & Xây dựng API đăng nhập, đăng ký và API cho chức năng Note; phát triển giao diện Dashboard, Set và Note \\
+10/11/25 -- 30/11/25 & Sprint 03: Authentication và cơ bản chức năng Note & Xây dựng API đăng nhập, đăng ký và API cho chức năng Note; phát triển giao diện Dashboard, Set và Note \\
 \hline
-14/12/25 -- 25/12/25 & Sprint 04 - Hoàn thiện chức năng Note & Hoàn thiện API cho Note, thêm chức năng Explain Note và Summarize file, hỗ trợ tạo Flashcard thủ công \\
+01/12/25 -- 21/12/25 & Sprint 04 - Hoàn thiện chức năng Note & Hoàn thiện API cho Note, thêm chức năng Explain Note và Summarize file, hỗ trợ tạo Flashcard thủ công \\
 \hline
-28/12/25 -- 08/01/26 & Sprint 05 - Hoàn thiện chức năng Flashcard & Phát triển Flashcard bằng AI, xây dựng giao diện Flashcard và chức năng Game trong Flashcard \\
+22/12/25 -- 11/01/26 & Sprint 05 - Hoàn thiện chức năng Flashcard & Phát triển Flashcard bằng AI, xây dựng giao diện Flashcard và chức năng Game trong Flashcard \\
 \hline
-21/02/26 -- 12/03/26 & Sprint 06 - Hoàn thiện chức năng Test & Phát triển chức năng tạo Test bằng AI và thủ công, xây dựng giao diện Test \\
+21/02/26 -- 14/03/26 & Sprint 06 - Hoàn thiện chức năng Exam & Phát triển chức năng tạo Exam bằng AI và thủ công, xây dựng giao diện Exam \\
 \hline
-15/03/26 -- 26/03/26 & Sprint 07 - Nâng cấp 3 chức năng Note, Flashcard và Test & Đồng bộ ghi chú Real-time giữa Mobile và Web, bổ sung options tạo Flashcard/Test bằng AI, giải thích câu sai và sinh Test ôn luyện, thêm Bookmark và Search \\
+15/03/26 -- 04/04/26 & Sprint 07 - Nâng cấp 3 chức năng Note, Flashcard và Exam & Đồng bộ ghi chú Real-time giữa Mobile và Web, bổ sung options tạo Flashcard/Exam bằng AI, giải thích câu sai và sinh Exam ôn luyện, thêm Bookmark và Search \\
 \hline
-29/03/26 -- 09/04/26 & Sprint 08 - Share Note, Flashcard and Test & Refactor AI API, xây dựng trang Admin, xử lý quyền truy cập khi chia sẻ tài nguyên và bảng xếp hạng \\
+05/04/26 -- 18/04/26 & Sprint 08 - Share Note, Flashcard and Exam & Refactor AI API, xây dựng trang Admin, xử lý quyền truy cập khi chia sẻ tài nguyên và bảng xếp hạng \\
 \hline
-12/04/26 -- 30/04/26 & Sprint 09 - Admin Role và Tạo lộ trình học dựa trên tài nguyên có sẵn & Phát triển chức năng tạo lộ trình học từ tài nguyên có sẵn và hoàn thiện trang Admin \\
+19/04/26 -- 02/05/26 & Sprint 09 - Xây dựng trang Admin để quản lý hệ thống \\
 \hline
 \caption{Kế hoạch thực hiện Version 1}
 \label{tab:proposal-version1}
@@ -125,9 +125,9 @@ Dự án sử dụng mô hình Agile/Scrum với các Sprint khoảng 2 tuần �
 \textbf{Giai đoạn} & \textbf{Sprint (2 tuần)} & \textbf{Nội dung thực hiện} \\
 \hline
 \endhead
-03/05/26 -- 21/05/26 & Sprint 10: Social & Phát triển chức năng Social (cộng đồng học tập), bao gồm khám phá và chia sẻ học liệu công khai, tương tác giữa người dùng, xây dựng giao diện trang Social và tích hợp API vào hệ thống \\
+03/05/26 -- 23/05/26 & Sprint 10: Chức năng To do và Pomodoro & Phát triển chức năng To Do List và Pomodoro, tích hợp API và bổ sung hệ thống Streak theo dõi quá trình học \\
 \hline
-24/05/26 -- 11/06/26 & Sprint 11: Chức năng To do và Pomodoro & Phát triển chức năng To Do List và Pomodoro, xây dựng giao diện cho hai chức năng này, tích hợp API và bổ sung hệ thống Streak theo dõi quá trình học \\
+24/05/26 -- 13/06/26 & Sprint 11: Tạo lộ trình học & Phát triển và hoàn thiện giao diện cho chức năng tạo lộ trình học \\
 \hline
 Thời gian còn lại & Sprint 12: Kiểm thử, Fix bug và Nâng cấp chức năng & Kiểm thử toàn bộ hệ thống, sửa lỗi phát sinh và nâng cấp, tối ưu các chức năng trước khi hoàn thiện sản phẩm \\
 \hline

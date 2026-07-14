@@ -1,5 +1,3 @@
-import { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   AlertCircle,
   CalendarCheck,
@@ -8,10 +6,18 @@ import {
   Flame,
   TrendingDown,
 } from 'lucide-react';
-import type { Goal, Todo } from '@/services/types/todo.types';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { todayIso } from '../utils/dateHelpers';
 import { renderTitleWithRefs } from './mentionTitleRenderer';
 
+import type { Goal, Todo } from '@/services/types/todo.types';
 type Reason = 'overdue' | 'urgent' | 'stuck';
 
 type SuggestedItem = {
@@ -144,7 +150,7 @@ export default function WhatsNextPanel({
               >
                 <button
                   onClick={() => onToggleTodo(todo.id)}
-                  className={`w-[18px] h-[18px] rounded-full grid place-items-center flex-shrink-0 border transition-all ${
+                  className={`cursor-pointer w-[18px] h-[18px] rounded-full grid place-items-center flex-shrink-0 border transition-all ${
                     isDone
                       ? 'bg-[var(--pl-accent)] border-[var(--pl-accent)]'
                       : 'bg-transparent border-[var(--pl-border-strong)]'
@@ -212,7 +218,14 @@ export default function WhatsNextPanel({
                   </div>
                 </button>
                 {todo.calendarSynced && (
-                  <CalendarCheck className='w-3.5 h-3.5 flex-shrink-0 text-[var(--pl-accent)]' />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <CalendarCheck className='w-3.5 h-3.5 flex-shrink-0 text-[var(--pl-accent)]' />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {t('todo.item.calendarSynced')}
+                    </TooltipContent>
+                  </Tooltip>
                 )}
               </div>
             );

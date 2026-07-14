@@ -34,16 +34,25 @@ export function getApiError(err: unknown): ExtractedApiError {
 }
 
 /**
- * Cleans up a raw backend message for display: strips a leading field-name
- * prefix (e.g. "email: must be a well-formed email address" → "must be a
- * well-formed email address") and capitalises the first letter.
+ * Cleans up a raw backend message for display: turns a leading field-name
+ * prefix into a readable subject instead of discarding it (e.g. "title: must
+ * not be blank" → "Title must not be blank") and capitalises the first letter.
  */
 export function prettifyApiMessage(msg?: string): string | undefined {
   if (!msg) return undefined;
-  const withoutPrefix = msg.replace(/^\s*[\w.]+:\s*/, '').trim();
-  const cleaned = withoutPrefix || msg.trim();
-  if (!cleaned) return undefined;
-  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+  const trimmed = msg.trim();
+  if (!trimmed) return undefined;
+
+  const fieldMatch = trimmed.match(/^([\w]+(?:\.[\w]+)*):\s*(.+)$/);
+  if (fieldMatch) {
+    const [, field, rest] = fieldMatch;
+    const fieldName = field.split('.').pop() ?? field;
+    const capitalizedField =
+      fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+    return `${capitalizedField} ${rest.trim()}`;
+  }
+
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
 }
 
 /**
