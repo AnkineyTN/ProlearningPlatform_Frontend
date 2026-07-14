@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ArrowLeft, Plus, Upload } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -82,9 +82,38 @@ export default function FlashcardEditor({
       _action: 'CREATE',
     },
   ]);
-  const [draggedCardId, setDraggedCardId] = useState<string | null>(null);
+  const [draggedCardId, setDraggedCardId] = useState<number | string | null>(
+    null,
+  );
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [showValidation, setShowValidation] = useState(false);
+  const pointerYRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (draggedCardId === null) return;
+
+    const EDGE_SIZE = 120;
+    const MAX_SCROLL_SPEED = 18;
+    let rafId: number;
+
+    const tick = () => {
+      const y = pointerYRef.current;
+      if (y !== null) {
+        const viewportHeight = window.innerHeight;
+        if (y < EDGE_SIZE) {
+          const intensity = (EDGE_SIZE - y) / EDGE_SIZE;
+          window.scrollBy(0, -MAX_SCROLL_SPEED * intensity);
+        } else if (y > viewportHeight - EDGE_SIZE) {
+          const intensity = (y - (viewportHeight - EDGE_SIZE)) / EDGE_SIZE;
+          window.scrollBy(0, MAX_SCROLL_SPEED * intensity);
+        }
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(rafId);
+  }, [draggedCardId]);
 
   useEffect(() => {
     if (isUpdateMode && flashcardData?.data) {
@@ -194,11 +223,19 @@ export default function FlashcardEditor({
     );
   };
 
-  const handleDragStart = (cardId: string) => setDraggedCardId(cardId);
-  const handleDragEnd = () => setDraggedCardId(null);
+  const handleDragStart = (cardId: number | string) =>
+    setDraggedCardId(cardId);
+  const handleDragEnd = () => {
+    setDraggedCardId(null);
+    pointerYRef.current = null;
+  };
 
-  const handleDragOver = (e: React.DragEvent, targetCardId: string) => {
+  const handleDragOver = (
+    e: React.DragEvent,
+    targetCardId: number | string,
+  ) => {
     e.preventDefault();
+    pointerYRef.current = e.clientY;
     if (!draggedCardId || draggedCardId === targetCardId) return;
     const draggedIndex = cards.findIndex((c) => c.id === draggedCardId);
     const targetIndex = cards.findIndex((c) => c.id === targetCardId);

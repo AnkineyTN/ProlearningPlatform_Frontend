@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import {
   Dialog,
   DialogContent,
@@ -36,19 +38,22 @@ const FlashcardSettingsDialog = ({
   setIsProgressTrackingEnabled,
   setAutoFlipDelay,
   setMatchingCardCount,
-}: Props) => (
+}: Props) => {
+  const { t } = useTranslation();
+
+  return (
   <Dialog open={open} onOpenChange={onOpenChange}>
     <DialogContent className='sm:max-w-md'>
       <DialogHeader>
-        <DialogTitle>Settings</DialogTitle>
+        <DialogTitle>{t('flashcard.settings.title')}</DialogTitle>
       </DialogHeader>
       <div className='space-y-6 py-4'>
 
         {/* Track Progress */}
         <div className='flex items-center justify-between'>
           <div>
-            <p className='font-medium'>Track Progress</p>
-            <p className='text-sm text-muted-foreground'>Monitor your learning progress</p>
+            <p className='font-medium'>{t('flashcard.settings.trackProgressLabel')}</p>
+            <p className='text-sm text-muted-foreground'>{t('flashcard.settings.trackProgressDescription')}</p>
           </div>
           <Switch
             checked={isProgressTrackingEnabled}
@@ -61,9 +66,9 @@ const FlashcardSettingsDialog = ({
         <div className='space-y-3'>
           <div className='flex items-center justify-between'>
             <div>
-              <p className='font-medium'>Auto-flip</p>
+              <p className='font-medium'>{t('flashcard.settings.autoFlipLabel')}</p>
               <p className='text-sm text-muted-foreground'>
-                Reveal answer automatically after delay
+                {t('flashcard.settings.autoFlipDescription')}
               </p>
             </div>
             <Switch
@@ -87,7 +92,7 @@ const FlashcardSettingsDialog = ({
                     color: autoFlipDelay === s ? 'var(--pl-accent-strong)' : undefined,
                   }}
                 >
-                  {s}s
+                  {t('flashcard.settings.autoFlipSeconds', { value: s })}
                 </Button>
               ))}
             </div>
@@ -97,9 +102,9 @@ const FlashcardSettingsDialog = ({
         {/* Matching game card count */}
         <div className='space-y-3'>
           <div>
-            <p className='font-medium'>Matching Game Cards</p>
+            <p className='font-medium'>{t('flashcard.settings.matchingCardsLabel')}</p>
             <p className='text-sm text-muted-foreground'>
-              Number of cards used when playing the matching game
+              {t('flashcard.settings.matchingCardsDescription')}
             </p>
           </div>
           <div className='flex gap-2'>
@@ -124,7 +129,7 @@ const FlashcardSettingsDialog = ({
 
         {/* Front Side */}
         <div>
-          <p className='font-medium mb-3'>Front Side</p>
+          <p className='font-medium mb-3'>{t('flashcard.settings.frontSideLabel')}</p>
           <div className='flex items-center space-x-10'>
             <Label className='flex items-center gap-3 cursor-pointer'>
               <Input
@@ -134,7 +139,7 @@ const FlashcardSettingsDialog = ({
                 onChange={() => setIsFrontCardTerm(true)}
                 className='w-4 h-4'
               />
-              <span>Term</span>
+              <span>{t('flashcard.settings.term')}</span>
             </Label>
             <Label className='flex items-center gap-3 cursor-pointer'>
               <Input
@@ -144,7 +149,7 @@ const FlashcardSettingsDialog = ({
                 onChange={() => setIsFrontCardTerm(false)}
                 className='w-4 h-4'
               />
-              <span>Definition</span>
+              <span>{t('flashcard.settings.definition')}</span>
             </Label>
           </div>
         </div>
@@ -154,11 +159,12 @@ const FlashcardSettingsDialog = ({
           className='w-full cursor-pointer'
           onClick={() => window.location.reload()}
         >
-          Reset Flashcards
+          {t('flashcard.settings.resetFlashcards')}
         </Button>
       </div>
     </DialogContent>
   </Dialog>
-);
+  );
+};
 
 export default FlashcardSettingsDialog;

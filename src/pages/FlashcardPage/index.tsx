@@ -346,7 +346,12 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
   };
 
   const handleCardAnswer = async (known: boolean) => {
-    if (!sessionId) return;
+    // Browsing in the home view (no active study session) — just advance,
+    // there's nothing to record progress against.
+    if (!sessionId) {
+      handleNext();
+      return;
+    }
 
     recordItem();
 

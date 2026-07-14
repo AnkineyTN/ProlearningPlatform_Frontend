@@ -96,16 +96,22 @@ const ResultsView = ({
   };
 
   const heroTitle = isPerfect
-    ? 'Perfect score.'
+    ? t('flashcard.results.heroTitlePerfect')
     : pct >= 80
-      ? 'Great job.'
-      : 'Keep going.';
+      ? t('flashcard.results.heroTitleGreat')
+      : t('flashcard.results.heroTitleKeepGoing');
 
   const heroSubtitle = isPerfect
-    ? `You knew all ${knownCards} cards in this session. Outstanding!`
+    ? t('flashcard.results.heroSubtitlePerfect', { count: knownCards })
     : isProgressTrackingEnabled
-      ? `You knew ${knownCards} of ${totalCards} cards. Review the rest to master the set.`
-      : `You've completed this study session with ${studiedCards} of ${totalCards} cards studied.`;
+      ? t('flashcard.results.heroSubtitleProgress', {
+          known: knownCards,
+          total: totalCards,
+        })
+      : t('flashcard.results.heroSubtitleNoTracking', {
+          studied: studiedCards,
+          total: totalCards,
+        });
 
   // SVG ring geometry
   const radius = 90;
@@ -171,7 +177,7 @@ const ResultsView = ({
             </svg>
             <div className='absolute inset-0 flex flex-col items-center justify-center'>
               <span className='text-[11px] font-[family-name:var(--font-mono-pl)] tracking-[0.2em] text-muted-foreground mb-1'>
-                KNOWN
+                {t('flashcard.results.knownLabel')}
               </span>
               <span className='font-[family-name:var(--font-display)] text-6xl font-medium leading-none'>
                 {Math.round(pct)}
@@ -188,7 +194,7 @@ const ResultsView = ({
                   }`}
                 />
                 <span className='text-xs text-muted-foreground'>
-                  {knownCards} / {totalCards} cards
+                  {knownCards} / {totalCards} {t('flashcard.results.cardsUnit')}
                 </span>
               </div>
             </div>
@@ -197,7 +203,7 @@ const ResultsView = ({
           <div className='flex gap-3 justify-center flex-wrap'>
             <Button onClick={onContinue} className='gap-2'>
               <RotateCcw className='w-4 h-4' />
-              Continue Studying
+              {t('flashcard.results.continueStudying')}
             </Button>
             {onPracticeWithExam && (
               <Button
@@ -210,19 +216,19 @@ const ResultsView = ({
                 ) : (
                   <BookOpen className='w-4 h-4' />
                 )}
-                Practice with Test
+                {t('flashcard.results.practiceWithTest')}
               </Button>
             )}
             {onMatching && (
               <Button onClick={onMatching} className='gap-2'>
                 <Trophy className='w-4 h-4' />
-                Matching Mode
+                {t('flashcard.results.matchingMode')}
               </Button>
             )}
             {canAnalyze && (
               <Button onClick={() => setShowAnalysis(true)} className='gap-2'>
                 <Brain className='w-4 h-4' />
-                Analyze Knowledge
+                {t('flashcard.results.analyzeKnowledge')}
               </Button>
             )}
             {canViewHistory && (
@@ -258,14 +264,16 @@ const ResultsView = ({
               </span>
             </div>
             <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)] mb-1'>
-              KNOWN
+              {t('flashcard.results.knownLabel')}
             </p>
             <p className='font-[family-name:var(--font-display)] text-3xl font-medium mb-1'>
               {knownCards}{' '}
-              <span className='text-base text-muted-foreground'>cards</span>
+              <span className='text-base text-muted-foreground'>
+                {t('flashcard.results.cardsUnit')}
+              </span>
             </p>
             <p className='text-xs text-muted-foreground'>
-              mastered this session
+              {t('flashcard.results.masteredThisSession')}
             </p>
           </div>
 
@@ -277,21 +285,25 @@ const ResultsView = ({
               </div>
               {learningCards > 0 && (
                 <span className='inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full border border-[var(--pl-danger-border)] bg-[var(--pl-danger-soft)] text-[var(--pl-danger)]'>
-                  needs review
+                  {t('flashcard.results.needsReview')}
                 </span>
               )}
             </div>
             <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)] mb-1'>
-              LEARNING
+              {t('flashcard.results.learningLabel')}
             </p>
             <p className='font-[family-name:var(--font-display)] text-3xl font-medium mb-1'>
               {learningCards}{' '}
-              <span className='text-base text-muted-foreground'>cards</span>
+              <span className='text-base text-muted-foreground'>
+                {t('flashcard.results.cardsUnit')}
+              </span>
             </p>
             <p className='text-xs text-muted-foreground'>
               {learningCards === 0
-                ? 'none to review'
-                : `${learningCards} card${learningCards === 1 ? '' : 's'} to revisit`}
+                ? t('flashcard.results.noneToReview')
+                : t('flashcard.results.cardsToRevisit', {
+                    count: learningCards,
+                  })}
             </p>
           </div>
 
@@ -303,16 +315,18 @@ const ResultsView = ({
               </div>
             </div>
             <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)] mb-1'>
-              REMAINING
+              {t('flashcard.results.remainingLabel')}
             </p>
             <p className='font-[family-name:var(--font-display)] text-3xl font-medium mb-1'>
               {remainingCards}{' '}
-              <span className='text-base text-muted-foreground'>cards</span>
+              <span className='text-base text-muted-foreground'>
+                {t('flashcard.results.cardsUnit')}
+              </span>
             </p>
             <p className='text-xs text-muted-foreground'>
               {remainingCards === 0
-                ? 'all cards reviewed'
-                : `${remainingCards} not yet seen`}
+                ? t('flashcard.results.allCardsReviewed')
+                : t('flashcard.results.notYetSeen', { count: remainingCards })}
             </p>
           </div>
         </div>
@@ -324,13 +338,15 @@ const ResultsView = ({
           <div className='flex items-center justify-between mb-4'>
             <div>
               <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)] mb-0.5'>
-                REVIEW LOGS
+                {t('flashcard.results.reviewLogs')}
               </p>
-              <p className='font-medium'>{logs.length} entries</p>
+              <p className='font-medium'>
+                {t('flashcard.results.entriesCount', { count: logs.length })}
+              </p>
             </div>
             {finishedAt && (
               <span className='text-xs text-muted-foreground'>
-                Finished {finishedAt}
+                {t('flashcard.results.finishedAt', { time: finishedAt })}
               </span>
             )}
           </div>
@@ -352,12 +368,12 @@ const ResultsView = ({
                     {log.known ? (
                       <span className='inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft)] text-[var(--pl-accent)]'>
                         <CheckCircle2 className='w-3 h-3' />
-                        Known
+                        {t('flashcard.results.logKnown')}
                       </span>
                     ) : (
                       <span className='inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border border-[var(--pl-danger-border)] bg-[var(--pl-danger-soft)] text-[var(--pl-danger)]'>
                         <AlertCircle className='w-3 h-3' />
-                        Unknown
+                        {t('flashcard.results.logUnknown')}
                       </span>
                     )}
                   </div>
@@ -370,7 +386,9 @@ const ResultsView = ({
             onClick={() => setShowLogs((v) => !v)}
             className='text-xs text-muted-foreground hover:text-foreground transition-colors'
           >
-            {showLogs ? 'Hide logs' : 'Show all logs'}
+            {showLogs
+              ? t('flashcard.results.hideLogs')
+              : t('flashcard.results.showAllLogs')}
           </button>
         </div>
       )}
@@ -383,7 +401,7 @@ const ResultsView = ({
           className='gap-2 text-muted-foreground'
         >
           <Home className='w-4 h-4' />
-          Back to Flashcard
+          {t('flashcard.results.backToFlashcard')}
         </Button>
         <Button
           variant='outline'
@@ -391,7 +409,7 @@ const ResultsView = ({
           className='gap-2 text-muted-foreground'
         >
           <RotateCcw className='w-4 h-4' />
-          Reset Progress
+          {t('flashcard.results.resetProgress')}
         </Button>
       </div>
 

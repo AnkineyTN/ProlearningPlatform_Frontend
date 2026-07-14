@@ -49,7 +49,9 @@ const FlipFlashcard = ({
 
   const [dragOffsetX, setDragOffsetX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [flashColor, setFlashColor] = useState<'correct' | 'incorrect' | null>(null);
+  const [flashColor, setFlashColor] = useState<'correct' | 'incorrect' | null>(
+    null,
+  );
   const dragStartRef = useRef(0);
   const didDragRef = useRef(false);
 
@@ -71,7 +73,9 @@ const FlipFlashcard = ({
     onCardAnswerRef.current(isCorrect);
   };
   const triggerAnswerRef = useRef(triggerAnswer);
-  useEffect(() => { triggerAnswerRef.current = triggerAnswer; });
+  useEffect(() => {
+    triggerAnswerRef.current = triggerAnswer;
+  });
 
   // F — Auto-flip timer
   useEffect(() => {
@@ -174,25 +178,30 @@ const FlipFlashcard = ({
       )}
 
       {/* Progress bar */}
-      <div className='pt-5 px-10 lg:px-20'>
-        <div
-          className='flex justify-between text-xs mb-2 text-[var(--pl-text-faint)]'
-          style={{ fontFamily: 'var(--font-mono-pl)' }}
-        >
-          <span>{String(currentCardIndex + 1).padStart(2, '0')} / {total}</span>
-          {isProgressTrackingEnabled && (
-            <span>
-              Mastery · <span className='text-[var(--pl-text)]'>{Math.round(progress)}%</span>
-            </span>
-          )}
-        </div>
-        <div className='h-[2px] rounded-full overflow-hidden bg-[var(--pl-border)]'>
+      {isProgressTrackingEnabled && (
+        <div className='pt-5 px-10 lg:px-20'>
           <div
-            className='h-full rounded-full transition-all duration-300 bg-[var(--pl-accent)]'
-            style={{ width: `${progress}%` }}
-          />
+            className='flex justify-between text-xs mb-2 text-[var(--pl-text-faint)]'
+            style={{ fontFamily: 'var(--font-mono-pl)' }}
+          >
+            <span>
+              {String(currentCardIndex + 1).padStart(2, '0')} / {total}
+            </span>
+            <span>
+              Mastery ·{' '}
+              <span className='text-[var(--pl-text)]'>
+                {Math.round(progress)}%
+              </span>
+            </span>
+          </div>
+          <div className='h-[2px] rounded-full overflow-hidden bg-[var(--pl-border)]'>
+            <div
+              className='h-full rounded-full transition-all duration-300 bg-[var(--pl-accent)]'
+              style={{ width: `${progress}%` }}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Card area */}
       <div className='flex-1 flex items-center justify-center py-10 gap-7'>
@@ -257,7 +266,11 @@ const FlipFlashcard = ({
         <Button variant='outline' size='icon' onClick={onShuffle}>
           <Shuffle size={14} />
         </Button>
-        <Button variant='outline' size='icon' onClick={() => setIsSettingsOpen(true)}>
+        <Button
+          variant='outline'
+          size='icon'
+          onClick={() => setIsSettingsOpen(true)}
+        >
           <Settings size={14} />
         </Button>
       </div>

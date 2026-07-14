@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   isFlipped: boolean;
@@ -41,7 +42,10 @@ const FlashcardCard = ({
   autoFlipDelay,
   cardKey,
   onCardClick,
-}: Props) => (
+}: Props) => {
+  const { t } = useTranslation();
+
+  return (
   <>
     <div className='relative h-[440px] [perspective:1800px]'>
       {/* 3D flip container */}
@@ -60,10 +64,10 @@ const FlashcardCard = ({
         >
           <div className='flex justify-between items-start'>
             <span className='text-[11px] uppercase tracking-[0.16em] text-[var(--pl-text-faint)]'>
-              {frontLabel} · Tap to reveal
+              {frontLabel} · {t('flashcard.study.card.tapToReveal')}
             </span>
             <span className='text-[10.5px] px-[10px] py-[3px] rounded-full uppercase tracking-[0.08em] font-[500] bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]'>
-              Medium
+              {t('flashcard.study.card.difficultyMedium')}
             </span>
           </div>
 
@@ -73,7 +77,7 @@ const FlashcardCard = ({
                 className='text-[13px] mb-4 text-[var(--pl-text-faint)]'
                 style={{ fontFamily: 'var(--font-mono-pl)' }}
               >
-                Q·{cardNumber}
+                {t('flashcard.study.card.questionLabel', { number: cardNumber })}
               </div>
               {imageUrl && (
                 <img
@@ -95,12 +99,12 @@ const FlashcardCard = ({
             <div className='flex items-center gap-[5px] text-[11px] text-[var(--pl-text-faint)]'>
               <Kbd>←</Kbd>
               <Kbd>→</Kbd>
-              <span className='ml-1'>navigate</span>
+              <span className='ml-1'>{t('flashcard.study.card.navigate')}</span>
             </div>
             <div className='flex items-center gap-2 text-[11.5px] text-[var(--pl-text-faint)]'>
-              <span>Press</span>
+              <span>{t('flashcard.study.card.pressLabel')}</span>
               <Kbd>Space</Kbd>
-              <span>to flip</span>
+              <span>{t('flashcard.study.card.toFlipLabel')}</span>
             </div>
           </div>
         </div>
@@ -128,9 +132,9 @@ const FlashcardCard = ({
           <div className='flex justify-end items-center mt-4'>
             <div className='flex items-center gap-[5px] text-[11px] text-[var(--pl-text-faint)]'>
               <Kbd>1</Kbd>
-              <span className='mr-2'>Again</span>
+              <span className='mr-2'>{t('flashcard.study.again')}</span>
               <Kbd>2</Kbd>
-              <span>Good</span>
+              <span>{t('flashcard.study.good')}</span>
             </div>
           </div>
         </div>
@@ -149,7 +153,7 @@ const FlashcardCard = ({
             className='text-[13px] font-[600] tracking-[0.04em]'
             style={{ opacity: dragProgress, color: 'oklch(0.45 0.2 145)' }}
           >
-            Good →
+            {t('flashcard.study.card.dragGoodHint')}
           </span>
         </div>
       )}
@@ -167,7 +171,7 @@ const FlashcardCard = ({
             className='text-[13px] font-[600] tracking-[0.04em]'
             style={{ opacity: dragProgress, color: 'oklch(0.45 0.2 25)' }}
           >
-            ← Again
+            {t('flashcard.study.card.dragAgainHint')}
           </span>
         </div>
       )}
@@ -197,6 +201,7 @@ const FlashcardCard = ({
       </div>
     )}
   </>
-);
+  );
+};
 
 export default FlashcardCard;

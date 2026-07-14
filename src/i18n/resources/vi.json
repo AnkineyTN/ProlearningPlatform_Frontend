@@ -2521,7 +2521,86 @@
       "leaveConfirmDescription": "Bộ flashcard này chưa được tạo. Bạn có chắc muốn rời đi? Mọi thông tin đã nhập sẽ bị mất.",
       "leaveConfirmCancel": "Tiếp tục chỉnh sửa",
       "leaveConfirmLeave": "Rời đi, không tạo",
-      "emptyCardError": "Vui lòng nhập đầy đủ Term và Definition cho mỗi thẻ."
+      "emptyCardError": "Vui lòng nhập đầy đủ Term và Definition cho mỗi thẻ.",
+      "item": {
+        "dragHandle": "Kéo để sắp xếp lại",
+        "termLabel": "THUẬT NGỮ",
+        "termPlaceholder": "Thuật ngữ",
+        "termRequired": "Thuật ngữ là bắt buộc",
+        "definitionLabel": "ĐỊNH NGHĨA",
+        "definitionPlaceholder": "Định nghĩa",
+        "definitionRequired": "Định nghĩa là bắt buộc",
+        "addImage": "Thêm ảnh",
+        "duplicateCard": "Nhân đôi thẻ",
+        "deleteCard": "Xóa thẻ"
+      }
+    },
+    "study": {
+      "recallPrompt": "Bạn nhớ thẻ này tốt đến mức nào?",
+      "again": "Chưa nhớ",
+      "good": "Đã nhớ",
+      "actionBar": {
+        "study": "Học",
+        "matching": "Ghép thẻ",
+        "practiceWithExam": "Luyện tập với đề thi"
+      },
+      "card": {
+        "tapToReveal": "Chạm để xem",
+        "difficultyMedium": "Trung bình",
+        "questionLabel": "Câu·{{number}}",
+        "navigate": "di chuyển",
+        "pressLabel": "Nhấn",
+        "toFlipLabel": "để lật thẻ",
+        "dragGoodHint": "Đã nhớ →",
+        "dragAgainHint": "← Chưa nhớ"
+      }
+    },
+    "results": {
+      "heroTitlePerfect": "Điểm số hoàn hảo.",
+      "heroTitleGreat": "Làm tốt lắm.",
+      "heroTitleKeepGoing": "Cố gắng thêm nhé.",
+      "heroSubtitlePerfect": "Bạn đã nhớ tất cả {{count}} thẻ trong phiên học này. Xuất sắc!",
+      "heroSubtitleProgress": "Bạn đã nhớ {{known}}/{{total}} thẻ. Ôn lại phần còn lại để nắm vững bộ thẻ.",
+      "heroSubtitleNoTracking": "Bạn đã hoàn thành phiên học này với {{studied}}/{{total}} thẻ đã học.",
+      "continueStudying": "Tiếp tục học",
+      "practiceWithTest": "Luyện tập với đề thi",
+      "matchingMode": "Chế độ ghép thẻ",
+      "analyzeKnowledge": "Phân tích kiến thức",
+      "knownLabel": "ĐÃ NHỚ",
+      "learningLabel": "ĐANG HỌC",
+      "remainingLabel": "CÒN LẠI",
+      "cardsUnit": "thẻ",
+      "needsReview": "cần ôn lại",
+      "masteredThisSession": "đã nắm vững trong phiên này",
+      "noneToReview": "không có thẻ cần ôn lại",
+      "cardsToRevisit_one": "{{count}} thẻ cần ôn lại",
+      "cardsToRevisit_other": "{{count}} thẻ cần ôn lại",
+      "allCardsReviewed": "đã ôn tất cả các thẻ",
+      "notYetSeen": "{{count}} thẻ chưa xem",
+      "reviewLogs": "NHẬT KÝ ÔN TẬP",
+      "entriesCount_one": "{{count}} mục",
+      "entriesCount_other": "{{count}} mục",
+      "finishedAt": "Hoàn thành lúc {{time}}",
+      "logKnown": "Đã nhớ",
+      "logUnknown": "Chưa nhớ",
+      "hideLogs": "Ẩn nhật ký",
+      "showAllLogs": "Xem tất cả nhật ký",
+      "backToFlashcard": "Về trang flashcard",
+      "resetProgress": "Đặt lại tiến trình"
+    },
+    "settings": {
+      "title": "Cài đặt",
+      "trackProgressLabel": "Theo dõi tiến trình",
+      "trackProgressDescription": "Theo dõi quá trình học của bạn",
+      "autoFlipLabel": "Tự động lật thẻ",
+      "autoFlipDescription": "Tự động hiện đáp án sau một khoảng thời gian",
+      "autoFlipSeconds": "{{value}}s",
+      "matchingCardsLabel": "Số thẻ trong trò ghép thẻ",
+      "matchingCardsDescription": "Số lượng thẻ được dùng khi chơi trò ghép thẻ",
+      "frontSideLabel": "Mặt trước",
+      "term": "Thuật ngữ",
+      "definition": "Định nghĩa",
+      "resetFlashcards": "Đặt lại flashcard"
     }
   },
   "notFoundPage": {

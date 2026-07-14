@@ -51,11 +51,11 @@ export default function ActionBar({
     <div className='flex items-center gap-2 mb-2'>
       <Button onClick={onStudy} className='gap-2 text-sm' size='sm'>
         <Brain className='w-4 h-4' />
-        Study
+        {t('flashcard.study.actionBar.study')}
       </Button>
       <Button onClick={onMatching} className='gap-2 text-sm' size='sm'>
         <Blocks className='w-4 h-4' />
-        Matching
+        {t('flashcard.study.actionBar.matching')}
       </Button>
       <Button
         onClick={onPracticeWithExam}
@@ -68,7 +68,7 @@ export default function ActionBar({
         ) : (
           <ClipboardList className='w-4 h-4' />
         )}
-        Practice with Exam
+        {t('flashcard.study.actionBar.practiceWithExam')}
       </Button>
 
       <div className='ml-auto flex items-center gap-1'>

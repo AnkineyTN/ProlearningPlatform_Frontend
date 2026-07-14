@@ -139,7 +139,7 @@ export default function SetListPage() {
     try {
       const payload: CreateSetPayload = {
         ...data,
-        privacy: 'PUBLIC',
+        privacy: 'PRIVATE',
       };
       await createSetMutation.mutateAsync(payload);
       setIsCreateModalOpen(false);

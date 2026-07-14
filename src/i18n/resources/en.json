@@ -2114,7 +2114,86 @@
       "leaveConfirmDescription": "This flashcard set hasn't been created yet. Are you sure you want to leave? Everything you entered will be lost.",
       "leaveConfirmCancel": "Keep editing",
       "leaveConfirmLeave": "Leave without creating",
-      "emptyCardError": "Please fill in both term and definition for every card."
+      "emptyCardError": "Please fill in both term and definition for every card.",
+      "item": {
+        "dragHandle": "Drag to reorder",
+        "termLabel": "TERM",
+        "termPlaceholder": "Term",
+        "termRequired": "Term is required",
+        "definitionLabel": "DEFINITION",
+        "definitionPlaceholder": "Definition",
+        "definitionRequired": "Definition is required",
+        "addImage": "Add image",
+        "duplicateCard": "Duplicate card",
+        "deleteCard": "Delete card"
+      }
+    },
+    "study": {
+      "recallPrompt": "How well did you recall this?",
+      "again": "Again",
+      "good": "Good",
+      "actionBar": {
+        "study": "Study",
+        "matching": "Matching",
+        "practiceWithExam": "Practice with Exam"
+      },
+      "card": {
+        "tapToReveal": "Tap to reveal",
+        "difficultyMedium": "Medium",
+        "questionLabel": "Q·{{number}}",
+        "navigate": "navigate",
+        "pressLabel": "Press",
+        "toFlipLabel": "to flip",
+        "dragGoodHint": "Good →",
+        "dragAgainHint": "← Again"
+      }
+    },
+    "results": {
+      "heroTitlePerfect": "Perfect score.",
+      "heroTitleGreat": "Great job.",
+      "heroTitleKeepGoing": "Keep going.",
+      "heroSubtitlePerfect": "You knew all {{count}} cards in this session. Outstanding!",
+      "heroSubtitleProgress": "You knew {{known}} of {{total}} cards. Review the rest to master the set.",
+      "heroSubtitleNoTracking": "You've completed this study session with {{studied}} of {{total}} cards studied.",
+      "continueStudying": "Continue Studying",
+      "practiceWithTest": "Practice with Test",
+      "matchingMode": "Matching Mode",
+      "analyzeKnowledge": "Analyze Knowledge",
+      "knownLabel": "KNOWN",
+      "learningLabel": "LEARNING",
+      "remainingLabel": "REMAINING",
+      "cardsUnit": "cards",
+      "needsReview": "needs review",
+      "masteredThisSession": "mastered this session",
+      "noneToReview": "none to review",
+      "cardsToRevisit_one": "{{count}} card to revisit",
+      "cardsToRevisit_other": "{{count}} cards to revisit",
+      "allCardsReviewed": "all cards reviewed",
+      "notYetSeen": "{{count}} not yet seen",
+      "reviewLogs": "REVIEW LOGS",
+      "entriesCount_one": "{{count}} entry",
+      "entriesCount_other": "{{count}} entries",
+      "finishedAt": "Finished {{time}}",
+      "logKnown": "Known",
+      "logUnknown": "Unknown",
+      "hideLogs": "Hide logs",
+      "showAllLogs": "Show all logs",
+      "backToFlashcard": "Back to Flashcard",
+      "resetProgress": "Reset Progress"
+    },
+    "settings": {
+      "title": "Settings",
+      "trackProgressLabel": "Track Progress",
+      "trackProgressDescription": "Monitor your learning progress",
+      "autoFlipLabel": "Auto-flip",
+      "autoFlipDescription": "Reveal answer automatically after delay",
+      "autoFlipSeconds": "{{value}}s",
+      "matchingCardsLabel": "Matching Game Cards",
+      "matchingCardsDescription": "Number of cards used when playing the matching game",
+      "frontSideLabel": "Front Side",
+      "term": "Term",
+      "definition": "Definition",
+      "resetFlashcards": "Reset Flashcards"
     }
   },
   "notFoundPage": {

@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const RECALL_BUTTONS = [
-  { label: 'Again', correct: false, color: 'var(--pl-danger)' },
-  { label: 'Good', correct: true, color: 'var(--pl-accent)' },
+  { labelKey: 'again', correct: false, color: 'var(--pl-danger)' },
+  { labelKey: 'good', correct: true, color: 'var(--pl-accent)' },
 ] as const;
 
 type Props = {
@@ -10,17 +11,19 @@ type Props = {
 };
 
 const FlashcardRecallButtons = ({ onAnswer }: Props) => {
+  const { t } = useTranslation();
   const [hoveredBtn, setHoveredBtn] = useState<number | null>(null);
 
   return (
     <div className='mt-7'>
       <p className='text-[11px] uppercase tracking-[0.16em] text-center mb-3 text-[var(--pl-text-faint)]'>
-        How well did you recall this?
+        {t('flashcard.study.recallPrompt')}
       </p>
       <div className='grid grid-cols-2 gap-[10px]'>
         {RECALL_BUTTONS.map((btn, i) => (
           <button
-            key={btn.label}
+            key={btn.labelKey}
+            type='button'
             onClick={() => onAnswer(btn.correct)}
             onMouseEnter={() => setHoveredBtn(i)}
             onMouseLeave={() => setHoveredBtn(null)}
@@ -38,7 +41,7 @@ const FlashcardRecallButtons = ({ onAnswer }: Props) => {
               style={{ background: btn.color }}
             />
             <span className='text-[13.5px] font-[500] text-[var(--pl-text)]'>
-              {btn.label}
+              {t(`flashcard.study.${btn.labelKey}`)}
             </span>
             <span
               className='ml-auto text-[10px] px-[6px] py-[1px] rounded bg-[var(--pl-bg-hover)] text-[var(--pl-text-faint)]'

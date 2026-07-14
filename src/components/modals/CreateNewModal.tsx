@@ -54,13 +54,16 @@ const CreateNewModal = ({
 }: Props) => {
   const { t } = useTranslation();
   const typeLower = type.toLowerCase();
+  const defaultPrivacy = type === 'Set' ? 'Private' : 'Public';
 
   const [mode, setMode] = useState<CreateMode>('manual');
   const [title, setTitle] = useState(initialData?.title || '');
   const [description, setDescription] = useState(
     initialData?.description || '',
   );
-  const [privacy, setPrivacy] = useState(initialData?.privacy || 'Public');
+  const [privacy, setPrivacy] = useState(
+    initialData?.privacy || defaultPrivacy,
+  );
   const [errors, setErrors] = useState<ManualErrors>({});
 
   const [aiData, setAiData] = useState<AISubmitData | null>(null);
@@ -73,7 +76,7 @@ const CreateNewModal = ({
       setMode('manual');
       setTitle(initialData?.title || '');
       setDescription(initialData?.description || '');
-      setPrivacy(initialData?.privacy || 'Public');
+      setPrivacy(initialData?.privacy || defaultPrivacy);
       setErrors({});
     }
   }, [
@@ -81,6 +84,7 @@ const CreateNewModal = ({
     initialData?.title,
     initialData?.description,
     initialData?.privacy,
+    defaultPrivacy,
   ]);
 
   const handleTitleChange = (value: string) => {
@@ -127,7 +131,7 @@ const CreateNewModal = ({
       window.dispatchEvent(new Event('prolearning:refresh'));
       setTitle('');
       setDescription('');
-      setPrivacy('Public');
+      setPrivacy(defaultPrivacy);
       setErrors({});
       onClose();
     } catch (err) {
@@ -154,7 +158,7 @@ const CreateNewModal = ({
     if (isGenerating) return;
     setTitle('');
     setDescription('');
-    setPrivacy('Public');
+    setPrivacy(defaultPrivacy);
     setErrors({});
     onClose();
   };

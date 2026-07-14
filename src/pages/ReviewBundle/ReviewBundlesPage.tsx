@@ -1,17 +1,10 @@
+import { ArrowRight, CalendarRange, Inbox, Info, Layers, Loader2, Sparkles } from 'lucide-react';
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  ArrowRight,
-  CalendarRange,
-  Inbox,
-  Info,
-  Layers,
-  Loader2,
-  Sparkles,
-} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
+
 import { useReviewBundles } from '@/hooks/useReviewBundles';
+import { cn } from '@/lib/utils';
 
 function formatPeriod(from: string, to: string, locale: string): string {
   const fmt = (iso: string) =>
@@ -131,12 +124,6 @@ export default function ReviewBundlesPage() {
           >
             {t('reviewBundles.title')}
           </h1>
-          <p
-            className='text-[17px] italic m-0 text-[var(--pl-text-muted)]'
-            style={{ fontFamily: 'var(--font-serif)' }}
-          >
-            {t('reviewBundles.subtitle')}
-          </p>
         </div>
       </div>
 

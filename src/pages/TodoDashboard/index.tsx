@@ -1,20 +1,22 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import { apiErrorMessage } from '@/lib/apiError';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
+
+import { apiErrorMessage } from '@/lib/apiError';
 import { todoAPI } from '@/services/endpoints/todo';
-import type { Goal, ResourceRef, Todo } from '@/services/types/todo.types';
-import type { MentionResourceType } from './components/SetMentionInput';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
 import GoalModal from './components/GoalModal';
-import TodoStats from './components/TodoStats';
-import WhatsNextPanel from './components/WhatsNextPanel';
 import TodaySection from './components/TodaySection';
-import WeekSection from './components/WeekSection';
-import YearSection from './components/YearSection';
 import TodoDetailModal from './components/TodoDetailModal';
+import TodoStats from './components/TodoStats';
+import WeekSection from './components/WeekSection';
+import WhatsNextPanel from './components/WhatsNextPanel';
+import YearSection from './components/YearSection';
 import { todayIso } from './utils/dateHelpers';
 
+import type { Goal, ResourceRef, Todo } from '@/services/types/todo.types';
+import type { MentionResourceType } from './components/SetMentionInput';
 const TodoDashboard = () => {
   const { t } = useTranslation();
   const qc = useQueryClient();
@@ -164,9 +166,6 @@ const TodoDashboard = () => {
           >
             {t('todo.title')}
           </h1>
-          <p className='text-[17px] italic m-0 font-serif text-[var(--pl-text-muted)]'>
-            {t('todo.subtitle')}
-          </p>
         </div>
       </div>
 
