@@ -10,7 +10,7 @@ Tuy nhiên, việc sử dụng đồng thời nhiều công cụ cũng tạo ra 
 
 Bên cạnh đó, người học còn gặp khó khăn trong việc ghi nhớ, ôn tập và tự đánh giá mức độ hiểu biết. Nhiều nghiên cứu cho thấy học tập chủ động thông qua trả lời câu hỏi, tự kiểm tra hoặc luyện tập thường mang lại hiệu quả ghi nhớ tốt hơn so với việc đọc lại tài liệu một cách thụ động \cite{roediger2006testenhanced,dunlosky2013effectivelearning}. Tuy vậy, để áp dụng các phương pháp này, người học cần tự xây dựng nội dung ôn tập, duy trì thói quen học đều đặn và thường xuyên xác định các phần kiến thức còn yếu. Đây là thách thức lớn, đặc biệt khi các hoạt động học tập không được kết nối trong cùng một quy trình.
 
-Sự phát triển của các mô hình ngôn ngữ lớn (Large Language Models -- LLM) mở ra cơ hội xây dựng các hệ thống hỗ trợ học tập thông minh. Các hệ thống này có thể tóm tắt tài liệu, giải thích khái niệm, sinh nội dung học tập, hỗ trợ luyện tập và cá nhân hóa trải nghiệm người dùng. Tuy nhiên, khảo sát các nền tảng hiện có cho thấy phần lớn giải pháp chỉ tập trung vào một nhóm nhu cầu riêng lẻ: Notion mạnh về ghi chú, Quizlet hỗ trợ Flashcard, NotebookLM khai thác tài liệu bằng AI, trong khi các công cụ Pomodoro hoặc Todo hỗ trợ quản lý thời gian và công việc. Các nền tảng này chưa hỗ trợ đầy đủ toàn bộ quy trình học tập trên một môi trường thống nhất.
+Sự phát triển của các mô hình ngôn ngữ lớn mở ra cơ hội xây dựng các hệ thống hỗ trợ học tập thông minh. Các hệ thống này có thể tóm tắt tài liệu, giải thích khái niệm, sinh nội dung học tập, hỗ trợ luyện tập và cá nhân hóa trải nghiệm người dùng. Tuy nhiên, khảo sát các nền tảng hiện có cho thấy phần lớn giải pháp chỉ tập trung vào một nhóm nhu cầu riêng lẻ: Notion mạnh về ghi chú, Quizlet hỗ trợ Flashcard, NotebookLM khai thác tài liệu bằng AI, trong khi các công cụ Pomodoro hoặc Todo hỗ trợ quản lý thời gian và công việc. Các nền tảng này chưa hỗ trợ đầy đủ toàn bộ quy trình học tập trên một môi trường thống nhất.
 
 Từ những vấn đề trên, nhóm nhận thấy nhu cầu về việc hỗ trợ người học quản lý toàn bộ quá trình học tập trên cùng một nền tảng tích hợp. Xuất phát từ nhu cầu thực tế đó, nhóm thực hiện đề tài \textbf{``Hệ thống thông minh hỗ trợ học tập''} với mục tiêu xây dựng một nền tảng cho phép người dùng quản lý tài nguyên học tập, ghi chú kiến thức, tạo nội dung học tập bằng trí tuệ nhân tạo, ôn tập, đánh giá và theo dõi tiến trình trên nhiều nền tảng khác nhau. Hệ thống hướng tới việc giảm thao tác thủ công, nâng cao hiệu quả tự học và hỗ trợ người dùng xây dựng thói quen học tập bền vững.
 
@@ -51,7 +51,7 @@ Các nghiệp vụ cốt lõi được xử lý tập trung tại Backend Servic
 Đề tài có các đóng góp chính sau:
 \begin{itemize}
     \item Đề xuất và xây dựng một nền tảng học tập tích hợp, giúp giảm sự phân tán tài nguyên bằng cách tập trung các hoạt động quản lý kiến thức, ghi chú, ôn tập và đánh giá trên cùng một môi trường duy nhất.
-    \item Ứng dụng mô hình ngôn ngữ lớn (LLM) vào quy trình học tập, tự động hóa các tác vụ chuẩn bị và tổ chức nội dung, giảm đáng kể khối lượng công việc thủ công cho người học.
+    \item Ứng dụng mô hình ngôn ngữ lớn vào quy trình học tập, tự động hóa các tác vụ chuẩn bị và tổ chức nội dung, giảm đáng kể khối lượng công việc thủ công cho người học.
     \item Cung cấp cơ chế hỗ trợ học tập chủ động thông qua Flashcard, bài kiểm tra và đánh giá định kỳ, giúp người học chuyển dần từ tiếp thu thụ động sang luyện tập có chủ đích.
     \item Xây dựng hệ thống theo dõi tiến trình học tập, giúp người dùng nhận biết sự tiến bộ và duy trì động lực trong dài hạn.
     \item Tạo nền tảng kỹ thuật có khả năng mở rộng, phục vụ cho các hướng nghiên cứu và phát triển tiếp theo về hệ thống học tập cá nhân hóa.
@@ -61,7 +61,7 @@ Các nghiệp vụ cốt lõi được xử lý tập trung tại Backend Servic
 \section{Phạm vi đề tài}
 \subsection{Phạm vi nghiên cứu}
 
-Đề tài tập trung nghiên cứu và xây dựng một hệ thống hỗ trợ học tập thông minh cho nhiều giai đoạn của quá trình học tập, từ tiếp nhận kiến thức, tổ chức thông tin, ôn tập đến đánh giá kết quả. Trọng tâm của đề tài không nằm ở việc phát triển một mô hình trí tuệ nhân tạo mới, mà là nghiên cứu ứng dụng các mô hình ngôn ngữ lớn (LLM) tiên tiến của Google, kết hợp với khung phát triển ứng dụng AI dạng chuỗi (LangChain) và kiến trúc tác vụ AI đa luồng dạng đồ thị (LangGraph) nhằm giải quyết các bài toán thực tế trong hoạt động học tập cá nhân hóa.
+Đề tài tập trung nghiên cứu và xây dựng một hệ thống hỗ trợ học tập thông minh cho nhiều giai đoạn của quá trình học tập, từ tiếp nhận kiến thức, tổ chức thông tin, ôn tập đến đánh giá kết quả. Trọng tâm của đề tài không nằm ở việc phát triển một mô hình trí tuệ nhân tạo mới, mà là nghiên cứu ứng dụng các mô hình ngôn ngữ lớn tiên tiến của Google, kết hợp với khung phát triển ứng dụng AI dạng chuỗi (LangChain) và kiến trúc tác vụ AI đa luồng dạng đồ thị (LangGraph) nhằm giải quyết các bài toán thực tế trong hoạt động học tập cá nhân hóa.
 
 Các hướng nghiên cứu chính của đề tài bao gồm quản lý tri thức cá nhân, học tập chủ động bằng Flashcard và bài kiểm tra, ứng dụng trí tuệ nhân tạo trong giáo dục, theo dõi tiến trình học tập, xây dựng hệ thống đa nền tảng, hỗ trợ cộng tác và tự động hóa quá trình tạo nội dung học tập từ nhiều nguồn dữ liệu.
 
@@ -113,7 +113,7 @@ Hệ thống tích hợp các chức năng trí tuệ nhân tạo nhằm hỗ tr
 
 Về mặt kỹ thuật, hệ thống được xây dựng theo mô hình Client--Server kết hợp với một dịch vụ AI độc lập. Kiến trúc tổng thể bao gồm ứng dụng Web, ứng dụng Mobile, Backend Service, AI Service và hệ quản trị cơ sở dữ liệu.
 
-Ứng dụng Web được phát triển bằng React và TypeScript, ứng dụng Mobile được phát triển bằng React Native, Backend Service được phát triển bằng Java Spring Boot, còn AI Service được phát triển bằng Python FastAPI và ứng dụng bộ công cụ LangChain và mô hình trạng thái đa luồng LangGraph để xây dựng các quy trình xử lý dữ liệu thông minh, kết nối trực tiếp với các mô hình ngôn ngữ lớn (LLM) tiên tiến. Dữ liệu bền vững được lưu trữ chủ yếu trên PostgreSQL; Redis được sử dụng cho cache và trạng thái ngắn hạn; RabbitMQ hỗ trợ xử lý các tác vụ bất đồng bộ như gửi email hoặc thông báo nền.
+Ứng dụng Web được phát triển bằng React và TypeScript, ứng dụng Mobile được phát triển bằng React Native, Backend Service được phát triển bằng Java Spring Boot, còn AI Service được phát triển bằng Python FastAPI và ứng dụng bộ công cụ LangChain và mô hình trạng thái đa luồng LangGraph để xây dựng các quy trình xử lý dữ liệu thông minh, kết nối trực tiếp với các mô hình ngôn ngữ lớn tiên tiến. Dữ liệu bền vững được lưu trữ chủ yếu trên PostgreSQL; Redis được sử dụng cho cache và trạng thái ngắn hạn; RabbitMQ hỗ trợ xử lý các tác vụ bất đồng bộ như gửi email hoặc thông báo nền.
 
 \subsection{Giới hạn của đề tài}
 

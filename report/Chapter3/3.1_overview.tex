@@ -1,9 +1,6 @@
 \section{Kiến trúc tổng quan}
 \label{sec:architecture-overview}
 
-\subsection{Mô hình kiến trúc hệ thống}
-\label{subsec:system-architecture-model}
-
 ProLearning Platform được đề xuất theo mô hình Kiến trúc phân tầng tách biệt với dịch vụ AI chuyên biệt. Thành phần trung tâm là một Spring Boot API server, chịu trách nhiệm xác thực người dùng, kiểm soát quyền truy cập, điều phối nghiệp vụ và kết nối với các dịch vụ hạ tầng. Ở phạm vi hiện tại, hệ thống được triển khai với một server backend chính; khi số lượng người dùng tăng, kiến trúc này có thể mở rộng bằng cách bổ sung thêm các instance backend phía sau load balancer, trong khi trạng thái dùng chung vẫn được đặt tại PostgreSQL, Redis, RabbitMQ hoặc các dịch vụ hạ tầng tương ứng. Cách tổ chức này phù hợp với hệ thống học tập có nhiều miền dữ liệu cần được quản lý nhất quán như người dùng, học liệu, tiến độ học tập, thông báo và thanh toán~\cite{springbootdocs,springsecurityjwt,springdatajpa}.
 
 Kiến trúc tổng quan của hệ thống gồm các nhóm thành phần chính sau:
