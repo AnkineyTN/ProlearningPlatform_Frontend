@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { apiErrorMessage } from '@/lib/apiError';
 
 import {
   AlertDialog,
@@ -27,9 +26,14 @@ import {
   useFlashcardDetail,
   useUpdateMultipleCards,
 } from '@/hooks/useFlashcards';
+import { apiErrorMessage } from '@/lib/apiError';
+import { cn } from '@/lib/utils';
 
 import ImportModal from '../components/ImportModal';
 import FlashcardItemWrapper from './FlashcardItemComponent';
+
+const TITLE_MAX_LENGTH = 100;
+const DESCRIPTION_MAX_LENGTH = 500;
 
 interface FlashcardCard {
   id: number | string;
@@ -223,8 +227,7 @@ export default function FlashcardEditor({
     );
   };
 
-  const handleDragStart = (cardId: number | string) =>
-    setDraggedCardId(cardId);
+  const handleDragStart = (cardId: number | string) => setDraggedCardId(cardId);
   const handleDragEnd = () => {
     setDraggedCardId(null);
     pointerYRef.current = null;
@@ -393,7 +396,7 @@ export default function FlashcardEditor({
         <div className='max-w-5xl mx-auto px-6 py-4 flex items-center justify-between gap-6'>
           <button
             onClick={handleBack}
-            className='flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors'
+            className='flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer'
           >
             <ArrowLeft className='w-4 h-4' />
             Back
@@ -411,7 +414,14 @@ export default function FlashcardEditor({
               <Upload className='w-3.5 h-3.5' />
               Import
             </Button>
-            <Button onClick={handleSave} disabled={isSaving} className='px-6'>
+            <Button
+              onClick={handleSave}
+              disabled={
+                isSaving ||
+                title.length > TITLE_MAX_LENGTH ||
+                description.length > DESCRIPTION_MAX_LENGTH
+              }
+            >
               {isSaving ? 'Saving…' : isUpdateMode ? 'Update' : 'Create'}
             </Button>
           </div>
@@ -422,13 +432,29 @@ export default function FlashcardEditor({
         {/* Metadata */}
         <div className='rounded-2xl border border-[var(--pl-border)] bg-[var(--pl-bg-elev)] mb-8 overflow-hidden'>
           <div className='p-6 border-b border-[var(--pl-border)] space-y-2'>
-            <Label
-              htmlFor='fc-title'
-              className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)]'
-            >
-              {t('exam.editor.titleLabel')}{' '}
-              <span className='text-[var(--pl-danger)]'>*</span>
-            </Label>
+            <div className='flex items-baseline justify-between gap-2'>
+              <Label
+                htmlFor='fc-title'
+                className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)]'
+              >
+                {t('exam.editor.titleLabel')}{' '}
+                <span className='text-[var(--pl-danger)]'>*</span>
+              </Label>
+              <span
+                className={cn(
+                  'text-xs shrink-0',
+                  title.length > TITLE_MAX_LENGTH
+                    ? 'text-[var(--pl-danger-text)]'
+                    : 'text-muted-foreground',
+                )}
+              >
+                {t('modal.charCount', {
+                  current: title.length,
+                  max: TITLE_MAX_LENGTH,
+                  defaultValue: '{{current}}/{{max}}',
+                })}
+              </span>
+            </div>
             <Input
               id='fc-title'
               value={title}
@@ -438,12 +464,28 @@ export default function FlashcardEditor({
             />
           </div>
           <div className='p-6 space-y-2'>
-            <Label
-              htmlFor='fc-desc'
-              className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)] uppercase'
-            >
-              {t('exam.editor.descriptionLabel')}
-            </Label>
+            <div className='flex items-baseline justify-between gap-2'>
+              <Label
+                htmlFor='fc-desc'
+                className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)] uppercase'
+              >
+                {t('exam.editor.descriptionLabel')}
+              </Label>
+              <span
+                className={cn(
+                  'text-xs shrink-0',
+                  description.length > DESCRIPTION_MAX_LENGTH
+                    ? 'text-[var(--pl-danger-text)]'
+                    : 'text-muted-foreground',
+                )}
+              >
+                {t('modal.charCount', {
+                  current: description.length,
+                  max: DESCRIPTION_MAX_LENGTH,
+                  defaultValue: '{{current}}/{{max}}',
+                })}
+              </span>
+            </div>
             <Textarea
               id='fc-desc'
               value={description}

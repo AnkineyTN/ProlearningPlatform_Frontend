@@ -1,5 +1,6 @@
 import { CheckCircle, Clock, XCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+
 import type { Exam } from '../../types';
 import type { ResultHelpers } from './utils';
 
@@ -12,14 +13,17 @@ interface QuestionNavigatorProps {
 
 const BASE_CLASS = {
   correct: 'text-[var(--pl-accent)]',
-  wrong:   'text-[var(--pl-danger-text)]',
+  wrong: 'text-[var(--pl-danger-text)]',
   pending: 'text-[var(--pl-warning-text)]',
 } as const;
 
 const SELECTED_CLASS = {
-  correct: 'bg-[var(--pl-accent-soft-2)] border-[var(--pl-accent-border)] text-[var(--pl-accent-strong)] font-semibold',
-  wrong:   'bg-[var(--pl-danger-soft)] border-[var(--pl-danger-border)] text-[var(--pl-danger-text)] font-semibold',
-  pending: 'bg-[var(--pl-warning-soft)] border-[var(--pl-warning-border)] text-[var(--pl-warning-text)] font-semibold',
+  correct:
+    'bg-[var(--pl-accent-soft-2)] border-[var(--pl-accent-border)] text-[var(--pl-accent-strong)] font-semibold',
+  wrong:
+    'bg-[var(--pl-danger-soft)] hover:bg-[var(--pl-danger-soft)] border-[var(--pl-danger-border)] text-[var(--pl-danger-text)] font-semibold',
+  pending:
+    'bg-[var(--pl-warning-soft)] border-[var(--pl-warning-border)] text-[var(--pl-warning-text)] font-semibold',
 } as const;
 
 export default function QuestionNavigator({
@@ -42,19 +46,28 @@ export default function QuestionNavigator({
         {exam.questions.map((question, index) => {
           const correct = helpers.isAnswerCorrect(question.id);
           const isSelected = index === selectedIndex;
-          const status = correct === true ? 'correct' : correct === false ? 'wrong' : 'pending';
+          const status =
+            correct === true
+              ? 'correct'
+              : correct === false
+                ? 'wrong'
+                : 'pending';
 
           const icon =
-            correct === true ? <CheckCircle className='w-3.5 h-3.5 flex-shrink-0' />
-            : correct === false ? <XCircle className='w-3.5 h-3.5 flex-shrink-0' />
-            : <Clock className='w-3.5 h-3.5 flex-shrink-0' />;
+            correct === true ? (
+              <CheckCircle className='w-3.5 h-3.5 flex-shrink-0' />
+            ) : correct === false ? (
+              <XCircle className='w-3.5 h-3.5 flex-shrink-0' />
+            ) : (
+              <Clock className='w-3.5 h-3.5 flex-shrink-0' />
+            );
 
           return (
             <button
               key={question.id}
               onClick={() => onSelect(index)}
               title={question.questionText}
-              className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg border text-xs font-medium transition-all text-left hover:opacity-80 ${
+              className={`w-full cursor-pointer flex items-center gap-2 px-2 py-1.5 rounded-lg border text-xs font-medium transition-all text-left hover:bg-[var(--pl-bg-elev)] ${
                 isSelected
                   ? SELECTED_CLASS[status]
                   : `border-transparent ${BASE_CLASS[status]}`

@@ -1,4 +1,5 @@
 import { Download, Upload, X } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -15,18 +16,44 @@ type Props = {
 
 const AIFileUploader = ({ files, onChange, disabled, maxFiles = 3 }: Props) => {
   const { t } = useTranslation();
+  const [isDragOver, setIsDragOver] = useState(false);
 
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-    const filesArray = Array.from(e.target.files);
-    if (filesArray.length > maxFiles) {
+  const atMax = files.length >= maxFiles;
+  const uploadDisabled = disabled || atMax;
+
+  const addFiles = (incoming: File[]) => {
+    if (incoming.length === 0) return;
+    const combined = [...files, ...incoming];
+    if (combined.length > maxFiles) {
       toast.error(
         t('modal.ai.maxFiles', { defaultValue: 'Maximum 3 files allowed' }),
       );
-      onChange(filesArray.slice(0, maxFiles));
-    } else {
-      onChange(filesArray);
     }
+    onChange(combined.slice(0, maxFiles));
+  };
+
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    addFiles(Array.from(e.target.files));
+    e.target.value = '';
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    if (uploadDisabled) return;
+    addFiles(Array.from(e.dataTransfer.files));
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (uploadDisabled) return;
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
   };
 
   const handleRemove = (index: number) => {
@@ -35,7 +62,19 @@ const AIFileUploader = ({ files, onChange, disabled, maxFiles = 3 }: Props) => {
 
   return (
     <div>
-      <div className='w-full border-2 border-dashed border-border rounded-xl p-7 text-center hover:border-foreground/50 transition-colors bg-[var(--pl-bg-sunken)]'>
+      <div
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        className={cn(
+          'w-full border-2 border-dashed rounded-xl p-7 text-center transition-colors bg-[var(--pl-bg-sunken)]',
+          uploadDisabled
+            ? 'border-border'
+            : isDragOver
+              ? 'border-[var(--pl-accent)] bg-[var(--pl-accent-soft)]'
+              : 'border-border hover:border-foreground/50',
+        )}
+      >
         <Upload className='w-10 h-10 mx-auto mb-3 text-muted-foreground' />
         <p className='text-sm text-muted-foreground mb-3'>
           {maxFiles > 1
@@ -53,12 +92,12 @@ const AIFileUploader = ({ files, onChange, disabled, maxFiles = 3 }: Props) => {
             onChange={handleUpload}
             className='hidden'
             accept='.pdf,.docx,.txt,.doc,.pptx'
-            disabled={disabled}
+            disabled={uploadDisabled}
           />
           <span
             className={cn(
               'px-4 py-2 bg-foreground text-background rounded-lg inline-block text-sm font-medium',
-              disabled
+              uploadDisabled
                 ? 'opacity-50 cursor-not-allowed'
                 : 'cursor-pointer hover:opacity-90 transition-opacity',
             )}
@@ -66,6 +105,14 @@ const AIFileUploader = ({ files, onChange, disabled, maxFiles = 3 }: Props) => {
             {t('modal.ai.chooseFiles')}
           </span>
         </label>
+        {atMax && (
+          <p className='text-xs text-[var(--pl-warning-text)] mt-2.5'>
+            {t('modal.ai.maxFilesReached', {
+              defaultValue: 'Maximum {{count}} files reached',
+              count: maxFiles,
+            })}
+          </p>
+        )}
       </div>
 
       {files.length > 0 && (

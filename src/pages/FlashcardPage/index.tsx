@@ -553,7 +553,9 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         flashcardId: Number(flashcardId),
       });
       const examId = response.data.data.id;
-      goTo(`/sets/${setId}/exams/${examId}`);
+      navigate(`/sets/${setId}/exams/${examId}`, {
+        state: { backTo: `/sets/${setId}/flashcards/${flashcardId}` },
+      });
     } catch (error) {
       console.error('Failed to generate exam:', error);
       toast.error(apiErrorMessage(error, t('flashcard.page.generateExamError')));
@@ -596,7 +598,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           currentCardIndex={currentCardIndex}
           onFlip={handleFlip}
           onPrevious={handlePrevious}
-          onNext={handleNext}
+          onNext={() => handleNext(displayedFlashcards)}
           onUpdateCard={handleUpdateCard}
           onDeleteCard={handleDeleteCard}
           onDeleteFlashcard={handleDeleteFlashcard}

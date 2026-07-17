@@ -1,5 +1,8 @@
 import { Clock, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+
+import { Button } from '@/components/ui/button';
+
 import { formatTime } from './utils';
 
 interface ExamTakingHeaderProps {
@@ -35,10 +38,10 @@ export default function ExamTakingHeader({
         <button
           onClick={onExit}
           disabled={isSubmitting}
-          className='flex items-center gap-2 text-[12.5px] transition-opacity hover:opacity-70'
+          className='flex items-center cursor-pointer gap-2 text-[12.5px] transition-opacity hover:opacity-70'
           style={{ color: 'var(--pl-text-muted)' }}
         >
-          <X size={14} /> Exit exam
+          <X size={14} /> {t('exam.taking.exitExam')}
         </button>
         <div
           className='h-[18px] w-px'
@@ -48,7 +51,7 @@ export default function ExamTakingHeader({
           className='text-[11px] uppercase tracking-[0.14em]'
           style={{ color: 'var(--pl-text-faint)' }}
         >
-          {title} · Practice Exam
+          {title} · {t('exam.taking.practiceExam')}
         </span>
       </div>
 
@@ -70,10 +73,10 @@ export default function ExamTakingHeader({
             / {formatTime(timeLimitSeconds)}
           </span>
         </div>
-        <button
+        <Button
           onClick={onSubmit}
           disabled={isSubmitting}
-          className='px-5 py-[10px] rounded-full text-[13px] font-[500] transition-opacity disabled:opacity-50'
+          className='px-5 py-[10px] rounded-full'
           style={{
             background: 'var(--pl-accent)',
             color: 'var(--pl-accent-fg)',
@@ -82,7 +85,7 @@ export default function ExamTakingHeader({
           {isSubmitting
             ? t('exam.taking.submitting')
             : t('exam.taking.submitExam')}
-        </button>
+        </Button>
       </div>
     </div>
   );

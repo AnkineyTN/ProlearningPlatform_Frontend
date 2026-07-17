@@ -1,10 +1,12 @@
-import { useState } from 'react';
 import { AlertCircle } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { Textarea } from '@/components/ui/textarea';
-import type { ExamQuestion, ExamSubmission } from '../../types';
+
 import { OPTION_LABELS } from './utils';
 
+import type { ExamQuestion, ExamSubmission } from '../../types';
 interface ExamTakingQuestionProps {
   question: ExamQuestion;
   submission: ExamSubmission | undefined;
@@ -79,7 +81,7 @@ export default function ExamTakingQuestion({
                   onClick={() => onSelectAnswer(question.id, answer.id, !sel)}
                   onMouseEnter={() => setHoveredOption(answer.id)}
                   onMouseLeave={() => setHoveredOption(null)}
-                  className='flex items-center gap-[14px] px-5 py-4 rounded-[12px] text-left transition-all'
+                  className='flex items-center cursor-pointer gap-[14px] px-5 py-4 rounded-[12px] text-left transition-all'
                   style={{
                     background: sel
                       ? 'var(--pl-accent-soft)'

@@ -34,7 +34,7 @@ export default function ExamTakingProgress({
               key={i}
               onClick={() => onSelect(i)}
               title={`Question ${i + 1}${isFlagged ? ' · Flagged' : ''}`}
-              className='flex-1 flex flex-col items-center gap-[3px] py-2 transition-opacity hover:opacity-80'
+              className='flex-1 cursor-pointer flex flex-col items-center gap-[3px] py-2 transition-opacity hover:opacity-80'
             >
               <div
                 className='w-full h-1.5 rounded-full transition-all'

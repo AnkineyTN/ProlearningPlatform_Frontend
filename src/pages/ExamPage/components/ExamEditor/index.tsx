@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { apiErrorMessage } from '@/lib/apiError';
+import { cn } from '@/lib/utils';
 
 import {
   AlertDialog,
@@ -51,6 +52,9 @@ export type QuestionErrors = {
   noCorrectAnswer?: boolean;
   emptyAnswers?: Set<string>;
 };
+
+const TITLE_MAX_LENGTH = 100;
+const DESCRIPTION_MAX_LENGTH = 500;
 
 const typeIcon = (type: QuestionType) => {
   if (type === 'MULTIPLE_CHOICE')
@@ -448,7 +452,11 @@ export default function ExamEditor() {
           </div>
           <Button
             onClick={handleSave}
-            disabled={isSaving}
+            disabled={
+              isSaving ||
+              title.length > TITLE_MAX_LENGTH ||
+              description.length > DESCRIPTION_MAX_LENGTH
+            }
             className='gap-2 flex-shrink-0'
           >
             <Save className='w-4 h-4' />
@@ -465,13 +473,29 @@ export default function ExamEditor() {
         {/* Exam metadata */}
         <div className='rounded-2xl border border-[var(--pl-border)] bg-[var(--pl-bg)] overflow-hidden'>
           <div className='p-6 border-b border-[var(--pl-border)] space-y-2'>
-            <Label
-              htmlFor='exam-title'
-              className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)] uppercase'
-            >
-              {t('exam.editor.titleLabel')}{' '}
-              <span className='text-[var(--pl-danger)]'>*</span>
-            </Label>
+            <div className='flex items-baseline justify-between gap-2'>
+              <Label
+                htmlFor='exam-title'
+                className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)] uppercase'
+              >
+                {t('exam.editor.titleLabel')}{' '}
+                <span className='text-[var(--pl-danger)]'>*</span>
+              </Label>
+              <span
+                className={cn(
+                  'text-xs shrink-0',
+                  title.length > TITLE_MAX_LENGTH
+                    ? 'text-[var(--pl-danger-text)]'
+                    : 'text-muted-foreground',
+                )}
+              >
+                {t('modal.charCount', {
+                  current: title.length,
+                  max: TITLE_MAX_LENGTH,
+                  defaultValue: '{{current}}/{{max}}',
+                })}
+              </span>
+            </div>
             <Input
               id='exam-title'
               value={title}
@@ -490,12 +514,28 @@ export default function ExamEditor() {
           </div>
 
           <div className='p-6 border-b border-[var(--pl-border)] space-y-2'>
-            <Label
-              htmlFor='exam-desc'
-              className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)] uppercase'
-            >
-              {t('exam.editor.descriptionLabel')}
-            </Label>
+            <div className='flex items-baseline justify-between gap-2'>
+              <Label
+                htmlFor='exam-desc'
+                className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)] uppercase'
+              >
+                {t('exam.editor.descriptionLabel')}
+              </Label>
+              <span
+                className={cn(
+                  'text-xs shrink-0',
+                  description.length > DESCRIPTION_MAX_LENGTH
+                    ? 'text-[var(--pl-danger-text)]'
+                    : 'text-muted-foreground',
+                )}
+              >
+                {t('modal.charCount', {
+                  current: description.length,
+                  max: DESCRIPTION_MAX_LENGTH,
+                  defaultValue: '{{current}}/{{max}}',
+                })}
+              </span>
+            </div>
             <Textarea
               id='exam-desc'
               value={description}

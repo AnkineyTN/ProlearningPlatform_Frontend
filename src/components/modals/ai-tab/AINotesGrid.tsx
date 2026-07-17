@@ -2,13 +2,14 @@ import { FileX } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import NoteCardSelect from '@/components/cards/NoteCardSelect';
-import { useNotesBySet } from '@/hooks/useNotes';
+
+import { type NoteListItem } from '@/services/types/note.types';
 
 import { type NoteAIInput } from './types';
 import { getTimeAgo } from './utils';
 
 type Props = {
-  setId: number;
+  notes: NoteListItem[];
   selectedNotes: NoteAIInput[];
   onToggle: (id: number, documentUrls: string[]) => void;
   onDocumentToggle: (noteId: number, docUrl: string) => void;
@@ -16,15 +17,13 @@ type Props = {
 };
 
 const AINotesGrid = ({
-  setId,
+  notes,
   selectedNotes,
   onToggle,
   onDocumentToggle,
   disabled,
 }: Props) => {
   const { t } = useTranslation();
-  const { data: notesData } = useNotesBySet(setId, { page: 0, size: 12 });
-  const notes = notesData?.items || [];
 
   const selectedNoteIds = selectedNotes.map((n) => n.note_id);
 

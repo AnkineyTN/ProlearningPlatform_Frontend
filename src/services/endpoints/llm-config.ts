@@ -1,5 +1,6 @@
 import type { AxiosResponse } from 'axios';
 import api from '../client';
+
 import type {
   CreateLlmConfigData,
   LlmConfigDeleteResponse,
@@ -8,7 +9,7 @@ import type {
   UpdateLlmConfigData,
 } from '../types/llm-config.types';
 
-const BASE = '/api/users/me/llm-configs';
+const BASE = '/users/me/llm-configs';
 
 export const llmConfigAPI = {
   list: (): Promise<AxiosResponse<LlmConfigListResponse>> => api.get(BASE),
@@ -23,7 +24,8 @@ export const llmConfigAPI = {
   update: (
     id: number,
     data: UpdateLlmConfigData,
-  ): Promise<AxiosResponse<LlmConfigResponse>> => api.put(`${BASE}/${id}`, data),
+  ): Promise<AxiosResponse<LlmConfigResponse>> =>
+    api.put(`${BASE}/${id}`, data),
 
   remove: (id: number): Promise<AxiosResponse<LlmConfigDeleteResponse>> =>
     api.delete(`${BASE}/${id}`),

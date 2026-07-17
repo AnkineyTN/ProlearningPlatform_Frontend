@@ -24,7 +24,7 @@ export default function ResultsHeader({ setId, examId }: ResultsHeaderProps) {
         onClick={() => navigate(backTo ?? `/sets/${setId}/exams`)}
       >
         <ArrowLeft className='w-4 h-4' />
-        Back to Set
+        {t('exam.results.backToSet')}
       </Button>
 
       <div className='flex items-center gap-3'>

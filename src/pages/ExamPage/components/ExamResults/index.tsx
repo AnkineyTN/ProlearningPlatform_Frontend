@@ -102,7 +102,7 @@ export default function ExamResults({
         question: question.questionText,
         correctAnswer,
         userAnswer,
-        language: i18n.language || 'en',
+        language: i18n.language?.startsWith('en') ? 'English' : 'Vietnamese',
       });
 
       const text =
