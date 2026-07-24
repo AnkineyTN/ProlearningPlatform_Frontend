@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { apiErrorMessage } from '@/lib/apiError';
 import { useSetData, useUpdateSet } from '@/hooks/useSets';
 import { useGlobalSearch } from '@/hooks/useGlobalSearch';
@@ -17,6 +18,7 @@ import { RecentSetsPanel } from './components/RecentSetsPanel';
 import { MiniCalendar } from './components/MiniCalendar';
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const updateSetMutation = useUpdateSet();
   const [selectedSet, setSelectedSet] = useState<Set | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -79,7 +81,7 @@ const Dashboard = () => {
       setIsUpdateModalOpen(false);
       setSelectedSet(null);
     } catch (error) {
-      toast.error(apiErrorMessage(error, 'Failed to update set'));
+      toast.error(apiErrorMessage(error, t('dashboard.updateSetError')));
     }
   };
 

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { todoAPI } from '@/services/endpoints/todo';
@@ -9,6 +10,7 @@ import { todayIso } from '@/pages/TodoDashboard/utils/dateHelpers';
 import { Panel, PanelHead } from './Panel';
 
 export function ChecklistPanel() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const today = todayIso();
@@ -40,8 +42,8 @@ export function ChecklistPanel() {
   return (
     <Panel>
       <PanelHead
-        kicker="Today's practice"
-        title='Daily checklist'
+        kicker={t('dashboard.checklist.kicker')}
+        title={t('dashboard.checklist.title')}
         right={
           <div className='flex items-center gap-3'>
             <span className='tabular-nums text-[12px] text-[var(--pl-text-muted)]'>
@@ -51,7 +53,7 @@ export function ChecklistPanel() {
               onClick={() => navigate('/todo')}
               className='flex items-center gap-1 text-[12.5px] text-[var(--pl-text-muted)] bg-transparent border-0 cursor-pointer'
             >
-              Open <ArrowRight size={11} />
+              {t('dashboard.open')} <ArrowRight size={11} />
             </button>
           </div>
         }
@@ -67,11 +69,11 @@ export function ChecklistPanel() {
       <div className='px-3 pt-2 pb-4 max-h-[280px] overflow-y-auto'>
         {isLoading ? (
           <p className='px-[14px] py-3 text-[13px] text-[var(--pl-text-faint)]'>
-            Loading…
+            {t('dashboard.checklist.loading')}
           </p>
         ) : todayTodos.length === 0 ? (
           <p className='px-[14px] py-3 text-[13px] text-[var(--pl-text-faint)]'>
-            No tasks for today.
+            {t('dashboard.checklist.empty')}
           </p>
         ) : (
           todayTodos.map((item) => {

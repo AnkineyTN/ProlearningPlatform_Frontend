@@ -36,23 +36,19 @@ export default function RoadmapFilterBar({
   const statusOptions: { value: RoadmapStatusFilter; label: string }[] = [
     {
       value: 'ACTIVE',
-      label: t('roadmap.list.filter.statusActive', { defaultValue: 'Active' }),
+      label: t('roadmap.list.filter.statusActive'),
     },
     {
       value: 'COMPLETED',
-      label: t('roadmap.list.filter.statusCompleted', {
-        defaultValue: 'Completed',
-      }),
+      label: t('roadmap.list.filter.statusCompleted'),
     },
     {
       value: 'ABANDONED',
-      label: t('roadmap.list.filter.statusAbandoned', {
-        defaultValue: 'Abandoned',
-      }),
+      label: t('roadmap.list.filter.statusAbandoned'),
     },
     {
       value: '',
-      label: t('roadmap.list.filter.statusAll', { defaultValue: 'All status' }),
+      label: t('roadmap.list.filter.statusAll'),
     },
   ];
 
@@ -125,7 +121,7 @@ export default function RoadmapFilterBar({
           className='flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[12px] text-[var(--pl-text-muted)] hover:text-[var(--pl-danger-text)] hover:bg-[var(--pl-danger-soft)] transition-colors duration-150 border border-[var(--pl-border)] bg-transparent cursor-pointer'
         >
           <X size={11} />
-          Clear
+          {t('roadmap.list.filter.clear')}
         </button>
       )}
     </div>

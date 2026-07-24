@@ -137,12 +137,7 @@ export default function ReviewBundlesPage() {
         }}
       >
         <Info size={16} className='mt-0.5 shrink-0' />
-        <span>
-          {t('reviewBundles.infoBanner', {
-            defaultValue:
-              'Each bundle contains the cards you answered incorrectly in a week. Review, save flashcards, or create a test from them.',
-          })}
-        </span>
+        <span>{t('reviewBundles.infoBanner')}</span>
       </div>
 
       {/* Stat cards */}

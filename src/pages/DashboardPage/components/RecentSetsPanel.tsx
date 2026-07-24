@@ -1,5 +1,6 @@
 import { ArrowRight, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { type Set } from '@/components/cards/SetCard';
 import { Panel, PanelHead } from './Panel';
@@ -9,31 +10,34 @@ type Props = {
 };
 
 export function RecentSetsPanel({ sets }: Props) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
     <Panel>
       <PanelHead
-        kicker='Your library'
-        title='Recent sets'
+        kicker={t('dashboard.recentSets.kicker')}
+        title={t('dashboard.recentSets.title')}
         right={
           <button
             onClick={() => navigate('/sets')}
             className='flex items-center gap-1 text-[12.5px] text-[var(--pl-text-muted)] bg-transparent border-0 cursor-pointer'
           >
-            View all <ArrowRight size={11} />
+            {t('dashboard.viewAll')} <ArrowRight size={11} />
           </button>
         }
       />
       <div className='px-3 pt-1 pb-4'>
         {sets.length === 0 && (
           <div className='px-[14px] py-4 flex items-center justify-between'>
-            <p className='text-[13px] text-[var(--pl-text-faint)]'>No sets yet.</p>
+            <p className='text-[13px] text-[var(--pl-text-faint)]'>
+              {t('dashboard.recentSets.empty')}
+            </p>
             <button
               onClick={() => navigate('/sets')}
               className='text-[12.5px] text-[var(--pl-accent-strong)] bg-transparent border-0 cursor-pointer hover:underline'
             >
-              Create your first set →
+              {t('dashboard.recentSets.createFirst')}
             </button>
           </div>
         )}
@@ -57,8 +61,14 @@ export function RecentSetsPanel({ sets }: Props) {
               )}
             </div>
             <div className='flex gap-[14px] text-[11.5px] text-[var(--pl-text-faint)] shrink-0 tabular-nums'>
-              <span>{s.numNotes} notes</span>
-              <span>{s.numFlashcards ?? 0} cards</span>
+              <span>
+                {t('dashboard.recentSets.notesCount', { count: s.numNotes })}
+              </span>
+              <span>
+                {t('dashboard.recentSets.cardsCount', {
+                  count: s.numFlashcards ?? 0,
+                })}
+              </span>
               <span>{s.updated_at}</span>
             </div>
             <ArrowRight

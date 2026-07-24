@@ -1,4 +1,5 @@
 import { useState, useMemo, useLayoutEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHeatmap } from '@/hooks/useActivityLog';
 import type {
   HeatmapDay,
@@ -69,34 +70,36 @@ function toKey(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-const DOW_LABELS = ['Mon', '', 'Wed', '', 'Fri', '', 'Sun'];
-const MONTH_LABELS = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
+const DOW_KEYS = ['monday', '', 'wednesday', '', 'friday', '', 'sunday'];
+const MONTH_SHORT_KEYS = [
+  'jan',
+  'feb',
+  'mar',
+  'apr',
+  'may',
+  'jun',
+  'jul',
+  'aug',
+  'sep',
+  'oct',
+  'nov',
+  'dec',
 ];
 
 type Tooltip = { x: number; y: number; day: HeatmapDay; date: string } | null;
 
-const MODE_OPTS: { value: HeatmapMode; label: string }[] = [
-  { value: 'time', label: 'Time' },
-  { value: 'sessions', label: 'Sessions' },
-  { value: 'score', label: 'Score' },
-];
+const MODE_VALUES: HeatmapMode[] = ['time', 'sessions', 'score'];
+const MODE_LABEL_KEYS: Record<HeatmapMode, string> = {
+  time: 'dashboard.activity.modeTime',
+  sessions: 'dashboard.activity.modeSessions',
+  score: 'dashboard.activity.modeScore',
+};
 
 const CELL = 16;
 const GAP = 3;
 
 const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
+  const { t } = useTranslation();
   const { data: heatmapData, isLoading } = useHeatmap(months);
   const [mode, setMode] = useState<HeatmapMode>('time');
   const [tooltip, setTooltip] = useState<Tooltip>(null);
@@ -140,12 +143,15 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
     weeks.forEach((week, wi) => {
       const m = week[0].getMonth();
       if (m !== last) {
-        labels.push({ weekIdx: wi, label: MONTH_LABELS[m] });
+        labels.push({
+          weekIdx: wi,
+          label: t(`calendar.monthsShort.${MONTH_SHORT_KEYS[m]}`),
+        });
         last = m;
       }
     });
     return labels;
-  }, [weeks]);
+  }, [weeks, t]);
 
   if (isLoading) {
     return (
@@ -165,16 +171,16 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
       <div className='px-6 pt-[18px] pb-[14px] flex items-end justify-between gap-3'>
         <div>
           <div className='text-[10px] tracking-[0.16em] uppercase text-[var(--pl-text-faint)] mb-1'>
-            {weeks.length} weeks
+            {t('dashboard.activity.weeksCount', { count: weeks.length })}
           </div>
           <div className='text-[18px] font-semibold tracking-[-0.015em] text-[var(--pl-text)]'>
-            Study activity
+            {t('dashboard.activity.title')}
           </div>
         </div>
 
         {/* Mode toggle */}
         <div className='flex gap-[3px] p-[3px] bg-[var(--pl-bg-hover)] rounded-[8px] border border-[var(--pl-border)]'>
-          {MODE_OPTS.map(({ value, label }) => (
+          {MODE_VALUES.map((value) => (
             <button
               key={value}
               onClick={() => setMode(value)}
@@ -194,7 +200,7 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
                 fontWeight: mode === value ? 600 : 400,
               }}
             >
-              {label}
+              {t(MODE_LABEL_KEYS[value])}
             </button>
           ))}
         </div>
@@ -214,7 +220,7 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
               width: 22,
             }}
           >
-            {DOW_LABELS.map((lbl, i) => (
+            {DOW_KEYS.map((key, i) => (
               <div
                 key={i}
                 style={{
@@ -224,7 +230,7 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
                   lineHeight: `${CELL}px`,
                 }}
               >
-                {lbl}
+                {key ? t(`calendar.days.${key}`) : ''}
               </div>
             ))}
           </div>
@@ -303,7 +309,7 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
 
         {/* Legend */}
         <div className='flex justify-between items-center mt-3 text-[10px] text-[var(--pl-text-faint)]'>
-          <span>Less</span>
+          <span>{t('dashboard.activity.legendLess')}</span>
           <div style={{ display: 'flex', gap: GAP }}>
             {[0, 1, 2, 3, 4].map((lv) => (
               <div
@@ -317,7 +323,7 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
               />
             ))}
           </div>
-          <span>More</span>
+          <span>{t('dashboard.activity.legendMore')}</span>
         </div>
       </div>
 
@@ -351,7 +357,9 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
                 margin: '2px 0 0',
               }}
             >
-              {tooltip.day.totalMinutes} min
+              {t('dashboard.calendar.durationMinutes', {
+                count: tooltip.day.totalMinutes,
+              })}
             </p>
           )}
           {mode === 'sessions' && (
@@ -362,7 +370,9 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
                 margin: '2px 0 0',
               }}
             >
-              {tooltip.day.sessions} sessions
+              {t('dashboard.stats.focus.sessions', {
+                count: tooltip.day.sessions,
+              })}
             </p>
           )}
           {mode === 'score' && (
@@ -375,7 +385,7 @@ const ActivityHeatmap = ({ months = 6 }: { months?: number }) => {
             >
               {tooltip.day.bestScore != null
                 ? `${tooltip.day.bestScore}/100`
-                : 'No exam'}
+                : t('dashboard.activity.tooltipNoExam')}
             </p>
           )}
         </div>

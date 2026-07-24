@@ -10,17 +10,20 @@ type Props = {
 };
 
 export function DashboardHeader({ searchKeyword, onSearchChange }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
     <div className='px-10 pt-5 flex justify-between items-center'>
       <div>
         <div className='text-[11px] tracking-[0.14em] uppercase text-[var(--pl-text-faint)] mb-1'>
-          {new Date().toLocaleDateString('en-GB', {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long',
-          })}
+          {new Date().toLocaleDateString(
+            i18n.language === 'vi' ? 'vi-VN' : 'en-GB',
+            {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long',
+            },
+          )}
         </div>
         <h1
           className='text-5xl tracking-[-0.02em] text-[var(--pl-text)] m-0'

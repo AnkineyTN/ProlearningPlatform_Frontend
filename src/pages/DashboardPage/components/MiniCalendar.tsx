@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -10,14 +11,43 @@ import {
 import { useHeatmap } from '@/hooks/useActivityLog';
 import { Panel, PanelHead } from './Panel';
 
-function formatStudyTime(minutes: number) {
-  if (minutes < 60) return `${minutes} min`;
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  return m > 0 ? `${h}h ${m}m` : `${h}h`;
-}
+const MONTH_KEYS = [
+  'january',
+  'february',
+  'march',
+  'april',
+  'may',
+  'june',
+  'july',
+  'august',
+  'september',
+  'october',
+  'november',
+  'december',
+];
+
+const WEEKDAY_KEYS = [
+  'sunday',
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+];
 
 export function MiniCalendar() {
+  const { t } = useTranslation();
+
+  function formatStudyTime(minutes: number) {
+    if (minutes < 60) return t('dashboard.calendar.durationMinutes', { count: minutes });
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return m > 0
+      ? t('dashboard.calendar.durationHoursMinutes', { h, m })
+      : t('roadmap.hours', { count: h });
+  }
+
   const now = new Date();
   const [current, setCurrent] = useState(now);
   const year = current.getFullYear();
@@ -25,7 +55,7 @@ export function MiniCalendar() {
   const today = now.getDate();
   const sameMonth = now.getFullYear() === year && now.getMonth() === month;
 
-  const monthName = current.toLocaleString('default', { month: 'long' });
+  const monthName = t(`calendar.months.${MONTH_KEYS[month]}`);
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const startDay = new Date(year, month, 1).getDay();
 
@@ -60,7 +90,7 @@ export function MiniCalendar() {
           <div className='flex gap-2 items-center'>
             {!sameMonth && (
               <Button variant='ghost' onClick={goToday} size='sm'>
-                Today
+                {t('dashboard.calendar.today')}
               </Button>
             )}
             <Button variant='ghost' onClick={prev} size='sm'>
@@ -74,8 +104,8 @@ export function MiniCalendar() {
       />
       <div className='px-5 pt-1 pb-[18px]'>
         <div className='grid grid-cols-7 gap-2 text-sm text-foreground text-center mb-2'>
-          {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d, i) => (
-            <div key={i}>{d}</div>
+          {WEEKDAY_KEYS.map((key) => (
+            <div key={key}>{t(`calendar.days.${key}`)}</div>
           ))}
         </div>
         <div className='grid grid-cols-7 gap-2'>
@@ -112,7 +142,9 @@ export function MiniCalendar() {
               <Tooltip key={d}>
                 <TooltipTrigger asChild>{cell}</TooltipTrigger>
                 <TooltipContent>
-                  {formatStudyTime(minutes)} studied
+                  {t('dashboard.calendar.studiedSuffix', {
+                    time: formatStudyTime(minutes),
+                  })}
                 </TooltipContent>
               </Tooltip>
             );

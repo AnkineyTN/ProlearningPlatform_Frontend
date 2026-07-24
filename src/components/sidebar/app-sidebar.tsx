@@ -78,7 +78,7 @@ const AppSidebar = () => {
     { title: t('sidebar.todo'), icon: CheckCheck, url: '/todo' },
     { title: t('sidebar.pomodoro'), icon: Hourglass, url: '/pomodoro' },
     {
-      title: 'Review Bundles',
+      title: t('sidebar.review.bundles'),
       icon: Inbox,
       url: '/review-bundles',
       badge: bundleCount > 0 ? bundleCount : undefined,

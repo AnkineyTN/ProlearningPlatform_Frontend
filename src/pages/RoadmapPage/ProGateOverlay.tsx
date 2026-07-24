@@ -14,7 +14,7 @@ const ProGateOverlay = () => {
           <Crown size={28} />
         </div>
         <span className='inline-flex items-center px-2.5 py-1 rounded-full text-[10.5px] uppercase tracking-[0.14em] font-semibold mb-4 bg-[var(--pl-accent-soft)] text-[var(--pl-accent-strong)]'>
-          PRO
+          {t('roadmap.proGate.badge')}
         </span>
         <h2 className='text-[20px] font-medium mb-2 text-[var(--pl-text)]'>
           {t('roadmap.proGate.title')}

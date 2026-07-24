@@ -16,6 +16,7 @@ i18n.use(initReactI18next).init({
   resources,
   lng: localStorage.getItem("language") || "vi", // Lấy từ localStorage hoặc mặc định là 'vi'
   fallbackLng: "en",
+  keySeparator: false,
   interpolation: {
     escapeValue: false,
   },

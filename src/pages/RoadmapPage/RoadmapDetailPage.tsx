@@ -40,6 +40,11 @@ const RoadmapDetailPage = () => {
   }
 
   const isCompleted = roadmap.status === 'COMPLETED';
+  const statusLabelKey = {
+    ACTIVE: 'roadmap.list.filter.statusActive',
+    COMPLETED: 'roadmap.list.filter.statusCompleted',
+    ABANDONED: 'roadmap.list.filter.statusAbandoned',
+  }[roadmap.status];
 
   return (
     <GeneratingContext.Provider value={elapsedMap}>
@@ -61,7 +66,7 @@ const RoadmapDetailPage = () => {
         <div className='flex items-end justify-between mb-6 gap-6'>
           <div className='flex-1 min-w-0'>
             <div className='flex items-center gap-2 mb-2 text-[11px] uppercase tracking-[0.16em] text-[var(--pl-text-faint)]'>
-              <span>{roadmap.status}</span>
+              <span>{t(statusLabelKey)}</span>
               {roadmap.estimatedTotalHours > 0 && (
                 <>
                   <span>·</span>
