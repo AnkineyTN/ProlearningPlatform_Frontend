@@ -148,8 +148,8 @@ export default function ExamResults({
             {/* Header */}
             <div className='flex items-center justify-between mb-5'>
               <div>
-                <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)] mb-0.5'>
-                  QUESTION REVIEW
+                <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)] uppercase mb-0.5'>
+                  {t('exam.results.questionReview')}
                 </p>
                 <p className='font-medium flex items-center gap-2'>
                   {exam.questions.length} questions

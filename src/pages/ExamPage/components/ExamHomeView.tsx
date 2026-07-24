@@ -79,13 +79,10 @@ export default function ExamHomeView({
     <div className='min-h-screen bg-[var(--pl-bg)] flex flex-col'>
       {/* Top bar */}
       <div className='border-b border-border px-8 py-4 flex items-center justify-between bg-[var(--pl-bg)]'>
-        <button
-          onClick={onBack}
-          className='flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer'
-        >
+        <Button onClick={onBack} variant='ghost' size='sm'>
           <ChevronLeft className='w-4 h-4' />
           {t('exam.back')}
-        </button>
+        </Button>
         <div className='flex items-center gap-2'>
           <FavoriteButton
             type='EXAM'

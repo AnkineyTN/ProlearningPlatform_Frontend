@@ -45,20 +45,22 @@ import NotFoundPage from '@/pages/NotFoundPage';
 import type { RouteObject } from 'react-router-dom';
 
 function LandingPageWrapper() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
 
   if (token) {
-    return <Navigate to='/dashboard' replace />;
+    const isAdmin = user?.roles?.includes('ROLE_ADMIN') ?? false;
+    return <Navigate to={isAdmin ? '/admin' : '/dashboard'} replace />;
   }
 
   return <LandingPage />;
 }
 
 function SignInWrapper() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
 
   if (token) {
-    return <Navigate to='/dashboard' replace />;
+    const isAdmin = user?.roles?.includes('ROLE_ADMIN') ?? false;
+    return <Navigate to={isAdmin ? '/admin' : '/dashboard'} replace />;
   }
 
   return <SignIn />;

@@ -233,7 +233,7 @@ export default function InviteTab({
               className='rounded-full'
             >
               <RoleIcon role={r} />
-              {roleLabel(r)}
+              {roleLabel(r, t)}
             </Button>
           ))}
         </div>

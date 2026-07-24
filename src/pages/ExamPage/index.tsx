@@ -190,10 +190,11 @@ export default function ExamPage({ setId, examId }: Props) {
     );
   }
 
-  if (viewMode === 'taking') {
+  if (viewMode === 'taking' && activeAttempt) {
     return (
       <ExamTaking
         exam={exam}
+        deadlineAt={activeAttempt.deadlineAt}
         onSubmit={handleSubmitExam}
         onAbandon={handleAbandonAttempt}
         onRecordItem={recordItem}

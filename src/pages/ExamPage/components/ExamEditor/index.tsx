@@ -112,6 +112,7 @@ export default function ExamEditor() {
     string | number | null
   >(null);
   const [titleError, setTitleError] = useState(false);
+  const [timeLimitError, setTimeLimitError] = useState(false);
   const [questionErrors, setQuestionErrors] = useState<
     Map<string | number, QuestionErrors>
   >(new Map());
@@ -289,6 +290,11 @@ export default function ExamEditor() {
       valid = false;
     } else setTitleError(false);
 
+    if (!timeLimit || timeLimit <= 0) {
+      setTimeLimitError(true);
+      valid = false;
+    } else setTimeLimitError(false);
+
     const active = questions.filter((q) => q._action !== 'DELETE');
     if (active.length === 0) {
       toast.error(t('exam.editor.minOneQuestion'));
@@ -394,7 +400,7 @@ export default function ExamEditor() {
           data: active.map(uiQuestionToCreateRequest),
         });
 
-        toast.success('Exam created successfully');
+        toast.success(t('exam.editor.successCreated'));
         navigate(`/sets/${setId}/exams/${newExamId}`);
       }
     } catch (error) {
@@ -435,7 +441,7 @@ export default function ExamEditor() {
           <Button
             onClick={() =>
               isUpdateMode
-                ? navigate(`/sets/${setId}/exams`)
+                ? navigate(`/sets/${setId}/exams/${examId}`)
                 : setShowLeaveConfirm(true)
             }
             variant='ghost'
@@ -461,7 +467,7 @@ export default function ExamEditor() {
           >
             <Save className='w-4 h-4' />
             {isSaving
-              ? 'Saving…'
+              ? t('common.saving')
               : isUpdateMode
                 ? t('exam.editor.updateExam')
                 : t('exam.editor.createExam')}
@@ -560,13 +566,22 @@ export default function ExamEditor() {
                   type='number'
                   min='1'
                   value={timeLimit}
-                  onChange={(e) => setTimeLimit(Number(e.target.value))}
-                  className='bg-[var(--pl-bg-elev)] border-[var(--pl-border)]'
+                  onChange={(e) => {
+                    const value = Number(e.target.value);
+                    setTimeLimit(value);
+                    if (value > 0) setTimeLimitError(false);
+                  }}
+                  className={`bg-[var(--pl-bg-elev)] border-[var(--pl-border)] ${timeLimitError ? 'border-[var(--pl-danger)] text-[var(--pl-danger)]' : ''}`}
                 />
                 <span className='text-sm text-[var(--pl-text-muted)] flex-shrink-0'>
-                  min
+                  {t('exam.common.min')}
                 </span>
               </div>
+              {timeLimitError && (
+                <p className='text-[var(--pl-danger-text)] text-xs mt-1'>
+                  {t('exam.editor.timeLimitRequired')}
+                </p>
+              )}
             </div>
             <div>
               <Label className='font-[family-name:var(--font-mono-pl)] text-[11px] tracking-[0.2em] text-[var(--pl-text-faint)] mb-2 flex items-center gap-1.5 uppercase'>
@@ -580,7 +595,7 @@ export default function ExamEditor() {
                   className='bg-[var(--pl-bg-elev)] border-[var(--pl-border)] text-[var(--pl-text-muted)]'
                 />
                 <span className='text-sm text-[var(--pl-text-muted)] flex-shrink-0'>
-                  pts
+                  {t('exam.common.points')}
                 </span>
               </div>
             </div>

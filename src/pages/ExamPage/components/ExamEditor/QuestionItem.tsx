@@ -2,6 +2,7 @@ import { Trash2, Plus, Copy, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -9,6 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import type { Answer, ExamQuestion, QuestionType } from '../../types';
 import type { QuestionErrors } from './index';
 
@@ -104,7 +110,7 @@ export default function QuestionItem({
             value={question.type}
             onValueChange={(v) => handleTypeChange(v as QuestionType)}
           >
-            <SelectTrigger className='h-8 text-sm w-auto border-0 bg-transparent shadow-none px-1 gap-1.5 focus-visible:ring-0'>
+            <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -128,27 +134,38 @@ export default function QuestionItem({
               onChange={(e) =>
                 onUpdate(question.id, { score: Number(e.target.value) })
               }
-              className='h-8 w-12 text-center text-xs border-0 bg-transparent shadow-none px-0 focus-visible:ring-0'
+              className='my-1 h-6 w-14 text-center text-xs border-0 bg-transparent shadow-none px-0 py-0 focus-visible:ring-0'
             />
             <span className='text-xs text-[var(--pl-text-muted)]'>pts</span>
           </div>
 
           <div className='w-px h-5 bg-[var(--pl-border)]' />
-
-          <button
-            onClick={() => onDuplicate(question.id)}
-            className='w-8 h-8 rounded-lg flex items-center justify-center text-[var(--pl-text-faint)] hover:text-[var(--pl-text)] hover:bg-[var(--pl-bg-hover)] transition-colors cursor-pointer'
-            title={t('exam.editor.duplicateQuestion')}
-          >
-            <Copy className='w-3.5 h-3.5' />
-          </button>
-          <button
-            onClick={() => onDelete(question.id)}
-            className='w-8 h-8 rounded-lg flex items-center justify-center text-[var(--pl-text-faint)] hover:text-[var(--pl-danger)] hover:bg-[var(--pl-danger-soft)] transition-colors cursor-pointer'
-            title='Delete question'
-          >
-            <Trash2 className='w-3.5 h-3.5' />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => onDuplicate(question.id)}
+                variant={'ghost'}
+                size='xs'
+                className='w-7'
+              >
+                <Copy className='w-3 h-3' />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('exam.editor.duplicateQuestion')}</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => onDelete(question.id)}
+                size='xs'
+                variant={'ghost'}
+                className='w-7 hover:text-destructive hover:bg-[var(--pl-danger)]/10'
+              >
+                <Trash2 className='w-3.5 h-3.5' />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('exam.editor.deleteQuestion')}</TooltipContent>
+          </Tooltip>
         </div>
       </div>
 
@@ -228,7 +245,7 @@ export default function QuestionItem({
                         handleAnswerChange(answer.id, e.target.value)
                       }
                       placeholder={t('exam.editor.answerN', { n: idx + 1 })}
-                      className='h-auto text-sm border-0 bg-transparent px-0 shadow-none focus-visible:ring-0'
+                      className='h-auto text-sm border-0 bg-transparent px-2 shadow-none focus-visible:ring-0'
                     />
                     {answerError && (
                       <p className='text-[var(--pl-danger-text)] text-xs mt-0.5'>

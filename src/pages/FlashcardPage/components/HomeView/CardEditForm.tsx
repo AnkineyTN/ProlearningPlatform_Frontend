@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import type { Card as CardData } from '@/services/types/flashcard.types';
 import type { UseCardEditReturn } from './useCardEdit';
+import { useTranslation } from 'react-i18next';
 
 interface CardEditFormProps {
   card: CardData;
@@ -15,6 +16,8 @@ export default function CardEditForm({
   edit,
   isUpdating,
 }: CardEditFormProps) {
+  const { t } = useTranslation();
+
   const { editData } = edit;
   const canSave =
     !isUpdating && editData.frontCard.trim() && editData.backCard.trim();
@@ -111,7 +114,7 @@ export default function CardEditForm({
           className='gap-1.5 text-xs'
         >
           <Check className='w-3.5 h-3.5' />
-          {isUpdating ? 'Saving…' : 'Save'}
+          {isUpdating ? t('common.saving') : 'Save'}
         </Button>
       </div>
     </div>

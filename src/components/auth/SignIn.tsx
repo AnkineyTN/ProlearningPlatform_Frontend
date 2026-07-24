@@ -59,8 +59,9 @@ const SignIn = () => {
     setError(null);
     setIsBlocked(false);
     try {
-      await login.mutateAsync(data);
-      navigate('/dashboard');
+      const res = await login.mutateAsync(data);
+      const isAdmin = res.userResponseDto?.roles?.includes('ROLE_ADMIN') ?? false;
+      navigate(isAdmin ? '/admin' : '/dashboard');
     } catch (err: unknown) {
       const { code, message, status, isNetwork } = getApiError(err);
 

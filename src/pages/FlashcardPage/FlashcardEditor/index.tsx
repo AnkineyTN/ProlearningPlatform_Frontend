@@ -151,7 +151,7 @@ export default function FlashcardEditor({
       Array.isArray(generatedFlashcards) &&
       generatedFlashcards.length > 0
     ) {
-      setTitle(locationTitle || 'AI Generated Flashcards');
+      setTitle(locationTitle || t('flashcard.editor.aiGeneratedDefaultTitle'));
       setDescription(locationDescription || '');
       setCards(
         generatedFlashcards.map((card: any) => ({
@@ -163,7 +163,7 @@ export default function FlashcardEditor({
         })),
       );
     }
-  }, [generatedFlashcards, isUpdateMode, locationTitle, locationDescription]);
+  }, [generatedFlashcards, isUpdateMode, locationTitle, locationDescription, t]);
 
   const addCard = () => {
     setCards([
@@ -268,12 +268,12 @@ export default function FlashcardEditor({
 
   const handleSave = async () => {
     if (!title.trim()) {
-      toast.error('Please enter a title');
+      toast.error(t('flashcard.editor.titleRequired'));
       return;
     }
     const activeCards = cards.filter((c) => c._action !== 'DELETE');
     if (activeCards.length === 0) {
-      toast.error('Please add at least one card with both term and definition');
+      toast.error(t('flashcard.editor.noValidCards'));
       return;
     }
     const hasEmptyCard = activeCards.some(
@@ -281,12 +281,7 @@ export default function FlashcardEditor({
     );
     if (hasEmptyCard) {
       setShowValidation(true);
-      toast.error(
-        t('flashcard.editor.emptyCardError', {
-          defaultValue:
-            'Please fill in both term and definition for every card.',
-        }),
-      );
+      toast.error(t('flashcard.editor.emptyCardError'));
       return;
     }
     setShowValidation(false);
@@ -352,10 +347,7 @@ export default function FlashcardEditor({
       }
     } catch (error) {
       toast.error(
-        apiErrorMessage(
-          error,
-          'Flashcard title already exists. Please choose a different title.',
-        ),
+        apiErrorMessage(error, t('flashcard.editor.duplicateTitleError')),
       );
     }
   };
@@ -375,7 +367,9 @@ export default function FlashcardEditor({
       <div className='min-h-screen flex items-center justify-center bg-[var(--pl-bg-sunken)]'>
         <div className='text-center'>
           <div className='w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3' />
-          <p className='text-sm text-muted-foreground'>Loading…</p>
+          <p className='text-sm text-muted-foreground'>
+            {t('common.loading')}
+          </p>
         </div>
       </div>
     );
@@ -394,16 +388,15 @@ export default function FlashcardEditor({
       {/* Sticky header */}
       <div className='sticky top-0 z-10 bg-[var(--pl-bg)] border-b border-[var(--pl-border)]'>
         <div className='max-w-5xl mx-auto px-6 py-4 flex items-center justify-between gap-6'>
-          <button
-            onClick={handleBack}
-            className='flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer'
-          >
+          <Button onClick={handleBack} variant='ghost' size='sm'>
             <ArrowLeft className='w-4 h-4' />
-            Back
-          </button>
+            {t('exam.back')}
+          </Button>
           <div className='flex-1 min-w-0'>
             <h1 className='font-[family-name:var(--font-display)] text-xl font-medium tracking-tight truncate'>
-              {isUpdateMode ? 'Edit Flashcard Set' : 'New Flashcard Set'}
+              {isUpdateMode
+                ? t('flashcard.editor.editTitle')
+                : t('flashcard.editor.newTitle')}
             </h1>
           </div>
           <div className='flex items-center gap-4 flex-shrink-0'>
@@ -412,7 +405,7 @@ export default function FlashcardEditor({
               onClick={() => setIsImportModalOpen(true)}
             >
               <Upload className='w-3.5 h-3.5' />
-              Import
+              {t('flashcard.editor.import')}
             </Button>
             <Button
               onClick={handleSave}
@@ -422,7 +415,11 @@ export default function FlashcardEditor({
                 description.length > DESCRIPTION_MAX_LENGTH
               }
             >
-              {isSaving ? 'Saving…' : isUpdateMode ? 'Update' : 'Create'}
+              {isSaving
+                ? t('common.saving')
+                : isUpdateMode
+                  ? t('modal.updateButton')
+                  : t('modal.create')}
             </Button>
           </div>
         </div>
@@ -459,7 +456,7 @@ export default function FlashcardEditor({
               id='fc-title'
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder='Enter a title for your flashcard set'
+              placeholder={t('flashcard.editor.titlePlaceholder')}
               className='h-auto border-0 bg-transparent dark:bg-transparent p-0 shadow-none font-[family-name:var(--font-display)] text-2xl font-medium focus-visible:ring-0'
             />
           </div>
@@ -490,7 +487,7 @@ export default function FlashcardEditor({
               id='fc-desc'
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder='Add a description (optional)'
+              placeholder={t('flashcard.editor.descriptionPlaceholder')}
               className='min-h-[48px] resize-none border-0 bg-transparent dark:bg-transparent p-0 shadow-none text-sm leading-relaxed text-[var(--pl-text-muted)] focus-visible:ring-0'
             />
           </div>
@@ -499,7 +496,7 @@ export default function FlashcardEditor({
         {/* Card count */}
         <div className='flex items-center gap-3 mb-4'>
           <p className='text-xs uppercase tracking-widest text-muted-foreground/60'>
-            Cards
+            {t('flashcard.editor.cardsLabel')}
           </p>
           <span className='font-[family-name:var(--font-mono-pl)] text-xs text-muted-foreground'>
             {visibleCards.length}
@@ -531,7 +528,7 @@ export default function FlashcardEditor({
           className='w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-[var(--pl-border)] text-sm text-muted-foreground hover:border-[var(--pl-accent)] hover:text-[var(--pl-accent)] hover:bg-[var(--pl-bg)] transition-colors cursor-pointer mt-2'
         >
           <Plus className='w-4 h-4' />
-          Add Card
+          {t('flashcard.editor.addCard')}
         </button>
       </div>
 

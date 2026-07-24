@@ -36,6 +36,13 @@ export default function ExamTakingQuestion({
         ? t('exam.common.trueFalse')
         : t('exam.common.essay');
 
+  const answerModeLabel =
+    question.type === 'MULTIPLE_CHOICE'
+      ? t('exam.common.multipleAnswers')
+      : question.type === 'TRUE_FALSE'
+        ? t('exam.common.singleAnswer')
+        : t('exam.common.writtenResponse');
+
   return (
     <div className='flex-1 overflow-auto flex items-start justify-center px-10 py-12'>
       <div style={{ maxWidth: 760, width: '100%' }}>
@@ -46,15 +53,11 @@ export default function ExamTakingQuestion({
           <span>{questionTypeLabel}</span>
           <span>·</span>
           <span style={{ color: 'var(--pl-text-faint)' }}>
-            {question.type === 'MULTIPLE_CHOICE'
-              ? 'Multiple answers'
-              : question.type === 'TRUE_FALSE'
-                ? 'Single answer'
-                : 'Written response'}
+            {answerModeLabel}
           </span>
           <span>·</span>
           <span style={{ color: 'var(--pl-accent-strong)' }}>
-            +{question.score} {question.score === 1 ? 'point' : 'points'}
+            +{t('exam.taking.pointsCount', { count: question.score })}
           </span>
         </div>
 

@@ -14,6 +14,11 @@ import { apiErrorMessage } from '@/lib/apiError';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { useUploadImageFile } from '@/hooks/useImageUpload';
 
@@ -169,33 +174,47 @@ export default function FlashcardItemComponent({
         </div>
 
         <div className='flex items-center gap-1 flex-shrink-0'>
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploadImageMutation.isPending}
-            className='w-7 h-7 rounded-lg flex items-center justify-center text-[var(--pl-text-faint)] hover:text-[var(--pl-accent)] hover:bg-[var(--pl-accent-soft)] transition-colors cursor-pointer disabled:opacity-30'
-            title={t('flashcard.editor.item.addImage')}
-          >
-            {uploadImageMutation.isPending ? (
-              <Loader2 className='w-3.5 h-3.5 animate-spin' />
-            ) : (
-              <ImagePlus className='w-3.5 h-3.5' />
-            )}
-          </button>
-          <button
-            onClick={() => onDuplicate(card.id)}
-            className='w-7 h-7 rounded-lg flex items-center justify-center text-[var(--pl-text-faint)] hover:text-[var(--pl-text)] hover:bg-[var(--pl-bg-hover)] transition-colors cursor-pointer'
-            title={t('flashcard.editor.item.duplicateCard')}
-          >
-            <Copy className='w-3.5 h-3.5' />
-          </button>
-          <button
-            onClick={() => onDelete(card.id)}
-            disabled={!canDelete}
-            className='w-7 h-7 rounded-lg flex items-center justify-center text-[var(--pl-text-faint)] hover:text-[var(--pl-danger)] hover:bg-[var(--pl-danger-soft)] transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed'
-            title={t('flashcard.editor.item.deleteCard')}
-          >
-            <Trash2 className='w-3.5 h-3.5' />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadImageMutation.isPending}
+                className='w-7 h-7 rounded-lg flex items-center justify-center text-[var(--pl-text-faint)] hover:text-[var(--pl-accent)] hover:bg-[var(--pl-accent-soft)] transition-colors cursor-pointer disabled:opacity-30'
+              >
+                {uploadImageMutation.isPending ? (
+                  <Loader2 className='w-3.5 h-3.5 animate-spin' />
+                ) : (
+                  <ImagePlus className='w-3.5 h-3.5' />
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>{t('flashcard.editor.item.addImage')}</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => onDuplicate(card.id)}
+                className='w-7 h-7 rounded-lg flex items-center justify-center text-[var(--pl-text-faint)] hover:text-[var(--pl-text)] hover:bg-[var(--pl-bg-hover)] transition-colors cursor-pointer'
+              >
+                <Copy className='w-3.5 h-3.5' />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {t('flashcard.editor.item.duplicateCard')}
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => onDelete(card.id)}
+                disabled={!canDelete}
+                className='w-7 h-7 rounded-lg flex items-center justify-center text-[var(--pl-text-faint)] hover:text-[var(--pl-danger)] hover:bg-[var(--pl-danger-soft)] transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed'
+              >
+                <Trash2 className='w-3.5 h-3.5' />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>{t('flashcard.editor.item.deleteCard')}</TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </div>

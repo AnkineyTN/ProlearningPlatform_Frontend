@@ -80,21 +80,17 @@ const QuestionReviewItem = forwardRef<HTMLDivElement, QuestionReviewItemProps>(
             <div className='flex-1 min-w-0'>
               <div className='flex items-center gap-2 flex-wrap'>
                 <span className='font-semibold text-sm'>Q{index + 1}</span>
-                <Badge variant='secondary' className='text-xs'>
+
+                <Badge
+                  variant={correct ? 'secondary' : 'destructive'}
+                  className='text-xs'
+                >
                   {question.type === 'MULTIPLE_CHOICE'
                     ? t('exam.common.multipleChoice')
                     : question.type === 'TRUE_FALSE'
                       ? t('exam.common.trueFalse')
                       : t('exam.common.essay')}
                 </Badge>
-                {correct === null && (
-                  <Badge
-                    variant='outline'
-                    className='text-xs text-[var(--pl-warning)] border-[var(--pl-warning-border)]'
-                  >
-                    {t('exam.results.pendingGrading')}
-                  </Badge>
-                )}
               </div>
               <p className='text-sm text-muted-foreground truncate mt-0.5 pr-4'>
                 {question.questionText}
@@ -187,19 +183,6 @@ const QuestionReviewItem = forwardRef<HTMLDivElement, QuestionReviewItemProps>(
                     </p>
                     <p className='text-sm whitespace-pre-wrap'>
                       {graded?.studentAnswer ?? submission?.essayAnswer}
-                    </p>
-                  </div>
-                )}
-
-              {graded?.expectedAnswer &&
-                question.type !== 'ESSAY' &&
-                !graded.isCorrect && (
-                  <div className='rounded-xl border border-border bg-[var(--pl-bg-hover)] p-3 text-sm'>
-                    <p className='text-[11px] font-[family-name:var(--font-mono-pl)] tracking-[0.15em] text-muted-foreground mb-1'>
-                      {t('exam.results.expectedAnswer').toUpperCase()}
-                    </p>
-                    <p className='whitespace-pre-wrap'>
-                      {graded.expectedAnswer}
                     </p>
                   </div>
                 )}

@@ -9,8 +9,15 @@ import ExamTakingQuestion from './ExamTakingQuestion';
 import LeaveExamDialog from './LeaveExamDialog';
 import SubmitExamDialog from './SubmitExamDialog';
 
+// Submit slightly before the server's authoritative deadline so the
+// auto-submit request lands before the backend's own cutoff — otherwise
+// network latency alone can make an on-time submission arrive "late" and
+// get rejected with "Exam time has expired".
+const SUBMIT_SAFETY_BUFFER_MS = 3000;
+
 interface ExamTakingProps {
   exam: Exam;
+  deadlineAt: string;
   onSubmit: (
     submissions: ExamSubmission[],
     timeTaken: number,
@@ -21,6 +28,7 @@ interface ExamTakingProps {
 
 export default function ExamTaking({
   exam,
+  deadlineAt,
   onSubmit,
   onAbandon,
   onRecordItem,
@@ -38,13 +46,19 @@ export default function ExamTaking({
   );
   const [flagged, setFlagged] = useState<Set<number>>(new Set());
 
+  const computeRemaining = (deadlineMs: number) =>
+    Math.max(0, Math.round((deadlineMs - Date.now()) / 1000));
+
   const timeRemainingRef = useRef(0);
   const [timeRemaining, setTimeRemaining] = useState(() =>
-    Math.max(0, exam.timeLimit * 60),
+    computeRemaining(
+      new Date(deadlineAt).getTime() - SUBMIT_SAFETY_BUFFER_MS,
+    ),
   );
   const isSubmittingRef = useRef(false);
   const submissionsRef = useRef(submissions);
   const onSubmitRef = useRef(onSubmit);
+  const deadlineRef = useRef(0);
   const submitFromTimerRef = useRef<(timeExpired?: boolean) => Promise<void>>(
     async () => {},
   );
@@ -57,20 +71,33 @@ export default function ExamTaking({
   timeRemainingRef.current = timeRemaining;
 
   useEffect(() => {
-    const total = Math.max(0, exam.timeLimit * 60);
-    setTimeRemaining(total);
-    const timer = setInterval(() => {
-      setTimeRemaining((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          void submitFromTimerRef.current(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [exam.timeLimit]);
+    // deadlineAt is the server's authoritative cutoff for this attempt —
+    // counting down from it (rather than re-deriving a fresh duration
+    // locally) keeps the client in sync even if there was a delay between
+    // starting the attempt and this component mounting.
+    deadlineRef.current = new Date(deadlineAt).getTime() - SUBMIT_SAFETY_BUFFER_MS;
+    setTimeRemaining(computeRemaining(deadlineRef.current));
+
+    const tick = () => {
+      const remaining = computeRemaining(deadlineRef.current);
+      setTimeRemaining(remaining);
+      if (remaining <= 0) {
+        clearInterval(timer);
+        void submitFromTimerRef.current(true);
+      }
+    };
+
+    // setInterval is throttled (or paused) while the tab is backgrounded or
+    // the device sleeps, so recompute from the deadline instead of
+    // decrementing a counter — and re-check the instant the tab regains
+    // focus in case the deadline already passed while hidden.
+    const timer = setInterval(tick, 1000);
+    document.addEventListener('visibilitychange', tick);
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', tick);
+    };
+  }, [deadlineAt]);
 
   const handleAnswerChange = (
     questionId: string | number,

@@ -1,4 +1,5 @@
 import { Check, Loader2, UserMinus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -34,6 +35,7 @@ export default function MemberRow({
   onUpdateRole,
   onRemove,
 }: MemberRowProps) {
+  const { t } = useTranslation();
   const isCurrentUser = member.userId === currentUserId;
   const canEdit = isOwner && member.role !== 'OWNER';
 
@@ -49,7 +51,9 @@ export default function MemberRow({
         <p className='truncate text-sm font-medium'>
           {member.firstName} {member.lastName}
           {isCurrentUser && (
-            <span className='ml-1 text-xs text-muted-foreground'>(you)</span>
+            <span className='ml-1 text-xs text-muted-foreground'>
+              {t('collaboration.members.you')}
+            </span>
           )}
         </p>
         <p className='truncate text-xs text-muted-foreground'>
@@ -73,14 +77,14 @@ export default function MemberRow({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value='EDITOR'>Editor</SelectItem>
-              <SelectItem value='VIEWER'>Viewer</SelectItem>
+              <SelectItem value='EDITOR'>{roleLabel('EDITOR', t)}</SelectItem>
+              <SelectItem value='VIEWER'>{roleLabel('VIEWER', t)}</SelectItem>
             </SelectContent>
           </Select>
         ) : (
           <span className='flex items-center gap-1 text-xs text-muted-foreground'>
             <RoleIcon role={member.role} />
-            {roleLabel(member.role)}
+            {roleLabel(member.role, t)}
           </span>
         )}
 
@@ -91,7 +95,7 @@ export default function MemberRow({
             size='icon'
             onClick={onRemove}
             disabled={isRemoving}
-            title='Remove member'
+            title={t('collaboration.members.removeMemberTitle')}
             className='h-7 w-7 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
           >
             {isRemoving ? (

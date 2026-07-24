@@ -1,9 +1,24 @@
 import { forwardRef } from 'react';
 import { Loader2, Search, UserPlus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import type { UserSearchResult } from '@/services/types/collaboration.types';
+
+function renderInviteByEmail(email: string, t: TFunction) {
+  const text = t('collaboration.invite.inviteByEmail', { email });
+  const idx = text.indexOf(email);
+  if (idx === -1) return text;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <strong>{email}</strong>
+      {text.slice(idx + email.length)}
+    </>
+  );
+}
 
 interface InviteSearchDropdownProps {
   keyword: string;
@@ -41,12 +56,13 @@ const InviteSearchDropdown = forwardRef<
   },
   ref,
 ) {
+  const { t } = useTranslation();
   return (
     <div className='relative'>
       <Search className='absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
       <Input
         ref={ref}
-        placeholder='Search by name or email…'
+        placeholder={t('collaboration.invite.searchPlaceholder')}
         className='pl-8'
         value={keyword}
         onChange={(e) => {
@@ -99,9 +115,7 @@ const InviteSearchDropdown = forwardRef<
               className={itemCls}
             >
               <UserPlus className='size-4 shrink-0 text-muted-foreground' />
-              <span>
-                Invite <strong>{keyword.trim()}</strong> by email
-              </span>
+              <span>{renderInviteByEmail(keyword.trim(), t)}</span>
             </Button>
           )}
 
@@ -109,7 +123,7 @@ const InviteSearchDropdown = forwardRef<
             filteredResults.length === 0 &&
             !showEmailFallback && (
               <p className='px-3 py-2 text-sm text-muted-foreground'>
-                No users found
+                {t('collaboration.invite.noUsersFound')}
               </p>
             )}
         </div>

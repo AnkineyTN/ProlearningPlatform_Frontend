@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogContent,
@@ -33,6 +34,7 @@ export function ShareDialog({
   userRole,
   currentUserId,
 }: ShareDialogProps) {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<ShareTab>('invite');
   const isOwner = userRole === 'OWNER';
 
@@ -47,7 +49,7 @@ export function ShareDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='max-w-lg'>
         <DialogHeader>
-          <DialogTitle>Share</DialogTitle>
+          <DialogTitle>{t('collaboration.shareDialog.title')}</DialogTitle>
         </DialogHeader>
 
         <Tabs value={tab} onValueChange={(v) => setTab(v as ShareTab)}>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export type ShareTab = 'invite' | 'members';
@@ -8,13 +9,14 @@ const triggerCls =
   'data-[state=inactive]:text-muted-foreground hover:data-[state=inactive]:text-foreground';
 
 export default function ShareTabBar() {
+  const { t } = useTranslation();
   return (
     <TabsList className='w-full h-auto gap-1 rounded-full bg-[var(--pl-bg-sunken)] p-1'>
       <TabsTrigger value='invite' className={triggerCls}>
-        Invite
+        {t('collaboration.tabBar.invite')}
       </TabsTrigger>
       <TabsTrigger value='members' className={triggerCls}>
-        Members
+        {t('collaboration.tabBar.members')}
       </TabsTrigger>
     </TabsList>
   );
