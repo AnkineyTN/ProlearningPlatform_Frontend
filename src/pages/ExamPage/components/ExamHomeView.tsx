@@ -15,6 +15,7 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { ShareDialog } from '@/components/collaboration/ShareDialog';
 import FavoriteButton from '@/components/favorite/FavoriteButton';
@@ -28,6 +29,7 @@ import AttemptHistoryDialog from './ExamResults/AttemptHistoryDialog';
 
 import type { Exam } from '../types';
 import type { CollabRole } from '@/services/types/collaboration.types';
+import type { QuizResponse } from '@/services/types/exam.types';
 interface ExamHomeViewProps {
   exam: Exam;
   setId: number;
@@ -68,6 +70,7 @@ export default function ExamHomeView({
   const navigate = useNavigate();
   const backTo = useBackTo();
   const currentUserId = useAuth().user?.id;
+  const queryClient = useQueryClient();
   const [shareOpen, setShareOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
 
@@ -88,6 +91,13 @@ export default function ExamHomeView({
             type='EXAM'
             id={examId}
             isFavorited={isFavorited}
+            onToggled={(next) => {
+              queryClient.setQueryData(
+                ['exam-quiz', setId, examId],
+                (old?: QuizResponse) =>
+                  old ? { ...old, data: { ...old.data, isFavorited: next } } : old,
+              );
+            }}
             className='h-9 w-9 rounded-lg border border-[var(--pl-border)]'
           />
           <Button

@@ -1,10 +1,12 @@
 import { BookOpen, Share2, SwatchBook } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { ShareDialog } from '@/components/collaboration/ShareDialog';
 import FavoriteButton from '@/components/favorite/FavoriteButton';
 import type { CollabRole } from '@/services/types/collaboration.types';
+import type { FlashcardDetailResponse } from '@/services/types/flashcard.types';
 import { useAuth } from '@/hooks/useAuth';
 import { useBackTo } from '@/hooks/useBackTo';
 
@@ -30,6 +32,7 @@ export default function FlashcardHeader({
   const navigate = useNavigate();
   const currentUserId = useAuth().user?.id;
   const [shareOpen, setShareOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const backTo = useBackTo();
 
@@ -65,6 +68,15 @@ export default function FlashcardHeader({
               type='FLASHCARD'
               id={flashcardId}
               isFavorited={isFavorited}
+              onToggled={(next) => {
+                queryClient.setQueryData(
+                  ['flashcard-detail', setId, flashcardId],
+                  (old?: FlashcardDetailResponse) =>
+                    old
+                      ? { ...old, data: { ...old.data, isFavorited: next } }
+                      : old,
+                );
+              }}
               className='h-9 w-9 rounded-lg border border-[var(--pl-border)]'
             />
             <Button

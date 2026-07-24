@@ -35,14 +35,16 @@ export default function ExamPage({ setId, examId }: Props) {
   );
   const [isStartingAttempt, setIsStartingAttempt] = useState(false);
 
+  const numericExamId = Number(examId);
+
   const { recordItem, flush } = useSessionTracker({
     contentType: 'EXAM',
-    setId: Number(examId),
+    setId: numericExamId,
   });
 
   const { data, isLoading, isError, error, refetch } = useExamDetail(
     Number(setId),
-    examId,
+    numericExamId,
   );
 
   const exam: Exam | null = data?.data ? apiQuizDetailToExam(data.data) : null;
@@ -179,7 +181,7 @@ export default function ExamPage({ setId, examId }: Props) {
       <ExamHomeView
         exam={exam}
         setId={Number(setId)}
-        examId={Number(examId)}
+        examId={numericExamId}
         onStartExam={handleStartExam}
         onEditExam={handleEditExam}
         onBack={() => navigate(backTo ?? `/sets/${setId}/exams`)}

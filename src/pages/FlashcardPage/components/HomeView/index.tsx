@@ -21,7 +21,6 @@ type HomeViewProps = {
   currentCardIndex: number;
   onFlip: () => void;
   onPrevious: () => void;
-  onNext: () => void;
   onUpdateCard: (data: {
     id: number;
     frontCard: string;
@@ -54,7 +53,6 @@ export default function HomeView({
   currentCardIndex,
   onFlip,
   onPrevious,
-  onNext,
   onShuffle,
   onUpdateCard,
   onDeleteCard,
@@ -102,7 +100,6 @@ export default function HomeView({
             currentCardIndex={currentCardIndex}
             onFlip={onFlip}
             onPrevious={onPrevious}
-            onNext={onNext}
             onShuffle={onShuffle}
             onCardAnswer={onCardAnswer}
           />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -27,6 +27,10 @@ const FavoriteButton = ({
   const { t } = useTranslation();
   const [favorited, setFavorited] = useState(isFavorited);
   const { mutate, isPending } = useToggleFavorite();
+
+  useEffect(() => {
+    setFavorited(isFavorited);
+  }, [isFavorited]);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();

@@ -18,7 +18,6 @@ type Props = {
   currentCardIndex: number;
   onFlip: () => void;
   onPrevious: () => void;
-  onNext: () => void;
   onShuffle: () => void;
   onCardAnswer: (isCorrect: boolean) => void;
   reviewBannerMessage?: string;
@@ -30,7 +29,6 @@ const FlipFlashcard = ({
   currentCardIndex,
   onFlip,
   onPrevious,
-  onNext,
   onShuffle,
   onCardAnswer,
   reviewBannerMessage,
@@ -58,12 +56,10 @@ const FlipFlashcard = ({
   // Stable callback refs — avoids stale closures in effects
   const onFlipRef = useRef(onFlip);
   const onPreviousRef = useRef(onPrevious);
-  const onNextRef = useRef(onNext);
   const onCardAnswerRef = useRef(onCardAnswer);
   useEffect(() => {
     onFlipRef.current = onFlip;
     onPreviousRef.current = onPrevious;
-    onNextRef.current = onNext;
     onCardAnswerRef.current = onCardAnswer;
   });
 
@@ -107,7 +103,7 @@ const FlipFlashcard = ({
           break;
         case 'ArrowRight':
           e.preventDefault();
-          onNextRef.current();
+          triggerAnswerRef.current(true);
           break;
       }
     };
@@ -205,15 +201,17 @@ const FlipFlashcard = ({
 
       {/* Card area */}
       <div className='flex-1 flex items-center justify-center py-10 gap-7'>
-        <Button
-          onClick={onPrevious}
-          disabled={currentCardIndex === 0}
-          variant='outline'
-          size='icon'
-          className='shrink-0 text-[var(--pl-text-muted)]'
-        >
-          <ChevronLeft className='size-6' />
-        </Button>
+        {isProgressTrackingEnabled && (
+          <Button
+            onClick={() => onPrevious()}
+            disabled={currentCardIndex === 0}
+            variant='outline'
+            size='icon'
+            className='shrink-0 text-[var(--pl-text-muted)]'
+          >
+            <ChevronLeft className='size-6' />
+          </Button>
+        )}
 
         {/* B — Drag wrapper */}
         <div
@@ -250,15 +248,17 @@ const FlipFlashcard = ({
           <FlashcardRecallButtons onAnswer={triggerAnswer} />
         </div>
 
-        <Button
-          onClick={onNext}
-          disabled={currentCardIndex >= total - 1}
-          variant='outline'
-          size='icon'
-          className='shrink-0 text-[var(--pl-text-muted)]'
-        >
-          <ChevronRight className='size-6' />
-        </Button>
+        {isProgressTrackingEnabled && (
+          <Button
+            onClick={() => triggerAnswer(true)}
+            disabled={currentCardIndex >= total - 1}
+            variant='outline'
+            size='icon'
+            className='shrink-0 text-[var(--pl-text-muted)]'
+          >
+            <ChevronRight className='size-6' />
+          </Button>
+        )}
       </div>
 
       {/* Bottom toolbar */}

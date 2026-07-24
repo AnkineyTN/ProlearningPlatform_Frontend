@@ -24,6 +24,7 @@ import {
   useCreateFlashcardManual,
   useDeleteMultipleCards,
   useFlashcardDetail,
+  useUpdateFlashcard,
   useUpdateMultipleCards,
 } from '@/hooks/useFlashcards';
 import { apiErrorMessage } from '@/lib/apiError';
@@ -58,6 +59,7 @@ export default function FlashcardEditor({
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
   const createFlashcardMutation = useCreateFlashcardManual();
+  const updateFlashcardMutation = useUpdateFlashcard();
   const addCardsMutation = useAddCards();
   const updateCardsMutation = useUpdateMultipleCards();
   const deleteCardsMutation = useDeleteMultipleCards();
@@ -298,6 +300,23 @@ export default function FlashcardEditor({
           .filter((c) => c._action === 'DELETE' && typeof c.id === 'number')
           .map((c) => c.id as number);
 
+        const original = flashcardData?.data;
+        if (
+          original &&
+          (title !== (original.title || '') ||
+            description !== (original.description || ''))
+        ) {
+          await updateFlashcardMutation.mutateAsync({
+            setId,
+            flashcardId: flashcardId!,
+            payload: {
+              title,
+              description,
+              privacy: original.privacy,
+            },
+          });
+        }
+
         if (toUpdate.length > 0) {
           await updateCardsMutation.mutateAsync({
             setId,
@@ -377,6 +396,7 @@ export default function FlashcardEditor({
 
   const isSaving =
     createFlashcardMutation.isPending ||
+    updateFlashcardMutation.isPending ||
     addCardsMutation.isPending ||
     updateCardsMutation.isPending ||
     deleteCardsMutation.isPending;

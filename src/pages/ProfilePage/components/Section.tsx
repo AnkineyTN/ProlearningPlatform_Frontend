@@ -37,7 +37,7 @@ export default function ProfileSection({
           {title}
         </h3>
         {sub && (
-          <p className='text-[13px] m-0 italic font-serif text-[var(--pl-text-muted)]'>
+          <p className='text-[13px] m-0 italic text-[var(--pl-text-muted)]'>
             {sub}
           </p>
         )}

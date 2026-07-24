@@ -110,8 +110,13 @@ export const useUpdateFlashcard = () => {
         privacy: "PUBLIC" | "PRIVATE";
       };
     }) => flashcardAPI.updateFlashcard(setId, flashcardId, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["flashcards"] });
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["flashcard-detail", variables.setId, variables.flashcardId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["flashcards", variables.setId],
+      });
     },
   });
 };

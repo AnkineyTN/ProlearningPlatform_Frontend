@@ -12,7 +12,6 @@ type StudyViewProps = {
   onBack: () => void;
   onFlip: () => void;
   onPrevious: () => void;
-  onNext: () => void;
   onShuffle: () => void;
   onCardAnswer: (isCorrect: boolean) => void;
   sessionProgress?: {
@@ -30,7 +29,6 @@ const StudyView = ({
   onBack,
   onFlip,
   onPrevious,
-  onNext,
   onShuffle,
   onCardAnswer,
   reviewBannerMessage,
@@ -61,7 +59,6 @@ const StudyView = ({
         currentCardIndex={currentCardIndex}
         onFlip={onFlip}
         onPrevious={onPrevious}
-        onNext={onNext}
         onShuffle={onShuffle}
         onCardAnswer={onCardAnswer}
         reviewBannerMessage={reviewBannerMessage}

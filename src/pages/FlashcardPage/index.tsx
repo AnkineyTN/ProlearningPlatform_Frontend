@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { apiErrorMessage } from '@/lib/apiError';
 import { ResourceAccessError } from '@/components/collaboration/ResourceAccessError';
+import { flashcardSessionAPI } from '@/services/endpoints/flashcard-session';
 
 import {
   useDeleteCard,
@@ -65,6 +67,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
   });
 
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const updateCardMutation = useUpdateCard();
   const deleteCardMutation = useDeleteCard();
   const deleteFlashcardMutation = useDeleteFlashcard();
@@ -377,6 +380,19 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       setUnsyncedReviews([]);
 
       if (response.data.data.status === 'COMPLETED') {
+        // Call /result first — the backend finalizes cards[].cardStatus as a
+        // side effect of this call, so the flashcard-detail refetch right
+        // after it is what picks up the updated statuses for ResultsView.
+        const resultResponse = await flashcardSessionAPI.getSessionResult(
+          Number(setId),
+          Number(flashcardId),
+          activeSessionId,
+        );
+        queryClient.setQueryData(
+          ['session-result', Number(setId), Number(flashcardId), activeSessionId],
+          resultResponse.data,
+        );
+        await refetch();
         goTo(`/sets/${setId}/flashcards/${flashcardId}/results`);
         return true;
       }
@@ -598,7 +614,6 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           currentCardIndex={currentCardIndex}
           onFlip={handleFlip}
           onPrevious={handlePrevious}
-          onNext={() => handleNext(displayedFlashcards)}
           onUpdateCard={handleUpdateCard}
           onDeleteCard={handleDeleteCard}
           onDeleteFlashcard={handleDeleteFlashcard}
@@ -617,7 +632,6 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           onBack={handleBackFromStudy}
           onFlip={handleFlip}
           onPrevious={handlePrevious}
-          onNext={handleNext}
           onShuffle={handleShuffle}
           onCardAnswer={handleCardAnswer}
           sessionProgress={sessionStatus?.data?.[0]}
@@ -633,7 +647,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           flashcardId={Number(flashcardId)}
           studiedCards={studiedCards.size}
           totalCards={flashcards.length}
-          flashcards={activeCards}
+          flashcards={flashcards}
           onHome={() => goTo(`/sets/${setId}/flashcards/${flashcardId}`)}
           onContinue={startNewSession}
           onPracticeWithExam={handlePracticeWithExam}

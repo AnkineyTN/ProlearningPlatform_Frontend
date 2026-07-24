@@ -71,12 +71,18 @@ const ResultsView = ({
   const canViewHistory =
     typeof setId === 'number' && typeof flashcardId === 'number';
 
-  const rawCorrect = sessionResult?.correctCount ?? 0;
-  const rawIncorrect = sessionResult?.incorrectCount ?? 0;
+  // Cumulative across the whole set (not just this session) — sessionResult's
+  // correctCount/incorrectCount only cover the cards reviewed in *this*
+  // session (e.g. a REVIEW session may cover just the 1 card gotten wrong
+  // last time), so they can't be compared against totalCards directly.
+  const rawKnown = flashcards.filter((c) => c.cardStatus === 'KNOWN').length;
+  const rawLearning = flashcards.filter(
+    (c) => c.cardStatus === 'LEARNING',
+  ).length;
 
   // Spec: when progress tracking is disabled, report knownCards = totalCards
-  const knownCards = isProgressTrackingEnabled ? rawCorrect : totalCards;
-  const learningCards = isProgressTrackingEnabled ? rawIncorrect : 0;
+  const knownCards = isProgressTrackingEnabled ? rawKnown : totalCards;
+  const learningCards = isProgressTrackingEnabled ? rawLearning : 0;
   const remainingCards = isProgressTrackingEnabled
     ? Math.max(0, totalCards - knownCards - learningCards)
     : 0;

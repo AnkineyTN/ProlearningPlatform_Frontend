@@ -22,6 +22,7 @@ export const useSet = (setId: number) => {
       return res.data.data;
     },
     enabled: Number.isFinite(setId) && setId > 0,
+    refetchOnMount: "always",
     retry: (failureCount, error) => {
       const status = getApiError(error).status;
       if (status === 401 || status === 403 || status === 404) return false;
