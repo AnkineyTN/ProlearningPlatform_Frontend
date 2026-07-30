@@ -1,5 +1,6 @@
 import { Clock, Layers, Zap, TrendingDown, TrendingUp } from 'lucide-react';
 import type { GameHistoryItem } from '@/services/types/flashcard.types';
+import { useTranslation } from 'react-i18next';
 
 interface TimeBadge {
   text: string;
@@ -33,6 +34,8 @@ const MatchingResultsStats = ({
   formatTime,
   formatSeconds,
 }: MatchingResultsStatsProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
       {/* TIME */}
@@ -59,15 +62,17 @@ const MatchingResultsStats = ({
           )}
         </div>
         <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)] mb-1'>
-          TIME
+          {t('flashcard.matching.stats.time')}
         </p>
         <p className='font-[family-name:var(--font-mono-pl)] text-3xl font-medium mb-1'>
           {formatTime(totalTimeMs)}
         </p>
         <p className='text-xs text-muted-foreground'>
           {lastRun
-            ? `vs last run · ${formatSeconds(lastRun.durationSeconds)}`
-            : 'first run'}
+            ? t('flashcard.matching.stats.vsLastRun', {
+                time: formatSeconds(lastRun.durationSeconds),
+              })
+            : t('flashcard.matching.stats.firstRun')}
         </p>
       </div>
 
@@ -79,17 +84,19 @@ const MatchingResultsStats = ({
           </div>
         </div>
         <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)] mb-1'>
-          CARDS REVIEWED
+          {t('flashcard.matching.stats.cardsReviewed')}
         </p>
         <p className='font-[family-name:var(--font-display)] text-3xl font-medium mb-1'>
           {totalPairs}{' '}
-          <span className='text-base text-muted-foreground'>cards</span>
+          <span className='text-base text-muted-foreground'>
+            {t('flashcard.matching.cardsUnit')}
+          </span>
         </p>
         <p className='text-xs text-muted-foreground truncate'>
           {flashcardTitle ? `${flashcardTitle} · ` : ''}
           {isPerfect
-            ? 'all matched'
-            : `${wrongPicks} mistake${wrongPicks === 1 ? '' : 's'}`}
+            ? t('flashcard.matching.stats.allMatched')
+            : t('flashcard.matching.mistakeCount', { count: wrongPicks })}
         </p>
       </div>
 
@@ -111,19 +118,19 @@ const MatchingResultsStats = ({
             ) : (
               <TrendingUp className='w-3 h-3' />
             )}
-            {accuracy}% acc
+            {t('flashcard.matching.stats.accuracyShort', { accuracy })}
           </span>
         </div>
         <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)] mb-1'>
-          MATCHES / MIN
+          {t('flashcard.matching.stats.matchesPerMinute')}
         </p>
         <p className='font-[family-name:var(--font-display)] text-3xl font-medium mb-1'>
           {matchesPerMin}
         </p>
         <p className='text-xs text-muted-foreground'>
           {wrongPicks > 0
-            ? `${wrongPicks} wrong pick${wrongPicks === 1 ? '' : 's'}`
-            : 'flawless run'}
+            ? t('flashcard.matching.stats.wrongPickCount', { count: wrongPicks })
+            : t('flashcard.matching.stats.flawlessRun')}
         </p>
       </div>
     </div>

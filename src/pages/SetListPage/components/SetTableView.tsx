@@ -273,13 +273,13 @@ export default function SetTableView({
 }: Props) {
   return (
     <div
-      className='rounded-[12px] mb-8'
+      className='rounded-[12px] mb-8 overflow-x-auto'
       style={{
         border: '1px solid var(--pl-border)',
         background: 'var(--pl-bg-elev)',
       }}
     >
-      <table className='w-full'>
+      <table className='w-full min-w-[720px]'>
         <thead>
           <tr style={{ borderBottom: '1px solid var(--pl-border)' }}>
             {[

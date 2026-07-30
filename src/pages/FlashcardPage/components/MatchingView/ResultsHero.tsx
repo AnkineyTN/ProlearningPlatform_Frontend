@@ -1,5 +1,6 @@
 import { RotateCcw, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 
 interface MatchingResultsHeroProps {
   heroTitle: string;
@@ -20,6 +21,7 @@ const MatchingResultsHero = ({
   onPlayAgain,
   onBack,
 }: MatchingResultsHeroProps) => {
+  const { t } = useTranslation();
   const circumference = 2 * Math.PI * 90;
 
   return (
@@ -70,7 +72,7 @@ const MatchingResultsHero = ({
           </svg>
           <div className='absolute inset-0 flex flex-col items-center justify-center'>
             <span className='text-[11px] font-[family-name:var(--font-mono-pl)] tracking-[0.2em] text-muted-foreground mb-1'>
-              ACCURACY
+              {t('flashcard.matching.accuracy')}
             </span>
             <span className='font-[family-name:var(--font-display)] text-6xl font-medium leading-none'>
               {accuracy}
@@ -83,7 +85,10 @@ const MatchingResultsHero = ({
                 }`}
               />
               <span className='text-xs text-muted-foreground'>
-                {totalPairs}/{totalPairs} matched
+                {t('flashcard.matching.matchedCount', {
+                  matched: totalPairs,
+                  total: totalPairs,
+                })}
               </span>
             </div>
           </div>
@@ -95,11 +100,11 @@ const MatchingResultsHero = ({
             className='gap-2 bg-[var(--pl-accent)] hover:opacity-90 text-[var(--pl-accent-fg)]'
           >
             <RotateCcw className='w-4 h-4' />
-            Play again
+            {t('flashcard.matching.playAgain')}
           </Button>
           <Button variant='outline' onClick={onBack} className='gap-2'>
             <ArrowLeft className='w-4 h-4' />
-            Back to Home
+            {t('flashcard.matching.backToHome')}
           </Button>
         </div>
       </div>

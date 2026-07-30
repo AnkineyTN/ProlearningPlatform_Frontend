@@ -2,12 +2,7 @@ import type { ReactNode } from 'react';
 import { Clock, AlertCircle } from 'lucide-react';
 import type { Card, GameRankingItem } from '@/services/types/flashcard.types';
 import type { GameTab } from './useMatchingGame';
-
-const TAB_LABELS: Record<GameTab, string> = {
-  ranking: 'Ranking',
-  history: 'My History',
-  mistakes: 'Mistakes',
-};
+import { useTranslation } from 'react-i18next';
 
 interface AggregatedMistake {
   cardId: string;
@@ -37,6 +32,13 @@ const MatchingSecondaryTabs = ({
   getRankMedal,
   formatSeconds,
 }: MatchingSecondaryTabsProps) => {
+  const { t } = useTranslation();
+  const tabLabels: Record<GameTab, string> = {
+    ranking: t('flashcard.matching.tabs.ranking'),
+    history: t('flashcard.matching.tabs.history'),
+    mistakes: t('flashcard.matching.tabs.mistakes'),
+  };
+
   return (
     <div className='rounded-2xl border border-border bg-[var(--pl-bg)] p-5'>
       <div className='border-b border-border mb-4 flex gap-1'>
@@ -50,7 +52,7 @@ const MatchingSecondaryTabs = ({
                 : 'border-transparent text-muted-foreground hover:text-foreground'
             }`}
           >
-            {TAB_LABELS[tab]}
+            {tabLabels[tab]}
           </button>
         ))}
       </div>
@@ -60,7 +62,7 @@ const MatchingSecondaryTabs = ({
         <div className='space-y-2'>
           {!rankingData?.data || rankingData.data.length === 0 ? (
             <p className='text-center text-muted-foreground py-10 text-sm'>
-              No rankings yet. Be the first!
+              {t('flashcard.matching.ranking.empty')}
             </p>
           ) : (
             rankingData.data.map((item) => (
@@ -76,7 +78,9 @@ const MatchingSecondaryTabs = ({
                     {item.firstName} {item.lastName}
                   </span>
                   <span className='text-xs text-muted-foreground'>
-                    {item.playCount} {item.playCount === 1 ? 'play' : 'plays'}
+                    {t('flashcard.matching.playCount', {
+                      count: item.playCount,
+                    })}
                   </span>
                 </div>
                 <div className='flex items-center gap-1.5 text-[var(--pl-accent)] font-[family-name:var(--font-mono-pl)] text-sm font-medium'>
@@ -94,12 +98,12 @@ const MatchingSecondaryTabs = ({
         <div className='space-y-2'>
           {aggregatedMistakes.length === 0 ? (
             <p className='text-center text-muted-foreground py-10 text-sm'>
-              No mistakes yet. Nice!
+              {t('flashcard.matching.mistakes.empty')}
             </p>
           ) : (
             <>
               <p className='text-xs text-muted-foreground mb-2'>
-                Cards you got wrong most often, across all plays:
+                {t('flashcard.matching.mistakes.description')}
               </p>
               {aggregatedMistakes.map(({ cardId, count }, idx) => {
                 const card = cardMap.get(cardId);
@@ -123,7 +127,9 @@ const MatchingSecondaryTabs = ({
                         </>
                       ) : (
                         <p className='text-sm text-muted-foreground'>
-                          Card #{cardId} (no longer available)
+                          {t('flashcard.matching.unavailableCard', {
+                            id: cardId,
+                          })}
                         </p>
                       )}
                     </div>

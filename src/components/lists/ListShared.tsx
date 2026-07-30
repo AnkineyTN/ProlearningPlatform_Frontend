@@ -59,7 +59,7 @@ export function Pagination({
   const pages = buildPageWindows(current, total);
 
   return (
-    <div className='flex justify-center items-center gap-1 pb-8'>
+    <div className='flex flex-wrap justify-center items-center gap-1 pb-8'>
       <button
         onClick={() => onChange(current - 1)}
         disabled={current === 0}

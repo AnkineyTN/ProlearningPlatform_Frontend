@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { ReviewLog } from '@/services/types/flashcard-session.types';
 import type { Card as Flashcard } from '@/services/types/flashcard.types';
+import ResultsHeader from './ResultsHeader';
 
 type ResultsViewProps = {
   setId?: number;
@@ -40,6 +41,10 @@ type ResultsViewProps = {
     incorrectCount?: number;
     finishedAt?: string;
     logs?: ReviewLog[];
+    totalCards?: number;
+    knownCount?: number;
+    unknownCount?: number;
+    newCount?: number;
   };
 };
 
@@ -71,17 +76,19 @@ const ResultsView = ({
   const canViewHistory =
     typeof setId === 'number' && typeof flashcardId === 'number';
 
-  const rawCorrect = sessionResult?.correctCount ?? 0;
-  const rawIncorrect = sessionResult?.incorrectCount ?? 0;
+  const resultTotalCards = sessionResult?.totalCards ?? totalCards;
+  const totalKnown = sessionResult?.knownCount ?? 0;
+  const totalUnknown = sessionResult?.unknownCount ?? 0;
 
   // Spec: when progress tracking is disabled, report knownCards = totalCards
-  const knownCards = isProgressTrackingEnabled ? rawCorrect : totalCards;
-  const learningCards = isProgressTrackingEnabled ? rawIncorrect : 0;
+  const knownCards = isProgressTrackingEnabled ? totalKnown : resultTotalCards;
+  const learningCards = isProgressTrackingEnabled ? totalUnknown : 0;
   const remainingCards = isProgressTrackingEnabled
-    ? Math.max(0, totalCards - knownCards - learningCards)
+    ? Math.max(0, resultTotalCards - knownCards - learningCards)
     : 0;
 
-  const rawPct = totalCards > 0 ? (knownCards / totalCards) * 100 : 0;
+  const rawPct =
+    resultTotalCards > 0 ? (knownCards / resultTotalCards) * 100 : 0;
   const pct = Number.isFinite(rawPct) ? Math.max(0, Math.min(100, rawPct)) : 0;
   const isPerfect = pct === 100;
 
@@ -106,11 +113,11 @@ const ResultsView = ({
     : isProgressTrackingEnabled
       ? t('flashcard.results.heroSubtitleProgress', {
           known: knownCards,
-          total: totalCards,
+          total: resultTotalCards,
         })
       : t('flashcard.results.heroSubtitleNoTracking', {
           studied: studiedCards,
-          total: totalCards,
+          total: resultTotalCards,
         });
 
   // SVG ring geometry
@@ -119,7 +126,12 @@ const ResultsView = ({
   const dash = (pct / 100) * circumference;
 
   return (
-    <div className='max-w-4xl mx-auto px-6 py-10 space-y-5'>
+    <div className='min-h-screen bg-[var(--pl-bg)]'>
+      {typeof setId === 'number' && typeof flashcardId === 'number' && (
+        <ResultsHeader setId={setId} flashcardId={flashcardId} />
+      )}
+
+      <div className='max-w-4xl mx-auto px-6 py-10 space-y-5'>
       {/* ── Hero ── */}
       <div className='relative rounded-2xl border border-border bg-[var(--pl-bg)] overflow-hidden p-10 text-center'>
         <div
@@ -194,7 +206,8 @@ const ResultsView = ({
                   }`}
                 />
                 <span className='text-xs text-muted-foreground'>
-                  {knownCards} / {totalCards} {t('flashcard.results.cardsUnit')}
+                  {knownCards} / {resultTotalCards}{' '}
+                  {t('flashcard.results.cardsUnit')}
                 </span>
               </div>
             </div>
@@ -258,7 +271,9 @@ const ResultsView = ({
               </div>
               <span className='inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full border border-[var(--pl-accent-border)] bg-[var(--pl-accent-soft)] text-[var(--pl-accent)]'>
                 {Math.round(
-                  totalCards > 0 ? (knownCards / totalCards) * 100 : 0,
+                  resultTotalCards > 0
+                    ? (knownCards / resultTotalCards) * 100
+                    : 0,
                 )}
                 %
               </span>
@@ -437,6 +452,7 @@ const ResultsView = ({
           }}
         />
       )}
+      </div>
     </div>
   );
 };

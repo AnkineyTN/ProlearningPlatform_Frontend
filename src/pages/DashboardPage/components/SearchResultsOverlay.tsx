@@ -48,17 +48,17 @@ export function SearchResultsOverlay({ searchPayload, loading, error }: Props) {
               <li
                 key={`${title}-${idx}`}
                 className={cn(
-                  'flex items-center justify-between py-2 text-[13px]',
+                  'flex items-center justify-between gap-3 py-2 text-[13px]',
                   idx > 0 && 'border-t border-t-[var(--pl-border)]',
                 )}
               >
-                <span className='text-[var(--pl-text)] font-medium'>
+                <span className='text-[var(--pl-text)] font-medium truncate min-w-0'>
                   {title}
                 </span>
                 {href && (
                   <button
                     onClick={() => navigate(href)}
-                    className='flex items-center gap-[5px] text-[12px] text-[var(--pl-accent-strong)] bg-transparent border-0 cursor-pointer'
+                    className='flex items-center gap-[5px] text-[12px] text-[var(--pl-accent-strong)] bg-transparent border-0 cursor-pointer shrink-0'
                   >
                     <ExternalLink size={12} />
                     {t('dashboard.open')}

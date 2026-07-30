@@ -8,6 +8,7 @@ export type FlashcardStudySettings = {
 };
 
 const STORAGE_KEY = "flashcard-study-settings";
+const SETTINGS_CHANGED_EVENT = "flashcard-study-settings-changed";
 
 const DEFAULTS: FlashcardStudySettings = {
   isFrontCardTerm: true,
@@ -33,10 +34,26 @@ export function useFlashcardStudySettings() {
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+      window.dispatchEvent(new Event(SETTINGS_CHANGED_EVENT));
     } catch {
       // ignore
     }
   }, [settings]);
+
+  useEffect(() => {
+    const syncSettings = () => {
+      const next = read();
+      setSettings((current) =>
+        JSON.stringify(current) === JSON.stringify(next) ? current : next,
+      );
+    };
+    window.addEventListener(SETTINGS_CHANGED_EVENT, syncSettings);
+    window.addEventListener("storage", syncSettings);
+    return () => {
+      window.removeEventListener(SETTINGS_CHANGED_EVENT, syncSettings);
+      window.removeEventListener("storage", syncSettings);
+    };
+  }, []);
 
   const setIsFrontCardTerm = useCallback((v: boolean) => {
     setSettings((s) => ({ ...s, isFrontCardTerm: v }));

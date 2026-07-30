@@ -1,4 +1,5 @@
 import { TrendingDown, TrendingUp } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface TrendPoint {
   x: number;
@@ -24,6 +25,8 @@ const MatchingTrendChart = ({
   padY,
   formatSeconds,
 }: MatchingTrendChartProps) => {
+  const { t } = useTranslation();
+
   if (trendValues.length < 2) return null;
 
   return (
@@ -31,12 +34,14 @@ const MatchingTrendChart = ({
       <div className='flex items-start justify-between mb-2'>
         <div>
           <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)] mb-1'>
-            LAST {trendValues.length} RUNS · TIME TO COMPLETE
+            {t('flashcard.matching.trend.heading', {
+              count: trendValues.length,
+            })}
           </p>
           <p className='text-sm text-muted-foreground'>
             {improving
-              ? 'Trending down — keep at it.'
-              : 'Time creeping up — focus on the cards you miss most.'}
+              ? t('flashcard.matching.trend.improvingMessage')
+              : t('flashcard.matching.trend.warningMessage')}
           </p>
         </div>
         <span
@@ -51,7 +56,9 @@ const MatchingTrendChart = ({
           ) : (
             <TrendingUp className='w-3 h-3' />
           )}
-          {improving ? 'Improving' : 'Watch out'}
+          {improving
+            ? t('flashcard.matching.trend.improving')
+            : t('flashcard.matching.trend.watchOut')}
         </span>
       </div>
 

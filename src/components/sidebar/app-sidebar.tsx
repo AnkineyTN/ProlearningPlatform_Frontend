@@ -16,11 +16,14 @@ import {
   Map as MapIcon,
   Library,
   Globe,
+  Menu,
+  X,
 } from 'lucide-react';
 
 import { useAuth, useLogout } from '@/hooks/useAuth';
 import { useReviewBundles } from '@/hooks/useReviewBundles';
 import { useUnreadNotificationCount } from '@/hooks/useNotifications';
+import { useIsMobile } from '@/hooks/use-mobile';
 import ColorThemeSwitcher from '@/components/theme/color-theme-switcher';
 import ModeToggle from '@/components/theme/mode-toggle';
 import LanguageToggle from '@/components/language/language-toggle';
@@ -32,6 +35,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 
 const STORAGE_KEY = 'pl-sidebar-collapsed';
@@ -41,12 +51,19 @@ const AppSidebar = () => {
     () => localStorage.getItem(STORAGE_KEY) === 'true',
   );
   const [notifOpen, setNotifOpen] = useState(false);
+  const isMobile = useIsMobile();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const effectiveCollapsed = isMobile ? false : collapsed;
 
   const toggle = () => {
     setCollapsed((v) => {
       localStorage.setItem(STORAGE_KEY, String(!v));
       return !v;
     });
+  };
+
+  const closeMobile = () => {
+    if (isMobile) setMobileOpen(false);
   };
 
   const { user } = useAuth();
@@ -108,19 +125,16 @@ const AppSidebar = () => {
     [user?.firstName, user?.lastName].filter(Boolean).join(' ') ||
     'Unknown User';
 
-  return (
-    <aside
-      className='bg-[var(--pl-bg-sunken)] border-r border-r-[var(--pl-border)] flex flex-col h-screen sticky top-0 shrink-0 z-20 overflow-hidden transition-[width] duration-[280ms] ease-[cubic-bezier(0.4,0,0.2,1)]'
-      style={{ width: collapsed ? 68 : 232 }}
-    >
+  const sidebarBody = (
+    <>
       {/* ── Logo ── */}
       <div
         className={cn(
           'h-[68px] flex items-center border-b border-b-[var(--pl-border)] shrink-0',
-          collapsed ? 'justify-center px-0' : 'justify-between px-4',
+          effectiveCollapsed ? 'justify-center px-0' : 'justify-between px-4',
         )}
       >
-        {collapsed ? (
+        {effectiveCollapsed ? (
           <button
             onClick={toggle}
             title='Expand sidebar'
@@ -132,6 +146,7 @@ const AppSidebar = () => {
           <>
             <Link
               to='/dashboard'
+              onClick={closeMobile}
               className='flex items-center gap-[10px] no-underline'
             >
               <div className='w-8 h-8 rounded-[9px] bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] grid place-items-center font-bold text-[18px] tracking-[-0.02em] shrink-0'>
@@ -147,11 +162,11 @@ const AppSidebar = () => {
               </div>
             </Link>
             <button
-              onClick={toggle}
-              title='Collapse sidebar'
+              onClick={isMobile ? closeMobile : toggle}
+              title={isMobile ? 'Close menu' : 'Collapse sidebar'}
               className='text-[var(--pl-text-faint)] bg-transparent border-0 cursor-pointer grid place-items-center rounded-[6px] p-1 hover:text-[var(--pl-text)]'
             >
-              <PanelLeftClose size={16} />
+              {isMobile ? <X size={16} /> : <PanelLeftClose size={16} />}
             </button>
           </>
         )}
@@ -161,7 +176,7 @@ const AppSidebar = () => {
       <nav
         className={cn(
           'flex-1 flex flex-col gap-0.5 overflow-y-auto',
-          collapsed ? 'px-2 py-[10px]' : 'px-[10px] py-[6px]',
+          effectiveCollapsed ? 'px-2 py-[10px]' : 'px-[10px] py-[6px]',
         )}
       >
         {menuItems.map((item) => {
@@ -173,7 +188,7 @@ const AppSidebar = () => {
 
           const className = cn(
             'flex items-center rounded-[7px] text-[13px] no-underline transition-[background,color] duration-150 relative w-full bg-transparent border-0 cursor-pointer',
-            collapsed
+            effectiveCollapsed
               ? 'justify-center gap-0 py-[10px] px-0'
               : 'justify-start gap-[11px] px-[10px] py-2',
             active
@@ -184,15 +199,15 @@ const AppSidebar = () => {
           const inner = (
             <>
               <item.icon size={16} className='shrink-0' />
-              {!collapsed && (
+              {!effectiveCollapsed && (
                 <span className='flex-1 text-left'>{item.title}</span>
               )}
-              {!collapsed && item.badge !== undefined && (
+              {!effectiveCollapsed && item.badge !== undefined && (
                 <span className='text-[10px] font-bold min-w-[18px] h-[18px] rounded-full bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] flex items-center justify-center px-[5px] shrink-0'>
                   {item.badge}
                 </span>
               )}
-              {collapsed && item.badge !== undefined && (
+              {effectiveCollapsed && item.badge !== undefined && (
                 <span className='absolute top-1 right-1 w-2 h-2 rounded-full bg-[var(--pl-accent)]' />
               )}
             </>
@@ -203,8 +218,11 @@ const AppSidebar = () => {
               <button
                 key={item.title}
                 type='button'
-                onClick={item.onClick}
-                title={collapsed ? item.title : undefined}
+                onClick={() => {
+                  item.onClick?.();
+                  closeMobile();
+                }}
+                title={effectiveCollapsed ? item.title : undefined}
                 className={className}
               >
                 {inner}
@@ -216,7 +234,8 @@ const AppSidebar = () => {
             <Link
               key={item.url}
               to={item.url!}
-              title={collapsed ? item.title : undefined}
+              onClick={closeMobile}
+              title={effectiveCollapsed ? item.title : undefined}
               className={className}
             >
               {inner}
@@ -231,13 +250,13 @@ const AppSidebar = () => {
         <div
           className={cn(
             'flex items-center gap-2',
-            collapsed
+            effectiveCollapsed
               ? 'justify-center py-[10px] px-0 flex-col transition-all duration-300'
               : 'justify-between py-[10px] px-[14px]',
           )}
         >
-          <ColorThemeSwitcher collapsed={collapsed} />
-          <div className={cn('flex gap-2', collapsed ? 'flex-col' : '')}>
+          <ColorThemeSwitcher collapsed={effectiveCollapsed} />
+          <div className={cn('flex gap-2', effectiveCollapsed ? 'flex-col' : '')}>
             <ModeToggle />
             <LanguageToggle />
           </div>
@@ -250,7 +269,7 @@ const AppSidebar = () => {
               <button
                 className={cn(
                   'w-full flex items-center bg-transparent border-0 cursor-pointer transition-[background] duration-150 hover:bg-[var(--pl-bg-hover)]',
-                  collapsed
+                  effectiveCollapsed
                     ? 'justify-center gap-0 py-3 px-0'
                     : 'justify-start gap-[10px] py-[10px] px-[14px]',
                 )}
@@ -274,7 +293,7 @@ const AppSidebar = () => {
                   </div>
                 )}
 
-                {!collapsed && (
+                {!effectiveCollapsed && (
                   <>
                     <div className='flex-1 min-w-0 text-left'>
                       <div className='text-[12.5px] font-semibold text-[var(--pl-text)] overflow-hidden text-ellipsis whitespace-nowrap'>
@@ -315,7 +334,10 @@ const AppSidebar = () => {
               ].map(({ label, icon: Icon, onClick, danger }) => (
                 <DropdownMenuItem
                   key={label}
-                  onClick={onClick}
+                  onClick={() => {
+                    onClick();
+                    closeMobile();
+                  }}
                   className={cn(
                     'flex items-center gap-2 px-[10px] py-2 cursor-pointer ',
                     danger
@@ -338,6 +360,55 @@ const AppSidebar = () => {
           </DropdownMenu>
         </div>
       </div>
+    </>
+  );
+
+  if (isMobile) {
+    return (
+      <>
+        {/* ── Mobile top bar ── */}
+        <div className='md:hidden sticky top-0 z-30 flex items-center gap-3 h-14 px-4 border-b border-[var(--pl-border)] bg-[var(--pl-bg-sunken)] shrink-0'>
+          <button
+            onClick={() => setMobileOpen(true)}
+            aria-label='Open menu'
+            className='text-[var(--pl-text-muted)] bg-transparent border-0 cursor-pointer grid place-items-center rounded-[6px] p-1 hover:text-[var(--pl-text)]'
+          >
+            <Menu size={20} />
+          </button>
+          <Link to='/dashboard' className='flex items-center gap-2 no-underline'>
+            <div className='w-7 h-7 rounded-[8px] bg-[var(--pl-accent)] text-[var(--pl-accent-fg)] grid place-items-center font-bold text-[14px] shrink-0'>
+              P
+            </div>
+            <span className='text-[14px] font-bold text-[var(--pl-text)]'>
+              ProLearning
+            </span>
+          </Link>
+        </div>
+
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <SheetContent
+            side='left'
+            className='p-0 w-[260px] max-w-[80vw] [&>button]:hidden bg-[var(--pl-bg-sunken)] border-r border-[var(--pl-border)] flex flex-col gap-0'
+          >
+            <SheetHeader className='sr-only'>
+              <SheetTitle>ProLearning</SheetTitle>
+              <SheetDescription>Navigation menu</SheetDescription>
+            </SheetHeader>
+            {sidebarBody}
+          </SheetContent>
+        </Sheet>
+
+        <NotificationDrawer open={notifOpen} onOpenChange={setNotifOpen} />
+      </>
+    );
+  }
+
+  return (
+    <aside
+      className='hidden md:flex bg-[var(--pl-bg-sunken)] border-r border-r-[var(--pl-border)] flex-col h-screen sticky top-0 shrink-0 z-20 overflow-hidden transition-[width] duration-[280ms] ease-[cubic-bezier(0.4,0,0.2,1)]'
+      style={{ width: collapsed ? 68 : 232 }}
+    >
+      {sidebarBody}
       <NotificationDrawer open={notifOpen} onOpenChange={setNotifOpen} />
     </aside>
   );

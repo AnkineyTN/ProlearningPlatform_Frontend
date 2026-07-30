@@ -45,6 +45,10 @@ export type SessionResult = {
   incorrectCount: number;
   finishedAt: string;
   logs: ReviewLog[];
+  totalCards: number;
+  knownCount: number;
+  unknownCount: number;
+  newCount: number;
 };
 
 // Request Types

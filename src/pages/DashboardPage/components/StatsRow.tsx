@@ -18,7 +18,7 @@ export function StatsRow({ streak, summary, setsCount }: Props) {
   const weekHours = (weekMinutes / 60).toFixed(1);
 
   return (
-    <div className='grid grid-cols-4 gap-6 mb-6'>
+    <div className='grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6'>
       <StatCard
         kicker={t('dashboard.stats.streak.kicker')}
         value={streak ? String(streak.currentStreak) : '—'}

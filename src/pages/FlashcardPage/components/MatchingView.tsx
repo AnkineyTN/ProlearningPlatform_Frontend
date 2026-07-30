@@ -8,6 +8,7 @@ import MatchingResultsStats from './MatchingView/ResultsStats';
 import MatchingTrendChart from './MatchingView/TrendChart';
 import MatchingRecentPlays from './MatchingView/RecentPlays';
 import MatchingSecondaryTabs from './MatchingView/SecondaryTabs';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   setId: number;
@@ -26,6 +27,8 @@ const MatchingView = ({
   flashcardTitle,
   onBack,
 }: Props) => {
+  const { t } = useTranslation();
+
   const {
     cards,
     matchedPairs,
@@ -77,16 +80,23 @@ const MatchingView = ({
         : 0;
 
     const heroTitle = isPerfect
-      ? 'Nicely done.'
+      ? t('flashcard.matching.results.perfectTitle')
       : accuracy >= 80
-        ? 'Great run.'
-        : 'Keep practicing.';
-    const setLabel = flashcardTitle ? ` in ${flashcardTitle}` : '';
+        ? t('flashcard.matching.results.greatTitle')
+        : t('flashcard.matching.results.keepPracticingTitle');
     const heroSubtitle = isPerfect
-      ? `You matched all ${totalPairs} cards${setLabel} without a single mistake.`
-      : `You matched ${totalPairs} cards${setLabel} with ${wrongPicks} ${
-          wrongPicks === 1 ? 'mistake' : 'mistakes'
-        }.`;
+      ? t(
+          flashcardTitle
+            ? 'flashcard.matching.results.perfectSubtitleWithTitle'
+            : 'flashcard.matching.results.perfectSubtitle',
+          { count: totalPairs, title: flashcardTitle },
+        )
+      : t(
+          flashcardTitle
+            ? 'flashcard.matching.results.subtitleWithTitle'
+            : 'flashcard.matching.results.subtitle',
+          { count: totalPairs, title: flashcardTitle, mistakes: wrongPicks },
+        );
 
     const lastRun = snapshotPrevRun;
     let timeBadge: { text: string; kind: 'down' | 'up' } | null = null;
@@ -96,10 +106,16 @@ const MatchingView = ({
         const pct = Math.round(
           (Math.abs(diff) / lastRun.durationSeconds) * 100,
         );
-        timeBadge = { text: `${pct}% faster`, kind: 'down' };
+        timeBadge = {
+          text: t('flashcard.matching.results.faster', { percent: pct }),
+          kind: 'down',
+        };
       } else if (diff > 0) {
         const pct = Math.round((diff / lastRun.durationSeconds) * 100);
-        timeBadge = { text: `${pct}% slower`, kind: 'up' };
+        timeBadge = {
+          text: t('flashcard.matching.results.slower', { percent: pct }),
+          kind: 'up',
+        };
       }
     }
 

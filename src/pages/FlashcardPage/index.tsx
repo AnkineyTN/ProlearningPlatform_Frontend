@@ -567,15 +567,19 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
 
   return (
     <div>
-      <FlashcardHeader
-        setId={Number(setId)}
-        flashcardId={Number(flashcardId)}
-        title={title}
-        description={description}
-        setTitle={setTitle}
-        userRole={userRole}
-        isFavorited={data?.data.isFavorited}
-      />
+      {viewMode !== 'study' && viewMode !== 'results' && (
+        <FlashcardHeader
+          setId={Number(setId)}
+          flashcardId={Number(flashcardId)}
+          title={title}
+          description={description}
+          setTitle={setTitle}
+          userRole={userRole}
+          isFavorited={data?.data.isFavorited}
+          onDeleteFlashcard={handleDeleteFlashcard}
+          isDeletingFlashcard={deleteFlashcardMutation.isPending}
+        />
+      )}
       <ContinueSessionDialog
         open={showContinueDialog}
         onContinue={handleContinueSession}
@@ -584,8 +588,6 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       />
       {viewMode === 'home' && (
         <HomeView
-          setId={setId}
-          flashcardId={flashcardId}
           flashcards={displayedFlashcards}
           onCardClick={handleCardClick}
           onStudy={startStudying}
@@ -600,9 +602,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           onPrevious={handlePrevious}
           onUpdateCard={handleUpdateCard}
           onDeleteCard={handleDeleteCard}
-          onDeleteFlashcard={handleDeleteFlashcard}
           isUpdating={updateCardMutation.isPending}
-          isDeletingFlashcard={deleteFlashcardMutation.isPending}
           onShuffle={handleShuffle}
           onCardAnswer={handleCardAnswer}
         />
@@ -610,6 +610,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
 
       {viewMode === 'study' && (
         <StudyView
+          title={title}
           flashcards={activeCards}
           currentCardIndex={currentCardIndex}
           isFlipped={isFlipped}

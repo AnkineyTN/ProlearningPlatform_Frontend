@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
 import { Input } from '@/components/ui/input';
-import type { Card as CardData } from '@/services/types/flashcard.types';
+
 import FlipFlashcard from '../FlipFlashcard';
 import ActionBar from './ActionBar';
 import CardListItem from './CardListItem';
 import { useCardEdit } from './useCardEdit';
 
+import type { Card as CardData } from '@/services/types/flashcard.types';
 type HomeViewProps = {
-  setId: number;
-  flashcardId: number | string;
   flashcards: CardData[];
   onCardClick: (index: number) => void;
   onStudy: () => void;
@@ -30,8 +30,6 @@ type HomeViewProps = {
   }) => void;
   onDeleteCard: (cardId: number) => void;
   isUpdating?: boolean;
-  onDeleteFlashcard?: () => void;
-  isDeletingFlashcard?: boolean;
   onShuffle: () => void;
   onCardAnswer: (isCorrect: boolean) => void;
   sessionProgress?: {
@@ -41,8 +39,6 @@ type HomeViewProps = {
 };
 
 export default function HomeView({
-  setId,
-  flashcardId,
   flashcards,
   onCardClick,
   onStudy,
@@ -56,7 +52,6 @@ export default function HomeView({
   onShuffle,
   onUpdateCard,
   onDeleteCard,
-  onDeleteFlashcard,
   isUpdating = false,
   onCardAnswer,
 }: HomeViewProps) {
@@ -65,8 +60,6 @@ export default function HomeView({
 
   const [deleteCardId, setDeleteCardId] = useState<number | null>(null);
   const [showDeleteCardDialog, setShowDeleteCardDialog] = useState(false);
-  const [showDeleteFlashcardDialog, setShowDeleteFlashcardDialog] =
-    useState(false);
 
   const requestDeleteCard = (cardId: number) => {
     setDeleteCardId(cardId);
@@ -82,18 +75,16 @@ export default function HomeView({
 
   return (
     <>
-      <div className='max-w-5xl mx-auto p-6'>
+      <div className='max-w-5xl mx-auto px-6 py-4 mb-10'>
         <ActionBar
-          setId={setId}
-          flashcardId={flashcardId}
           onStudy={onStudy}
           onMatching={onMatching}
           onPracticeWithExam={onPracticeWithExam}
           isPracticeWithExamLoading={isPracticeWithExamLoading}
-          onRequestDeleteFlashcard={() => setShowDeleteFlashcardDialog(true)}
+          onShuffle={onShuffle}
         />
 
-        <div className='mb-8'>
+        <div className='mb-4'>
           <FlipFlashcard
             isFlipped={isFlipped}
             flashcards={flashcards}
@@ -102,6 +93,7 @@ export default function HomeView({
             onPrevious={onPrevious}
             onShuffle={onShuffle}
             onCardAnswer={onCardAnswer}
+            showBottomToolbar={false}
           />
         </div>
 
@@ -145,16 +137,6 @@ export default function HomeView({
         onConfirm={confirmDeleteCard}
         title='Delete Card'
         itemName={t('modal.thisCard')}
-      />
-      <DeleteConfirmDialog
-        isOpen={showDeleteFlashcardDialog}
-        onClose={() => setShowDeleteFlashcardDialog(false)}
-        onConfirm={() => {
-          if (onDeleteFlashcard) onDeleteFlashcard();
-          setShowDeleteFlashcardDialog(false);
-        }}
-        title='Delete Flashcard'
-        itemName={t('modal.thisFlashcard')}
       />
     </>
   );

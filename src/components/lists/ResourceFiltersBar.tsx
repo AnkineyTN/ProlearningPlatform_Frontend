@@ -153,7 +153,7 @@ export function ResourceFiltersBar({
     >
       {/* Search */}
       {showSearch && (
-        <div className='flex items-center gap-2 px-3 py-[7px] bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-lg w-[240px] transition-[border-color] duration-150 focus-within:border-[var(--pl-accent-border)]'>
+        <div className='flex items-center gap-2 px-3 py-[7px] bg-[var(--pl-bg-elev)] border border-[var(--pl-border)] rounded-lg w-full sm:w-[240px] transition-[border-color] duration-150 focus-within:border-[var(--pl-accent-border)]'>
           <Search size={13} className='text-[var(--pl-text-faint)] shrink-0' />
           <input
             type='search'
@@ -169,7 +169,7 @@ export function ResourceFiltersBar({
       )}
 
       {/* Divider */}
-      <div className='w-px h-5 bg-[var(--pl-border)] shrink-0 mx-0.5' />
+      <div className='hidden sm:block w-px h-5 bg-[var(--pl-border)] shrink-0 mx-0.5' />
 
       {/* Privacy filter */}
       <PillSelect

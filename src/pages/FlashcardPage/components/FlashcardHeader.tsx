@@ -1,6 +1,7 @@
-import { BookOpen, Share2, SwatchBook } from 'lucide-react';
+import { BookOpen, Edit, MoreVertical, Share2, SwatchBook, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { ShareDialog } from '@/components/collaboration/ShareDialog';
@@ -9,6 +10,13 @@ import type { CollabRole } from '@/services/types/collaboration.types';
 import type { FlashcardDetailResponse } from '@/services/types/flashcard.types';
 import { useAuth } from '@/hooks/useAuth';
 import { useBackTo } from '@/hooks/useBackTo';
+import DeleteConfirmDialog from '@/components/modals/DeleteConfirmDialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface FlashcardHeaderProps {
   setId: number;
@@ -18,6 +26,8 @@ interface FlashcardHeaderProps {
   setTitle?: string;
   userRole?: CollabRole;
   isFavorited?: boolean;
+  onDeleteFlashcard?: () => void;
+  isDeletingFlashcard?: boolean;
 }
 
 export default function FlashcardHeader({
@@ -28,10 +38,14 @@ export default function FlashcardHeader({
   setTitle,
   userRole = 'OWNER',
   isFavorited = false,
+  onDeleteFlashcard,
+  isDeletingFlashcard = false,
 }: FlashcardHeaderProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const currentUserId = useAuth().user?.id;
   const [shareOpen, setShareOpen] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const queryClient = useQueryClient();
 
   const backTo = useBackTo();
@@ -86,6 +100,34 @@ export default function FlashcardHeader({
             >
               <Share2 className='size-4' />
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  size='sm'
+                  className='flex h-9 w-9 items-center justify-center place-items-center rounded-lg border border-[var(--pl-border)] bg-transparent text-[var(--pl-text-muted)] cursor-pointer hover:bg-[var(--pl-bg-hover)]'
+                >
+                  <MoreVertical className='size-4' />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end' className='min-w-[120px]'>
+                <DropdownMenuItem
+                  onSelect={() =>
+                    navigate(`/sets/${setId}/flashcards/${flashcardId}/update`)
+                  }
+                >
+                  <Edit className='size-3.5' />
+                  {t('modal.updateButton')}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  variant='destructive'
+                  disabled={isDeletingFlashcard}
+                  onSelect={() => setShowDeleteDialog(true)}
+                >
+                  <Trash2 className='size-3.5' />
+                  {t('modal.delete')}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         <div className='text-sm text-muted-foreground'>{description}</div>
@@ -98,6 +140,16 @@ export default function FlashcardHeader({
         resourceId={flashcardId}
         userRole={userRole}
         currentUserId={currentUserId}
+      />
+      <DeleteConfirmDialog
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={() => {
+          onDeleteFlashcard?.();
+          setShowDeleteDialog(false);
+        }}
+        title='Delete Flashcard'
+        itemName={t('modal.thisFlashcard')}
       />
     </div>
   );

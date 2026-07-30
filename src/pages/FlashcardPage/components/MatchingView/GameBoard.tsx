@@ -1,6 +1,7 @@
 import { Clock, ArrowLeft, Flame } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { MatchingCard } from './useMatchingGame';
+import { useTranslation } from 'react-i18next';
 
 const CONFETTI_COLORS = [
   'var(--pl-accent)',
@@ -73,16 +74,18 @@ const MatchingGameBoard = ({
   onCardClick,
   onBack,
 }: MatchingGameBoardProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className='max-w-4xl mx-auto px-6 py-8'>
       {/* Header */}
       <div className='flex items-center justify-between mb-8'>
         <div>
           <h2 className='font-[family-name:var(--font-display)] text-2xl font-medium tracking-tight'>
-            Matching Game
+            {t('flashcard.matching.title')}
           </h2>
           <p className='text-sm text-muted-foreground mt-0.5'>
-            Match terms with their definitions
+            {t('flashcard.matching.instructions')}
           </p>
         </div>
 
@@ -150,7 +153,7 @@ const MatchingGameBoard = ({
               key={countdown}
               className='font-[family-name:var(--font-display)] text-[110px] leading-none font-normal text-[var(--pl-accent)] animate-[countdown-pulse_1s_ease-in-out_forwards]'
             >
-              {countdown === 0 ? 'Go!' : countdown}
+              {countdown === 0 ? t('flashcard.matching.go') : countdown}
             </p>
           </div>
         )}
@@ -160,7 +163,7 @@ const MatchingGameBoard = ({
       <div className='flex justify-center'>
         <Button variant='outline' onClick={onBack} className='gap-2'>
           <ArrowLeft className='w-4 h-4' />
-          Exit Game
+          {t('flashcard.matching.exitGame')}
         </Button>
       </div>
     </div>

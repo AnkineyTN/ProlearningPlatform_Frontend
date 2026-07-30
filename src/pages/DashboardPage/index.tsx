@@ -92,7 +92,7 @@ const Dashboard = () => {
         onSearchChange={setSearchKeyword}
       />
 
-      <div className='px-10 pt-6 pb-[60px]'>
+      <div className='px-4 sm:px-6 lg:px-10 pt-6 pb-10 lg:pb-[60px]'>
         {debouncedSearch.length > 0 && (
           <SearchResultsOverlay
             searchPayload={searchPayload}
@@ -103,8 +103,8 @@ const Dashboard = () => {
 
         <StatsRow streak={streak} summary={summary} setsCount={setData?.data?.metadata?.totalItems ?? sets.length} />
 
-        <div className='grid grid-cols-3 gap-6'>
-          <div className='flex flex-col gap-6 col-span-2'>
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+          <div className='flex flex-col gap-6 lg:col-span-2'>
             <ChecklistPanel />
             <RecentSetsPanel sets={sets} />
           </div>

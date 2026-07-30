@@ -1,4 +1,3 @@
-import { forwardRef } from 'react';
 import {
   CheckCircle,
   CheckCircle2,
@@ -8,7 +7,9 @@ import {
   Sparkles,
   XCircle,
 } from 'lucide-react';
+import { forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,6 +17,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+
 import type { ExamQuestion } from '../../types';
 import type { ResultHelpers } from './utils';
 

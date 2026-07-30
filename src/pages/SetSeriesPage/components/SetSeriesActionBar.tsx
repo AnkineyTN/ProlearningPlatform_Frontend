@@ -85,7 +85,7 @@ export default function SetSeriesActionBar({
   const { t } = useTranslation();
 
   return (
-    <div className='px-10 pt-5 flex items-center gap-3 flex-wrap'>
+    <div className='px-4 sm:px-6 lg:px-10 pt-5 flex items-center gap-3 flex-wrap'>
       <Button
         size='sm'
         onClick={onNewClick}

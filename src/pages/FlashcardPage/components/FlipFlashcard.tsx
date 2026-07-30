@@ -1,4 +1,10 @@
-import { ChevronLeft, ChevronRight, Info, Settings, Shuffle } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Info,
+  Settings,
+  Shuffle,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -21,6 +27,7 @@ type Props = {
   onShuffle: () => void;
   onCardAnswer: (isCorrect: boolean) => void;
   reviewBannerMessage?: string;
+  showBottomToolbar?: boolean;
 };
 
 const FlipFlashcard = ({
@@ -32,6 +39,7 @@ const FlipFlashcard = ({
   onShuffle,
   onCardAnswer,
   reviewBannerMessage,
+  showBottomToolbar = true,
 }: Props) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const {
@@ -175,7 +183,7 @@ const FlipFlashcard = ({
 
       {/* Progress bar */}
       {isProgressTrackingEnabled && (
-        <div className='pt-5 px-10 lg:px-20'>
+        <div className='pt-4'>
           <div
             className='flex justify-between text-xs mb-2 text-[var(--pl-text-faint)]'
             style={{ fontFamily: 'var(--font-mono-pl)' }}
@@ -207,7 +215,7 @@ const FlipFlashcard = ({
             disabled={currentCardIndex === 0}
             variant='outline'
             size='icon'
-            className='shrink-0 text-[var(--pl-text-muted)]'
+            className='shrink-0 text-[var(--pl-text-muted)] mb-16 bg-[var(--pl-bg-elev)]'
           >
             <ChevronLeft className='size-6' />
           </Button>
@@ -254,7 +262,7 @@ const FlipFlashcard = ({
             disabled={currentCardIndex >= total - 1}
             variant='outline'
             size='icon'
-            className='shrink-0 text-[var(--pl-text-muted)]'
+            className='shrink-0 text-[var(--pl-text-muted)] mb-16 bg-[var(--pl-bg-elev)]'
           >
             <ChevronRight className='size-6' />
           </Button>
@@ -262,18 +270,20 @@ const FlipFlashcard = ({
       </div>
 
       {/* Bottom toolbar */}
-      <div className='flex justify-end gap-2 px-10 pb-4'>
-        <Button variant='outline' size='icon' onClick={onShuffle}>
-          <Shuffle size={14} />
-        </Button>
-        <Button
-          variant='outline'
-          size='icon'
-          onClick={() => setIsSettingsOpen(true)}
-        >
-          <Settings size={14} />
-        </Button>
-      </div>
+      {showBottomToolbar && (
+        <div className='flex justify-end gap-2 px-10 pb-4'>
+          <Button variant='outline' size='icon' onClick={onShuffle}>
+            <Shuffle size={14} />
+          </Button>
+          <Button
+            variant='outline'
+            size='icon'
+            onClick={() => setIsSettingsOpen(true)}
+          >
+            <Settings size={14} />
+          </Button>
+        </div>
+      )}
 
       <FlashcardSettingsDialog
         open={isSettingsOpen}

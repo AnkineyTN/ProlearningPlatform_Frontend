@@ -183,7 +183,7 @@ export default function SetListPage() {
 
   return (
     <div className='min-h-screen' style={{ background: 'var(--pl-bg)' }}>
-      <div className='px-10 pt-8 pb-0'>
+      <div className='px-4 sm:px-6 lg:px-10 pt-8 pb-0'>
         <SetListHeader
           isPending={createSetMutation.isPending}
           onCreateClick={() => setIsCreateModalOpen(true)}
@@ -209,7 +209,7 @@ export default function SetListPage() {
         />
       </div>
 
-      <div className='px-10 pt-7 pb-16'>
+      <div className='px-4 sm:px-6 lg:px-10 pt-7 pb-16'>
         {isPending ? (
           <SetListSkeleton count={PAGE_SIZE} viewMode={viewMode} />
         ) : sets.length > 0 ? (
@@ -236,7 +236,7 @@ export default function SetListPage() {
             )}
 
             {totalPages > 1 && (
-              <div className='flex justify-center items-center gap-1 mb-8'>
+              <div className='flex flex-wrap justify-center items-center gap-1 mb-8'>
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
                   disabled={currentPage === 0}

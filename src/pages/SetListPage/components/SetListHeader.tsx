@@ -10,7 +10,7 @@ type Props = {
 export default function SetListHeader({ isPending, onCreateClick }: Props) {
   const { t } = useTranslation();
   return (
-    <div className='flex items-end justify-between mb-6'>
+    <div className='flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-6'>
       <div>
         <p
           className='text-[11px] uppercase tracking-[0.16em] mb-2'
@@ -19,7 +19,7 @@ export default function SetListHeader({ isPending, onCreateClick }: Props) {
           {t('setlist.your_workspace')}
         </p>
         <h1
-          className='text-[42px] font-[400] leading-none'
+          className='text-[32px] sm:text-[42px] font-[400] leading-none'
           style={{
             fontFamily: 'var(--font-display)',
             letterSpacing: '-0.03em',
@@ -32,7 +32,7 @@ export default function SetListHeader({ isPending, onCreateClick }: Props) {
       <Button
         onClick={onCreateClick}
         disabled={isPending}
-        className='rounded-full disabled:opacity-50'
+        className='rounded-full disabled:opacity-50 self-start sm:self-auto'
       >
         <Plus size={13} strokeWidth={2} />
         {isPending ? t('setlist.creating') : t('setlist.new_set')}

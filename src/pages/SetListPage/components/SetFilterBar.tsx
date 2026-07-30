@@ -80,11 +80,11 @@ export default function SetFilterBar({
   ];
 
   return (
-    <div className='flex items-center justify-between gap-2 mb-0'>
-      {/* Search */}
-      <div className='flex items-center gap-2'>
+    <div className='flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between mb-0'>
+      {/* Search + filters */}
+      <div className='flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center'>
         <div
-          className='flex items-center gap-2 px-3 py-2 rounded-lg text-[12.5px] w-56'
+          className='flex items-center gap-2 px-3 py-2 rounded-lg text-[12.5px] w-full sm:w-56'
           style={{
             background: 'var(--pl-bg-elev)',
             border: '1px solid var(--pl-border)',
@@ -103,67 +103,71 @@ export default function SetFilterBar({
           />
         </div>
 
-        {/* Privacy filter */}
-        <Select
-          value={privacy === '' ? ALL_SENTINEL : privacy}
-          onValueChange={(v) =>
-            onPrivacyChange((v === ALL_SENTINEL ? '' : v) as ListPrivacyFilter)
-          }
-        >
-          <SelectTrigger
-            size='sm'
-            className='min-w-[130px] bg-[var(--pl-bg-elev)] border-[var(--pl-border)] rounded-lg text-[12.5px] text-[var(--pl-text-muted)] focus-visible:border-[var(--pl-accent-border)] focus-visible:ring-0'
+        <div className='flex flex-wrap items-center gap-2'>
+          {/* Privacy filter */}
+          <Select
+            value={privacy === '' ? ALL_SENTINEL : privacy}
+            onValueChange={(v) =>
+              onPrivacyChange(
+                (v === ALL_SENTINEL ? '' : v) as ListPrivacyFilter,
+              )
+            }
           >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {privacyOptions.map((o) => (
-              <SelectItem
-                key={o.value}
-                value={o.value === '' ? ALL_SENTINEL : o.value}
-              >
-                {o.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Sort */}
-        <Select
-          value={sort}
-          onValueChange={(v) => onSortChange(v as ListSortOption)}
-        >
-          <SelectTrigger
-            size='sm'
-            className='min-w-[140px] bg-[var(--pl-bg-elev)] border-[var(--pl-border)] rounded-lg text-[12.5px] text-[var(--pl-text-muted)] focus-visible:border-[var(--pl-accent-border)] focus-visible:ring-0'
-          >
-            <span className='flex items-center gap-1.5'>
-              <ArrowUpDown size={11} />
+            <SelectTrigger
+              size='sm'
+              className='min-w-[130px] bg-[var(--pl-bg-elev)] border-[var(--pl-border)] rounded-lg text-[12.5px] text-[var(--pl-text-muted)] focus-visible:border-[var(--pl-accent-border)] focus-visible:ring-0'
+            >
               <SelectValue />
-            </span>
-          </SelectTrigger>
-          <SelectContent>
-            {sortOptions.map((o) => (
-              <SelectItem key={o.value} value={o.value}>
-                {o.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {hasActiveFilters && onClearFilters && (
-          <button
-            onClick={onClearFilters}
-            className='flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[12px] text-[var(--pl-text-muted)] hover:text-[var(--pl-danger-text)] hover:bg-[var(--pl-danger-soft)] transition-colors duration-150 border border-[var(--pl-border)] bg-transparent cursor-pointer'
+            </SelectTrigger>
+            <SelectContent>
+              {privacyOptions.map((o) => (
+                <SelectItem
+                  key={o.value}
+                  value={o.value === '' ? ALL_SENTINEL : o.value}
+                >
+                  {o.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Sort */}
+          <Select
+            value={sort}
+            onValueChange={(v) => onSortChange(v as ListSortOption)}
           >
-            <X size={11} />
-            Clear
-          </button>
-        )}
+            <SelectTrigger
+              size='sm'
+              className='min-w-[140px] bg-[var(--pl-bg-elev)] border-[var(--pl-border)] rounded-lg text-[12.5px] text-[var(--pl-text-muted)] focus-visible:border-[var(--pl-accent-border)] focus-visible:ring-0'
+            >
+              <span className='flex items-center gap-1.5'>
+                <ArrowUpDown size={11} />
+                <SelectValue />
+              </span>
+            </SelectTrigger>
+            <SelectContent>
+              {sortOptions.map((o) => (
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {hasActiveFilters && onClearFilters && (
+            <button
+              onClick={onClearFilters}
+              className='flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[12px] text-[var(--pl-text-muted)] hover:text-[var(--pl-danger-text)] hover:bg-[var(--pl-danger-soft)] transition-colors duration-150 border border-[var(--pl-border)] bg-transparent cursor-pointer'
+            >
+              <X size={11} />
+              Clear
+            </button>
+          )}
+        </div>
       </div>
 
       {/* View toggle */}
       <div
-        className='flex rounded-lg overflow-hidden'
+        className='flex rounded-lg overflow-hidden self-end lg:self-auto shrink-0'
         style={{
           background: 'var(--pl-bg-elev)',
           border: '1px solid var(--pl-border)',

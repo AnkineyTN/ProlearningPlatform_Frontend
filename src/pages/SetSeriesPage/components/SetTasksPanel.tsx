@@ -195,10 +195,10 @@ export default function SetTasksPanel({ setId }: SetTasksPanelProps) {
   };
 
   return (
-    <div className='px-10 pt-4'>
-      <div className='rounded-[16px] p-6 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)]'>
+    <div className='px-4 sm:px-6 lg:px-10 pt-4'>
+      <div className='rounded-[16px] p-4 sm:p-6 bg-[var(--pl-bg-elev)] border border-[var(--pl-border)]'>
         {/* Header */}
-        <div className='flex items-start justify-between mb-5'>
+        <div className='flex items-start justify-between gap-3 mb-5'>
           <div>
             <div className='text-[10.5px] tracking-[0.18em] uppercase mb-1.5 text-[var(--pl-accent-strong)]'>
               {t('set.tasks.header')}

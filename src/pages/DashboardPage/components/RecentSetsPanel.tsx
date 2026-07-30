@@ -60,7 +60,7 @@ export function RecentSetsPanel({ sets }: Props) {
                 </div>
               )}
             </div>
-            <div className='flex gap-[14px] text-[11.5px] text-[var(--pl-text-faint)] shrink-0 tabular-nums'>
+            <div className='hidden sm:flex gap-[14px] text-[11.5px] text-[var(--pl-text-faint)] shrink-0 tabular-nums'>
               <span>
                 {t('dashboard.recentSets.notesCount', { count: s.numNotes })}
               </span>

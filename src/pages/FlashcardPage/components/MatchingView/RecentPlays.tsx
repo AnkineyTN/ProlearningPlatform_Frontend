@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import type { Card, GameHistoryItem } from '@/services/types/flashcard.types';
+import { useTranslation } from 'react-i18next';
 
 interface MatchingRecentPlaysProps {
   allHistory: GameHistoryItem[];
@@ -24,13 +25,15 @@ const MatchingRecentPlays = ({
   onToggleShowAll,
   onToggleExpand,
 }: MatchingRecentPlaysProps) => {
+  const { t } = useTranslation();
+
   if (allHistory.length === 0) return null;
 
   return (
     <div className='rounded-2xl border border-border bg-[var(--pl-bg)] p-5'>
       <div className='flex items-center justify-between mb-4'>
         <p className='text-[11px] tracking-[0.2em] text-muted-foreground font-[family-name:var(--font-mono-pl)]'>
-          RECENT PLAYS
+          {t('flashcard.matching.history.recentPlays')}
         </p>
         {allHistory.length > 4 && (
           <button
@@ -38,7 +41,9 @@ const MatchingRecentPlays = ({
             onClick={onToggleShowAll}
             className='text-xs text-muted-foreground hover:text-foreground cursor-pointer'
           >
-            {showAllPlays ? 'Show less' : 'View all'}
+            {showAllPlays
+              ? t('flashcard.matching.history.showLess')
+              : t('flashcard.matching.history.viewAll')}
           </button>
         )}
       </div>
@@ -94,14 +99,20 @@ const MatchingRecentPlays = ({
                   </div>
                 </div>
                 <span className='text-xs text-muted-foreground whitespace-nowrap'>
-                  {item.totalCards} cards
+                  {t('flashcard.matching.cardCount', {
+                    count: item.totalCards,
+                  })}
                 </span>
                 <span
                   className={`font-[family-name:var(--font-mono-pl)] text-xs w-20 text-right whitespace-nowrap ${
                     isPerfectRun ? 'text-[var(--pl-accent)]' : 'text-[var(--pl-danger)]'
                   }`}
                 >
-                  {isPerfectRun ? 'perfect' : `${totalWrong} wrong`}
+                  {isPerfectRun
+                    ? t('flashcard.matching.history.perfect')
+                    : t('flashcard.matching.history.wrongCount', {
+                        count: totalWrong,
+                      })}
                 </span>
                 <span className='font-[family-name:var(--font-mono-pl)] text-sm w-12 text-right'>
                   {formatSeconds(item.durationSeconds)}
@@ -120,7 +131,7 @@ const MatchingRecentPlays = ({
               {isExpanded && canExpand && (
                 <div className='ml-12 mr-2 mt-2 mb-2 px-3 py-3 rounded-lg border border-border space-y-2 bg-[var(--pl-bg)]/60'>
                   <p className='text-xs text-muted-foreground mb-1'>
-                    Cards you got wrong:
+                    {t('flashcard.matching.history.wrongCards')}
                   </p>
                   {wrongEntries.map(([cardId, count]) => {
                     const card = cardMap.get(cardId);
@@ -141,7 +152,9 @@ const MatchingRecentPlays = ({
                             </>
                           ) : (
                             <p className='text-sm text-muted-foreground'>
-                              Card #{cardId} (no longer available)
+                              {t('flashcard.matching.unavailableCard', {
+                                id: cardId,
+                              })}
                             </p>
                           )}
                         </div>

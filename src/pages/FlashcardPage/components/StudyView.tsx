@@ -2,6 +2,7 @@ import { ArrowLeft } from 'lucide-react';
 import FlipFlashcard from './FlipFlashcard';
 
 type StudyViewProps = {
+  title: string;
   flashcards: Array<{
     frontCard: string;
     backCard: string;
@@ -23,6 +24,7 @@ type StudyViewProps = {
 };
 
 const StudyView = ({
+  title,
   flashcards,
   currentCardIndex,
   isFlipped,
@@ -38,19 +40,33 @@ const StudyView = ({
       className='flex flex-col min-h-screen'
       style={{ background: 'var(--pl-bg)' }}
     >
-      {/* Header */}
       <div
-        className='flex items-center px-10 py-[18px]'
-        style={{ borderBottom: '1px solid var(--pl-border)' }}
+        className='sticky top-0 z-10 flex items-center px-10 py-4'
+        style={{
+          borderBottom: '1px solid var(--pl-border)',
+          background: 'var(--pl-bg)',
+        }}
       >
-        <button
-          onClick={onBack}
-          className='flex items-center gap-2 text-[12.5px] transition-opacity hover:opacity-70'
-          style={{ color: 'var(--pl-text-muted)' }}
-        >
-          <ArrowLeft size={13} />
-          Back to deck
-        </button>
+        <div className='flex items-center gap-4'>
+          <button
+            onClick={onBack}
+            className='flex cursor-pointer items-center gap-2 text-[12.5px] transition-opacity hover:opacity-70'
+            style={{ color: 'var(--pl-text-muted)' }}
+          >
+            <ArrowLeft size={14} />
+            Back
+          </button>
+          <div
+            className='h-[18px] w-px'
+            style={{ background: 'var(--pl-border)' }}
+          />
+          <span
+            className='text-[11px] uppercase tracking-[0.14em]'
+            style={{ color: 'var(--pl-text-faint)' }}
+          >
+            {title}
+          </span>
+        </div>
       </div>
 
       <FlipFlashcard

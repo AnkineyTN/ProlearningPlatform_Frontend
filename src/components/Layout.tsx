@@ -16,7 +16,7 @@ const Layout = ({ children }: Props) => {
   }, []);
 
   return (
-    <div className='flex min-h-screen bg-[var(--pl-bg)] transition-[background] duration-300'>
+    <div className='flex flex-col md:flex-row min-h-screen bg-[var(--pl-bg)] transition-[background] duration-300'>
       <AppSidebar />
       <main className='flex-1 min-w-0 flex flex-col overflow-auto'>
         {children}

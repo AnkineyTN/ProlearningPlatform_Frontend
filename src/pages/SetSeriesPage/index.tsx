@@ -124,7 +124,7 @@ export default function SetSeriesPage({ setId }: SetSeriesPageProps) {
       {activeTab === 'Tasks' ? (
         <SetTasksPanel setId={Number(setId)} />
       ) : (
-        <div className='px-10 pt-4'>
+        <div className='px-4 sm:px-6 lg:px-10 pt-4'>
           {activeTab === 'Notes' && (
             <NoteListPage
               setId={Number(setId)}
