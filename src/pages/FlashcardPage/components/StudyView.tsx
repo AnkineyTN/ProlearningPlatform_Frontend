@@ -1,4 +1,5 @@
 import { ArrowLeft } from 'lucide-react';
+
 import FlipFlashcard from './FlipFlashcard';
 
 type StudyViewProps = {
@@ -13,7 +14,6 @@ type StudyViewProps = {
   onBack: () => void;
   onFlip: () => void;
   onPrevious: () => void;
-  onShuffle: () => void;
   onCardAnswer: (isCorrect: boolean) => void;
   sessionProgress?: {
     completedCount: number;
@@ -31,7 +31,6 @@ const StudyView = ({
   onBack,
   onFlip,
   onPrevious,
-  onShuffle,
   onCardAnswer,
   reviewBannerMessage,
 }: StudyViewProps) => {
@@ -75,7 +74,6 @@ const StudyView = ({
         currentCardIndex={currentCardIndex}
         onFlip={onFlip}
         onPrevious={onPrevious}
-        onShuffle={onShuffle}
         onCardAnswer={onCardAnswer}
         reviewBannerMessage={reviewBannerMessage}
       />

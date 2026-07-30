@@ -1578,7 +1578,7 @@
   "set.header.continueLearning": "Continue learning",
   "set.header.deleteSet": "Delete set",
   "set.header.loadError": "Could not load set details.",
-  "set.header.mastery": "Mastery",
+  "set.header.mastery": "Progress",
   "set.header.notes": "Notes",
   "set.header.streak": "Streak",
   "set.tasks.addPlaceholder": "Add a task for this set...",
@@ -1958,5 +1958,6 @@
   "flashcard.matching.tabs.mistakes": "Mistakes",
   "flashcard.matching.ranking.empty": "No rankings yet. Be the first!",
   "flashcard.matching.mistakes.empty": "No mistakes yet. Nice!",
-  "flashcard.matching.mistakes.description": "Cards you got wrong most often, across all plays:"
+  "flashcard.matching.mistakes.description": "Cards you got wrong most often, across all plays:",
+  "modal.ai.invalidReferenceUrl": "Enter a valid URL starting with http:// or https://."
 }

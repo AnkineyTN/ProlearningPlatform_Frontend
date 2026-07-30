@@ -3,9 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { apiErrorMessage } from '@/lib/apiError';
-import { ResourceAccessError } from '@/components/collaboration/ResourceAccessError';
 
+import { ResourceAccessError } from '@/components/collaboration/ResourceAccessError';
 import {
   useDeleteCard,
   useDeleteFlashcard,
@@ -22,6 +21,7 @@ import {
 } from '@/hooks/useFlashcardSession';
 import { useFlashcardStudySettings } from '@/hooks/useFlashcardStudySettings';
 import { useSessionTracker } from '@/hooks/useSessionTracker';
+import { apiErrorMessage } from '@/lib/apiError';
 
 import ContinueSessionDialog from './components/ContinueSessionDialog';
 import FlashcardHeader from './components/FlashcardHeader';
@@ -267,7 +267,9 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       goTo(`/sets/${setId}/flashcards/${flashcardId}/study`);
     } catch (error) {
       console.error('Failed to start session:', error);
-      toast.error(apiErrorMessage(error, t('flashcard.page.startSessionError')));
+      toast.error(
+        apiErrorMessage(error, t('flashcard.page.startSessionError')),
+      );
     }
   };
 
@@ -353,7 +355,9 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       return { sessionId: sessionData.id, cards };
     } catch (error) {
       console.error('Failed to start session:', error);
-      toast.error(apiErrorMessage(error, t('flashcard.page.startSessionError')));
+      toast.error(
+        apiErrorMessage(error, t('flashcard.page.startSessionError')),
+      );
       return null;
     }
   };
@@ -539,7 +543,7 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
         flashcardId: Number(flashcardId),
       });
       toast.success(t('flashcard.page.setDeleted'));
-      navigate(`/sets/${setId}`);
+      navigate(`/sets/${setId}/flashcards`);
     } catch (error) {
       console.error('Error deleting flashcard:', error);
       toast.error(apiErrorMessage(error, t('flashcard.page.deleteSetError')));
@@ -558,7 +562,9 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
       });
     } catch (error) {
       console.error('Failed to generate exam:', error);
-      toast.error(apiErrorMessage(error, t('flashcard.page.generateExamError')));
+      toast.error(
+        apiErrorMessage(error, t('flashcard.page.generateExamError')),
+      );
     }
   };
 
@@ -617,7 +623,6 @@ const FlashcardPage = ({ setId, flashcardId }: Props) => {
           onBack={handleBackFromStudy}
           onFlip={handleFlip}
           onPrevious={handlePrevious}
-          onShuffle={handleShuffle}
           onCardAnswer={handleCardAnswer}
           sessionProgress={sessionStatus?.data?.[0]}
           reviewBannerMessage={

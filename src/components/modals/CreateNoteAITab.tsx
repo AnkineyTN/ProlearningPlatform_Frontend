@@ -35,12 +35,13 @@ const CreateNoteAITab = ({
   const [topic, setTopic] = useState('');
   const [description, setDescription] = useState('');
   const [referenceLinks, setReferenceLinks] = useState<string[]>(['']);
+  const [areReferenceLinksValid, setAreReferenceLinksValid] = useState(true);
   const [privacy, setPrivacy] = useState<AIPrivacy>('PUBLIC');
   const [language, setLanguage] = useState(() =>
     mapI18nToAiApiLanguage(i18n.language),
   );
 
-  const valid = topic.trim().length > 0;
+  const valid = topic.trim().length > 0 && areReferenceLinksValid;
 
   useEffect(() => {
     onValidityChange(valid);
@@ -124,6 +125,7 @@ const CreateNoteAITab = ({
           onChange={setReferenceLinks}
           disabled={isLoading}
           maxLinks={3}
+          onValidityChange={setAreReferenceLinksValid}
         />
       </div>
 

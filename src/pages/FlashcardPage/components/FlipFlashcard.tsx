@@ -1,11 +1,6 @@
-import {
-  ChevronLeft,
-  ChevronRight,
-  Info,
-  Settings,
-  Shuffle,
-} from 'lucide-react';
+import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
 import { useFlashcardStudySettings } from '@/hooks/useFlashcardStudySettings';
@@ -24,10 +19,8 @@ type Props = {
   currentCardIndex: number;
   onFlip: () => void;
   onPrevious: () => void;
-  onShuffle: () => void;
   onCardAnswer: (isCorrect: boolean) => void;
   reviewBannerMessage?: string;
-  showBottomToolbar?: boolean;
 };
 
 const FlipFlashcard = ({
@@ -36,10 +29,8 @@ const FlipFlashcard = ({
   currentCardIndex,
   onFlip,
   onPrevious,
-  onShuffle,
   onCardAnswer,
   reviewBannerMessage,
-  showBottomToolbar = true,
 }: Props) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const {
@@ -158,6 +149,7 @@ const FlipFlashcard = ({
     }
     onFlip();
   };
+  const { t } = useTranslation();
 
   const total = flashcards.length;
   const current = flashcards[currentCardIndex];
@@ -172,7 +164,7 @@ const FlipFlashcard = ({
   const isDraggingLeft = dragOffsetX < -10;
 
   return (
-    <>
+    <div className='mx-20 pt-4'>
       {/* Review-mode banner */}
       {reviewBannerMessage && (
         <div className='mx-10 mt-4 flex items-start gap-2 rounded-lg border px-4 py-3 text-sm bg-[var(--pl-accent-soft)] border-[var(--pl-accent-border)] text-[var(--pl-accent-strong)]'>
@@ -192,7 +184,7 @@ const FlipFlashcard = ({
               {String(currentCardIndex + 1).padStart(2, '0')} / {total}
             </span>
             <span>
-              Mastery ·{' '}
+              {t('set.header.mastery')} ·{' '}
               <span className='text-[var(--pl-text)]'>
                 {Math.round(progress)}%
               </span>
@@ -269,22 +261,6 @@ const FlipFlashcard = ({
         )}
       </div>
 
-      {/* Bottom toolbar */}
-      {showBottomToolbar && (
-        <div className='flex justify-end gap-2 px-10 pb-4'>
-          <Button variant='outline' size='icon' onClick={onShuffle}>
-            <Shuffle size={14} />
-          </Button>
-          <Button
-            variant='outline'
-            size='icon'
-            onClick={() => setIsSettingsOpen(true)}
-          >
-            <Settings size={14} />
-          </Button>
-        </div>
-      )}
-
       <FlashcardSettingsDialog
         open={isSettingsOpen}
         onOpenChange={setIsSettingsOpen}
@@ -297,7 +273,7 @@ const FlipFlashcard = ({
         setAutoFlipDelay={setAutoFlipDelay}
         setMatchingCardCount={setMatchingCardCount}
       />
-    </>
+    </div>
   );
 };
 

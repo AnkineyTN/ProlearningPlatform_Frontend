@@ -176,7 +176,7 @@ export const NoteHeader = ({
 
             {userRole !== 'VIEWER' && (
               <>
-                {onGenerateFlashcard && (
+                {userRole === 'OWNER' && onGenerateFlashcard && (
                   <Button
                     variant='ghost'
                     size='sm'

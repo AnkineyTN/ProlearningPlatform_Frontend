@@ -91,9 +91,7 @@ export default function HomeView({
             currentCardIndex={currentCardIndex}
             onFlip={onFlip}
             onPrevious={onPrevious}
-            onShuffle={onShuffle}
             onCardAnswer={onCardAnswer}
-            showBottomToolbar={false}
           />
         </div>
 

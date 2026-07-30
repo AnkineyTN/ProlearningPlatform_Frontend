@@ -1,5 +1,6 @@
 import { Plus, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -9,6 +10,21 @@ type Props = {
   onChange: (links: string[]) => void;
   disabled?: boolean;
   maxLinks?: number;
+  onValidityChange?: (valid: boolean) => void;
+};
+
+const isValidReferenceUrl = (value: string) => {
+  const trimmed = value.trim();
+  if (!trimmed) return true;
+  try {
+    const url = new URL(trimmed);
+    return (
+      (url.protocol === 'http:' || url.protocol === 'https:') &&
+      Boolean(url.hostname)
+    );
+  } catch {
+    return false;
+  }
 };
 
 const NoteReferenceLinksInput = ({
@@ -16,6 +32,7 @@ const NoteReferenceLinksInput = ({
   onChange,
   disabled,
   maxLinks = 3,
+  onValidityChange,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -34,21 +51,30 @@ const NoteReferenceLinksInput = ({
     onChange(links.filter((_, i) => i !== index));
   };
 
+  const invalidLinks = links.map((link) => !isValidReferenceUrl(link));
+  const allLinksValid = invalidLinks.every((invalid) => !invalid);
+
+  useEffect(() => {
+    onValidityChange?.(allLinksValid);
+  }, [allLinksValid, onValidityChange]);
+
   return (
     <div>
       <div className='space-y-2'>
         {links.map((link, index) => (
-          <div key={index} className='flex items-center gap-2'>
-            <Input
-              type='url'
-              value={link}
-              onChange={(e) => handleLinkChange(index, e.target.value)}
-              placeholder={t('modal.ai.webUrlsPlaceholder', {
-                defaultValue: 'https://example.com/article',
-              })}
-              disabled={disabled}
-              className='h-10 px-3.5 rounded-lg bg-[var(--pl-bg-sunken)]'
-            />
+          <div key={index}>
+            <div className='flex items-center gap-2'>
+              <Input
+                type='url'
+                value={link}
+                onChange={(e) => handleLinkChange(index, e.target.value)}
+                placeholder={t('modal.ai.webUrlsPlaceholder', {
+                  defaultValue: 'https://example.com/article',
+                })}
+                disabled={disabled}
+                aria-invalid={invalidLinks[index]}
+                className='h-10 px-3.5 rounded-lg bg-[var(--pl-bg-sunken)] aria-invalid:border-destructive'
+              />
             {links.length > 1 && (
               <button
                 type='button'
@@ -58,6 +84,12 @@ const NoteReferenceLinksInput = ({
               >
                 <X className='w-4 h-4' />
               </button>
+              )}
+            </div>
+            {invalidLinks[index] && (
+              <p className='mt-1 text-xs text-destructive'>
+                {t('modal.ai.invalidReferenceUrl')}
+              </p>
             )}
           </div>
         ))}
